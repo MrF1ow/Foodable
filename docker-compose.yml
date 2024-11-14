@@ -1,0 +1,33 @@
+services:
+  frontend:
+    container_name: ${FRONTEND_HOST}
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file: .env.local
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - database
+  
+  database:
+    container_name: ${DATABASE_HOST}
+    image: mongo:latest
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    volumes:
+      - database_data:/data/db
+
+volumes:
+  frontend_node_modules:
+    name: "frontend-v-node-modules"
+  database_data:
+    name: "database-v"
+
