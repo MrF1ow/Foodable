@@ -32,7 +32,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm install
+        run: |
+          sudo chown -R $USER:$USER frontend
+          npm install
 
       - name: Run Cypress tests
         working-directory: frontend
