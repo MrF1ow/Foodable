@@ -1,4 +1,4 @@
-import connectDB from "@/lib/mongodb";
+import connectDB  from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,7 +7,6 @@ export async function GET() {
     const db = client.db("foodable_db");
     const test = await db.collection("users").find({}).toArray();
     console.log(test);
-    // const client = await clientPromise;
     return new NextResponse("Connected to MongoDB", { status: 200 });
   } catch (err) {
     console.error("Failed to connect:", err);
