@@ -16,14 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm install
-
-      - name: Run Cypress tests
-        working-directory: frontend
-        run: npx cypress run
-
       - name: Install Docker using Docker's official script
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
@@ -37,6 +29,14 @@ jobs:
 
       - name: Run docker-compose
         run: docker-compose up -d
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Run Cypress tests
+        working-directory: frontend
+        run: npx cypress run
 
       - name: Run Postman tests
         run: |
