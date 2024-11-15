@@ -33,7 +33,7 @@ jobs:
       - name: Run Postman tests
         run: |
           npm install -g newman
-          newman run postman/Foodable.postman_collection.json --environment postman/Foodable Environment.postman_environment.json
+          newman run postman/Foodable.postman_collection.json --environment postman/Foodable.postman_environment.json
 
       - name: Shut down Docker Compose
         run: docker-compose down
