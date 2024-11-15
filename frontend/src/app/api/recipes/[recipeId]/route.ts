@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-export async function POST() {
+export async function GET() {
   return NextResponse.json({
-    message: "Register request received",
+    message: "Get a recipe request received",
     success: true,
   });
 }
