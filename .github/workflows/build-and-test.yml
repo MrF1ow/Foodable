@@ -34,6 +34,9 @@ jobs:
       - name: Run docker-compose
         run: docker-compose up -d
 
+      - name: Run Jest tests
+        run: npm test
+
       - name: Run Cypress tests
         working-directory: frontend
         run: npx cypress run
