@@ -3,12 +3,30 @@ on:
   push:
     branches:
       - main
+      - ci-cd-pipeline
   pull_request:
     branches:
       - main
+      - ci-cd-pipeline
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run docker-compose
+        run: docker-compose up -d
+
+      - name: Wait for app to be ready
+        run: |
+          sleep 20
+
+      - name: Run Postman tests
+        run: |
+          npm install -g newman
+          newman run postman/Foodable.postman_collection.json --environment postman/Foodable.postman_environment.json
+
+      - name: Shut down Docker Compose
+        run: docker-compose down
