@@ -31,11 +31,9 @@ jobs:
         run: docker-compose up -d
 
       - name: Install dependencies
-        working-directory: frontend
         run: npm install
 
       - name: Run Cypress tests
-        working-directory: frontend
         run: npx cypress run
 
       - name: Run Postman tests
