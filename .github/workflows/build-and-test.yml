@@ -2,12 +2,10 @@ name: Build and Test
 on:
   push:
     branches:
-      - main
-      - ci-cd-pipeline
+      - '*'
   pull_request:
     branches:
-      - main
-      - ci-cd-pipeline
+       - '*'
 
 jobs:
   build:
@@ -32,6 +30,13 @@ jobs:
           docker-compose --version
 
       - name: Run docker-compose
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
+          NEXT_PUBLIC_CLERK_SIGN_OUT_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }}
         run: docker-compose up -d
 
       - name: Run Jest tests
