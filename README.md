@@ -45,4 +45,3 @@ Foodable is an AI-powered web application designed to help users discover health
    ```
 4. Access the App:
     - Frontend: http://localhost:8000
-    - Backend: http://localhost:4000
