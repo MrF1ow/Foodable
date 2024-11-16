@@ -1,0 +1,31 @@
+services:
+  frontend:
+    container_name: frontend-c
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./frontend:/app
+      - frontend-v-node-modules:/app/node_modules
+    depends_on:
+      - database
+
+  database:
+    container_name: database-c
+    image: mongo:latest
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    ports:
+      - 27017:27017
+    volumes:
+      - database-v:/data/db
+      - ./database/init.js:/docker-entrypoint-initdb.d/init.js
+
+volumes:
+  frontend-v-node-modules:
+    name: "frontend-v-node-modules"
+  database-v:
+    name: "database-v"
