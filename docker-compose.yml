@@ -4,6 +4,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    env: .env
     ports:
       - 8000:8000
     volumes:
@@ -18,6 +19,7 @@ services:
     build:
       context: ./database
       dockerfile: Dockerfile
+    env: .env
     ports:
       - 27017:27017
     volumes:
