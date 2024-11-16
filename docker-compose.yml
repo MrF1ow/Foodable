@@ -4,7 +4,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    env: .env
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - NODE_ENV=${NODE_ENV}
+      - CLERK_SECRET_KEY=${CLERK_SECRET_KEY}
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      - NEXT_PUBLIC_CLERK_SIGN_IN_URL=${NEXT_PUBLIC_CLERK_SIGN_IN_URL}
+      - NEXT_PUBLIC_CLERK_SIGN_OUT_URL=${NEXT_PUBLIC_CLERK_SIGN_OUT_URL}
     ports:
       - 8000:8000
     volumes:
@@ -19,7 +25,6 @@ services:
     build:
       context: ./database
       dockerfile: Dockerfile
-    env: .env
     ports:
       - 27017:27017
     volumes:
