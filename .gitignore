@@ -1,0 +1,41 @@
+# Python Bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+.env/
+*.env
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints
+
+# macOS Files
+.DS_Store
+
+# Windows Thumbnails
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Log Files
+*.log
+
+# Python Package Files
+*.egg
+*.egg-info/
+dist/
+build/
+*.egg-info
+
+# Cache and Other Files
+*.sqlite3
+*.db
+
+node_modules/
