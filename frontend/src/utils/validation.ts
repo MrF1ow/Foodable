@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 // Local imports
 import { Ingredient, UserRating, User, Recipe, GroceryList } from "@/types";
-import { HTTP_RESPONSES } from "@/lib/httpResponses";
+import { HTTP_RESPONSES } from "@/lib/constants";
 
 export const validateObject = <T>(
   obj: any, // this is the object to validate
