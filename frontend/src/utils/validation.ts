@@ -1,5 +1,35 @@
+// Package Imports
 import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
+
+// Local imports
 import { Ingredient, UserRating, User, Recipe, GroceryList } from "@/types";
+import { HTTP_RESPONSES } from "@/lib/httpResponses";
+
+export const validateObject = <T>(
+  obj: any, // this is the object to validate
+  validateFn: (obj: any) => obj is T, // this is the function that will validate the object
+  errorMessage: string, // this is the error message to return if the object is invalid
+  errorStatus: number // this is the status code to return if the object is invalid
+): NextResponse | null => {
+  // Check if the object exists
+  if (!obj) {
+    return NextResponse.json(
+      { message: errorMessage },
+      { status: errorStatus }
+    );
+  }
+
+  // Validate the object structure
+  if (!validateFn(obj)) {
+    return NextResponse.json(
+      { message: HTTP_RESPONSES.BAD_REQUEST },
+      { status: 400 }
+    );
+  }
+
+  return null; // Return null if validation passes
+};
 
 // Function to check if an ID is valid
 const isValidObjectId = (id: any): boolean => {
