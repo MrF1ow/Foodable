@@ -3,7 +3,14 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 // Local imports
-import { Ingredient, UserRating, User, Recipe, GroceryList } from "@/types";
+import {
+  Ingredient,
+  UserRating,
+  User,
+  Recipe,
+  GroceryList,
+  newUser,
+} from "@/types";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
 export const validateObject = <T>(
@@ -76,35 +83,46 @@ export const validateUserRating = (rating: any): rating is UserRating => {
   );
 };
 
-// Function to check if a user is valid
-export const validateUser = (user: any): user is User => {
+export const validateNewUser = (user: newUser): user is newUser => {
   return (
     user &&
-    isValidObjectId(user._id) &&
     typeof user.username === "string" &&
     typeof user.email === "string" &&
     validateSettings(user.settings) &&
     validatePreferences(user.preferences) &&
     Array.isArray(user.favoriteRecipes) &&
-    user.favoriteRecipes.every(isValidObjectId) &&
     Array.isArray(user.createdRecipes) &&
-    user.createdRecipes.every(isValidObjectId) &&
     Array.isArray(user.groceryLists) &&
-    user.groceryLists.every(isValidObjectId) &&
     Array.isArray(user.following) &&
-    user.following.every(isValidObjectId) &&
     Array.isArray(user.followers) &&
-    user.followers.every(isValidObjectId) &&
+    user.favoriteRecipes.every(
+      (item) => typeof item === "string" || isValidObjectId(item)
+    ) &&
+    user.createdRecipes.every(
+      (item) => typeof item === "string" || isValidObjectId(item)
+    ) &&
+    user.groceryLists.every(
+      (item) => typeof item === "string" || isValidObjectId(item)
+    ) &&
+    user.following.every(
+      (item) => typeof item === "string" || isValidObjectId(item)
+    ) &&
+    user.followers.every(
+      (item) => typeof item === "string" || isValidObjectId(item)
+    ) &&
     user.lastLogin instanceof Date &&
-    user.dateJoined instanceof Date
+    !isNaN(user.lastLogin.getTime()) &&
+    user.dateJoined instanceof Date &&
+    !isNaN(user.dateJoined.getTime())
   );
 };
+
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
   return (
     recipe &&
-    isValidObjectId(recipe._id) &&
+    isValidObjectId(recipe.id) &&
     isValidObjectId(recipe.creatorId) &&
     typeof recipe.title === "string" &&
     typeof recipe.description === "string" &&
@@ -126,7 +144,7 @@ export const validateGroceryList = (
 ): groceryList is GroceryList => {
   return (
     groceryList &&
-    isValidObjectId(groceryList._id) &&
+    isValidObjectId(groceryList.id) &&
     isValidObjectId(groceryList.creatorId) &&
     typeof groceryList.title === "string" &&
     Array.isArray(groceryList.items) &&

@@ -1,18 +1,32 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateUser, validateObject } from "@/utils/validation";
-import { User } from "@/types";
+import { validateNewUser } from "@/utils/validation";
+import { newUser } from "@/types";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
-    const user: User = await req.json();
+    const user: newUser = await req.json();
 
-    if (!validateUser(user)) {
+    const userToInsert: newUser = {
+      ...user,
+      preferences: {
+        dietaryRestrictions: user.preferences.dietaryRestrictions || [],
+        allergies: user.preferences.allergies || [],
+      },
+      favoriteRecipes: user.favoriteRecipes || [],
+      createdRecipes: user.createdRecipes || [],
+      groceryLists: user.groceryLists || [],
+      following: user.following || [],
+      followers: user.followers || [],
+      lastLogin: user.lastLogin || new Date(),
+      dateJoined: user.dateJoined || new Date(),
+    };
+
+    if (!validateNewUser(userToInsert)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
@@ -23,7 +37,7 @@ export async function POST(req: Request) {
 
     const userRecord = await db
       .collection("users")
-      .findOne({ _id: new ObjectId(user.id) });
+      .findOne({ email: userToInsert.email }); // email is unique
     if (userRecord) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.CONFLICT },
@@ -31,9 +45,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const newUser = await db.collection("users").insertOne(user);
+    const result = await db.collection("users").insertOne(userToInsert);
 
-    return NextResponse.json(newUser.insertedId, { status: 201 });
+    return NextResponse.json({ id: result.insertedId }, { status: 201 });
   } catch (error) {
     console.error("Error creating user:", error);
 
