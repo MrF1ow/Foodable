@@ -16,7 +16,7 @@ export type UserState = {
   };
   // this is the date and time this user state was last updated, we will use this to determine if the user state is stale and needs to be refreshed
   updatedAt: Date;
-  role: "guest" | "registered" | "admin";
+  role: "guest" | "user" | "admin";
 };
 
 export type UserActions = {

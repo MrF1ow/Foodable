@@ -32,7 +32,7 @@ export const validateObject = <T>(
 };
 
 // Function to check if an ID is valid
-const isValidObjectId = (id: any): boolean => {
+export const isValidObjectId = (id: any): boolean => {
   return ObjectId.isValid(id);
 };
 

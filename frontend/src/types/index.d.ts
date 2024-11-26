@@ -13,7 +13,7 @@ export type UserRating = {
 };
 
 export type User = {
-  _id: ObjectId; // User ID
+  id: ObjectId; // User ID
   username: string; // Username of the user
   email: string; // Email of the user
 
@@ -38,7 +38,7 @@ export type User = {
 };
 
 export type Recipe = {
-  _id: ObjectId; // The recipe ID
+  id: ObjectId; // The recipe ID
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the recipe
   description: string; // The description of the recipe
@@ -51,7 +51,7 @@ export type Recipe = {
 };
 
 export type GroceryList = {
-  _id: ObjectId; // The grocery list ID
+  id: ObjectId; // The grocery list ID
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the grocery list
   items: Ingredient[]; // The items of the grocery list

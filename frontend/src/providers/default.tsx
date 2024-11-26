@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { ClerkProvider } from "@clerk/nextjs";
-import { TanstackProvider } from "@/app/providers/tanstack-provider";
-import { UserStoreProvider } from "@/app/providers/user-store-provider";
+import { TanstackProvider } from "@/providers/tanstack-provider";
+import { UserStoreProvider } from "@/providers/user-store-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
