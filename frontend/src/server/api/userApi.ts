@@ -3,7 +3,7 @@ import axios from "../axiosInstance";
 
 export const fetchUserById = async (id: string) => {
   try {
-    const response = await axios.get(`/users?id=${id}`);
+    const response = await axios.get(`/user?id=${id}`);
     return response.data;
   } catch (error) {
     console.error("Error getting user:", error);
@@ -13,7 +13,7 @@ export const fetchUserById = async (id: string) => {
 
 export const createUser = async (user: User) => {
   try {
-    const response = await axios.post("/users", user);
+    const response = await axios.post("/user", user);
     return response.data;
   } catch (error) {
     console.error("Error creating user:", error);
@@ -23,7 +23,7 @@ export const createUser = async (user: User) => {
 
 export const updateUser = async (user: User) => {
   try {
-    const response = await axios.put("/users", user);
+    const response = await axios.put("/user", user);
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error);
@@ -33,7 +33,7 @@ export const updateUser = async (user: User) => {
 
 export const deleteUser = async (id: string) => {
   try {
-    const response = await axios.delete("/users", { data: { id } });
+    const response = await axios.delete("/user", { data: { id } });
     return response.data;
   } catch (error) {
     console.error("Error deleting user:", error);
