@@ -6,7 +6,6 @@ import {
   validateObject,
   isValidObjectId,
 } from "@/utils/validation";
-import { getIdFromSearchParams } from "@/utils/routeHelpers";
 import { User } from "@/types";
 
 // Package Imports

@@ -12,11 +12,11 @@ export type UserRating = {
   rating: number; // User rating
 };
 
-export type User = newUser & {
+export type User = NewUser & {
   id: ObjectId; // User ID
 };
 
-export type newUser = {
+export type NewUser = {
   username: string; // Username of the user
   email: string; // Email of the user
 

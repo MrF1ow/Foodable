@@ -9,7 +9,7 @@ import {
   User,
   Recipe,
   GroceryList,
-  newUser,
+  NewUser,
 } from "@/types";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
@@ -83,7 +83,7 @@ export const validateUserRating = (rating: any): rating is UserRating => {
   );
 };
 
-export const validateNewUser = (user: newUser): user is newUser => {
+export const validateNewUser = (user: NewUser): user is NewUser => {
   return (
     user &&
     typeof user.username === "string" &&
@@ -117,6 +117,15 @@ export const validateNewUser = (user: newUser): user is newUser => {
   );
 };
 
+export const validateUser = (user: any): user is User => {
+  if (!user || !isValidObjectId(user._id)) {
+    return false;
+  }
+
+  const { _id, ...userWithoutId } = user;
+
+  return validateNewUser(userWithoutId);
+};
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {

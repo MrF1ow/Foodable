@@ -2,16 +2,18 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateNewUser } from "@/utils/validation";
-import { newUser } from "@/types";
+import { NewUser } from "@/types";
 
 // Package Imports
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const user: newUser = await req.json();
+    const user: NewUser = await req.json();
 
-    const userToInsert: newUser = {
+    console.log("Creating user:", user);
+
+    const userToInsert: NewUser = {
       ...user,
       preferences: {
         dietaryRestrictions: user.preferences.dietaryRestrictions || [],
@@ -47,7 +49,7 @@ export async function POST(req: Request) {
 
     const result = await db.collection("users").insertOne(userToInsert);
 
-    return NextResponse.json({ id: result.insertedId }, { status: 201 });
+    return NextResponse.json({ _id: result.insertedId }, { status: 201 });
   } catch (error) {
     console.error("Error creating user:", error);
 
