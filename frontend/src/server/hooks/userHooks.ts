@@ -11,7 +11,6 @@ export const useFetchUserById = (id: string) => {
   return useQuery({
     queryKey: ["user", id],
     queryFn: () => fetchUserById(id),
-    enabled: !!id,
   });
 };
 
