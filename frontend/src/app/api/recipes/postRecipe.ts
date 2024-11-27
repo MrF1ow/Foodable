@@ -1,17 +1,17 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateRecipe } from "@/utils/validation";
-import { Recipe } from "@/types";
+import { validateRecipeWithoutId } from "@/utils/validation";
+import { NewRecipe } from "@/types";
 
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const recipe: Recipe = await req.json();
+    const recipe: NewRecipe = await req.json();
 
     console.log("Creating Recipe:", recipe);
 
-    const recipeToInsert: Recipe = {
+    const recipeToInsert: NewRecipe = {
       ...recipe,
       title: recipe.title || "",
       description: recipe.description || "",
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       timestamp: recipe.timestamp || new Date(),
     };
 
-    if (!validateRecipe(recipeToInsert)) {
+    if (!validateRecipeWithoutId(recipeToInsert)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
@@ -33,7 +33,10 @@ export async function POST(req: Request) {
 
     const result = await db.collection("recipes").insertOne(recipeToInsert);
 
-    return NextResponse.json({ _id: result.insertedId }, { status: 201 });
+    return NextResponse.json(
+      { ...recipeToInsert, _id: result.insertedId },
+      { status: 201 }
+    );
   } catch (error) {
     console.log("Error creating recipe", error);
 

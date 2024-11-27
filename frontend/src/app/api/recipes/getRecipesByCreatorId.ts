@@ -8,20 +8,26 @@ import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    console.log("WE CREATOR HERE");
     const creatorId = getCreatorIdFromSearchParams(req);
-    console.log("1");
     if (!creatorId) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
-    const db = await getDB();
 
+    if (!ObjectId.isValid(creatorId)) {
+      return NextResponse.json(
+        { message: "Invalid creatorId format." },
+        { status: 400 }
+      );
+    }
+
+    const db = await getDB();
+    console.log("creatorId:", creatorId);
     const recipes = await db
       .collection("recipes")
-      .find({ _id: new ObjectId(creatorId) })
+      .find({ creatorId: creatorId })
       .toArray();
 
     if (recipes.length === 0) {
@@ -31,17 +37,17 @@ export async function GET(req: Request) {
       );
     }
 
-    const validationResponse = validateObject(
-      recipes,
-      validateRecipe,
-      HTTP_RESPONSES.BAD_REQUEST,
-      400
-    );
-    console.log("2");
-    if (validationResponse) {
-      return validationResponse;
+    for (const recipe of recipes) {
+      const validationResponse = validateObject(
+        recipe,
+        validateRecipe,
+        HTTP_RESPONSES.BAD_REQUEST,
+        400
+      );
+      if (validationResponse) {
+        return validationResponse;
+      }
     }
-    console.log("3");
 
     return NextResponse.json(recipes, { status: 200 });
   } catch (error) {

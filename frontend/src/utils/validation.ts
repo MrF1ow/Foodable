@@ -10,6 +10,7 @@ import {
   Recipe,
   GroceryList,
   NewUser,
+  NewRecipe,
 } from "@/types";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
@@ -142,9 +143,22 @@ export const validateUser = (user: any): user is User => {
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
+  if (recipe.id && !isValidObjectId(recipe.id)) {
+    return false;
+  }
+
+  if (recipe._id && !isValidObjectId(recipe._id)) {
+    return false;
+  }
+
+  const { _id, id, ...recipeWithoutId } = recipe;
+
+  return validateRecipeWithoutId(recipeWithoutId);
+};
+
+export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
   return (
     recipe &&
-    isValidObjectId(recipe.id) &&
     isValidObjectId(recipe.creatorId) &&
     typeof recipe.title === "string" &&
     typeof recipe.description === "string" &&

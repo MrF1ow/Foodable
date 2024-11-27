@@ -27,7 +27,10 @@ export async function DELETE(req: Request) {
       );
     }
 
-    return NextResponse.json({ message: "Recipe Deleted" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Recipe Deleted", id: id },
+      { status: 200 }
+    );
   } catch (error) {
     console.log("Error deleting recipe", error);
 
