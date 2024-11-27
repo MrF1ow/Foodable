@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { createRecipe, fetchRecipeById } from "../api/recipeApi";
+import { createRecipe, fetchRecipeById, updateRecipe } from "../api/recipeApi";
 import { Recipe } from "@/types";
 
 export const useCreateUser = () => {
@@ -11,4 +11,8 @@ export const useFetchRecipeById = (id: string) => {
     queryKey: ["recipe", id],
     queryFn: () => fetchRecipeById(id),
   });
+};
+
+export const useUpdateRecipe = () => {
+  return useMutation<Recipe, Error, Recipe>({ mutationFn: updateRecipe });
 };

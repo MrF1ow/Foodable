@@ -20,3 +20,13 @@ export const fetchRecipeById = async (id: string) => {
     throw error;
   }
 };
+
+export const updateRecipe = async (recipe: Recipe) => {
+  try {
+    const response = await axios.put("/recipe", recipe);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating recipe:", error);
+    throw error;
+  }
+};

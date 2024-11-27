@@ -18,12 +18,15 @@ export async function PUT(req: Request) {
       HTTP_RESPONSES.BAD_REQUEST,
       400
     );
+    console.log("1");
 
     if (preValidationResponse) {
       return preValidationResponse;
     }
 
-    const { id } = recipe;
+    console.log("2");
+
+    const { id, ...recipeWithoutID } = recipe;
 
     const db = await getDB();
 
@@ -31,7 +34,7 @@ export async function PUT(req: Request) {
       .collection("recipes")
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: recipe },
+        { $set: recipeWithoutID },
         { returnDocument: "after" }
       );
 
@@ -46,7 +49,7 @@ export async function PUT(req: Request) {
       updatedRecipe,
       validateRecipe,
       HTTP_RESPONSES.BAD_REQUEST,
-      400
+      404
     );
 
     if (validationResponse) {

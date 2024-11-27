@@ -156,7 +156,8 @@ export const validateRecipe = (recipe: any): recipe is Recipe => {
     recipe.userRatings.every(validateUserRating) &&
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
-    recipe.timestamp instanceof Date
+    (recipe.timestamp === undefined ||
+      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
   );
 };
 
