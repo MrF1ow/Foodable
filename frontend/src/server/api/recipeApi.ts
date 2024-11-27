@@ -30,3 +30,13 @@ export const updateRecipe = async (recipe: Recipe) => {
     throw error;
   }
 };
+
+export const deleteRecipe = async (id: string) => {
+  try {
+    const response = await axios.delete("/recipe", { data: { id } });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    throw error;
+  }
+};

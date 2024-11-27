@@ -18,13 +18,10 @@ export async function PUT(req: Request) {
       HTTP_RESPONSES.BAD_REQUEST,
       400
     );
-    console.log("1");
 
     if (preValidationResponse) {
       return preValidationResponse;
     }
-
-    console.log("2");
 
     const { id, ...recipeWithoutID } = recipe;
 
@@ -58,7 +55,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(updatedRecipe, { status: 200 });
   } catch (error) {
-    console.log("Error creating recipe", error);
+    console.log("Error updating recipe", error);
 
     return NextResponse.json(
       { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },
