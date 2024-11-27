@@ -40,12 +40,13 @@ export const validateObject = <T>(
 
 // Function to check if an ID is valid
 export const isValidObjectId = (id: any): boolean => {
-  return ObjectId.isValid(id);
+  return id !== null && ObjectId.isValid(id);
 };
 
 // Function to check if an array is valid and contains only strings
 const isValidStringArray = (arr: any): boolean =>
-  Array.isArray(arr) && arr.every((item) => typeof item === "string");
+  Array.isArray(arr) &&
+  (arr.length === 0 || arr.every((item) => typeof item === "string"));
 
 // Function to check if the settings are valid
 const validateSettings = (settings: any): boolean => {
@@ -83,7 +84,7 @@ export const validateUserRating = (rating: any): rating is UserRating => {
   );
 };
 
-export const validateNewUser = (user: NewUser): user is NewUser => {
+export const validateUserWithoutID = (user: NewUser): user is NewUser => {
   return (
     user &&
     typeof user.username === "string" &&
@@ -110,21 +111,33 @@ export const validateNewUser = (user: NewUser): user is NewUser => {
     user.followers.every(
       (item) => typeof item === "string" || isValidObjectId(item)
     ) &&
-    user.lastLogin instanceof Date &&
-    !isNaN(user.lastLogin.getTime()) &&
-    user.dateJoined instanceof Date &&
-    !isNaN(user.dateJoined.getTime())
+    // Optional lastLogin validation
+    (user.lastLogin === undefined ||
+      (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&
+    // Optional dateJoined validation
+    (user.dateJoined === undefined ||
+      (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime())))
   );
 };
 
 export const validateUser = (user: any): user is User => {
-  if (!user || !isValidObjectId(user._id)) {
+  if (!user) {
     return false;
   }
 
-  const { _id, ...userWithoutId } = user;
+  // Validate 'id' field if it exists
+  if (user.id && !isValidObjectId(user.id)) {
+    return false;
+  }
 
-  return validateNewUser(userWithoutId);
+  // Validate '_id' field if it exists
+  if (user._id && !isValidObjectId(user._id)) {
+    return false;
+  }
+
+  const { _id, id, ...userWithoutId } = user;
+
+  return validateUserWithoutID(userWithoutId);
 };
 
 // Function to check if a recipe is valid

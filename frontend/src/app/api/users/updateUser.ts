@@ -15,43 +15,33 @@ import { ObjectId } from "mongodb";
 export async function PUT(req: Request) {
   try {
     const user: User = await req.json();
-    const { id } = user;
 
-    if (!id || !isValidObjectId(id)) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.BAD_REQUEST },
-        { status: 400 }
-      );
+    console.log("Line 19");
+
+    const preValidationResponse = validateObject(
+      user,
+      validateUser,
+      HTTP_RESPONSES.BAD_REQUEST,
+      400
+    );
+
+    if (preValidationResponse) {
+      return preValidationResponse;
     }
 
-    if (!validateUser(user)) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.BAD_REQUEST },
-        { status: 400 }
-      );
-    }
+    const { id, ...userWithoutID } = user;
 
     const db = await getDB();
-
-    const userRecord = await db
-      .collection("users")
-      .findOne({ _id: new ObjectId(id) });
-    if (!userRecord) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const updatedUser = await db
       .collection("users")
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: user },
+        { $set: userWithoutID },
         { returnDocument: "after" }
       );
 
-    if (!updatedUser || !updatedUser.value) {
+    if (!updatedUser) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
@@ -59,7 +49,7 @@ export async function PUT(req: Request) {
     }
 
     const validationResponse = validateObject(
-      updatedUser.value,
+      updatedUser,
       validateUser,
       HTTP_RESPONSES.BAD_REQUEST,
       404
@@ -69,7 +59,7 @@ export async function PUT(req: Request) {
       return validationResponse;
     }
 
-    return NextResponse.json(updatedUser.value, { status: 200 });
+    return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     console.error("Error updating user:", error);
 

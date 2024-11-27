@@ -3,30 +3,28 @@
 		"_postman_id": "183b16b9-b517-4e72-b76e-2648de554c94",
 		"name": "Foodable",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39727925",
-		"_collection_link": "https://foodable-team.postman.co/workspace/Foodable~6d0f8067-4b01-426b-a8c6-7f5d909324d9/collection/39727925-183b16b9-b517-4e72-b76e-2648de554c94?action=share&source=collection_link&creator=39727925"
+		"_exporter_id": "39800224",
+		"_collection_link": "https://foodable-team.postman.co/workspace/Foodable~6d0f8067-4b01-426b-a8c6-7f5d909324d9/collection/39727925-183b16b9-b517-4e72-b76e-2648de554c94?action=share&source=collection_link&creator=39800224"
 	},
 	"item": [
 		{
 			"name": "User",
 			"item": [
 				{
-					"name": "Register New User",
+					"name": "Create User",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
+									"const userId = pm.response.json()._id;\r",
+									"if (userId !== null) {\r",
+									"    pm.environment.set(\"userID\", userId);\r",
+									"}\r",
 									""
 								],
 								"type": "text/javascript",
@@ -37,63 +35,31 @@
 					"request": {
 						"method": "POST",
 						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/users/register",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"users",
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Login User",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"jane_smith\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"dark\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"vegan\",\r\n            \"gluten-free\"\r\n        ],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"favoriteRecipes\": [],\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
 							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
+						},
 						"url": {
-							"raw": "{{app_url}}/api/users/login",
+							"raw": "{{app_url}}/api/users/",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
 								"users",
-								"login"
+								""
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get User Profile",
+					"name": "Get User By ID",
 					"event": [
 						{
 							"listen": "test",
@@ -101,13 +67,6 @@
 								"exec": [
 									"pm.test(\"Response status code is 200\", function () {\r",
 									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
 									"});\r",
 									""
 								],
@@ -120,14 +79,101 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/users/{{userId}}",
+							"raw": "{{app_url}}/api/users?id={{userID}}",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"users",
-								"{{userId}}"
+								"users"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{userID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{userID}}\",\r\n    \"username\": \"Jane the Virgin\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"light\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"favoriteRecipes\": [],\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_url}}/api/users",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{userID}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_url}}/api/users",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"users"
 							]
 						}
 					},
@@ -137,435 +183,15 @@
 		},
 		{
 			"name": "Recipes",
-			"item": [
-				{
-					"name": "Create a Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/recipes/create",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"recipes",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Recipe by ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/recipes/{recipeId}",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"recipes",
-								"{recipeId}"
-							]
-						}
-					},
-					"response": []
-				}
-			]
+			"item": []
 		},
 		{
 			"name": "Grocery",
-			"item": [
-				{
-					"name": "Create Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/create",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/{{ListId}}",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"{{ListId}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Compare Prices",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/items/{{item}}/compare-prices",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"items",
-								"{{item}}",
-								"compare-prices"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Item Price",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/items/{{item}}/price",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"items",
-								"{{item}}",
-								"price"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Item Stock",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/items/{{item}}/stock",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"items",
-								"{{item}}",
-								"stock"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/grocery/items/update",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"grocery",
-								"items",
-								"update"
-							]
-						}
-					},
-					"response": []
-				}
-			]
+			"item": []
 		},
 		{
 			"name": "Location",
-			"item": [
-				{
-					"name": "Get Nearby Stores",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/location/stores",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"location",
-								"stores"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get User Location",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Success is a boolean value\", function () {\r",
-									"  const responseData = pm.response.json();\r",
-									"\r",
-									"  pm.expect(responseData).to.be.an('object');\r",
-									"  pm.expect(responseData.success).to.be.a('boolean');\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/location/user",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"location",
-								"user"
-							]
-						}
-					},
-					"response": []
-				}
-			]
+			"item": []
 		}
 	]
 }
