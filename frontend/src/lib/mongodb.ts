@@ -17,7 +17,7 @@ const options = {
 // set the client to be a MongoClient
 let client: MongoClient;
 
-async function connectDB(): Promise<MongoClient> {
+export async function connectDB(): Promise<MongoClient> {
   // If the environment is development, use the global object to store the client
   if (process.env.NODE_ENV === "development") {
     // Use the global object to store the client
@@ -47,4 +47,8 @@ async function connectDB(): Promise<MongoClient> {
   }
 }
 
-export default connectDB;
+export async function getDB(): Promise<Db> {
+  const client = await connectDB();
+  return client.db("foodable_db");
+}
+
