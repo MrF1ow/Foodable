@@ -4,6 +4,7 @@ import {
   deleteRecipe,
   fetchRecipeById,
   updateRecipe,
+  fetchRecipesByCreatorId,
 } from "../api/recipeApi";
 import { Recipe } from "@/types";
 
@@ -24,4 +25,11 @@ export const useUpdateRecipe = () => {
 
 export const useDeleteRecipe = () => {
   return useMutation<void, Error, string>({ mutationFn: deleteRecipe });
+};
+
+export const useFetchRecipesByCreatorId = (creatorId: string) => {
+  return useQuery({
+    queryKey: ["creatorId", creatorId],
+    queryFn: () => fetchRecipesByCreatorId(creatorId),
+  });
 };

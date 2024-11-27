@@ -40,3 +40,13 @@ export const deleteRecipe = async (id: string) => {
     throw error;
   }
 };
+
+export const fetchRecipesByCreatorId = async (creatorId: string) => {
+  try {
+    const response = await axios.get(`/recipe?creatorId=${creatorId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting recipe:", error);
+    throw error;
+  }
+};

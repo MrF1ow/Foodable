@@ -2,6 +2,7 @@ import { POST as postRecipe } from "./postRecipe";
 import { GET as getRecipeById } from "./getRecipeById";
 import { PUT as updateRecipe } from "./updateRecipe";
 import { DELETE as deleteRecipe } from "./deleteRecipe";
+import { GET as getRecipesByCreatorId } from "./getRecipesByCreatorId";
 import type { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -9,7 +10,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  return getRecipeById(request);
+  const { searchParams } = new URL(request.url);
+
+  if (searchParams.has("creatorId")) {
+    return getRecipesByCreatorId(request);
+  } else {
+    return getRecipeById(request);
+  }
 }
 
 export async function PUT(request: NextRequest) {

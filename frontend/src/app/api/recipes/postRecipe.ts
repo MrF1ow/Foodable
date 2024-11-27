@@ -29,7 +29,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
     const db = await getDB();
 
     const result = await db.collection("recipes").insertOne(recipeToInsert);
