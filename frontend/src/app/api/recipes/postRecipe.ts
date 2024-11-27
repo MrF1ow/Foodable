@@ -18,8 +18,8 @@ export async function POST(req: Request) {
       ingredients: recipe.ingredients || [],
       instructions: recipe.instructions || [],
       userRatings: recipe.userRatings || [],
-      averageRating: recipe.averageRating || -1,
-      priceApproximation: recipe.priceApproximation || -1,
+      averageRating: recipe.averageRating ?? null,
+      priceApproximation: recipe.priceApproximation ?? null,
       timestamp: recipe.timestamp || new Date(),
     };
 

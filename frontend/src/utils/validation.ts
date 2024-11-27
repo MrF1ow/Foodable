@@ -69,7 +69,7 @@ export const validateIngredient = (
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "number" &&
+    typeof ingredient.quantity === "string" && // Changed this to be a string (allows 1/2 cup, 2 oz, etc)
     typeof ingredient.brand === "string"
   );
 };
