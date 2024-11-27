@@ -1,5 +1,6 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
+import { isValidObjectId } from "@/utils/validation";
 
 // Package Imports
 import { NextResponse } from "next/server";
@@ -8,7 +9,7 @@ import { ObjectId } from "mongodb";
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
-    if (!id) {
+    if (!isValidObjectId(id)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
@@ -20,7 +21,7 @@ export async function DELETE(req: Request) {
       .collection("users")
       .findOneAndDelete({ _id: new ObjectId(id) });
 
-    if (!deletedUser || !deletedUser.value) {
+    if (!deletedUser) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
