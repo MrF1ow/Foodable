@@ -10,8 +10,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        backgroundPrimary: "var(--color-bg-primary)",
+        backgroundSecondary: "var(--color-bg-secondary)",
+        textPrimary: "var(--color-text-primary)",
+        colorPrimary: "var(--color-primary)",
+        colorPecondary: "var(--color-secondary)",
+      },
+      screens: {
+        sm: "480px",
+        md: "768px",
+        lg: "976px",
+        xl: "1440px",
+      },
+      fontFamily: {
+        league: ["league-spartan", "sans-serif"],
       },
     },
   },
