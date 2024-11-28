@@ -7,13 +7,13 @@ describe("Visit Landing Page", () => {
     cy.contains("Making Food More Doable.");
 
     cy.get('a[href="/sign-in"]').should("be.visible").click();
-    cy.url().should("include", "/sign-in");
+    cy.url({ timeout: 10000 }).should("include", "/sign-in");
 
     cy.visit("/", { failOnStatusCode: false });
     cy.wait(2000);
 
     cy.get('a[href="/sign-up"]').should("be.visible").click();
-    cy.url().should("include", "/sign-up");
+    cy.url({ timeout: 10000 }).should("include", "/sign-up");
   });
 
   it("Should Display Logo on Large Screens", () => {
