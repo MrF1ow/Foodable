@@ -5,6 +5,7 @@ import {
   fetchRecipeById,
   updateRecipe,
   fetchRecipesByCreatorId,
+  fetchAllRecipes,
 } from "../api/recipeApi";
 import { Recipe } from "@/types";
 
@@ -32,4 +33,8 @@ export const useFetchRecipesByCreatorId = (creatorId: string) => {
     queryKey: ["creatorId", creatorId],
     queryFn: () => fetchRecipesByCreatorId(creatorId),
   });
+};
+
+export const useFetchRecipes = () => {
+  return useMutation<void, Error, string>({ mutationFn: fetchAllRecipes });
 };

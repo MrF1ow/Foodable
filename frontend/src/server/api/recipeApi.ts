@@ -50,3 +50,13 @@ export const fetchRecipesByCreatorId = async (creatorId: string) => {
     throw error;
   }
 };
+
+export const fetchAllRecipes = async (id: string) => {
+  try {
+    const response = await axios.get("/recipe");
+    return response.data;
+  } catch (error) {
+    console.error("Error getting recipes:", error);
+    throw error;
+  }
+};
