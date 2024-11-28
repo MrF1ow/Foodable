@@ -1,4 +1,9 @@
+import { setupClerkTestingToken } from "@clerk/testing/cypress";
+
 describe("Visit Landing Page", () => {
+  before(() => {
+    setupClerkTestingToken();
+  });
   it("Landing Page Should Load Successfully", () => {
     cy.visit("/", { failOnStatusCode: false });
     cy.wait(2000);
