@@ -45,6 +45,9 @@ jobs:
 
       - name: Run Cypress tests
         working-directory: frontend
+        env:
+          CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
         run: npx cypress run
 
       - name: Run Postman tests
