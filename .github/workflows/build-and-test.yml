@@ -34,7 +34,6 @@ jobs:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-          CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
           NEXT_PUBLIC_CLERK_SIGN_OUT_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }}
@@ -46,6 +45,8 @@ jobs:
 
       - name: Run Cypress tests
         working-directory: frontend
+        env:
+          CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
         run: npx cypress run
 
       - name: Run Postman tests
