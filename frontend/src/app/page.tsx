@@ -1,11 +1,43 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../public/images/logo_current.png";
+import logoWithShadow from "../../public/images/logo_current.png";
+import logoNoShadow from "../../public/images/logo_current_no_shadow.png";
 
 export default function Home() {
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [logo, setLogo] = useState(logoWithShadow);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLargeScreen(window.innerWidth > 1024);
+
+      const handleResize = () => setIsLargeScreen(window.innerWidth > 1024);
+      window.addEventListener("resize", handleResize);
+
+      const updateLogo = () => {
+        const isDarkMode = document.documentElement.classList.contains("dark");
+        setLogo(isDarkMode ? logoNoShadow : logoWithShadow);
+      };
+
+      updateLogo();
+
+      const observer = new MutationObserver(updateLogo);
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        observer.disconnect();
+      };
+    }
+  }, []);
+
   return (
     <div className="flex w-full h-full items-center justify-between px-8 lg:px-16 font-league text-foreground">
       {/* Title and Button Section */}
@@ -28,9 +60,12 @@ export default function Home() {
             <Link href="/sign-up">Sign Up</Link>
           </Button>
         </div>
+        <Button variant="link" asChild>
+          <Link href="/dashboard">Continue As Guest</Link>
+        </Button>
       </div>
       {/* Logo Section (Hidden on smaller screens) */}
-      {window.innerWidth > 1024 && (
+      {isLargeScreen && (
         <div className="flex w-[50%] items-center justify-center">
           <Image src={logo} width={400} height={400} alt={"Logo"} />
         </div>

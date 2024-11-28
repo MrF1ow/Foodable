@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Head from "next/head";
 
 import { Providers } from "@/providers/default";
 import "./globals.css";
@@ -16,9 +15,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </Head>
       <Providers>
         <body className="w-screen h-screen">{children}</body>
       </Providers>
