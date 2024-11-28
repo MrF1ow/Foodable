@@ -41,7 +41,7 @@ export type NewUser = {
 };
 
 export type Recipe = NewRecipe & {
-  id: ObjectId; // Recipe ID
+  _id: ObjectId; // Recipe ID
 };
 
 export type NewRecipe = {

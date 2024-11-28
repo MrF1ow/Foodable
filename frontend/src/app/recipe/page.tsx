@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -5,144 +7,32 @@ import Image from "next/image";
 import searchIcon from "../../../public/images/search_icon_google.png";
 import tuneIcon from "../../../public/images/tune_google.png";
 import { Card, CardTitle } from "@/components/ui/card";
-
-const cardData = [
-  {
-    id: 1,
-    title: "Recipe 1",
-    userRatings: [
-      {
-        rating: 5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Recipe 2",
-    userRatings: [
-      {
-        rating: 4,
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Recipe 3",
-    userRatings: [
-      {
-        rating: 2,
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: "Recipe 4",
-    userRatings: [
-      {
-        rating: 3,
-      },
-    ],
-  },
-  {
-    id: 5,
-    title: "Recipe 5",
-    userRatings: [
-      {
-        rating: 4,
-      },
-    ],
-  },
-  {
-    id: 6,
-    title: "Recipe 6",
-    userRatings: [
-      {
-        rating: 1,
-      },
-    ],
-  },
-  {
-    id: 7,
-    title: "Recipe 7",
-    userRatings: [
-      {
-        rating: 5,
-      },
-    ],
-  },
-  {
-    id: 8,
-    title: "Recipe 8",
-    userRatings: [
-      {
-        rating: 3,
-      },
-    ],
-  },
-  {
-    id: 9,
-    title: "Recipe 9",
-    userRatings: [
-      {
-        rating: 4,
-      },
-    ],
-  },
-  {
-    id: 10,
-    title: "Recipe 10",
-    userRatings: [
-      {
-        rating: 5,
-      },
-    ],
-  },
-  {
-    id: 11,
-    title: "Recipe 11",
-    userRatings: [
-      {
-        rating: 2,
-      },
-    ],
-  },
-  {
-    id: 12,
-    title: "Recipe 12",
-    userRatings: [
-      {
-        rating: 3,
-      },
-    ],
-  },
-];
+import { Recipe } from "@/types";
 
 export default function RecipePage() {
-  //   const [recipes, setRecipes] = useState([]);
-  //   const [loading, setLoading] = useState(true);
-  //   const [error, setError] = useState(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  //   useEffect(() => {
-  //     // Fetch recipes from the API
-  //     async function fetchRecipes() {
-  //       try {
-  //         const response = await fetch("/api/recipes");
-  //         if (!response.ok) {
-  //           throw new Error("Failed to fetch recipes");
-  //         }
-  //         const data = await response.json();
-  //         setRecipes(data);
-  //       } catch (err) {
-  //         setError(err.message);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //     fetchRecipes();
-  //   }, []);
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch("/api/recipes");
+        const data: Recipe[] = await response.json();
+        console.log("Fetched recipes:", data);
+        setRecipes(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch recipes:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecipes();
+  }, []);
 
   return (
     <div className="p-4">
+      {/* Search Bar */}
       <div className="relative w-full max-w-lg mb-8">
         <Button
           variant="outline"
@@ -177,23 +67,30 @@ export default function RecipePage() {
         />
       </div>
 
+      {/* Recipe Cards */}
       <div className="w-full max-w-screen-lg">
         <div className="flex flex-wrap justify-start gap-4">
-          {cardData.map((card) => (
-            <Card
-              key={card.id}
-              className="w-full sm:w-40 md:w-40 bg-gray-800 text-white shadow-lg aspect-square border-green-500 flex flex-col rounded-lg"
-            >
-              <div className="flex-grow p-4"></div>
-              <div
-                className="flex flex-row items-center justify-between p-4 w-full rounded-b-lg"
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          {isLoading ? (
+            <p className="text-black">Loading...</p>
+          ) : recipes.length > 0 ? (
+            recipes.map((recipe) => (
+              <Card
+                key={recipe._id.toString()}
+                className="w-full sm:w-40 md:w-40 bg-gray-800 text-white shadow-lg aspect-square border-green-500 flex flex-col rounded-lg"
               >
-                <CardTitle className="mr-2">{card.title}</CardTitle>
-                <span className="ml-2">{card.userRatings[0].rating} ☆</span>
-              </div>
-            </Card>
-          ))}
+                <div className="flex-grow p-4"></div>
+                <div
+                  className="flex flex-row items-center justify-between p-4 w-full rounded-b-lg"
+                  style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                >
+                  <CardTitle className="mr-2">{recipe.title}</CardTitle>
+                  <span className="ml-2">{recipe.userRatings[0].rating} ☆</span>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <p className="text-white">No recipes found.</p>
+          )}
         </div>
       </div>
     </div>
