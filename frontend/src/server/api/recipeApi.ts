@@ -51,12 +51,22 @@ export const fetchRecipesByCreatorId = async (creatorId: string) => {
   }
 };
 
-export const fetchAllRecipes = async (id: string) => {
+export const fetchAllRecipes = async () => {
   try {
     const response = await axios.get("/recipe");
     return response.data;
   } catch (error) {
     console.error("Error getting recipes:", error);
+    throw error;
+  }
+};
+
+export const fetchRecipesByTitle = async (title: string) => {
+  try {
+    const response = await axios.get(`/recipe?title=${title}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting recipe:", error);
     throw error;
   }
 };

@@ -4,6 +4,7 @@ import { PUT as updateRecipe } from "./updateRecipe";
 import { DELETE as deleteRecipe } from "./deleteRecipe";
 import { GET as getRecipesByCreatorId } from "./getRecipesByCreatorId";
 import { GET as getAllRecipes } from "./getAllRecipes";
+import { GET as getRecipeByTitle } from "./getRecipeByTitle";
 import type { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -17,6 +18,8 @@ export async function GET(request: NextRequest) {
     return getRecipesByCreatorId(request);
   } else if (searchParams.has("id")) {
     return getRecipeById(request);
+  } else if (searchParams.has("title")) {
+    return getRecipeByTitle(request);
   } else {
     return getAllRecipes();
   }

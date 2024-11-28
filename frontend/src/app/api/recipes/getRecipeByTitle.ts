@@ -1,17 +1,17 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateRecipe, validateObject } from "@/utils/validation";
-import { getIdFromSearchParams } from "@/utils/routeHelpers";
+import { getRecipeTitleFromSearchParams } from "@/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const id = getIdFromSearchParams(req);
-    console.log("Request", req);
+    const title = getRecipeTitleFromSearchParams(req);
+    console.log("Title: ", title);
+    console.log("Request: ", req);
 
-    if (!id) {
+    if (!title) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
@@ -19,9 +19,7 @@ export async function GET(req: Request) {
     }
     const db = await getDB();
 
-    const recipe = await db
-      .collection("recipes")
-      .findOne({ _id: new ObjectId(id) });
+    const recipe = await db.collection("recipes").findOne({ title: title });
 
     const validationResponse = validateObject(
       recipe,
