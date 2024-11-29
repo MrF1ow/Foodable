@@ -7,7 +7,16 @@ import Image from "next/image";
 import searchIcon from "../../../public/images/search_icon_google.png";
 import tuneIcon from "../../../public/images/tune_google.png";
 import recipeImagePlaceholder from "../../../public/images/recipe_placeholder.png";
-import { Card, CardTitle } from "@/components/ui/card";
+import addIcon from "../../../public/images/add_google.png";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import { Recipe } from "@/types";
 
 export default function RecipePage() {
@@ -34,9 +43,7 @@ export default function RecipePage() {
   const searchRecipe = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `/api/recipes?title=${encodeURIComponent(searchQuery)}`
-      );
+      const response = await fetch(`/api/recipes?title=${searchQuery}`);
       if (!response.ok) {
         throw new Error("Failed to fetch recipes by name");
       }
@@ -54,7 +61,7 @@ export default function RecipePage() {
   return (
     <div className="p-4">
       {/* Search Bar */}
-      <div className="relative w-full max-w-lg mb-8">
+      <div className="relative w-full max-w-lg mb-4">
         <Button
           variant="outline"
           onClick={searchRecipe}
@@ -87,43 +94,68 @@ export default function RecipePage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Find Recipes ..."
-          className="pl-14 pr-14 sm:pl-16 sm:pr-16 md:pl-18 md:pr-18 bg-black text-white placeholder-white border border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500"
+          className="pl-14 pr-14 sm:pl-16 sm:pr-16 md:pl-18 md:pr-18 bg-black text-white placeholder-white border border-gray-700 rounded-lg"
         />
       </div>
 
-      {/* Recipe Cards */}
-      <div className="w-full max-w-screen-lg">
-        <div className="flex flex-wrap justify-start gap-4">
-          {isLoading ? (
-            <p className="text-black">Loading...</p>
-          ) : recipes.length > 0 ? (
-            recipes.map((recipe) => (
-              <div
-                key={recipe._id.toString()}
-                className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
-              >
-                {/* Recipe Image */}
+      {/* Recipes */}
+      <div className="flex flex-row h-full">
+        <div className="w-full max-w-screen-lg">
+          <div className="flex flex-wrap justify-start gap-4">
+            {isLoading ? (
+              <p className="text-black">Loading...</p>
+            ) : recipes.length > 0 ? (
+              recipes.map((recipe) => (
+                <div
+                  key={recipe._id.toString()}
+                  className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
+                >
+                  <Image
+                    src={recipeImagePlaceholder}
+                    alt={recipe.title}
+                    fill
+                    className="object-cover"
+                  />
+
+                  <div
+                    className="absolute bottom-0 left-0 right-0 p-4 text-white"
+                    style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                  >
+                    <h3 className="text-lg font-semibold truncate">
+                      {recipe.title}
+                    </h3>
+                    <p className="text-sm">
+                      {recipe.userRatings?.[0]?.rating} ☆
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-black">No recipes found.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="w-full max-w-screen-sm flex-1 ">
+          <div className="h-[810px] flex flex-col">
+            <Card className="flex-1 flex flex-col overflow-hidden">
+              <CardHeader className="bg-green-400 text-black text-center p-4 rounded-lg">
+                <CardTitle className="text-2xl">Your List</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1">
+                <p>Card Content</p>
+              </CardContent>
+              <CardFooter className="flex justify-end p-4">
                 <Image
-                  src={recipeImagePlaceholder} // Use a default image if `recipe.image` is missing
-                  alt={recipe.title}
-                  fill
+                  src={addIcon}
+                  width={60}
+                  height={60}
+                  alt="Add Grocery Item"
                   className="object-cover"
                 />
-
-                {/* Overlay with Title and Rating */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-transparent to-transparent text-white">
-                  <h3 className="text-lg font-semibold truncate">
-                    {recipe.title}
-                  </h3>
-                  <p className="text-sm">
-                    {recipe.userRatings?.[0]?.rating || "No ratings"} ☆
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-black">No recipes found.</p>
-          )}
+              </CardFooter>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
