@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import searchIcon from "../../../public/images/search_icon_google.png";
 import tuneIcon from "../../../public/images/tune_google.png";
+import recipeImagePlaceholder from "../../../public/images/recipe_placeholder.png";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Recipe } from "@/types";
 
 export default function RecipePage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -21,7 +21,6 @@ export default function RecipePage() {
         const response = await fetch("/api/recipes");
         const data: Recipe[] = await response.json();
         setRecipes(data);
-        setFilteredRecipes(data);
         setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch recipes:", error);
@@ -32,17 +31,25 @@ export default function RecipePage() {
     fetchRecipes();
   }, []);
 
-  useEffect(() => {
-    if (searchQuery === "") {
-      setFilteredRecipes(recipes);
-    } else {
-      setFilteredRecipes(
-        recipes.filter((recipe) =>
-          recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+  const searchRecipe = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/recipes?title=${encodeURIComponent(searchQuery)}`
       );
+      if (!response.ok) {
+        throw new Error("Failed to fetch recipes by name");
+      }
+      const data: Recipe[] = await response.json();
+      console.log("Data: ", data);
+      setRecipes(data);
+    } catch (error) {
+      console.error("Failed to fetch recipes:", error);
+      setRecipes([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [searchQuery, recipes]);
+  };
 
   return (
     <div className="p-4">
@@ -50,6 +57,7 @@ export default function RecipePage() {
       <div className="relative w-full max-w-lg mb-8">
         <Button
           variant="outline"
+          onClick={searchRecipe}
           className="absolute inset-y-0 left-0 px-4 text-white bg-black border-0 rounded-l-lg focus:ring-0 hover:bg-gray-800 hover:text-white"
         >
           <Image
@@ -88,24 +96,33 @@ export default function RecipePage() {
         <div className="flex flex-wrap justify-start gap-4">
           {isLoading ? (
             <p className="text-black">Loading...</p>
-          ) : filteredRecipes.length > 0 ? (
-            filteredRecipes.map((recipe) => (
-              <Card
+          ) : recipes.length > 0 ? (
+            recipes.map((recipe) => (
+              <div
                 key={recipe._id.toString()}
-                className="w-full sm:w-40 md:w-40 bg-gray-800 text-white shadow-lg aspect-square border-green-500 flex flex-col rounded-lg"
+                className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
               >
-                <div className="flex-grow p-4"></div>
-                <div
-                  className="flex flex-row items-center justify-between p-4 w-full rounded-b-lg"
-                  style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                >
-                  <CardTitle className="mr-2">{recipe.title}</CardTitle>
-                  <span className="ml-2">{recipe.userRatings[0].rating} ☆</span>
+                {/* Recipe Image */}
+                <Image
+                  src={recipeImagePlaceholder} // Use a default image if `recipe.image` is missing
+                  alt={recipe.title}
+                  fill
+                  className="object-cover"
+                />
+
+                {/* Overlay with Title and Rating */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-transparent to-transparent text-white">
+                  <h3 className="text-lg font-semibold truncate">
+                    {recipe.title}
+                  </h3>
+                  <p className="text-sm">
+                    {recipe.userRatings?.[0]?.rating || "No ratings"} ☆
+                  </p>
                 </div>
-              </Card>
+              </div>
             ))
           ) : (
-            <p className="text-white">No recipes found.</p>
+            <p className="text-black">No recipes found.</p>
           )}
         </div>
       </div>

@@ -9,7 +9,7 @@ export async function GET(req: Request) {
   try {
     const title = getRecipeTitleFromSearchParams(req);
     console.log("Title: ", title);
-    console.log("Request: ", req);
+    // console.log("Request: ", req);
 
     if (!title) {
       return NextResponse.json(
@@ -19,20 +19,23 @@ export async function GET(req: Request) {
     }
     const db = await getDB();
 
-    const recipe = await db.collection("recipes").findOne({ title: title });
+    const recipes = await db
+      .collection("recipes")
+      .find({ title: title })
+      .toArray();
 
-    const validationResponse = validateObject(
-      recipe,
-      validateRecipe,
-      HTTP_RESPONSES.BAD_REQUEST,
-      400
-    );
-
-    if (validationResponse) {
-      return validationResponse;
+    for (const recipe of recipes) {
+      const validationResponse = validateObject(
+        recipe,
+        validateRecipe,
+        HTTP_RESPONSES.BAD_REQUEST,
+        400
+      );
+      if (validationResponse) {
+        return validationResponse;
+      }
     }
-
-    return NextResponse.json(recipe, { status: 200 });
+    return NextResponse.json(recipes, { status: 200 });
   } catch (error) {
     console.error("Error getting recipe:", error);
 
