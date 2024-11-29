@@ -40,8 +40,11 @@ export type NewUser = {
   dateJoined: Date; // The date the user joined
 };
 
-export type Recipe = {
-  id: ObjectId; // The recipe ID
+export type Recipe = NewRecipe & {
+  _id: ObjectId; // Recipe ID
+};
+
+export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the recipe
   description: string; // The description of the recipe

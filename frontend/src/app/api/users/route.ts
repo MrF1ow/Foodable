@@ -1,6 +1,6 @@
 import { GET as getUserById } from "./getUserById";
-import { POST as postUser} from "./postUser";
-import { PUT as updateUser} from "./updateUser";
+import { POST as postUser } from "./postUser";
+import { PUT as updateUser } from "./updateUser";
 import { DELETE as deleteUser } from "./deleteUser";
 import type { NextRequest } from "next/server";
 

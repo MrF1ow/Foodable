@@ -10,6 +10,7 @@ import {
   Recipe,
   GroceryList,
   NewUser,
+  NewRecipe,
 } from "@/types";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
@@ -69,7 +70,7 @@ export const validateIngredient = (
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "number" &&
+    typeof ingredient.quantity === "string" && // Changed this to be a string (allows 1/2 cup, 2 oz, etc)
     typeof ingredient.brand === "string"
   );
 };
@@ -142,9 +143,22 @@ export const validateUser = (user: any): user is User => {
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
+  if (recipe.id && !isValidObjectId(recipe.id)) {
+    return false;
+  }
+
+  if (recipe._id && !isValidObjectId(recipe._id)) {
+    return false;
+  }
+
+  const { _id, id, ...recipeWithoutId } = recipe;
+
+  return validateRecipeWithoutId(recipeWithoutId);
+};
+
+export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
   return (
     recipe &&
-    isValidObjectId(recipe.id) &&
     isValidObjectId(recipe.creatorId) &&
     typeof recipe.title === "string" &&
     typeof recipe.description === "string" &&
@@ -156,7 +170,8 @@ export const validateRecipe = (recipe: any): recipe is Recipe => {
     recipe.userRatings.every(validateUserRating) &&
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
-    recipe.timestamp instanceof Date
+    (recipe.timestamp === undefined ||
+      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
   );
 };
 
