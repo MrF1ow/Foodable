@@ -147,6 +147,7 @@ export const validateRecipe = (recipe: any): recipe is Recipe => {
   );
 };
 
+
 // Function to check if a grocery list is valid
 export const validateGroceryList = (
   groceryList: any

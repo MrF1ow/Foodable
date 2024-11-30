@@ -2,23 +2,22 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateGroceryList } from "@/utils/validation";
-import { GroceryList } from "@/types";
+import { NewGroceryList } from "@/types";
 
 // Package Imports
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const groceryList: GroceryList = await req.json();
+    const groceryList: NewGroceryList = await req.json();
 
     console.log("Creating grocery list: ", groceryList);
 
-    const groceryListToInsert: GroceryList = {
+    const groceryListToInsert: NewGroceryList = {
       ...groceryList,
-      creatorId: groceryList.creatorId || [],
       title: groceryList.title,
-      items: groceryList.items,
-      timestamp: groceryList.timestamp || new Date()
+      items: groceryList.items || [],
+      timestamp: groceryList.timestamp || new Date(),
     };
 
     if (!validateGroceryList(groceryListToInsert)) {
@@ -30,7 +29,9 @@ export async function POST(req: Request) {
 
     const db = await getDB();
 
-    const result = await db.collection("groceryLists").insertOne(groceryListToInsert);
+    const result = await db
+      .collection("groceryLists")
+      .insertOne(groceryListToInsert);
 
     return NextResponse.json({ _id: result.insertedId }, { status: 201 });
   } catch (error) {
