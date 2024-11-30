@@ -1,8 +1,10 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { isValidObjectId } from "@/utils/validation";
+
+// Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "@/utils/validation";
 
 export async function DELETE(req: Request) {
   try {
@@ -15,11 +17,11 @@ export async function DELETE(req: Request) {
     }
     const db = await getDB();
 
-    const deletedRecipe = await db
-      .collection("recipes")
+    const deletedGroceryList = await db
+      .collection("groceryLists")
       .findOneAndDelete({ _id: new ObjectId(id) });
 
-    if (!deletedRecipe) {
+    if (!deletedGroceryList) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
@@ -27,11 +29,11 @@ export async function DELETE(req: Request) {
     }
 
     return NextResponse.json(
-      { message: "Recipe Deleted", id: id },
+      { message: "Grocery List Deleted" },
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error deleting recipe", error);
+    console.error("Error deleting grocery list: ", error);
 
     return NextResponse.json(
       { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },

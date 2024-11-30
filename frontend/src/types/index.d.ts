@@ -1,10 +1,16 @@
 import { ObjectId } from "mongodb";
 
-export type Ingredient = {
+export type GroceryItem = {
   name: string; // Ingredient name
   quantity: number; // Quantity of ingredient
   brand: string; // Brand of ingredient
 };
+
+export type RecipeIngredient = {
+  name: string; // Ingredient name
+  quantity: string; // Quantity of ingredient
+  brand: string; // Brand of ingredient
+}
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -40,15 +46,17 @@ export type NewUser = {
   dateJoined: Date; // The date the user joined
 };
 
-export type Recipe = NewRecipe & {
-  _id: ObjectId; // Recipe ID
-};
+export type Recipe = NewRecipe &
+  (
+    | { id: string; _id?: never } // If `id` exists, `_id` must not be present
+    | { _id: ObjectId; id?: never }
+  ); // If `_id` exists, `id` must not be present
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the recipe
   description: string; // The description of the recipe
-  ingredients: Ingredient[]; // The ingredients of the recipe
+  ingredients: RecipeIngredient[]; // The ingredients of the recipe
   instructions: string[]; // The instructions of the recipe
   userRatings: UserRating[]; // The user ratings of the recipe
   averageRating: number; // The average rating of the recipe
@@ -56,10 +64,15 @@ export type NewRecipe = {
   timestamp: Date; // The timestamp of the recipe
 };
 
-export type GroceryList = {
-  id: ObjectId; // The grocery list ID
+export type GroceryList = NewGroceryList &
+  (
+    | { id: string; _id?: never } // If `id` exists, `_id` must not be present
+    | { _id: ObjectId; id?: never }
+  ); // If `_id` exists, `id` must not be present
+
+export type NewGroceryList = {
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the grocery list
-  items: Ingredient[]; // The items of the grocery list
+  items: GroceryItem[]; // The items of the grocery list
   timestamp: Date; // The timestamp of the grocery list
 };

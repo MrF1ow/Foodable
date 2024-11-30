@@ -10,7 +10,7 @@ import {
 } from "../api/recipeApi";
 import { Recipe } from "@/types";
 
-export const useCreateUser = () => {
+export const useCreateRecipe = () => {
   return useMutation<Recipe, Error, Recipe>({ mutationFn: createRecipe });
 };
 
@@ -37,12 +37,16 @@ export const useFetchRecipesByCreatorId = (creatorId: string) => {
 };
 
 export const useFetchRecipes = () => {
-  return useMutation<void, Error, string>({ mutationFn: fetchAllRecipes });
+  return useQuery<Recipe[], Error>({
+    queryKey: ["allRecipes"],
+    queryFn: fetchAllRecipes,
+  });
 };
 
 export const useFetchRecipesByTitle = (title: string) => {
-  return useQuery({
-    queryKey: ["title", title],
+  return useQuery<Recipe[], Error>({
+    queryKey: ["recipesByTitle", title],
     queryFn: () => fetchRecipesByTitle(title),
+    enabled: !!title, // this prevents automatic fetching until searchQuery is set
   });
 };

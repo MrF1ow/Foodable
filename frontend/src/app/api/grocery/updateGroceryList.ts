@@ -1,18 +1,23 @@
+// Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateRecipe, validateObject } from "@/utils/validation";
-import { Recipe } from "@/types";
+import {
+  validateObject,
+  isValidObjectId,
+  validateGroceryList,
+} from "@/utils/validation";
+import { GroceryList } from "@/types";
 
+// Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
-    const recipe: Recipe = await req.json();
-
+    const groceryList: GroceryList = await req.json();
     const preValidationResponse = validateObject(
-      recipe,
-      validateRecipe,
+      groceryList,
+      validateGroceryList,
       HTTP_RESPONSES.BAD_REQUEST,
       400
     );
@@ -21,19 +26,26 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { id, ...recipeWithoutID } = recipe;
+    const { id, ...groceryListWithoutId } = groceryList;
 
     const db = await getDB();
 
-    const updatedRecipe = await db
-      .collection("recipes")
+    const updatedGroceryList = await db
+      .collection("groceryLists")
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
-        { $set: recipeWithoutID },
+        { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
 
-    if (!updatedRecipe) {
+    if (!updatedGroceryList) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
+    if (!updatedGroceryList) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
@@ -41,8 +53,8 @@ export async function PUT(req: Request) {
     }
 
     const validationResponse = validateObject(
-      updatedRecipe,
-      validateRecipe,
+      updatedGroceryList,
+      validateGroceryList,
       HTTP_RESPONSES.BAD_REQUEST,
       404
     );
@@ -51,9 +63,9 @@ export async function PUT(req: Request) {
       return validationResponse;
     }
 
-    return NextResponse.json(updatedRecipe, { status: 200 });
+    return NextResponse.json(updatedGroceryList, { status: 200 });
   } catch (error) {
-    console.log("Error updating recipe", error);
+    console.error("Error updating grocery list: ", error);
 
     return NextResponse.json(
       { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },

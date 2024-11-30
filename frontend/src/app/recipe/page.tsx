@@ -1,62 +1,45 @@
 "use client";
 
-import { useState, useEffect } from "react";
+// Package Imports
+import { useState } from "react";
+import Image from "next/image";
+import {
+  IoMdAddCircleOutline,
+  IoIosSearch,
+  IoMdAddCircle,
+} from "react-icons/io";
+import { MdTune } from "react-icons/md";
+
+// Local Imports
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import searchIcon from "../../../public/images/search_icon_google.png";
-import tuneIcon from "../../../public/images/tune_google.png";
+import { useFetchRecipes } from "@/server/hooks/recipeHooks";
+import Loader from "@/components/loader";
 import recipeImagePlaceholder from "../../../public/images/recipe_placeholder.png";
-import addIcon from "../../../public/images/add_google.png";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-import { Recipe } from "@/types";
-
 export default function RecipePage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await fetch("/api/recipes");
-        const data: Recipe[] = await response.json();
-        setRecipes(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch recipes:", error);
-        setIsLoading(false);
-      }
-    };
+  // fetch all the recipes at once (maybe add a max limit)
+  // types are inferred from the useFetchRecipes hook
+  const { data: allRecipes, isLoading } = useFetchRecipes();
 
-    fetchRecipes();
-  }, []);
-
-  const searchRecipe = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/recipes?title=${searchQuery}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch recipes by name");
-      }
-      const data: Recipe[] = await response.json();
-      console.log("Data: ", data);
-      setRecipes(data);
-    } catch (error) {
-      console.error("Failed to fetch recipes:", error);
-      setRecipes([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // this filteres the recipes based on the search query and returns the filtered recipes
+  // if search query is empty, it returns all the recipes
+  // when the search query changes, the filtered recipes are updated
+  const filteredRecipes =
+    searchQuery.trim() === ""
+      ? allRecipes
+      : allRecipes?.filter((recipe) =>
+          recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
   return (
     <div className="p-4">
@@ -64,29 +47,18 @@ export default function RecipePage() {
       <div className="relative w-full max-w-lg mb-4">
         <Button
           variant="outline"
-          onClick={searchRecipe}
+          size="icon"
           className="absolute inset-y-0 left-0 px-4 text-white bg-black border-0 rounded-l-lg focus:ring-0 hover:bg-gray-800 hover:text-white"
         >
-          <Image
-            src={searchIcon}
-            alt="Search Icon"
-            width={25}
-            height={25}
-            className="object-contain"
-          />
+          <IoIosSearch size={25} />
         </Button>
 
         <Button
           variant="outline"
+          size="icon"
           className="absolute inset-y-0 right-0 px-4 text-white bg-black border-0 rounded-r-lg focus:ring-0 hover:bg-gray-800 hover:text-white"
         >
-          <Image
-            src={tuneIcon}
-            alt="Tune Icon"
-            width={25}
-            height={25}
-            className="object-contain"
-          />
+          <MdTune size={25} />
         </Button>
 
         <Input
@@ -103,11 +75,11 @@ export default function RecipePage() {
         <div className="w-full max-w-screen-lg">
           <div className="flex flex-wrap justify-start gap-4">
             {isLoading ? (
-              <p className="text-black">Loading...</p>
-            ) : recipes.length > 0 ? (
-              recipes.map((recipe) => (
+              <Loader /> // show loader if recipes are still loading
+            ) : (filteredRecipes ?? []).length > 0 ? (
+              (filteredRecipes ?? []).map((recipe) => (
                 <div
-                  key={recipe._id.toString()}
+                  key={recipe._id?.toString()}
                   className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
                 >
                   <Image
@@ -139,20 +111,23 @@ export default function RecipePage() {
         <div className="w-full max-w-screen-sm flex-1 ">
           <div className="h-[810px] flex flex-col">
             <Card className="flex-1 flex flex-col overflow-hidden">
-              <CardHeader className="bg-green-400 text-black text-center p-4 rounded-lg">
+              <CardHeader className="bg-primary text-black text-center p-4 rounded-lg">
                 <CardTitle className="text-2xl">Your List</CardTitle>
               </CardHeader>
               <CardContent className="flex-1">
                 <p>Card Content</p>
               </CardContent>
               <CardFooter className="flex justify-end p-4">
-                <Image
-                  src={addIcon}
-                  width={60}
-                  height={60}
-                  alt="Add Grocery Item"
-                  className="object-cover"
-                />
+                <div className="group">
+                  <IoMdAddCircleOutline
+                    className="text-primary group-hover:hidden transition-all duration-300 ease-in-out"
+                    size={60}
+                  />
+                  <IoMdAddCircle
+                    className="text-primary hidden group-hover:block transition-all duration-300 ease-in-out"
+                    size={60}
+                  />
+                </div>
               </CardFooter>
             </Card>
           </div>

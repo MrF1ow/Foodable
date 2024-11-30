@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 
 // Local imports
 import {
-  Ingredient,
+  RecipeIngredient,
+  GroceryItem,
   UserRating,
   User,
   Recipe,
@@ -63,17 +64,25 @@ const validatePreferences = (preferences: any): boolean => {
   );
 };
 
-// Function to check if an ingredient is valid
-export const validateIngredient = (
+export function validateGroceryItem(item: any): item is GroceryItem {
+  return (
+    item &&
+    typeof item.name === "string" &&
+    typeof item.quantity === "number" &&
+    typeof item.brand === "string"
+  );
+}
+
+export function validateRecipeIngredient(
   ingredient: any
-): ingredient is Ingredient => {
+): ingredient is RecipeIngredient {
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "string" && // Changed this to be a string (allows 1/2 cup, 2 oz, etc)
+    typeof ingredient.quantity === "string" &&
     typeof ingredient.brand === "string"
   );
-};
+}
 
 // Function to check if a user rating is valid
 export const validateUserRating = (rating: any): rating is UserRating => {
@@ -141,8 +150,34 @@ export const validateUser = (user: any): user is User => {
   return validateUserWithoutID(userWithoutId);
 };
 
+export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
+  return (
+    recipe &&
+    isValidObjectId(recipe.creatorId) &&
+    typeof recipe.title === "string" &&
+    typeof recipe.description === "string" &&
+    Array.isArray(recipe.ingredients) &&
+    Array.isArray(recipe.instructions) &&
+    Array.isArray(recipe.instructions) &&
+    Array.isArray(recipe.userRatings) &&
+    recipe.ingredients.every(validateRecipeIngredient) &&
+    recipe.instructions.every((instr: any) => typeof instr === "string") &&
+    // Check if all user ratings are valid if they exist
+    (recipe.userRatings.length === 0 ||
+      recipe.userRatings.every(validateUserRating)) &&
+    typeof recipe.averageRating === "number" &&
+    typeof recipe.priceApproximation === "number" &&
+    (recipe.timestamp === undefined ||
+      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
+  );
+};
+
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
+  if (!recipe) {
+    return false;
+  }
+
   if (recipe.id && !isValidObjectId(recipe.id)) {
     return false;
   }
@@ -156,22 +191,19 @@ export const validateRecipe = (recipe: any): recipe is Recipe => {
   return validateRecipeWithoutId(recipeWithoutId);
 };
 
-export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
+export const validateGroceryListWithoutId = (
+  groceryList: any
+): groceryList is GroceryList => {
   return (
-    recipe &&
-    isValidObjectId(recipe.creatorId) &&
-    typeof recipe.title === "string" &&
-    typeof recipe.description === "string" &&
-    Array.isArray(recipe.ingredients) &&
-    recipe.ingredients.every(validateIngredient) &&
-    Array.isArray(recipe.instructions) &&
-    recipe.instructions.every((instr: any) => typeof instr === "string") &&
-    Array.isArray(recipe.userRatings) &&
-    recipe.userRatings.every(validateUserRating) &&
-    typeof recipe.averageRating === "number" &&
-    typeof recipe.priceApproximation === "number" &&
-    (recipe.timestamp === undefined ||
-      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
+    groceryList &&
+    isValidObjectId(groceryList.creatorId) &&
+    typeof groceryList.title === "string" &&
+    Array.isArray(groceryList.items) &&
+    (groceryList.items.length === 0 ||
+      groceryList.items.every(validateGroceryItem)) &&
+    (groceryList.timestamp === undefined ||
+      (groceryList.timestamp instanceof Date &&
+        !isNaN(groceryList.timestamp.getTime())))
   );
 };
 
@@ -179,13 +211,19 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
 export const validateGroceryList = (
   groceryList: any
 ): groceryList is GroceryList => {
-  return (
-    groceryList &&
-    isValidObjectId(groceryList.id) &&
-    isValidObjectId(groceryList.creatorId) &&
-    typeof groceryList.title === "string" &&
-    Array.isArray(groceryList.items) &&
-    groceryList.items.every(validateIngredient) &&
-    groceryList.timestamp instanceof Date
-  );
+  if (!groceryList) {
+    return false;
+  }
+
+  if (groceryList.id && !isValidObjectId(groceryList.id)) {
+    return false;
+  }
+
+  if (groceryList._id && !isValidObjectId(groceryList._id)) {
+    return false;
+  }
+
+  const { _id, id, ...groceryListWithoutId } = groceryList;
+
+  return validateGroceryListWithoutId(groceryListWithoutId);
 };
