@@ -10,8 +10,6 @@ export async function PUT(req: Request) {
   try {
     const recipe: Recipe = await req.json();
 
-    console.log("Updating Recipe");
-
     const preValidationResponse = validateObject(
       recipe,
       validateRecipe,

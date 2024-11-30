@@ -3,7 +3,6 @@ import { HTTP_RESPONSES } from "@/lib/constants";
 import { isValidObjectId } from "@/utils/validation";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { NestedMiddlewareError } from "next/dist/build/utils";
 
 export async function DELETE(req: Request) {
   try {

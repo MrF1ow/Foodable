@@ -178,9 +178,24 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
   );
 };
 
-
 // Function to check if a grocery list is valid
 export const validateGroceryList = (
+  groceryList: any
+): groceryList is GroceryList => {
+  if (groceryList.id && !isValidObjectId(groceryList.id)) {
+    return false;
+  }
+
+  if (groceryList._id && !isValidObjectId(groceryList._id)) {
+    return false;
+  }
+
+  const { _id, id, ...groceryListWithoutId } = groceryList;
+
+  return validateGroceryListWithoutId(groceryListWithoutId);
+};
+
+export const validateGroceryListWithoutId = (
   groceryList: any
 ): groceryList is GroceryList => {
   return (
@@ -189,7 +204,10 @@ export const validateGroceryList = (
     isValidObjectId(groceryList.creatorId) &&
     typeof groceryList.title === "string" &&
     Array.isArray(groceryList.items) &&
-    groceryList.items.every(validateIngredient) &&
-    groceryList.timestamp instanceof Date
+    (groceryList.items.length === 0 ||
+      groceryList.items.every(validateIngredient)) &&
+    (groceryList.timestamp === undefined ||
+      (groceryList.timestamp instanceof Date &&
+        !isNaN(groceryList.timestamp.getTime())))
   );
 };

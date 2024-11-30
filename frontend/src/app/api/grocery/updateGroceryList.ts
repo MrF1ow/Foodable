@@ -15,43 +15,37 @@ import { ObjectId } from "mongodb";
 export async function PUT(req: Request) {
   try {
     const groceryList: GroceryList = await req.json();
-    const { id } = groceryList;
+    const preValidationResponse = validateObject(
+      groceryList,
+      validateGroceryList,
+      HTTP_RESPONSES.BAD_REQUEST,
+      400
+    );
 
-    if (!id || !isValidObjectId(id)) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.BAD_REQUEST },
-        { status: 400 }
-      );
+    if (preValidationResponse) {
+      return preValidationResponse;
     }
 
-    if (!validateGroceryList(groceryList)) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.BAD_REQUEST },
-        { status: 400 }
-      );
-    }
+    const { id, ...groceryListWithoutId } = groceryList;
 
     const db = await getDB();
 
-    const groceryListRecord = await db
+    const updatedGroceryList = await db
       .collection("groceryLists")
-      .findOne({ _id: new ObjectId(id) });
-    if (!groceryListRecord) {
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: groceryListWithoutId },
+        { returnDocument: "after" }
+      );
+
+    if (!updatedGroceryList) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
       );
     }
 
-    const updatedGroceryList = await db
-      .collection("groceryLists")
-      .findOneAndUpdate(
-        { _id: new ObjectId(id) },
-        { $set: groceryList },
-        { returnDocument: "after" }
-      );
-
-    if (!updatedGroceryList || !updatedGroceryList.value) {
+    if (!updatedGroceryList) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
@@ -59,7 +53,7 @@ export async function PUT(req: Request) {
     }
 
     const validationResponse = validateObject(
-      updatedGroceryList.value,
+      updatedGroceryList,
       validateGroceryList,
       HTTP_RESPONSES.BAD_REQUEST,
       404
@@ -69,7 +63,7 @@ export async function PUT(req: Request) {
       return validationResponse;
     }
 
-    return NextResponse.json(updatedGroceryList.value, { status: 200 });
+    return NextResponse.json(updatedGroceryList, { status: 200 });
   } catch (error) {
     console.error("Error updating grocery list: ", error);
 

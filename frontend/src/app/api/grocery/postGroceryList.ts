@@ -1,7 +1,7 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateGroceryList } from "@/utils/validation";
+import { validateGroceryListWithoutId } from "@/utils/validation";
 import { NewGroceryList } from "@/types";
 
 // Package Imports
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       timestamp: groceryList.timestamp || new Date(),
     };
 
-    if (!validateGroceryList(groceryListToInsert)) {
+    if (!validateGroceryListWithoutId(groceryListToInsert)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }

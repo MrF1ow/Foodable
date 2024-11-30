@@ -4,11 +4,12 @@ import { HTTP_RESPONSES } from "@/lib/constants";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "@/utils/validation";
 
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
-    if (!id) {
+    if (!isValidObjectId(id)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
@@ -20,14 +21,17 @@ export async function DELETE(req: Request) {
       .collection("groceryLists")
       .findOneAndDelete({ _id: new ObjectId(id) });
 
-    if (!deletedGroceryList || !deletedGroceryList.value) {
+    if (!deletedGroceryList) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.NOT_FOUND },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ message: "Grocery list deleted" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Grocery list deleted" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting grocery list: ", error);
 

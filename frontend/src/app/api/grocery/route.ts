@@ -1,6 +1,6 @@
 import { GET as getGroceryListById } from "./getGroceryListById";
-import { POST as postGroceryList} from "./postGroceryList";
-import { PUT as updateGroceryList} from "./updateGroceryList";
+import { POST as postGroceryList } from "./postGroceryList";
+import { PUT as updateGroceryList } from "./updateGroceryList";
 import { DELETE as deleteGroceryList } from "./deleteGroceryList";
 import type { NextRequest } from "next/server";
 
