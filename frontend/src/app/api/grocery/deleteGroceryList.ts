@@ -29,7 +29,7 @@ export async function DELETE(req: Request) {
     }
 
     return NextResponse.json(
-      { message: "Grocery list deleted" },
+      { message: "Grocery List Deleted" },
       { status: 200 }
     );
   } catch (error) {

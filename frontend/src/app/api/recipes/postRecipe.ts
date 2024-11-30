@@ -15,9 +15,9 @@ export async function POST(req: Request) {
       description: recipe.description || "",
       ingredients: recipe.ingredients || [],
       instructions: recipe.instructions || [],
-      userRatings: [],
-      averageRating: 0,
-      priceApproximation: recipe.priceApproximation ?? null,
+      userRatings: recipe.userRatings || [],
+      averageRating: recipe.averageRating || 0,
+      priceApproximation: recipe.priceApproximation,
       timestamp: recipe.timestamp || new Date(),
     };
 

@@ -11,12 +11,10 @@ export async function POST(req: Request) {
   try {
     const groceryList: NewGroceryList = await req.json();
 
-    console.log("Creating grocery list: ", groceryList);
-
     const groceryListToInsert: NewGroceryList = {
       ...groceryList,
       title: groceryList.title,
-      items: groceryList.items || [],
+      items: [],
       timestamp: groceryList.timestamp || new Date(),
     };
 
