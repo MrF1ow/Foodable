@@ -9,16 +9,14 @@ export async function POST(req: Request) {
   try {
     const recipe: NewRecipe = await req.json();
 
-    console.log("Creating Recipe:", recipe);
-
     const recipeToInsert: NewRecipe = {
       ...recipe,
       title: recipe.title || "",
       description: recipe.description || "",
       ingredients: recipe.ingredients || [],
       instructions: recipe.instructions || [],
-      userRatings: recipe.userRatings || [],
-      averageRating: recipe.averageRating ?? null,
+      userRatings: [],
+      averageRating: 0,
       priceApproximation: recipe.priceApproximation ?? null,
       timestamp: recipe.timestamp || new Date(),
     };

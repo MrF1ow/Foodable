@@ -40,9 +40,11 @@ export type NewUser = {
   dateJoined: Date; // The date the user joined
 };
 
-export type Recipe = NewRecipe & {
-  _id: ObjectId; // Recipe ID
-};
+export type Recipe = NewRecipe &
+  (
+    | { id: string; _id?: never } // If `id` exists, `_id` must not be present
+    | { _id: ObjectId; id?: never }
+  ); // If `_id` exists, `id` must not be present
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator

@@ -163,11 +163,14 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
     typeof recipe.title === "string" &&
     typeof recipe.description === "string" &&
     Array.isArray(recipe.ingredients) &&
-    recipe.ingredients.every(validateIngredient) &&
     Array.isArray(recipe.instructions) &&
-    recipe.instructions.every((instr: any) => typeof instr === "string") &&
+    Array.isArray(recipe.instructions) &&
     Array.isArray(recipe.userRatings) &&
-    recipe.userRatings.every(validateUserRating) &&
+    recipe.ingredients.every(validateIngredient) &&
+    recipe.instructions.every((instr: any) => typeof instr === "string") &&
+    // Check if all user ratings are valid if they exist
+    (recipe.userRatings.length === 0 ||
+      recipe.userRatings.every(validateUserRating)) &&
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
     (recipe.timestamp === undefined ||

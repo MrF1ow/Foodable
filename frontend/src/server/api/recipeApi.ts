@@ -3,7 +3,7 @@ import axios from "../axiosInstance";
 
 export const createRecipe = async (recipe: Recipe) => {
   try {
-    const response = await axios.post("/recipe", recipe);
+    const response = await axios.post("/recipes", recipe);
     return response.data;
   } catch (error) {
     console.error("Error creating recipe:", error);
@@ -13,7 +13,7 @@ export const createRecipe = async (recipe: Recipe) => {
 
 export const fetchRecipeById = async (id: string) => {
   try {
-    const response = await axios.get(`/recipe?id=${id}`);
+    const response = await axios.get(`/recipes?id=${id}`);
     return response.data;
   } catch (error) {
     console.error("Error getting recipe:", error);
@@ -23,7 +23,7 @@ export const fetchRecipeById = async (id: string) => {
 
 export const updateRecipe = async (recipe: Recipe) => {
   try {
-    const response = await axios.put("/recipe", recipe);
+    const response = await axios.put("/recipes", recipe);
     return response.data;
   } catch (error) {
     console.error("Error updating recipe:", error);
@@ -33,7 +33,7 @@ export const updateRecipe = async (recipe: Recipe) => {
 
 export const deleteRecipe = async (id: string) => {
   try {
-    const response = await axios.delete("/recipe", { data: { id } });
+    const response = await axios.delete("/recipes", { data: { id } });
     return response.data;
   } catch (error) {
     console.error("Error deleting recipe:", error);
@@ -43,7 +43,7 @@ export const deleteRecipe = async (id: string) => {
 
 export const fetchRecipesByCreatorId = async (creatorId: string) => {
   try {
-    const response = await axios.get(`/recipe?creatorId=${creatorId}`);
+    const response = await axios.get(`/recipes?creatorId=${creatorId}`);
     return response.data;
   } catch (error) {
     console.error("Error getting recipe:", error);
@@ -53,7 +53,7 @@ export const fetchRecipesByCreatorId = async (creatorId: string) => {
 
 export const fetchAllRecipes = async () => {
   try {
-    const response = await axios.get("/recipe");
+    const response = await axios.get("/recipes");
     return response.data;
   } catch (error) {
     console.error("Error getting recipes:", error);
@@ -63,7 +63,7 @@ export const fetchAllRecipes = async () => {
 
 export const fetchRecipesByTitle = async (title: string) => {
   try {
-    const response = await axios.get(`/recipe?title=${title}`);
+    const response = await axios.get(`/recipes?title=${title}`);
     return response.data;
   } catch (error) {
     console.error("Error getting recipe:", error);

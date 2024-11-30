@@ -11,8 +11,6 @@ export async function POST(req: Request) {
   try {
     const user: NewUser = await req.json();
 
-    console.log("Creating user:", user);
-
     const userToInsert: NewUser = {
       ...user,
       preferences: {
