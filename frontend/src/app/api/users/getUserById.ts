@@ -1,7 +1,7 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateUser, validateObject } from "@/utils/validation";
+import { validateUser, validateObject, isValidObjectId } from "@/utils/validation";
 import { getIdFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
@@ -11,6 +11,7 @@ import { ObjectId } from "mongodb";
 export async function GET(req: Request) {
   try {
     const id = getIdFromSearchParams(req);
+
     if (!id) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

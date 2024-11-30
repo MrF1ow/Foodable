@@ -1,7 +1,7 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateNewUser } from "@/utils/validation";
+import { validateUserWithoutID } from "@/utils/validation";
 import { NewUser } from "@/types";
 
 // Package Imports
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       dateJoined: user.dateJoined || new Date(),
     };
 
-    if (!validateNewUser(userToInsert)) {
+    if (!validateUserWithoutID(userToInsert)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }

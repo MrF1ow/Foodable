@@ -10,6 +10,7 @@ import {
   Recipe,
   GroceryList,
   NewUser,
+  NewRecipe,
 } from "@/types";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
@@ -40,12 +41,13 @@ export const validateObject = <T>(
 
 // Function to check if an ID is valid
 export const isValidObjectId = (id: any): boolean => {
-  return ObjectId.isValid(id);
+  return id !== null && ObjectId.isValid(id);
 };
 
 // Function to check if an array is valid and contains only strings
 const isValidStringArray = (arr: any): boolean =>
-  Array.isArray(arr) && arr.every((item) => typeof item === "string");
+  Array.isArray(arr) &&
+  (arr.length === 0 || arr.every((item) => typeof item === "string"));
 
 // Function to check if the settings are valid
 const validateSettings = (settings: any): boolean => {
@@ -68,7 +70,7 @@ export const validateIngredient = (
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "number" &&
+    typeof ingredient.quantity === "string" && // Changed this to be a string (allows 1/2 cup, 2 oz, etc)
     typeof ingredient.brand === "string"
   );
 };
@@ -83,7 +85,7 @@ export const validateUserRating = (rating: any): rating is UserRating => {
   );
 };
 
-export const validateNewUser = (user: NewUser): user is NewUser => {
+export const validateUserWithoutID = (user: NewUser): user is NewUser => {
   return (
     user &&
     typeof user.username === "string" &&
@@ -110,28 +112,53 @@ export const validateNewUser = (user: NewUser): user is NewUser => {
     user.followers.every(
       (item) => typeof item === "string" || isValidObjectId(item)
     ) &&
-    user.lastLogin instanceof Date &&
-    !isNaN(user.lastLogin.getTime()) &&
-    user.dateJoined instanceof Date &&
-    !isNaN(user.dateJoined.getTime())
+    // Optional lastLogin validation
+    (user.lastLogin === undefined ||
+      (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&
+    // Optional dateJoined validation
+    (user.dateJoined === undefined ||
+      (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime())))
   );
 };
 
 export const validateUser = (user: any): user is User => {
-  if (!user || !isValidObjectId(user._id)) {
+  if (!user) {
     return false;
   }
 
-  const { _id, ...userWithoutId } = user;
+  // Validate 'id' field if it exists
+  if (user.id && !isValidObjectId(user.id)) {
+    return false;
+  }
 
-  return validateNewUser(userWithoutId);
+  // Validate '_id' field if it exists
+  if (user._id && !isValidObjectId(user._id)) {
+    return false;
+  }
+
+  const { _id, id, ...userWithoutId } = user;
+
+  return validateUserWithoutID(userWithoutId);
 };
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
+  if (recipe.id && !isValidObjectId(recipe.id)) {
+    return false;
+  }
+
+  if (recipe._id && !isValidObjectId(recipe._id)) {
+    return false;
+  }
+
+  const { _id, id, ...recipeWithoutId } = recipe;
+
+  return validateRecipeWithoutId(recipeWithoutId);
+};
+
+export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
   return (
     recipe &&
-    isValidObjectId(recipe.id) &&
     isValidObjectId(recipe.creatorId) &&
     typeof recipe.title === "string" &&
     typeof recipe.description === "string" &&
@@ -143,7 +170,8 @@ export const validateRecipe = (recipe: any): recipe is Recipe => {
     recipe.userRatings.every(validateUserRating) &&
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
-    recipe.timestamp instanceof Date
+    (recipe.timestamp === undefined ||
+      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
   );
 };
 
