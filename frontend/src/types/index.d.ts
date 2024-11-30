@@ -58,8 +58,11 @@ export type NewRecipe = {
   timestamp: Date; // The timestamp of the recipe
 };
 
-export type GroceryList = {
+export type GroceryList = NewGroceryList & {
   id: ObjectId; // The grocery list ID
+};
+
+export type NewGroceryList = {
   creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the grocery list
   items: Ingredient[]; // The items of the grocery list

@@ -178,6 +178,7 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
   );
 };
 
+
 // Function to check if a grocery list is valid
 export const validateGroceryList = (
   groceryList: any
