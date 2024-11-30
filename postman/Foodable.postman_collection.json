@@ -3,8 +3,8 @@
 		"_postman_id": "183b16b9-b517-4e72-b76e-2648de554c94",
 		"name": "Foodable",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39727925",
-		"_collection_link": "https://foodable-team.postman.co/workspace/Foodable~6d0f8067-4b01-426b-a8c6-7f5d909324d9/collection/39727925-183b16b9-b517-4e72-b76e-2648de554c94?action=share&source=collection_link&creator=39727925"
+		"_exporter_id": "39800224",
+		"_collection_link": "https://foodable-team.postman.co/workspace/Foodable~6d0f8067-4b01-426b-a8c6-7f5d909324d9/collection/39727925-183b16b9-b517-4e72-b76e-2648de554c94?action=share&source=collection_link&creator=39800224"
 	},
 	"item": [
 		{
@@ -204,8 +204,6 @@
 									"    pm.expect(jsonResponse).to.have.property(\"description\", \"A rich and moist chocolate cake perfect for any occasion.\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"ingredients\").that.is.an(\"array\");\r",
 									"    pm.expect(jsonResponse).to.have.property(\"instructions\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"userRatings\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"averageRating\", 5);\r",
 									"    pm.expect(jsonResponse).to.have.property(\"priceApproximation\", 15.99);\r",
 									"});\r",
 									"\r",
@@ -243,7 +241,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Chocolate Cake\",\r\n    \"description\": \"A rich and moist chocolate cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": \"2 cups\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": \"1 cup\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Cocoa Powder\",\r\n            \"quantity\": \"1/2 cup\",\r\n            \"brand\": \"Nestle\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": \"2 large\",\r\n            \"brand\": \"Farm Fresh\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 30-35 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [\r\n        {\r\n            \"userId\": \"6483c9f2e2e405a62ef0d935\",\r\n            \"rating\": 5,\r\n            \"comment\": \"This is the best chocolate cake I've ever had!\"\r\n        }\r\n    ],\r\n    \"averageRating\": 5,\r\n    \"priceApproximation\": 15.99\r\n}\r\n",
+							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Chocolate Cake\",\r\n    \"description\": \"A rich and moist chocolate cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": \"2 cups\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": \"1 cup\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Cocoa Powder\",\r\n            \"quantity\": \"1/2 cup\",\r\n            \"brand\": \"Nestle\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": \"2 large\",\r\n            \"brand\": \"Farm Fresh\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 30-35 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [],\r\n    \"averageRating\": 0,\r\n    \"priceApproximation\": 15.99\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -305,14 +303,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/recipes/?id={{recipeID_1}}",
+							"raw": "{{app_url}}/api/recipes?id={{recipeID_1}}",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"recipes",
-								""
+								"recipes"
 							],
 							"query": [
 								{
@@ -344,14 +341,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/recipes/?title={{recipeTitle_cake}}",
+							"raw": "{{app_url}}/api/recipes?title={{recipeTitle_cake}}",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"recipes",
-								""
+								"recipes"
 							],
 							"query": [
 								{
@@ -405,7 +401,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Blueberry Muffins\",\r\n    \"description\": \"Soft and fluffy muffins packed with fresh blueberries.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": \"2 cups\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": \"1 cup\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Blueberries\",\r\n            \"quantity\": \"1.5 cups\",\r\n            \"brand\": \"Organic Farms\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": \"2 large\",\r\n            \"brand\": \"Farm Fresh\"\r\n        },\r\n        {\r\n            \"name\": \"Milk\",\r\n            \"quantity\": \"1/2 cup\",\r\n            \"brand\": \"Dairy Pure\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 375°F (190°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until just combined.\",\r\n        \"Gently fold in the blueberries.\",\r\n        \"Scoop batter into a lined muffin tin.\",\r\n        \"Bake for 20-25 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [\r\n        {\r\n            \"userId\": \"6483c9f2e2e405a62ef0d935\",\r\n            \"rating\": 4.5,\r\n            \"comment\": \"These muffins are so moist and flavorful!\"\r\n        }\r\n    ],\r\n    \"averageRating\": 4.5,\r\n    \"priceApproximation\": 8.99\r\n}\r\n",
+							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Blueberry Muffins\",\r\n    \"description\": \"Soft and fluffy muffins packed with fresh blueberries.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": \"2 cups\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": \"1 cup\",\r\n            \"brand\": \"Generic\"\r\n        },\r\n        {\r\n            \"name\": \"Blueberries\",\r\n            \"quantity\": \"1.5 cups\",\r\n            \"brand\": \"Organic Farms\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": \"2 large\",\r\n            \"brand\": \"Farm Fresh\"\r\n        },\r\n        {\r\n            \"name\": \"Milk\",\r\n            \"quantity\": \"1/2 cup\",\r\n            \"brand\": \"Dairy Pure\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 375°F (190°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until just combined.\",\r\n        \"Gently fold in the blueberries.\",\r\n        \"Scoop batter into a lined muffin tin.\",\r\n        \"Bake for 20-25 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"priceApproximation\": 8.99\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -413,14 +409,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes/",
+							"raw": "{{app_url}}/api/recipes",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"recipes",
-								""
+								"recipes"
 							]
 						}
 					},
@@ -446,14 +441,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/recipes/",
+							"raw": "{{app_url}}/api/recipes",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"recipes",
-								""
+								"recipes"
 							]
 						}
 					},
@@ -587,14 +581,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes/?creatorId={{creatorID}}",
+							"raw": "{{app_url}}/api/recipes?creatorId={{creatorID}}",
 							"host": [
 								"{{app_url}}"
 							],
 							"path": [
 								"api",
-								"recipes",
-								""
+								"recipes"
 							],
 							"query": [
 								{
@@ -667,7 +660,216 @@
 		},
 		{
 			"name": "Grocery",
-			"item": []
+			"item": [
+				{
+					"name": "Create Grocery List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"const groceryListId = pm.response.json()._id;\r",
+									"if (groceryListId !== null) {\r",
+									"    pm.environment.set(\"groceryListID\", groceryListId)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_url}}/api/grocery",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"grocery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Grocery List By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Grocery List ID in query matches the ID in response\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    const groceryListIdFromQuery = pm.request.url.query.get(\"id\");\r",
+									"\r",
+									"    pm.expect(jsonResponse._id).to.equal(groceryListIdFromQuery);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response contains grocery list fields\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"items\");\r",
+									"    pm.expect(jsonResponse).to.have.property(\"timestamp\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{app_url}}/api/grocery?id={{groceryListID}}",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"grocery"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{groceryListID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Grocery List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Grocery List title is updated to High Protein - Hybrid\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.title).to.equal(\"High Protein - Hybrid\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Items are updated correctly\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"\r",
+									"    // Check the names of the items\r",
+									"    pm.expect(jsonResponse.items[0]).to.have.property(\"name\", \"Chicken Breast\");\r",
+									"    pm.expect(jsonResponse.items[1]).to.have.property(\"name\", \"Eggs\");\r",
+									"    pm.expect(jsonResponse.items[2]).to.have.property(\"name\", \"Tofu\");\r",
+									"\r",
+									"    // Check the quantities of the items\r",
+									"    pm.expect(jsonResponse.items[0]).to.have.property(\"quantity\", 2);\r",
+									"    pm.expect(jsonResponse.items[1]).to.have.property(\"quantity\", 12);\r",
+									"    pm.expect(jsonResponse.items[2]).to.have.property(\"quantity\", 1);\r",
+									"\r",
+									"    // Check the brands of the items\r",
+									"    pm.expect(jsonResponse.items[0]).to.have.property(\"brand\", \"Nature's Best\");\r",
+									"    pm.expect(jsonResponse.items[1]).to.have.property(\"brand\", \"Farm Fresh\");\r",
+									"    pm.expect(jsonResponse.items[2]).to.have.property(\"brand\", \"Silk\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{groceryListID}}\",\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein - Hybrid\",\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Chicken Breast\",\r\n            \"quantity\": 2,\r\n            \"brand\": \"Nature's Best\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 12,\r\n            \"brand\": \"Farm Fresh\"\r\n        },\r\n        {\r\n            \"name\": \"Tofu\",\r\n            \"quantity\": 1,\r\n            \"brand\": \"Silk\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_url}}/api/grocery",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"grocery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Grocery List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Message is correct\", function () {\r",
+									"    const jsonResponse = pm.response.json();\r",
+									"    pm.expect(jsonResponse.message).to.equal(\"Grocery List Deleted\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{groceryListID}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_url}}/api/grocery",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"grocery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Location",
