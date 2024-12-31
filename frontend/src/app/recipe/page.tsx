@@ -23,6 +23,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { MainLayout } from "@/layouts/main";
+import { Main } from "next/document";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -42,7 +44,7 @@ export default function RecipePage() {
         );
 
   return (
-    <div className="p-4">
+    <MainLayout>
       {/* Search Bar */}
       <div className="relative w-full max-w-lg mb-4">
         <Button
@@ -133,6 +135,6 @@ export default function RecipePage() {
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }
