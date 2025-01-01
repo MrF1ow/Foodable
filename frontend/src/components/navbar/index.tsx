@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { CiLogout } from "react-icons/ci";
 import { GiCook } from "react-icons/gi";
 import { MdChecklist } from "react-icons/md";
 import { FaUserFriends } from "react-icons/fa";
@@ -14,15 +15,17 @@ import {
 } from "@/components/ui/card";
 import logoNoShadow from "../../../public/images/logo_current_no_shadow.png";
 import { NavbarItem } from "./item";
+import { ThemeSwitch } from "./theme-switch";
 
 export const Navbar = () => {
   return (
-    <Card className="w-full sm:w-96 bg-card-background text-foreground h-full flex flex-col items-center">
-      <CardHeader>
-        <Image src={logoNoShadow} alt="Foodable Logo" width={20} height={20} />
+    <Card className="w-full h-full bg-card-background text-foreground flex flex-col items-center p-0 m-0">
+      <CardHeader className="flex items-center justify-center">
+        <Image src={logoNoShadow} alt="Foodable Logo" width={50} height={50} />
       </CardHeader>
-      <CardContent>
-        <NavbarItem Icon={GiCook} text="Recipes" url="/recipes" />
+
+      <CardContent className="flex flex-col items-center flex-grow gap-y-6">
+        <NavbarItem Icon={GiCook} text="Recipes" url="/recipe" />
         <NavbarItem
           Icon={MdChecklist}
           text="Grocery List"
@@ -32,7 +35,11 @@ export const Navbar = () => {
         <NavbarItem Icon={FaUserFriends} text="Social" url="/social" />
         <NavbarItem Icon={IoMdSettings} text="Settings" url="/settings" />
       </CardContent>
-      <CardFooter></CardFooter>
+
+      <CardFooter className="flex flex-col items-center justify-center gap-y-6">
+        <ThemeSwitch />
+        <CiLogout size={25} className="font-bold" />
+      </CardFooter>
     </Card>
   );
 };

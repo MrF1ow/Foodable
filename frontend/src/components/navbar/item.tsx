@@ -15,15 +15,12 @@ export const NavbarItem = ({
 }) => {
   return (
     <Link href={url}>
-      <Button
-        variant="ghost"
-        className="flex items-center justify-center relative group"
+      <button
+        className="flex items-center justify-center relative group p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
+        aria-label={text}
       >
-        <Icon width={16} height={16} />
-        <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">
-          {text}
-        </span>
-      </Button>
+        <Icon size={25} />
+      </button>
     </Link>
   );
 };

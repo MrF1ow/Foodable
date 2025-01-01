@@ -8,7 +8,7 @@ import {
   IoIosSearch,
   IoMdAddCircle,
 } from "react-icons/io";
-import { MdTune } from "react-icons/md";
+import { CiFilter } from "react-icons/ci";
 
 // Local Imports
 import { Input } from "@/components/ui/input";
@@ -46,30 +46,25 @@ export default function RecipePage() {
   return (
     <MainLayout>
       {/* Search Bar */}
-      <div className="relative w-full max-w-lg mb-4">
+      <div className="flex items-center w-full max-w-md">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Find Recipes..."
+            className="pl-10 pr-20 h-10 rounded-md bg-foreground text-background focus:outline-none"
+          />
+          <IoIosSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-foreground text-background" />
+        </div>
+        {/* Filter Button - fix for options and such*/}
         <Button
           variant="outline"
-          size="icon"
-          className="absolute inset-y-0 left-0 px-4 text-white bg-black border-0 rounded-l-lg focus:ring-0 hover:bg-gray-800 hover:text-white"
+          className="ml-4 h-10 px-4 rounded-md bg-foreground text-background"
         >
-          <IoIosSearch size={25} />
+          <CiFilter className="mr-2 w-5 h-5" />
+          Filter
         </Button>
-
-        <Button
-          variant="outline"
-          size="icon"
-          className="absolute inset-y-0 right-0 px-4 text-white bg-black border-0 rounded-r-lg focus:ring-0 hover:bg-gray-800 hover:text-white"
-        >
-          <MdTune size={25} />
-        </Button>
-
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Find Recipes ..."
-          className="pl-14 pr-14 sm:pl-16 sm:pr-16 md:pl-18 md:pr-18 bg-black text-white placeholder-white border border-gray-700 rounded-lg"
-        />
       </div>
 
       {/* Recipes */}
