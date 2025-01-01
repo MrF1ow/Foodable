@@ -26,6 +26,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
+import { SearchBar } from "@/components/search-bar";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -33,28 +34,6 @@ export default function RecipePage() {
   // fetch all the recipes at once (maybe add a max limit)
   // types are inferred from the useFetchRecipes hook
   const { data: allRecipes, isLoading } = useFetchRecipes();
-
-  const headerComponent = (
-    <div className="flex items-center w-full max-w-md">
-      <div className="relative flex-1">
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Find Recipes..."
-          className="pl-10 pr-20 h-10 rounded-md bg-card-background text-foreground focus:outline-none"
-        />
-        <IoIosSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-card-background text-foreground" />
-      </div>
-      <Button
-        variant="outline"
-        className="ml-4 h-10 px-4 rounded-md bg-card-background text-foreground"
-      >
-        <CiFilter className="mr-2 w-5 h-5" />
-        Filter
-      </Button>
-    </div>
-  );
 
   // this filteres the recipes based on the search query and returns the filtered recipes
   // if search query is empty, it returns all the recipes
@@ -67,7 +46,11 @@ export default function RecipePage() {
         );
 
   return (
-    <MainLayout headerComponent={headerComponent}>
+    <MainLayout
+      headerComponent={
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      }
+    >
       <ContentLayout>
         {/* Recipes */}
         <div className="flex flex-row h-full bg-background">
