@@ -2,7 +2,13 @@ import React from "react";
 
 import { Navbar } from "@/components/navbar";
 
-export const MainLayout = ({ children }: { children: React.ReactNode }) => {
+export const MainLayout = ({
+  children,
+  headerComponent,
+}: {
+  children: React.ReactNode;
+  headerComponent: React.ReactNode;
+}) => {
   return (
     <div className="flex h-screen w-screen bg-background">
       {/* Sidebar */}
@@ -11,8 +17,9 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Main Content */}
-      <div className="w-[92%] h-full bg-background p-6">
-        {children}
+      <div className="grid grid-rows-[5%_95%] h-full w-full bg-background p-6">
+        <div>{headerComponent}</div>
+        <div className="flex-1 h-full">{children}</div>
       </div>
     </div>
   );

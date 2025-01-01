@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/card";
 import logoNoShadow from "../../../public/images/logo_current_no_shadow.png";
 import { NavbarItem } from "./item";
-import { ThemeSwitch } from "./theme-switch";
+import ThemeSwitch from "./theme-switch";
 
 export const Navbar = () => {
   return (
     <Card className="w-full h-full bg-card-background text-foreground flex flex-col items-center p-0 m-0">
-      <CardHeader className="flex items-center justify-center">
+      <CardHeader className="flex items-center justify-center mb-12">
         <Image src={logoNoShadow} alt="Foodable Logo" width={50} height={50} />
       </CardHeader>
 

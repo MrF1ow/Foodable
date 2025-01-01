@@ -1,34 +1,41 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { FaMoon } from "react-icons/fa";
 
-export const ThemeSwitch = () => {
-  const [isDark, setIsDark] = useState(false);
+export default function ThemeSwitch() {
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, resolvedTheme } = useTheme();
 
-  useEffect(() => {
-    // On mount, check the user's current theme preference
-    const currentTheme = document.documentElement.classList.contains("dark");
-    setIsDark(currentTheme);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    } else {
-      root.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
-    setIsDark(!isDark);
-  };
-  return (
-    <button
-      onClick={toggleTheme}
-      className="p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
-      aria-label="Toggle Theme"
-    >
-      {isDark ? <MdOutlineWbSunny size={24} /> : <FaMoon size={24} />}
-    </button>
-  );
-};
+  if (typeof window === "undefined" || !mounted) return null;
+
+  if (resolvedTheme === "dark") {
+    return (
+      <button
+        onClick={() => setTheme("light")}
+        className="p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
+        aria-label="Toggle Theme"
+      >
+        <MdOutlineWbSunny size={24} />
+      </button>
+    );
+  }
+
+  if (resolvedTheme === "light") {
+    return (
+      <button
+        onClick={() => setTheme("dark")}
+        className="p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
+        aria-label="Toggle Theme"
+      >
+        <FaMoon size={24} />
+      </button>
+    );
+  }
+
+  return null;
+}

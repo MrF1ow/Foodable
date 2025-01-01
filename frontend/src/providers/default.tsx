@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TanstackProvider } from "./tanstack-provider";
 import { UserStoreProvider } from "./user-store-provider";
@@ -25,7 +26,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {/* TanstackProvider handles server-side state */}
       <TanstackProvider>
         {/* UserStoreProvider handles client-side state */}
-        <UserStoreProvider>{children}</UserStoreProvider>
+        <UserStoreProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </UserStoreProvider>
       </TanstackProvider>
     </ClerkProvider>
   );
