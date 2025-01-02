@@ -4,20 +4,16 @@
 import { CiFilter } from "react-icons/ci";
 import { IoIosPricetag, IoIosTime } from "react-icons/io";
 import { MdNumbers } from "react-icons/md";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 
 // Local Imports
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuCheckboxItem,
   DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,

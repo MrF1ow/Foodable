@@ -27,6 +27,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
 import { SearchBar } from "@/components/search-bar";
+import { SideList } from "@/components/side-list";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -92,26 +93,7 @@ export default function RecipePage() {
             </ScrollArea>
           </div>
           <div className="w-[40%] px-24">
-            <Card className="h-full flex flex-col bg-card-background rounded-lg">
-              <CardHeader className="bg-primary text-[#202020] text-center rounded-lg">
-                <CardTitle className="text-2xl">Your List</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p>Card Content</p>
-              </CardContent>
-              <CardFooter className="flex justify-end p-4">
-                <div className="group transition-all duration-300 ease-in-out">
-                  <IoMdAddCircleOutline
-                    className="text-primary group-hover:hidden"
-                    size={60}
-                  />
-                  <IoMdAddCircle
-                    className="text-primary hidden group-hover:block"
-                    size={60}
-                  />
-                </div>
-              </CardFooter>
-            </Card>
+            <SideList />
           </div>
         </div>
       </ContentLayout>

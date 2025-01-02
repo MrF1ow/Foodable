@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import logoNoShadow from "../../../public/images/logo_current_no_shadow.png";
 import { NavbarItem } from "./item";
-import ThemeSwitch from "./theme-switch";
+import ThemeSwitch from "../theme-switch";
 
 export const Navbar = () => {
   return (
