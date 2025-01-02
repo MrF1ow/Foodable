@@ -17,8 +17,8 @@ export const MainLayout = ({
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-rows-[5%_95%] h-full w-full bg-background p-6">
-        <div>{headerComponent}</div>
+      <div className="grid grid-rows-[10%_90%] h-full w-full bg-background p-6">
+        <div className="h-full">{headerComponent}</div>
         <div className="flex-1 h-full">{children}</div>
       </div>
     </div>

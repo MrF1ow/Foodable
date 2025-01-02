@@ -1,11 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
-import { GiCook } from "react-icons/gi";
-import { MdChecklist } from "react-icons/md";
-import { FaUserFriends } from "react-icons/fa";
-import { IoMdSettings } from "react-icons/io";
-import { IoBookmark } from "react-icons/io5";
+
+import { navOptions } from "@/config/nav-options";
 
 import {
   Card,
@@ -25,15 +22,9 @@ export const Navbar = () => {
       </CardHeader>
 
       <CardContent className="flex flex-col items-center flex-grow gap-y-6">
-        <NavbarItem Icon={GiCook} text="Recipes" url="/recipe" />
-        <NavbarItem
-          Icon={MdChecklist}
-          text="Grocery List"
-          url="/grocery-list"
-        />
-        <NavbarItem Icon={IoBookmark} text="Saved Items" url="/saved" />
-        <NavbarItem Icon={FaUserFriends} text="Social" url="/social" />
-        <NavbarItem Icon={IoMdSettings} text="Settings" url="/settings" />
+        {navOptions.map(({ name, url, Icon }) => (
+          <NavbarItem key={name} Icon={Icon} text={name} url={url} />
+        ))}
       </CardContent>
 
       <CardFooter className="flex flex-col items-center justify-center gap-y-6">
