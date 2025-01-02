@@ -3,26 +3,11 @@
 // Package Imports
 import { useState } from "react";
 import Image from "next/image";
-import {
-  IoMdAddCircleOutline,
-  IoIosSearch,
-  IoMdAddCircle,
-} from "react-icons/io";
-import { CiFilter } from "react-icons/ci";
 
 // Local Imports
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { useFetchRecipes } from "@/server/hooks/recipeHooks";
 import Loader from "@/components/loader";
 import recipeImagePlaceholder from "../../../public/images/recipe_placeholder.png";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
