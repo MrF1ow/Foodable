@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion, Db } from "mongodb";
+import { MongoClient, ServerApiVersion, Db, GridFSBucket } from "mongodb";
 
 // Check if the environment variable is set
 if (!process.env.MONGODB_URI) {
@@ -52,3 +52,11 @@ export async function getDB(): Promise<Db> {
   return client.db("foodable_db");
 }
 
+export async function setupGridFS(): Promise<GridFSBucket> {
+  const db = await getDB();
+  const bucket = new GridFSBucket(db, {
+    bucketName: "images",
+  });
+  console.log("== GridFS setup complete");
+  return bucket;
+}
