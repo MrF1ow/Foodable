@@ -14,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <Providers>
-        <body className="w-screen h-screen">{children}</body>
-      </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className="w-screen h-screen">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
