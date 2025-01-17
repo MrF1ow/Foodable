@@ -2,32 +2,40 @@
 
 // Package Imports
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+// import { useRouter, usePathname } from "next/navigation";
 
 // Local Imports
 import {
   Dialog,
+  DialogHeader,
   DialogTrigger,
   DialogContent,
   DialogDescription,
 } from "@/components/ui/dialog";
+import logo from "../../../public/images/logo_current_no_shadow.png";
 import { useFetchImageBySourceId } from "@/server/hooks/imageHooks";
 import { Recipe } from "@/types";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
-  const router = useRouter();
-  const pathName = usePathname();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  function createSearchWithID() {
-    const id = recipe._id?.toString() ?? "";
-    const currentUrl = pathName;
-    const newUrl = `${currentUrl}/id?${id}`;
-    router.push(newUrl);
+  const {
+    data: response,
+    isLoading,
+    error,
+  } = useFetchImageBySourceId(recipe._id ? recipe._id.toString() : "");
+
+  useEffect(() => {
+    if (response && response.base64Image) {
+      setImageUrl(response.base64Image);
+    }
+  }, [response]);
+
+  if (error) {
+    console.error("Error fetching image:", error);
   }
-
-  const { data: image, isLoading } = useFetchImageBySourceId(
-    recipe._id ? recipe._id.toString() : ""
-  );
 
   return (
     <Dialog>
@@ -43,7 +51,7 @@ export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
             </div>
           ) : (
             <Image
-              src={image}
+              src={imageUrl || logo}
               alt={recipe.title}
               fill
               className="object-cover"
@@ -59,8 +67,11 @@ export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
         </div>
       </DialogTrigger>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle></DialogTitle>
+        </DialogHeader>
         <DialogDescription>
-          <p>{recipe.description}</p>
+          <div>Hello World</div>
         </DialogDescription>
       </DialogContent>
     </Dialog>

@@ -33,19 +33,34 @@ export async function GET(req: Request) {
     const contentType =
       file[0].metadata?.contentType || "application/octet-stream";
 
-    const readableStream = new ReadableStream({
-      start(controller) {
-        downloadStream.on("data", (chunk) => controller.enqueue(chunk));
-        downloadStream.on("end", () => controller.close());
-        downloadStream.on("error", (err) => controller.error(err));
-      },
+    const chunks: Uint8Array[] = [];
+    const reader = downloadStream;
+
+    await new Promise((resolve, reject) => {
+      reader.on("data", (chunk) => chunks.push(chunk));
+      reader.on("end", resolve);
+      reader.on("error", reject);
     });
 
-    return new NextResponse(readableStream, {
-      headers: {
-        "Content-Type": contentType,
+    const buffer = Buffer.concat(chunks);
+
+    const base64 = buffer.toString("base64");
+
+    // const readableStream = new ReadableStream({
+    //   start(controller) {
+    //     downloadStream.on("data", (chunk) => controller.enqueue(chunk));
+    //     downloadStream.on("end", () => controller.close());
+    //     downloadStream.on("error", (err) => controller.error(err));
+    //   },
+    // });
+
+    return NextResponse.json(
+      {
+        contentType,
+        base64Image: `data:${contentType};base64,${base64}`,
       },
-    });
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },
