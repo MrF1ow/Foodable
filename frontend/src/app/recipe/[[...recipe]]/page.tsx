@@ -2,12 +2,11 @@
 
 // Package Imports
 import { useState } from "react";
-import Image from "next/image";
 
 // Local Imports
 import { useFetchRecipes } from "@/server/hooks/recipeHooks";
 import Loader from "@/components/loader";
-import recipeImagePlaceholder from "../../../public/images/recipe_placeholder.png";
+import { RecipeBox } from "@/components/recipe/recipe-box";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
@@ -47,29 +46,7 @@ export default function RecipePage() {
                   <Loader /> // show loader if recipes are still loading
                 ) : (filteredRecipes ?? []).length > 0 ? (
                   (filteredRecipes ?? []).map((recipe) => (
-                    <div
-                      key={recipe._id?.toString()}
-                      className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
-                    >
-                      <Image
-                        src={recipeImagePlaceholder}
-                        alt={recipe.title}
-                        fill
-                        className="object-cover"
-                      />
-
-                      <div
-                        className="absolute bottom-0 left-0 right-0 p-4 text-white"
-                        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                      >
-                        <h3 className="text-lg font-semibold truncate">
-                          {recipe.title}
-                        </h3>
-                        <p className="text-sm">
-                          {recipe.userRatings?.[0]?.rating} ☆
-                        </p>
-                      </div>
-                    </div>
+                    <RecipeBox key={recipe._id?.toString()} recipe={recipe} />
                   ))
                 ) : (
                   <p className="text-foreground">No recipes found.</p>
