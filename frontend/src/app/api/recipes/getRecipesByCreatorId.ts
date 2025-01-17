@@ -1,14 +1,14 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateRecipe, validateObject } from "@/utils/validation";
-import { getCreatorIdFromSearchParams } from "@/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const creatorId = getCreatorIdFromSearchParams(req);
+    const creatorId = getValueFromSearchParams(req, "creatorId");
     if (!creatorId) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

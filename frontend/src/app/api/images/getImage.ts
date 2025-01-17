@@ -1,14 +1,14 @@
 // Local Imports
 import { setupGridFS } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const url = new URL(req.url);
-    const sourceId = url.searchParams.get("id");
+    const sourceId = getValueFromSearchParams(req, "id");
 
     if (!sourceId) {
       return NextResponse.json(
