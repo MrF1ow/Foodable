@@ -2,25 +2,21 @@
 
 // Package Imports
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { useRouter, usePathname } from "next/navigation";
 
 // Local Imports
-import {
-  Dialog,
-  DialogHeader,
-  DialogTrigger,
-  DialogContent,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import logo from "../../../public/images/logo_current_no_shadow.png";
 import { useFetchImageBySourceId } from "@/server/hooks/imageHooks";
 import { Recipe } from "@/types";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
-export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+interface RecipeBoxProps {
+  recipe: Recipe;
+  setRecipe: (recipe: Recipe) => void;
+  setOpen: (isOpen: boolean) => void;
+}
 
+export const RecipeBox = ({ recipe, setRecipe, setOpen }: RecipeBoxProps) => {
   const {
     data: response,
     isLoading,
@@ -29,7 +25,7 @@ export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
 
   useEffect(() => {
     if (response && response.base64Image) {
-      setImageUrl(response.base64Image);
+      recipe.imageUrl = response.base64Image;
     }
   }, [response]);
 
@@ -38,42 +34,32 @@ export const RecipeBox = ({ recipe }: { recipe: Recipe }) => {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div
-          key={recipe._id?.toString()}
-          className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
-        >
-          {isLoading ? (
-            <div className="flex items-center justify-center w-full h-full bg-gray-200">
-              {/* Add a loading indicator */}
-              <span className="text-gray-500">Loading...</span>
-            </div>
-          ) : (
-            <Image
-              src={imageUrl || logo}
-              alt={recipe.title}
-              fill
-              className="object-cover"
-            />
-          )}
-          ;
-          <div
-            className="absolute bottom-0 left-0 right-0 p-4 text-white"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          >
-            <h3 className="text-lg font-semibold truncate">{recipe.title}</h3>
+    <>
+      <div
+        key={recipe._id?.toString()}
+        className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
+        onClick={() => {
+          setRecipe(recipe);
+          setOpen(true);
+        }}
+      >
+        {isLoading ? (
+          <div className="flex items-center justify-center w-full h-full">
+            {/* Add a loading indicator */}
+            <span className="text-gray-500">Loading...</span>
           </div>
+        ) : (
+          <Image
+            src={recipe.imageUrl || logo}
+            alt={recipe.title}
+            fill
+            className="object-cover"
+          />
+        )}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
+          <h3 className="text-lg font-semibold truncate">{recipe.title}</h3>
         </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle></DialogTitle>
-        </DialogHeader>
-        <DialogDescription>
-          <div>Hello World</div>
-        </DialogDescription>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   );
 };

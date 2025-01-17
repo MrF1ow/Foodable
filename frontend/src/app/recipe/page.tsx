@@ -12,9 +12,17 @@ import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
 import { SearchBar } from "@/components/search-bar";
 import { SideList } from "@/components/side-list";
+import { Recipe } from "@/types";
+import { RecipePopUp } from "@/components/recipe/popup";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentRecipe, setCurrentRecipe] = useState<Recipe | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const togglePopUp = () => {
+    setIsOpen(!isOpen);
+  };
 
   // fetch all the recipes at once (maybe add a max limit)
   // types are inferred from the useFetchRecipes hook
@@ -39,14 +47,26 @@ export default function RecipePage() {
       <ContentLayout>
         {/* Recipes */}
         <div className="flex flex-row h-full bg-background">
-          <div className="w-[60%] h-auto bg-background">
+          <div className="relative w-[60%] h-auto bg-background">
+            {isOpen && currentRecipe && (
+              <RecipePopUp
+                recipe={currentRecipe}
+                toggleDialog={togglePopUp}
+                imageUrl={currentRecipe.imageUrl}
+              />
+            )}
             <ScrollArea>
               <div className="flex flex-wrap justify-start gap-4">
                 {isLoading ? (
                   <Loader /> // show loader if recipes are still loading
                 ) : (filteredRecipes ?? []).length > 0 ? (
                   (filteredRecipes ?? []).map((recipe) => (
-                    <RecipeBox key={recipe._id?.toString()} recipe={recipe} />
+                    <RecipeBox
+                      key={recipe._id?.toString()}
+                      recipe={recipe}
+                      setRecipe={setCurrentRecipe}
+                      setOpen={setIsOpen}
+                    />
                   ))
                 ) : (
                   <p className="text-foreground">No recipes found.</p>
