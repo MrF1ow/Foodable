@@ -38,47 +38,45 @@ export default function RecipePage() {
           recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
+  const Content = () => {
+    return (
+      <>
+        {isOpen && currentRecipe && (
+          <RecipePopUp
+            recipe={currentRecipe}
+            toggleDialog={togglePopUp}
+            imageUrl={currentRecipe.imageUrl}
+          />
+        )}
+        <ScrollArea>
+          <div className="flex flex-wrap justify-start gap-4">
+            {isLoading ? (
+              <Loader /> // show loader if recipes are still loading
+            ) : (filteredRecipes ?? []).length > 0 ? (
+              (filteredRecipes ?? []).map((recipe) => (
+                <RecipeBox
+                  key={recipe._id?.toString()}
+                  recipe={recipe}
+                  setRecipe={setCurrentRecipe}
+                  setOpen={setIsOpen}
+                />
+              ))
+            ) : (
+              <p className="text-foreground">No recipes found.</p>
+            )}
+          </div>
+        </ScrollArea>
+      </>
+    );
+  };
+
   return (
     <MainLayout
       headerComponent={
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       }
     >
-      <ContentLayout>
-        {/* Recipes */}
-        <div className="flex flex-row h-full bg-background">
-          <div className="relative w-[60%] h-auto bg-background">
-            {isOpen && currentRecipe && (
-              <RecipePopUp
-                recipe={currentRecipe}
-                toggleDialog={togglePopUp}
-                imageUrl={currentRecipe.imageUrl}
-              />
-            )}
-            <ScrollArea>
-              <div className="flex flex-wrap justify-start gap-4">
-                {isLoading ? (
-                  <Loader /> // show loader if recipes are still loading
-                ) : (filteredRecipes ?? []).length > 0 ? (
-                  (filteredRecipes ?? []).map((recipe) => (
-                    <RecipeBox
-                      key={recipe._id?.toString()}
-                      recipe={recipe}
-                      setRecipe={setCurrentRecipe}
-                      setOpen={setIsOpen}
-                    />
-                  ))
-                ) : (
-                  <p className="text-foreground">No recipes found.</p>
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-          <div className="w-[40%] px-24">
-            <SideList />
-          </div>
-        </div>
-      </ContentLayout>
+      <ContentLayout split leftSide={<Content />} rightSide={<SideList />} />
     </MainLayout>
   );
 }

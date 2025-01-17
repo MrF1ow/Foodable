@@ -46,14 +46,6 @@ export async function GET(req: Request) {
 
     const base64 = buffer.toString("base64");
 
-    // const readableStream = new ReadableStream({
-    //   start(controller) {
-    //     downloadStream.on("data", (chunk) => controller.enqueue(chunk));
-    //     downloadStream.on("end", () => controller.close());
-    //     downloadStream.on("error", (err) => controller.error(err));
-    //   },
-    // });
-
     return NextResponse.json(
       {
         contentType,
