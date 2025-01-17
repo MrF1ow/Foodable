@@ -13,7 +13,7 @@ import { ContentLayout } from "@/layouts/content";
 import { SearchBar } from "@/components/search-bar";
 import { SideList } from "@/components/side-list";
 import { Recipe } from "@/types";
-import { RecipePopUp } from "@/components/recipe/popup";
+import { RecipePopUp } from "@/components/recipe/recipe-popup";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
