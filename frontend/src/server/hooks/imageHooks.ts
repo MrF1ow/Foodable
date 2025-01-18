@@ -1,21 +1,17 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import {
-  uploadImage,
-  fetchImageBySourceId,
-  deleteImageBySourceId,
-} from "../api/imageApi";
+import { uploadImage, fetchImageById, deleteImageById } from "../api/imageApi";
 
 export const useUploadImage = () => {
   return useMutation({ mutationFn: uploadImage });
 };
 
-export const useFetchImageBySourceId = (sourceId: string) => {
+export const useFetchImageById = (imageId: string) => {
   return useQuery({
-    queryKey: ["image", sourceId],
-    queryFn: () => fetchImageBySourceId(sourceId),
+    queryKey: ["image", imageId],
+    queryFn: () => fetchImageById(imageId),
   });
 };
 
-export const useDeleteImageBySourceId = () => {
-  return useMutation({ mutationFn: deleteImageBySourceId });
+export const useDeleteImageById = () => {
+  return useMutation({ mutationFn: deleteImageById });
 };

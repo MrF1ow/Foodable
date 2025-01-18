@@ -54,7 +54,7 @@ export type Recipe = NewRecipe &
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator
-  imageUrl: string; // The image url for the recipe
+  imageId: ObjectId; // The image ID of the recipe
   title: string; // The title of the recipe
   description: string; // The description of the recipe
   ingredients: RecipeIngredient[]; // The ingredients of the recipe

@@ -20,14 +20,16 @@ export const RecipePopUp = ({
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-auto">
       <CardContent className="p-0">
+        <img src={imageUrl} alt={recipe.title} />
         <ScrollArea className="relative w-full h-full">
           {/* Fixed Header */}
           <div className="top-0 left-0 w-full h-[40%]">
             <Image
-              src={imageUrl || logo}
+              src={imageUrl}
               alt={recipe.title}
               layout="fill"
               objectFit="cover"
+              sizes="100%"
             />
             <div className="absolute w-full bottom-0 left-0 p-4 text-white bg-black bg-opacity-50">
               <h3 className="text-lg font-semibold truncate">{recipe.title}</h3>

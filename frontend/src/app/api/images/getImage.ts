@@ -5,21 +5,23 @@ import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const sourceId = getValueFromSearchParams(req, "id");
+    const imageId = getValueFromSearchParams(req, "id");
 
-    if (!sourceId) {
+    if (!imageId) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
 
-    const bucket = await setupGridFS();
+    const { bucket } = await setupGridFS();
 
-    const file = await bucket.find({ "metadata.sourceId": sourceId }).toArray();
+    const imageIdAsObjectId = new ObjectId(imageId);
+    const file = await bucket.find({ _id: imageIdAsObjectId }).toArray();
 
     if (!file.length || file.length === 0) {
       return NextResponse.json(

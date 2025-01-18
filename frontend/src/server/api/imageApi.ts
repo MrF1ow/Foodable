@@ -16,9 +16,9 @@ export const uploadImage = async (image: File) => {
   }
 };
 
-export const fetchImageBySourceId = async (sourceId: string) => {
+export const fetchImageById = async (imageId: string) => {
   try {
-    const response = await axios.get(`/images?id=${sourceId}`);
+    const response = await axios.get(`/images?id=${imageId}`);
     return response.data;
   } catch (error) {
     console.error("Error getting image:", error);
@@ -26,9 +26,9 @@ export const fetchImageBySourceId = async (sourceId: string) => {
   }
 };
 
-export const deleteImageBySourceId = async (sourceId: string) => {
+export const deleteImageById = async (imageId: string) => {
   try {
-    const response = await axios.delete(`/images?id=${sourceId}`);
+    const response = await axios.delete(`/images?id=${imageId}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting image:", error);
