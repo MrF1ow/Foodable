@@ -8,14 +8,23 @@ import {
 import React from "react";
 import { InputHeader } from "./input-header";
 import { InputFooter } from "./input-footer";
-import { InputSection } from "@/types/input";
+import {
+  InputHeaderProp,
+  InputContentProp,
+  InputFooterProp,
+} from "@/types/input";
 
-export const InputCard = ({ title }: InputSection) => {
+interface InputSectionProps
+  extends InputHeaderProp,
+    InputContentProp,
+    InputFooterProp {}
+
+export const InputCard = ({ title, content, footer }: InputSectionProps) => {
   return (
-    <Card>
+    <Card className="h-full w-full flex flex-col">
       <InputHeader title={title} />
-      <CardContent>Content</CardContent>
-      <InputFooter>Footer</InputFooter>
+      <CardContent className="flex-grow">{content}</CardContent>
+      <InputFooter>{footer}</InputFooter>
     </Card>
   );
 };

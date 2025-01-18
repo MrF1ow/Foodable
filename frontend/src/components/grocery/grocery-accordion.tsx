@@ -38,7 +38,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   return (
     <Accordion
       type="single"
-      className="w-[400px] bg-card-background rounded-lg shadow-lg"
+      className="w-[300px] bg-card-background rounded-lg shadow-lg"
       collapsible
       defaultValue="1"
     >

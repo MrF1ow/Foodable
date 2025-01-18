@@ -1,19 +1,29 @@
-import { InputSection } from "@/types/input";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { InputHeaderProp } from "@/types/input";
 import { Icons } from "../ui/icons";
 
 export const InputHeader = ({
   title,
   onClose,
-}: InputSection & { onClose?: () => void }) => {
+}: InputHeaderProp & { onClose?: () => void }) => {
   return (
-    <div className="flex items-center w-full space-x-2">
+    <div className="p-4 relative flex items-center w-full overflow-hidden">
       <button
         onClick={onClose}
-        className="p-2 rounded-lg bg-card-background hover:bg-secondary transition  focus:outline-none"
+        className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none"
       >
         <Icons.close />
       </button>
-      <p className="text-xl font-bold">{title}</p>
+      <div className="flex items-center justify-center w-full space-x-2">
+        <p className="text-xl text-center">{title}</p>
+      </div>
     </div>
   );
 };

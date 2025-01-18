@@ -11,10 +11,11 @@ import { ContentLayout } from "@/layouts/content";
 import { GeneralHeader } from "@/components/general-header";
 import { grocerySections } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
+import { InputCard } from "@/components/input-card/input-card";
 
 export default function GroceryList() {
   const [items, setItems] = useState(grocerySections.slice(0, 6));
-  const [splitLayout, setSplitLayout] = useState(false);
+  const [splitLayout, setSplitLayout] = useState(true);
 
   const column1 = items.filter((_, index) => index % 3 === 0);
   const column2 = items.filter((_, index) => index % 3 === 1);
@@ -79,8 +80,14 @@ export default function GroceryList() {
     );
   };
 
-  const Test = () => {
-    return <div>Hello There</div>;
+  const AddItem = () => {
+    return (
+      <InputCard
+        title="Add Item"
+        content={<div>Content</div>}
+        footer={<button>Add</button>}
+      />
+    );
   };
 
   return (
@@ -88,7 +95,9 @@ export default function GroceryList() {
       headerComponent={<GeneralHeader title={"Grocery List"} width="25%" />}
     >
       {splitLayout ? (
-        <ContentLayout split leftSide={<Content />} rightSide={<Test />} />
+        <div className="flex h-full w-full">
+          <ContentLayout split leftSide={<Content />} rightSide={<AddItem />} />
+        </div>
       ) : (
         <ContentLayout all={<Content />} />
       )}
