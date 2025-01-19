@@ -62,6 +62,7 @@ export type NewRecipe = {
   userRatings: UserRating[]; // The user ratings of the recipe
   averageRating: number; // The average rating of the recipe
   priceApproximation: number; // The price approximation of the recipe
+  timeApproximation: number; // The time approximation of the recipe
   timestamp: Date; // The timestamp of the recipe
 };
 

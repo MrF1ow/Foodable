@@ -2,11 +2,9 @@
 
 // Package Imports
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-// import { useRouter, usePathname } from "next/navigation";
+import React from "react";
 
 // Local Imports
-import logo from "../../../public/images/logo_current_no_shadow.png";
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { Recipe } from "@/types";
 
@@ -57,6 +55,7 @@ export const RecipeBox = ({
             className="object-cover"
           />
         )}
+        {/* Make this a Hover Box */}
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <h3 className="text-lg font-semibold truncate">{recipe.title}</h3>
         </div>
