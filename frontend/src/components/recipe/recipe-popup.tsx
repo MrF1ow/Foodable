@@ -22,9 +22,9 @@ export const RecipePopUp = ({
 }: RecipePopUpProps) => {
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden">
-      <CardContent className="p-0">
+      <CardContent className="p-0 h-full flex flex-col">
         {/* Recipe Header */}
-        <div className="sticky top-0 w-full h-[40%]">
+        <div className="w-full h-[40%] relative">
           <img
             src={imageUrl}
             alt={recipe.title}
@@ -38,10 +38,8 @@ export const RecipePopUp = ({
         </div>
 
         {/* Recipe Content */}
-        <div className="w-full h-[60%] mt-[27%]">
-          <div className="w-full h-full overflow-y-scroll p-4">
-            <RecipeContent recipe={recipe} />
-          </div>
+        <div className="flex-1 overflow-y-auto p-4">
+          <RecipeContent recipe={recipe} />
         </div>
 
         {/* Back Button */}
