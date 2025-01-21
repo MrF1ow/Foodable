@@ -86,7 +86,7 @@ export const grocerySections: GrocerySection[] = [
     color: "#000000",
   },
   {
-    title: "Alchohol",
+    title: "Alcohol",
     Icon: AlchoholIcon,
     color: "#FF007F",
   },

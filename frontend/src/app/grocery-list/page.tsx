@@ -11,10 +11,39 @@ import { ContentLayout } from "@/layouts/content";
 import { GeneralHeader } from "@/components/general-header";
 import { grocerySections } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
+import { InputCard } from "@/components/input-card/input-card";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormDescription,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { Button } from "@/components/ui/button";
+
+import { z } from "zod";
 
 export default function GroceryList() {
-  const [items, setItems] = useState(grocerySections);
-  const [splitLayout, setSplitLayout] = useState(false);
+  const [items, setItems] = useState(grocerySections.slice(0, 6));
+  const [splitLayout, setSplitLayout] = useState(true);
+
+  const column1 = items.filter((_, index) => index % 3 === 0);
+  const column2 = items.filter((_, index) => index % 3 === 1);
+  const column3 = items.filter((_, index) => index % 3 === 2);
 
   const Content = () => {
     return (
@@ -25,26 +54,161 @@ export default function GroceryList() {
             dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
             dragElastic={0.2}
           >
-            {items.map((item) => (
-              <Reorder.Item
-                value={item}
-                key={item.title} // Use index for unique key
-                drag
-                className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                whileDrag={{ scale: 1.05 }}
-                dragSnapToGrid={true}
-              >
-                <GroceryAccordion {...item} />
-              </Reorder.Item>
-            ))}
+            <div className="flex flex-col gap-4">
+              {column1.map((item) => (
+                <Reorder.Item
+                  value={item}
+                  key={item.title} // Use index for unique key
+                  drag
+                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                  whileDrag={{ scale: 1.05 }}
+                  dragSnapToGrid={true}
+                >
+                  <GroceryAccordion {...item} />
+                </Reorder.Item>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {column2.map((item) => (
+                <Reorder.Item
+                  value={item}
+                  key={item.title} // Use index for unique key
+                  drag
+                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                  whileDrag={{ scale: 1.05 }}
+                  dragSnapToGrid={true}
+                >
+                  <GroceryAccordion {...item} />
+                </Reorder.Item>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {column3.map((item) => (
+                <Reorder.Item
+                  value={item}
+                  key={item.title} // Use index for unique key
+                  drag
+                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                  whileDrag={{ scale: 1.05 }}
+                  dragSnapToGrid={true}
+                >
+                  <GroceryAccordion {...item} />
+                </Reorder.Item>
+              ))}
+            </div>
           </motion.div>
         </Reorder.Group>
       </ScrollArea>
     );
   };
 
-  const Test = () => {
-    return <div>Hello There</div>;
+  const formSchema = z.object({
+    itemName: z.string().min(2).max(50),
+    quantity: z.number().min(1).max(100),
+    category: z.string().min(2).max(50),
+  });
+
+  const AddItem = () => {
+    const form = useForm<z.infer<typeof formSchema>>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        itemName: "",
+        quantity: 0,
+        category: "",
+      },
+    });
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
+      console.log(values);
+    }
+
+    return (
+      <Form {...form}>
+        <InputCard
+          title="Add Item"
+          content={
+            <div className="flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="itemName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl">Item Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter item name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl">Quantity</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter quantity" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl">Select Category</FormLabel>
+                    <div className="border rounded shadow-sm p-2">
+                      <FormControl>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            {field.value || "Bakery"}
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            {[
+                              "Bakery",
+                              "Dairy",
+                              "Produce",
+                              "Meat",
+                              "Pantry",
+                              "Frozen",
+                            ].map((category) => (
+                              <DropdownMenuItem
+                                key={category}
+                                onClick={() => field.onChange(category)}
+                              >
+                                {category}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </FormControl>
+                    </div>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          }
+          footer={
+            <div className="flex justify-center ">
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
+                className="btn-primary p-8 text-3xl"
+              >
+                Submit
+              </Button>
+            </div>
+          }
+        />
+      </Form>
+    );
   };
 
   return (
@@ -52,7 +216,9 @@ export default function GroceryList() {
       headerComponent={<GeneralHeader title={"Grocery List"} width="25%" />}
     >
       {splitLayout ? (
-        <ContentLayout split leftSide={<Content />} rightSide={<Test />} />
+        <div className="flex h-full w-full">
+          <ContentLayout split leftSide={<Content />} rightSide={<AddItem />} />
+        </div>
       ) : (
         <ContentLayout all={<Content />} />
       )}
