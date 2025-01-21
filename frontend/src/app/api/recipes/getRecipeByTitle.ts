@@ -1,13 +1,13 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateRecipe, validateObject } from "@/utils/validation";
-import { getRecipeTitleFromSearchParams } from "@/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const title = getRecipeTitleFromSearchParams(req);
+    const title = getValueFromSearchParams(req, "title");
     console.log("Title: ", title);
     // console.log("Request: ", req);
 

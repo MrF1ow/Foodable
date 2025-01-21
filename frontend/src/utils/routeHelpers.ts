@@ -1,29 +1,9 @@
-export function getIdFromSearchParams(req: Request) {
+export function getValueFromSearchParams(req: Request, paramName: string) {
   const url = new URL(req.url);
-  const id = url.searchParams.get("id");
-  if (!id) {
+  const value = url.searchParams.get(paramName);
+  if (!value) {
     return null;
   }
 
-  return id;
-}
-
-export function getCreatorIdFromSearchParams(req: Request) {
-  const url = new URL(req.url);
-  const creatorId = url.searchParams.get("creatorId");
-  if (!creatorId) {
-    return null;
-  }
-
-  return creatorId;
-}
-
-export function getRecipeTitleFromSearchParams(req: Request) {
-  const url = new URL(req.url);
-  const title = url.searchParams.get("title");
-  if (!title) {
-    return null;
-  }
-
-  return title;
+  return value;
 }

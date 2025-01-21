@@ -2,7 +2,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateObject, validateGroceryList } from "@/utils/validation";
-import { getIdFromSearchParams } from "@/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
 import { NextResponse } from "next/server";
@@ -10,7 +10,7 @@ import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const id = getIdFromSearchParams(req);
+    const id = getValueFromSearchParams(req, "id");
     if (!id) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

@@ -1,8 +1,12 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
-import { validateUser, validateObject, isValidObjectId } from "@/utils/validation";
-import { getIdFromSearchParams } from "@/utils/routeHelpers";
+import {
+  validateUser,
+  validateObject,
+  isValidObjectId,
+} from "@/utils/validation";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
 import { NextResponse } from "next/server";
@@ -10,7 +14,7 @@ import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const id = getIdFromSearchParams(req);
+    const id = getValueFromSearchParams(req, "id");
 
     if (!id) {
       return NextResponse.json(

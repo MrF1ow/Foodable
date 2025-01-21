@@ -52,11 +52,11 @@ export async function getDB(): Promise<Db> {
   return client.db("foodable_db");
 }
 
-export async function setupGridFS(): Promise<GridFSBucket> {
+export async function setupGridFS(): Promise<{ bucket: GridFSBucket; db: Db }> {
   const db = await getDB();
   const bucket = new GridFSBucket(db, {
     bucketName: "images",
   });
   console.log("== GridFS setup complete");
-  return bucket;
+  return { bucket, db };
 }
