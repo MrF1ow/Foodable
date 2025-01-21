@@ -22,7 +22,7 @@ export const ContentLayout = ({
   all,
 }: ContentLayoutProps) => {
   return (
-    <div className="w-full h-full bg-background">
+    <div className="w-full h-full bg-background overflow-hidden pt-6">
       {split ? (
         <div className="flex flex-row h-full bg-background">
           <div className="relative w-[60%] h-auto bg-background">
