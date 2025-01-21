@@ -54,7 +54,7 @@ export type Recipe = NewRecipe &
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator
-  imageUrl: string; // The image url for the recipe
+  imageId: ObjectId; // The image ID of the recipe
   title: string; // The title of the recipe
   description: string; // The description of the recipe
   ingredients: RecipeIngredient[]; // The ingredients of the recipe
@@ -62,6 +62,7 @@ export type NewRecipe = {
   userRatings: UserRating[]; // The user ratings of the recipe
   averageRating: number; // The average rating of the recipe
   priceApproximation: number; // The price approximation of the recipe
+  timeApproximation: number; // The time approximation of the recipe
   timestamp: Date; // The timestamp of the recipe
 };
 

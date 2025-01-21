@@ -14,10 +14,12 @@ import { SearchBar } from "@/components/search-bar";
 import { SideList } from "@/components/side-list";
 import { Recipe } from "@/types";
 import { RecipePopUp } from "@/components/recipe/recipe-popup";
+import logo from "../../../public/images/logo_current_no_shadow.png";
 
 export default function RecipePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentRecipe, setCurrentRecipe] = useState<Recipe | null>(null);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const togglePopUp = () => {
@@ -45,7 +47,7 @@ export default function RecipePage() {
           <RecipePopUp
             recipe={currentRecipe}
             toggleDialog={togglePopUp}
-            imageUrl={currentRecipe.imageUrl}
+            imageUrl={currentImage || logo.src}
           />
         )}
         <ScrollArea>
@@ -59,6 +61,7 @@ export default function RecipePage() {
                   recipe={recipe}
                   setRecipe={setCurrentRecipe}
                   setOpen={setIsOpen}
+                  setImage={setCurrentImage}
                 />
               ))
             ) : (

@@ -61,7 +61,7 @@ export default function Home() {
           </Button>
         </div>
         <Button variant="link" asChild>
-          <Link href="/dashboard">Continue As Guest</Link>
+          <Link href="/recipe">Continue As Guest</Link>
         </Button>
       </div>
       {/* Logo Section (Hidden on smaller screens) */}

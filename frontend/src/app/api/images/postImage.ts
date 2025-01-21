@@ -5,10 +5,12 @@ import { HTTP_RESPONSES } from "@/lib/constants";
 // Package Imports
 import { NextResponse } from "next/server";
 import { Readable, pipeline } from "stream";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
-    const bucket = await setupGridFS();
+    const { bucket, db } = await setupGridFS();
+    const recipeCollection = db.collection("recipes");
 
     const formData = await req.formData();
 
@@ -29,13 +31,18 @@ export async function POST(req: Request) {
 
     // Process the file into the nodeReadableStream
     const reader = fileStream.getReader();
+
     function readChunk() {
       reader.read().then(({ done, value }) => {
         if (done) {
-          nodeReadableStream.push(null); // Push null to indicate the end of the stream
+          // Push null to indicate the end of the stream
+          nodeReadableStream.push(null);
+
           return;
         }
+
         nodeReadableStream.push(value); // Push each chunk into the stream
+
         readChunk(); // Continue reading the next chunk
       });
     }
@@ -69,6 +76,14 @@ export async function POST(req: Request) {
       }
       console.log("Upload complete:", uploadStream.id);
     });
+
+    if (sourceId) {
+      let recipeId = new ObjectId(sourceId.toString());
+      recipeCollection.updateOne(
+        { _id: recipeId },
+        { $set: { imageId: uploadStream.id } }
+      );
+    }
 
     return NextResponse.json(
       { _id: uploadStream.id, message: "Image Uploaded Successfully" },

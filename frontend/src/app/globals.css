@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* .theme-light {
     --color-bg-primary: #f5f5f5;
     --color-bg-secondary: #ffffff;
@@ -72,6 +73,43 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    /* Width of the scrollbar */
+    height: 8px;
+    /* Height of the scrollbar for horizontal scroll */
+    position: absolute;
+    z-index: 9999;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    /* Color of the scrollbar thumb */
+    border-radius: 8px;
+    /* Rounded corners for the thumb */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #17ce82;
+    /* Darker color when hovering over the thumb */
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+    /* Background color of the scrollbar track */
+    border-radius: 8px;
+    /* Rounded corners for the track */
+  }
+
+  /* For Firefox */
+  scrollbar {
+    width: 6px;
+    height: 8px;
+    position: absolute;
+    z-index: 9999;
+  }
+
 }
 
 @font-face {
