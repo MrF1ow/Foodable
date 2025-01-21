@@ -2,10 +2,10 @@ name: Build and Test
 on:
   push:
     branches:
-      - '*'
+      - "*"
   pull_request:
     branches:
-       - '*'
+      - "*"
 
 jobs:
   build:
@@ -43,17 +43,17 @@ jobs:
         working-directory: frontend
         run: npm test
 
+      - name: Run Postman tests
+        run: |
+          npm install -g newman
+          newman run postman/Foodable.postman_collection.json --environment postman/Foodable.postman_environment.json
+
       - name: Run Cypress tests
         working-directory: frontend
         env:
           CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
         run: npx cypress run
-
-      - name: Run Postman tests
-        run: |
-          npm install -g newman
-          newman run postman/Foodable.postman_collection.json --environment postman/Foodable.postman_environment.json
 
       - name: Shut down Docker Compose
         run: docker-compose down
