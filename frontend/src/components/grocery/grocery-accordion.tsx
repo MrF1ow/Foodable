@@ -57,7 +57,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
                   }
                 />
                 <p className="text-lg">{item.title}</p>
-                <p className="bg-gray-100 text-xs rounded-md p-1">
+                <p className="bg-background text-foreground text-xs rounded-md p-1">
                   {item.quantity} pcs
                 </p>
               </div>
