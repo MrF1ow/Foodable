@@ -21,7 +21,7 @@ interface InputSectionProps
 
 export const InputCard = ({ title, content, footer }: InputSectionProps) => {
   return (
-    <Card className="h-full w-full flex flex-col">
+    <Card className="h-full w-full flex flex-col bg-card-background">
       <InputHeader title={title} />
       <CardContent className="flex-grow">{content}</CardContent>
       <InputFooter>{footer}</InputFooter>

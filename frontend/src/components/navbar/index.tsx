@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
+import Link from "next/link";
 
 import { navOptions } from "@/config/nav-options";
 
@@ -18,7 +19,14 @@ export const Navbar = () => {
   return (
     <Card className="w-full h-full bg-card-background text-foreground flex flex-col items-center p-0 m-0">
       <CardHeader className="flex items-center justify-center mb-12">
-        <Image src={logoNoShadow} alt="Foodable Logo" width={50} height={50} />
+        <Link href="/">
+          <Image
+            src={logoNoShadow}
+            alt="Foodable Logo"
+            width={50}
+            height={50}
+          />
+        </Link>
       </CardHeader>
 
       <CardContent className="flex flex-col items-center flex-grow gap-y-6">
