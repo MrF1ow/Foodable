@@ -26,6 +26,7 @@ export const Navbar = () => {
     }
     return (
       <Card className="w-full h-full bg-card-background text-foreground flex flex-col items-center p-0 m-0">
+
         <CardHeader className="flex items-center justify-center mb-12">
           <Link href="/">
             <Image
