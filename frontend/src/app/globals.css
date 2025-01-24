@@ -24,6 +24,7 @@
     --foreground: #111111;
     --card: 0 0% 100%;
     --card-background: #ffffff;
+    --secondary-background: #d3d3d3;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: #1bed95;
@@ -52,6 +53,7 @@
     --foreground: #ffffff;
     --card: 240 10% 3.9%;
     --card-background: #202020;
+    --secondary-background: #0c0c0c;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: #1bed95;

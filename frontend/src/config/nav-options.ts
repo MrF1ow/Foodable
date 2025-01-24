@@ -39,3 +39,31 @@ export const navOptions: NavOption[] = [
     Icon: IoMdSettings,
   },
 ];
+
+export const navOptionsMobile: NavOption[] = [
+  {
+    name: "Saved Items",
+    url: "/saved",
+    Icon: IoBookmark,
+  },
+  {
+    name: "Grocery List",
+    url: "/grocery-list",
+    Icon: MdChecklist,
+  },
+  {
+    name: "Recipes",
+    url: "/recipe",
+    Icon: GiCook,
+  },
+  {
+    name: "Social",
+    url: "/social",
+    Icon: FaUserFriends,
+  },
+  {
+    name: "Settings",
+    url: "/settings",
+    Icon: IoMdSettings,
+  },
+];
