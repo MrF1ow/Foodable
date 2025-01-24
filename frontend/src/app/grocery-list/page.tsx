@@ -17,8 +17,8 @@ import { HelperCard } from "./list-helper-card";
 
 export default function GroceryList() {
   const [items, setItems] = useState(grocerySections.slice(0, 10));
-  const [splitLayout, setSplitLayout] = useState(true);
-  const [currentCard, setCurrentCard] = useState("groceryHelper");
+  const [splitLayout, setSplitLayout] = useState(false);
+  const [currentCard, setCurrentCard] = useState("");
 
   const handleAddItem = () => {
     setSplitLayout(true);
