@@ -8,8 +8,16 @@ import { GrocerySection } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import { Icons } from "../ui/icons";
 
-export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
+export const GroceryAccordion = ({
+  title,
+  Icon,
+  color,
+  handleAddItem,
+}: GrocerySection & {
+  handleAddItem?: () => void;
+}) => {
   const groceryItems = [
     { title: "Croissant", quantity: "2" },
     { title: "Croissant", quantity: "2" },
@@ -43,8 +51,18 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
       defaultValue="1"
     >
       <AccordionItem value={title} className="w-[80%] mx-auto">
-        <AccordionTrigger>
+        <AccordionTrigger className="flex justify-start items-center space-x-2">
           <AccordionHeader title={title} Icon={Icon} color={color} />
+          <div
+            style={{
+              color: "white",
+              backgroundColor: color,
+              borderRadius: "50%",
+            }}
+            onClick={handleAddItem}
+          >
+            <Icons.plus />
+          </div>
         </AccordionTrigger>
         <AccordionContent>
           <div className="mt-4 flex flex-col gap-x-4">

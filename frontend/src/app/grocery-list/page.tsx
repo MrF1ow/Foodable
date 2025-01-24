@@ -12,7 +12,6 @@ import { GeneralHeader } from "@/components/general-header";
 import { grocerySections } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
 import { InputCard } from "@/components/input-card/input-card";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
   FormField,
@@ -32,14 +31,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { createGroceryStore } from "@/stores/grocery-store";
 
 import { Button } from "@/components/ui/button";
 
-import { z } from "zod";
-
 export default function GroceryList() {
   const [items, setItems] = useState(grocerySections.slice(0, 6));
-  const [splitLayout, setSplitLayout] = useState(true);
+  const [splitLayout, setSplitLayout] = useState(false);
+
+  const handleAddItem = () => {
+    setSplitLayout(true);
+    console.log("Add item button clicked");
+  };
 
   const column1 = items.filter((_, index) => index % 3 === 0);
   const column2 = items.filter((_, index) => index % 3 === 1);
@@ -64,7 +67,7 @@ export default function GroceryList() {
                   whileDrag={{ scale: 1.05 }}
                   dragSnapToGrid={true}
                 >
-                  <GroceryAccordion {...item} />
+                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
                 </Reorder.Item>
               ))}
             </div>
@@ -79,7 +82,7 @@ export default function GroceryList() {
                   whileDrag={{ scale: 1.05 }}
                   dragSnapToGrid={true}
                 >
-                  <GroceryAccordion {...item} />
+                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
                 </Reorder.Item>
               ))}
             </div>
@@ -94,7 +97,7 @@ export default function GroceryList() {
                   whileDrag={{ scale: 1.05 }}
                   dragSnapToGrid={true}
                 >
-                  <GroceryAccordion {...item} />
+                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
                 </Reorder.Item>
               ))}
             </div>
@@ -104,30 +107,25 @@ export default function GroceryList() {
     );
   };
 
-  const formSchema = z.object({
-    itemName: z.string().min(2).max(50),
-    quantity: z.number().min(1).max(100),
-    category: z.string().min(2).max(50),
-  });
+  const groceryStore = createGroceryStore();
 
-  const AddItem = () => {
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        itemName: "",
-        quantity: 0,
-        category: "",
-      },
-    });
+  const AddItemCard = () => {
+    const form = useForm();
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-      console.log(values);
+    function onSubmit(data: any) {
+      console.log(data);
     }
+
+    const handleInputClose = () => {
+      setSplitLayout(false);
+      console.log("Close button clicked");
+    };
 
     return (
       <Form {...form}>
         <InputCard
           title="Add Item"
+          onClick={handleInputClose}
           content={
             <div className="flex flex-col gap-4">
               <FormField
@@ -217,7 +215,11 @@ export default function GroceryList() {
     >
       {splitLayout ? (
         <div className="flex h-full w-full">
-          <ContentLayout split leftSide={<Content />} rightSide={<AddItem />} />
+          <ContentLayout
+            split
+            leftSide={<Content />}
+            rightSide={<AddItemCard />}
+          />
         </div>
       ) : (
         <ContentLayout all={<Content />} />

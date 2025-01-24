@@ -3,7 +3,8 @@ import { ObjectId } from "mongodb";
 export type GroceryItem = {
   name: string; // Ingredient name
   quantity: number; // Quantity of ingredient
-  brand: string; // Brand of ingredient
+  category: string; // Category of ingredient
+  checked: boolean; // If the ingredient is checked off
 };
 
 export type RecipeIngredient = {

@@ -8,15 +8,6 @@ export const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
       <p className="text-xl font-bold" style={{ color: color }}>
         {title}
       </p>
-      <button
-        style={{
-          color: "white",
-          backgroundColor: color,
-          borderRadius: "50%",
-        }}
-      >
-        <Icons.plus />
-      </button>
     </div>
   );
 };

@@ -11,12 +11,12 @@ import { Icons } from "../ui/icons";
 
 export const InputHeader = ({
   title,
-  onClose,
-}: InputHeaderProp & { onClose?: () => void }) => {
+  onClick,
+}: InputHeaderProp & { onClick?: () => void }) => {
   return (
     <div className="p-4 relative flex items-center w-full overflow-hidden">
       <button
-        onClick={onClose}
+        onClick={onClick}
         className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none"
       >
         <Icons.close />
