@@ -30,7 +30,7 @@ export const MainLayout = ({
     <div className="flex h-screen w-screen bg-background">
       {/* Sidebar */}
       {isMobile && (
-        <div className="w-full h-[8%] bg-background p-6">
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[10%] bg-background p-6">
           <Navbar />
         </div>
       )}

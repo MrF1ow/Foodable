@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { useGeneralStore } from "@/stores/general/store";
+
 // Enforces the type of the props passed to the component
 type ContentLayoutProps =
   | {
@@ -21,9 +23,13 @@ export const ContentLayout = ({
   rightSide,
   all,
 }: ContentLayoutProps) => {
+  const isMobile = useGeneralStore((state) => state.isMobile);
+
   return (
     <div className="w-full h-full bg-background overflow-hidden pt-6">
-      {split ? (
+      {isMobile ? (
+        <div>{all}</div>
+      ) : split ? (
         <div className="flex flex-row h-full bg-background">
           <div className="relative w-[60%] h-auto bg-background">
             {leftSide}

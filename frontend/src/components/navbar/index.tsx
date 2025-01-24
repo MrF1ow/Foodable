@@ -31,8 +31,7 @@ export const Navbar = () => {
             <Image
               src={logoNoShadow}
               alt="Foodable Logo"
-              width={50}
-              height={50}
+              className="cursor-pointer w-[50px] h-[50px]"
             />
           </Link>
         </CardHeader>
