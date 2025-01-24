@@ -4,16 +4,16 @@ export const HeaderWithButton = ({
   title,
   width,
   buttonText,
-}: GeneralHeaderProps & { buttonText: string }) => {
-  const handleButtonClick = () => {
-    console.log("Header Button Clicked");
-  };
+  handleButtonClick,
+}: GeneralHeaderProps & { buttonText: string } & {
+  handleButtonClick?: () => void;
+}) => {
   return (
-    <div className=" h-full">
+    <div className="h-full flex justify-between items-center">
       <GeneralHeader title={title} width={width} />
       <button
         onClick={handleButtonClick}
-        className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        className="text-2xl px-6 py-2 bg-primary font-bold rounded-md"
       >
         {buttonText}
       </button>

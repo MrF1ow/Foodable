@@ -46,7 +46,7 @@ export const GroceryAccordion = ({
   return (
     <Accordion
       type="single"
-      className="w-[300px] bg-card-background rounded-lg shadow-lg"
+      className="w-[564px] bg-card-background rounded-lg shadow-lg"
       collapsible
       defaultValue="1"
     >

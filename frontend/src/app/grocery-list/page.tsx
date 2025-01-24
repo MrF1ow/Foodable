@@ -38,8 +38,8 @@ import { HeaderWithButton } from "@/components/header-with-button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function GroceryList() {
-  const [items, setItems] = useState(grocerySections.slice(0, 6));
-  const [splitLayout, setSplitLayout] = useState(true);
+  const [items, setItems] = useState(grocerySections.slice(0, 10));
+  const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
 
   const handleAddItem = () => {
@@ -48,9 +48,22 @@ export default function GroceryList() {
     console.log("Add item button clicked");
   };
 
-  const column1 = items.filter((_, index) => index % 3 === 0);
-  const column2 = items.filter((_, index) => index % 3 === 1);
-  const column3 = items.filter((_, index) => index % 3 === 2);
+  const handleFindPrice = () => {
+    setSplitLayout(true);
+    setCurrentCard("findPrice");
+    console.log("Find Price button clicked");
+  };
+  let column1, column2, column3;
+
+  if (splitLayout == false) {
+    column1 = items.filter((_, index) => index % 3 === 0);
+    column2 = items.filter((_, index) => index % 3 === 1);
+    column3 = items.filter((_, index) => index % 3 === 2);
+  } else {
+    column1 = items.filter((_, index) => index % 2 === 0);
+    column2 = items.filter((_, index) => index % 2 === 1);
+    column3 = undefined;
+  }
 
   const Content = () => {
     return (
@@ -90,28 +103,27 @@ export default function GroceryList() {
                 </Reorder.Item>
               ))}
             </div>
-
-            <div className="flex flex-col gap-4">
-              {column3.map((item) => (
-                <Reorder.Item
-                  value={item}
-                  key={item.title} // Use index for unique key
-                  drag
-                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                  whileDrag={{ scale: 1.05 }}
-                  dragSnapToGrid={true}
-                >
-                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
-                </Reorder.Item>
-              ))}
-            </div>
+            {column3 && (
+              <div className="flex flex-col gap-4">
+                {column3.map((item) => (
+                  <Reorder.Item
+                    value={item}
+                    key={item.title} // Use index for unique key
+                    drag
+                    className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                    whileDrag={{ scale: 1.05 }}
+                    dragSnapToGrid={true}
+                  >
+                    <GroceryAccordion {...item} handleAddItem={handleAddItem} />
+                  </Reorder.Item>
+                ))}
+              </div>
+            )}
           </motion.div>
         </Reorder.Group>
       </ScrollArea>
     );
   };
-
-  const groceryStore = createGroceryStore();
 
   const AddItemCard = () => {
     const form = useForm();
@@ -354,6 +366,7 @@ export default function GroceryList() {
           title={"Grocery List"}
           width="25%"
           buttonText="Find Price"
+          handleButtonClick={handleFindPrice}
         />
       }
     >
