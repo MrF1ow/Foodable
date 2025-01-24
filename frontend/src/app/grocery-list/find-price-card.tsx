@@ -46,7 +46,7 @@ export const FindPriceCard = ({ setSplitLayout }: FindPriceCardProps) => {
                   </FormLabel>
                   <FormControl className="flex-1">
                     <Input
-                      className="w-auto"
+                      className="w-auto !text-xl h-12"
                       placeholder="Enter Zip Code"
                       {...field}
                     />

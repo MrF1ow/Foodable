@@ -42,15 +42,19 @@ export const AddItemCard = ({ setSplitLayout }: AddItemCardProps) => {
         title="Add Item"
         onClick={handleInputClose}
         content={
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6 mt-6">
             <FormField
               control={form.control}
               name="itemName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl">Item Name</FormLabel>
+                  <FormLabel className="text-2xl">Item Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter item name" {...field} />
+                    <Input
+                      className="!text-xl h-12"
+                      placeholder="Enter item name"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -61,9 +65,13 @@ export const AddItemCard = ({ setSplitLayout }: AddItemCardProps) => {
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl">Quantity</FormLabel>
+                  <FormLabel className="text-2xl">Quantity</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter quantity" {...field} />
+                    <Input
+                      className="!text-xl h-12"
+                      placeholder="Enter quantity"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,11 +82,11 @@ export const AddItemCard = ({ setSplitLayout }: AddItemCardProps) => {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl">Select Category</FormLabel>
+                  <FormLabel className="text-2xl">Select Category</FormLabel>
                   <div className="border rounded shadow-sm p-2">
                     <FormControl>
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
+                        <DropdownMenuTrigger className="text-xl">
                           {field.value || "Bakery"}
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>

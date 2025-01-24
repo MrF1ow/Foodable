@@ -13,11 +13,12 @@ import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
 import { HeaderWithButton } from "@/components/header-with-button";
 import { AddItemCard } from "./add-item-form";
 import { FindPriceCard } from "./find-price-card";
+import { HelperCard } from "./list-helper-card";
 
 export default function GroceryList() {
   const [items, setItems] = useState(grocerySections.slice(0, 10));
-  const [splitLayout, setSplitLayout] = useState(false);
-  const [currentCard, setCurrentCard] = useState("");
+  const [splitLayout, setSplitLayout] = useState(true);
+  const [currentCard, setCurrentCard] = useState("groceryHelper");
 
   const handleAddItem = () => {
     setSplitLayout(true);
@@ -108,6 +109,8 @@ export default function GroceryList() {
         return <AddItemCard setSplitLayout={setSplitLayout} />;
       case "findPrice":
         return <FindPriceCard setSplitLayout={setSplitLayout} />;
+      case "groceryHelper":
+        return <HelperCard setSplitLayout={setSplitLayout} />;
       default:
         return null;
     }

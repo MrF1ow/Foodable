@@ -1,0 +1,72 @@
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormDescription,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { InputCard } from "@/components/input-card/input-card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/ui/icons";
+
+interface HelperCardProps {
+  setSplitLayout: (value: boolean) => void;
+}
+
+export const HelperCard = ({ setSplitLayout }: HelperCardProps) => {
+  const form = useForm();
+
+  function onSubmit(data: any) {
+    console.log(data);
+  }
+
+  const handleInputClose = () => {
+    setSplitLayout(false);
+    console.log("Close button clicked");
+  };
+
+  return (
+    <Form {...form}>
+      <InputCard
+        title="Grocery List Helper"
+        onClick={handleInputClose}
+        content={
+          <div className="flex flex-col gap-6 mt-6">
+            <p className="!text-lg bg-primary text-white p-4 rounded-lg w-80 ml-auto">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+              nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
+              Nulla quis sem at nibh elementum imperdiet. Duis sagittis
+            </p>
+            <p className="!text-lg bg-gray-100 p-4 rounded-lg w-80">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+              nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
+              Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.
+              Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris
+              massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti
+              sociosqu ad
+            </p>
+          </div>
+        }
+        footer={
+          <div className="flex flex-row gap-4 items-center justify-center">
+            <Input
+              className="!text-lg h-12 bg-gray-100"
+              placeholder="Lets Talk Food..."
+            />
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+              className="btn-primary rounded-full w-12 h-12 hover:bg-gray-500"
+            >
+              <Icons.send className="!w-8 !h-8" />
+            </Button>
+          </div>
+        }
+      />
+    </Form>
+  );
+};
