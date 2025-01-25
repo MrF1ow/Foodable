@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import { Navbar } from "@/components/navbar";
 import { useGeneralStore } from "@/stores/general/store";
@@ -12,6 +13,9 @@ export const MainLayout = ({
 }) => {
   const setIsMobile = useGeneralStore((state) => state.setIsMobile);
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
+
+  const pathName = usePathname();
 
   const checkScreenWidth = () => {
     setIsMobile(window.innerWidth < 768);
@@ -26,9 +30,15 @@ export const MainLayout = ({
     };
   }, [setIsMobile]);
 
+  useEffect(() => {
+    // Update current page whenever the path changes
+    const pageName = pathName || "/home";
+    setCurrentPage(pageName);
+  }, [pathName, setCurrentPage]);
+
   return (
     <div className="flex h-screen w-screen bg-background">
-      {/* Sidebar */}
+      {/* Bottom Navbar */}
       {isMobile && (
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[10%] bg-background p-6">
           <Navbar />

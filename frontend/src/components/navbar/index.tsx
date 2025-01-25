@@ -26,7 +26,6 @@ export const Navbar = () => {
     }
     return (
       <Card className="w-full h-full bg-card-background text-foreground flex flex-col items-center p-0 m-0">
-
         <CardHeader className="flex items-center justify-center mb-12">
           <Link href="/">
             <Image
@@ -44,7 +43,6 @@ export const Navbar = () => {
               Icon={Icon}
               text={name}
               url={url}
-              isMobile={isMobile}
               active={activeItem}
             />
           ))}
@@ -61,15 +59,14 @@ export const Navbar = () => {
       /* Bottom Navbar */
     }
     return (
-      <Card className="w-full h-full bg-card-background text-foreground flex flex-row items-center p-0 m-0">
-        <CardContent className="flex flex-row items-center justify-between w-full">
+      <Card className="w-full h-full bg-card-background text-foreground flex items-center">
+        <CardContent className="flex flex-row items-center justify-between w-full h-full">
           {navOptionsMobile.map(({ name, url, Icon }) => (
             <NavbarItem
               key={name}
               Icon={Icon}
               text={name}
               url={url}
-              isMobile={isMobile}
               active={activeItem}
             />
           ))}

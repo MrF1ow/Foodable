@@ -8,47 +8,31 @@ export const NavbarItem = ({
   Icon,
   text,
   url,
-  isMobile,
   active,
 }: {
   Icon: IconType;
   text: string;
   url: string;
-  isMobile: boolean;
   active: string;
 }) => {
   const setCurrent = useGeneralStore((state) => state.setCurrentPage);
-  const isActive = active === text;
+  const isActive = active === url;
 
-  const buttonClass = `flex items-center justify-center relative group p-2 rounded-lg transition ${
+  const buttonClass = `flex items-center justify-center w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 relative group p-2 rounded-lg transition ${
     isActive
-      ? "bg-card-secondary text-primary"
+      ? "bg-secondary text-primary"
       : "bg-card-background text-foreground hover:bg-secondary"
   }`;
 
-  if (!isMobile) {
-    return (
-      <Link href={url}>
-        <button
-          className={buttonClass}
-          aria-label={text}
-          onClick={() => setCurrent(text)}
-        >
-          <Icon size={25} />
-        </button>
-      </Link>
-    );
-  } else {
-    return (
-      <Link href={url}>
-        <button
-          className={buttonClass}
-          aria-label={text}
-          onClick={() => setCurrent(text)}
-        >
-          <Icon size={25} />
-        </button>
-      </Link>
-    );
-  }
+  return (
+    <Link href={url}>
+      <button
+        className={buttonClass}
+        aria-label={text}
+        onClick={() => setCurrent(url)}
+      >
+        <Icon size={20} className="flex-shrink-0" />
+      </button>
+    </Link>
+  );
 };

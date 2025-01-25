@@ -24,12 +24,11 @@
     --foreground: #111111;
     --card: 0 0% 100%;
     --card-background: #ffffff;
-    --secondary-background: #d3d3d3;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: #1bed95;
     --primary-foreground: 0, 0%, 96%;
-    --secondary: 240 4.8% 95.9%;
+    --secondary: #f4f4f5;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
@@ -53,12 +52,11 @@
     --foreground: #ffffff;
     --card: 240 10% 3.9%;
     --card-background: #202020;
-    --secondary-background: #0c0c0c;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: #1bed95;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: #141414;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
