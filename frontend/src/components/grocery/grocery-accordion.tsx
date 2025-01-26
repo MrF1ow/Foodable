@@ -50,24 +50,21 @@ export const GroceryAccordion = ({
       value={openAccordion}
       onValueChange={(newValue) => setOpenAccordion(newValue)}
     >
-      <AccordionItem value={title} className="w-[90%] ml-auto">
-        <div className="flex justify-start items-center">
-          <AccordionTrigger className="flex items-center space-x-2 w-96">
-            <AccordionHeader title={title} Icon={Icon} color={color} />
-            <div className="flex-grow" />
-          </AccordionTrigger>
-          <button
+      <AccordionItem value={title} className="w-[80%] mx-auto">
+        <AccordionTrigger className="flex items-center space-x-2 hover:no-underline hover:scale-105">
+          <AccordionHeader title={title} Icon={Icon} color={color} />
+          <div
             style={{
               color: "white",
               backgroundColor: color,
               borderRadius: "50%",
             }}
             onClick={() => handleAddItem?.(title)}
-            className="ml-12"
+            className="transition-all hover:scale-125"
           >
             <Icons.plus />
-          </button>
-        </div>
+          </div>
+        </AccordionTrigger>
 
         <AccordionContent>
           <div className="mt-4 flex flex-col gap-x-4">

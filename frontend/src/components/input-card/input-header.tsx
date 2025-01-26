@@ -17,7 +17,7 @@ export const InputHeader = ({
     <div className="p-4 relative flex items-center w-full overflow-hidden">
       <button
         onClick={onClick}
-        className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none"
+        className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none hover:scale-105"
       >
         <Icons.close />
       </button>

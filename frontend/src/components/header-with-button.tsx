@@ -13,7 +13,7 @@ export const HeaderWithButton = ({
       <GeneralHeader title={title} width={width} />
       <button
         onClick={handleButtonClick}
-        className="text-2xl px-6 py-2 bg-primary font-bold rounded-md"
+        className="text-2xl px-6 py-2 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
       >
         {buttonText}
       </button>

@@ -18,7 +18,13 @@ interface FindPriceCardProps {
 }
 
 export const FindPriceCard = ({ setSplitLayout }: FindPriceCardProps) => {
-  const form = useForm();
+  const form = useForm({
+    defaultValues: {
+      zipCode: "",
+      selectStores: "",
+      searchBy: "",
+    },
+  });
 
   function onSubmit(data: any) {
     console.log(data);
@@ -46,6 +52,7 @@ export const FindPriceCard = ({ setSplitLayout }: FindPriceCardProps) => {
                   </FormLabel>
                   <FormControl className="flex-1">
                     <Input
+                      type="number"
                       className="w-auto !text-xl h-12"
                       placeholder="Enter Zip Code"
                       {...field}
