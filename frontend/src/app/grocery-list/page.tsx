@@ -16,14 +16,17 @@ import { FindPriceCard } from "./find-price-card";
 import { HelperCard } from "./list-helper-card";
 
 export default function GroceryList() {
-  const [items, setItems] = useState(grocerySections.slice(0, 10));
+  const [items, setItems] = useState(grocerySections);
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
+  const [selectedTitle, setSelectedTitle] = useState("");
 
-  const handleAddItem = () => {
+  const handleAddItem = (title: string) => {
     setSplitLayout(true);
+    setSelectedTitle(title);
     setCurrentCard("addItem");
     console.log("Add item button clicked");
+    console.log(selectedTitle);
   };
 
   const handleFindPrice = () => {
@@ -106,7 +109,13 @@ export default function GroceryList() {
   const renderRightSideCard = () => {
     switch (currentCard) {
       case "addItem":
-        return <AddItemCard setSplitLayout={setSplitLayout} />;
+        return (
+          <AddItemCard
+            setSplitLayout={setSplitLayout}
+            categories={grocerySections}
+            selectedCategory={selectedTitle}
+          />
+        );
       case "findPrice":
         return <FindPriceCard setSplitLayout={setSplitLayout} />;
       case "groceryHelper":

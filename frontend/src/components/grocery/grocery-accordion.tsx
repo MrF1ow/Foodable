@@ -16,7 +16,7 @@ export const GroceryAccordion = ({
   color,
   handleAddItem,
 }: GrocerySection & {
-  handleAddItem?: () => void;
+  handleAddItem?: (title: string) => void;
 }) => {
   const groceryItems = [
     { title: "Croissant", quantity: "2" },
@@ -59,7 +59,7 @@ export const GroceryAccordion = ({
               backgroundColor: color,
               borderRadius: "50%",
             }}
-            onClick={handleAddItem}
+            onClick={() => handleAddItem?.(title)}
           >
             <Icons.plus />
           </div>

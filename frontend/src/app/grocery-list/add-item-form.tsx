@@ -19,14 +19,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
+import { GrocerySection } from "@/types/grocery";
 
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
+  categories: GrocerySection[];
+  selectedCategory: string;
 }
 
-export const AddItemCard = ({ setSplitLayout }: AddItemCardProps) => {
+export const AddItemCard = ({
+  setSplitLayout,
+  categories,
+  selectedCategory,
+}: AddItemCardProps) => {
   const form = useForm();
-
+  console.log("Did it do", categories);
   function onSubmit(data: any) {
     console.log(data);
   }
@@ -87,22 +94,15 @@ export const AddItemCard = ({ setSplitLayout }: AddItemCardProps) => {
                     <FormControl>
                       <DropdownMenu>
                         <DropdownMenuTrigger className="text-xl">
-                          {field.value || "Bakery"}
+                          {selectedCategory || "Select Category"}
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          {[
-                            "Bakery",
-                            "Dairy",
-                            "Produce",
-                            "Meat",
-                            "Pantry",
-                            "Frozen",
-                          ].map((category) => (
+                          {categories.map((section) => (
                             <DropdownMenuItem
-                              key={category}
-                              onClick={() => field.onChange(category)}
+                              key={section.title}
+                              onClick={() => field.onChange(section.title)}
                             >
-                              {category}
+                              {section.title}
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
