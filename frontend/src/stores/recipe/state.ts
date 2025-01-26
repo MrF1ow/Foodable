@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ObjectId } from "mongodb";
 
-import { RecipeIngredient } from "@/types";
+import { RecipeIngredient } from "@/types/recipe";
 
 export type RecipeState = {
   recipeId?: ObjectId; // Optional since it may not be initialized immediately
@@ -13,7 +13,6 @@ export type RecipeState = {
   instructions: string;
   priceApproximation: number;
   timeApproximation: number;
-  timestamp?: Date; // Optional timestamp for the recipe
 };
 
 export type RecipeActions = {
@@ -26,7 +25,6 @@ export type RecipeActions = {
   setInstructions: (instructions: string) => void;
   setPriceApproximation: (priceApproximation: number) => void;
   setTimeApproximation: (timeApproximation: number) => void;
-  setTimestamp: (timestamp: Date) => void;
 };
 
 export const createRecipeActions = (set: any): RecipeActions => ({
@@ -52,8 +50,6 @@ export const createRecipeActions = (set: any): RecipeActions => ({
     set((state: RecipeState) => ({ ...state, priceApproximation })),
   setTimeApproximation: (timeApproximation: number) =>
     set((state: RecipeState) => ({ ...state, timeApproximation })),
-  setTimestamp: (timestamp: Date) =>
-    set((state: RecipeState) => ({ ...state, timestamp })),
 });
 
 export type RecipeStore = RecipeState & RecipeActions;

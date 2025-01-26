@@ -2,7 +2,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateUserWithoutID } from "@/utils/validation";
-import { NewUser } from "@/types";
+import { NewUser } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";

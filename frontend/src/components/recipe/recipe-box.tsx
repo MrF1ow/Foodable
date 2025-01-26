@@ -6,7 +6,7 @@ import React from "react";
 
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 
 interface RecipeBoxProps {
   recipe: Recipe;

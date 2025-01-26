@@ -6,7 +6,7 @@ import {
   isValidObjectId,
   validateGroceryList,
 } from "@/utils/validation";
-import { GroceryList } from "@/types";
+import { GroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";

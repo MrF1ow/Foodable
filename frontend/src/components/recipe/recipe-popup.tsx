@@ -5,7 +5,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { Card, CardContent } from "@/components/ui/card";
 import pfp from "../../../public/images/pfp.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 import { RecipeContent } from "./recipe-content";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
