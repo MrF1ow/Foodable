@@ -54,6 +54,7 @@ export const AddItemCard = ({
       name: data.itemName,
       quantity: data.quantity,
       section: selectedCategory,
+      id: `${selectedCategory}-${data.itemName}-${Math.random().toString(36)}`, // Unique id based on section and a random string
       checked: false,
     };
     addItem(newItem);

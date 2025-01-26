@@ -30,8 +30,6 @@ export default function GroceryList() {
     setCurrentCard("addItem");
   };
 
-  console.log("openAccordion: ", openAccordion);
-
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
   };

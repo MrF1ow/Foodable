@@ -28,15 +28,17 @@ export const GroceryAccordion = ({
   openAccordion,
   setOpenAccordion,
 }: GrocerySection & GroceryAccordionProps) => {
-  const handleCheckboxChange = (index: number, checked: boolean) => {
-    console.log(
-      `Checkbox at index ${index} is now ${checked ? "checked" : "unchecked"}`
-    );
-
-    const updatedItems = [...groceryItems];
-    updatedItems[index].checked = checked;
-
-    console.log("Updated grocery items:", updatedItems);
+  const handleCheckboxChange = (
+    section: string,
+    id: string,
+    checked: boolean
+  ) => {
+    const updatedItems = groceryItems.map((item) => {
+      if (item.section === section && item.id === id) {
+        return { ...item, checked };
+      }
+      return item;
+    });
 
     setItems(updatedItems);
   };
@@ -77,12 +79,12 @@ export const GroceryAccordion = ({
             ) : (
               groceryItems
                 .filter((item) => item.section === title)
-                .map((item, index) => (
-                  <div key={index} className="flex mb-2 gap-x-4 items-center">
+                .map((item) => (
+                  <div key={item.id} className="flex mb-2 gap-x-4 items-center">
                     <Checkbox
                       checked={item.checked}
                       onCheckedChange={(checked: boolean) =>
-                        handleCheckboxChange(index, checked)
+                        handleCheckboxChange(title, item.id, checked)
                       }
                     />
                     <p className="text-lg">{item.name}</p>

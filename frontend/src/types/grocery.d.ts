@@ -5,6 +5,7 @@ export interface GrocerySection {
 }
 
 export interface GroceryItem {
+  id: string;
   name: string;
   quantity: string;
   section: string;
