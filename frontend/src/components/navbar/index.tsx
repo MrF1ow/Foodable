@@ -44,6 +44,7 @@ export const Navbar = () => {
               text={name}
               url={url}
               active={activeItem}
+              isMobile={isMobile}
             />
           ))}
         </CardContent>
@@ -59,8 +60,8 @@ export const Navbar = () => {
       /* Bottom Navbar */
     }
     return (
-      <Card className="w-full h-full bg-card-background text-foreground flex items-center">
-        <CardContent className="flex flex-row items-center justify-between w-full h-full">
+      <Card className="w-full h-full bg-card-background text-foreground flex items-center justify-center rounded-lg">
+        <CardContent className="grid grid-cols-5 w-full h-full p-0 gap-0">
           {navOptionsMobile.map(({ name, url, Icon }) => (
             <NavbarItem
               key={name}
@@ -68,6 +69,7 @@ export const Navbar = () => {
               text={name}
               url={url}
               active={activeItem}
+              isMobile={isMobile}
             />
           ))}
         </CardContent>
