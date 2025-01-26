@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FormField,
   FormItem,
@@ -19,28 +20,47 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
-import { GrocerySection } from "@/types/grocery";
+import { GroceryItem, GrocerySection } from "@/types/grocery";
 
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
   categories: GrocerySection[];
   selectedCategory: string;
+  handleCategoryChange: (category: string) => void;
+  addItem: (newItem: GroceryItem) => void;
 }
 
 export const AddItemCard = ({
   setSplitLayout,
   categories,
   selectedCategory,
+  handleCategoryChange,
+  addItem,
 }: AddItemCardProps) => {
-  const form = useForm();
-  console.log("Did it do", categories);
-  function onSubmit(data: any) {
-    console.log(data);
+  const form = useForm({
+    defaultValues: {
+      itemName: "",
+      quantity: "",
+      category: selectedCategory,
+    },
+  });
+
+  function onSubmit(data: {
+    itemName: string;
+    quantity: string;
+    category: string;
+  }) {
+    const newItem: GroceryItem = {
+      name: data.itemName,
+      quantity: data.quantity,
+      section: selectedCategory,
+      checked: false,
+    };
+    addItem(newItem);
   }
 
   const handleInputClose = () => {
     setSplitLayout(false);
-    console.log("Close button clicked");
   };
 
   return (
@@ -88,19 +108,22 @@ export const AddItemCard = ({
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-row items-center gap-4">
                   <FormLabel className="text-2xl">Select Category</FormLabel>
                   <div className="border rounded shadow-sm p-2">
                     <FormControl>
                       <DropdownMenu>
-                        <DropdownMenuTrigger className="text-xl">
-                          {selectedCategory || "Select Category"}
+                        <DropdownMenuTrigger className="text-xl w-40">
+                          {selectedCategory || field.value || "Select Category"}
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
+                        <DropdownMenuContent className="max-h-60 m-3 overflow-y-auto">
                           {categories.map((section) => (
                             <DropdownMenuItem
                               key={section.title}
-                              onClick={() => field.onChange(section.title)}
+                              onClick={() => {
+                                field.onChange(section.title);
+                                handleCategoryChange(section.title);
+                              }}
                             >
                               {section.title}
                             </DropdownMenuItem>

@@ -14,42 +14,53 @@ import { HeaderWithButton } from "@/components/header-with-button";
 import { AddItemCard } from "./add-item-form";
 import { FindPriceCard } from "./find-price-card";
 import { HelperCard } from "./list-helper-card";
+import { GroceryItem } from "@/types/grocery";
 
 export default function GroceryList() {
-  const [items, setItems] = useState(grocerySections);
+  const [sections, setSections] = useState(grocerySections.slice(0, 4));
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
-  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [items, setItems] = useState<GroceryItem[]>([]);
+  const [openAccordion, setOpenAccordion] = useState<string>("");
 
-  const handleAddItem = (title: string) => {
+  const handleAddItemForm = (title: string) => {
     setSplitLayout(true);
-    setSelectedTitle(title);
+    handleCategoryChange(title);
     setCurrentCard("addItem");
-    console.log("Add item button clicked");
-    console.log(selectedTitle);
   };
 
-  const handleFindPrice = () => {
+  console.log("openAccordion: ", openAccordion);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  const handleFindPriceForm = () => {
     setSplitLayout(true);
     setCurrentCard("findPrice");
-    console.log("Find Price button clicked");
   };
+
+  const addItem = (newItem: GroceryItem) => {
+    setItems((prevItems) => [...prevItems, newItem]);
+  };
+
   let column1, column2, column3;
 
   if (splitLayout == false) {
-    column1 = items.filter((_, index) => index % 3 === 0);
-    column2 = items.filter((_, index) => index % 3 === 1);
-    column3 = items.filter((_, index) => index % 3 === 2);
+    column1 = sections.filter((_, index) => index % 3 === 0);
+    column2 = sections.filter((_, index) => index % 3 === 1);
+    column3 = sections.filter((_, index) => index % 3 === 2);
   } else {
-    column1 = items.filter((_, index) => index % 2 === 0);
-    column2 = items.filter((_, index) => index % 2 === 1);
+    column1 = sections.filter((_, index) => index % 2 === 0);
+    column2 = sections.filter((_, index) => index % 2 === 1);
     column3 = undefined;
   }
 
   const Content = () => {
     return (
       <ScrollArea className="w-full h-full">
-        <Reorder.Group values={items} onReorder={setItems}>
+        <Reorder.Group values={sections} onReorder={setSections}>
           <motion.div
             className="flex flex-wrap gap-4 h-full bg-background w-full"
             dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
@@ -65,7 +76,14 @@ export default function GroceryList() {
                   whileDrag={{ scale: 1.05 }}
                   dragSnapToGrid={true}
                 >
-                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
+                  <GroceryAccordion
+                    {...item}
+                    handleAddItem={handleAddItemForm}
+                    groceryItems={items}
+                    setItems={setItems}
+                    setOpenAccordion={setOpenAccordion}
+                    openAccordion={openAccordion}
+                  />
                 </Reorder.Item>
               ))}
             </div>
@@ -80,7 +98,14 @@ export default function GroceryList() {
                   whileDrag={{ scale: 1.05 }}
                   dragSnapToGrid={true}
                 >
-                  <GroceryAccordion {...item} handleAddItem={handleAddItem} />
+                  <GroceryAccordion
+                    {...item}
+                    handleAddItem={handleAddItemForm}
+                    groceryItems={items}
+                    setItems={setItems}
+                    setOpenAccordion={setOpenAccordion}
+                    openAccordion={openAccordion}
+                  />
                 </Reorder.Item>
               ))}
             </div>
@@ -95,7 +120,14 @@ export default function GroceryList() {
                     whileDrag={{ scale: 1.05 }}
                     dragSnapToGrid={true}
                   >
-                    <GroceryAccordion {...item} handleAddItem={handleAddItem} />
+                    <GroceryAccordion
+                      {...item}
+                      handleAddItem={handleAddItemForm}
+                      groceryItems={items}
+                      setItems={setItems}
+                      setOpenAccordion={setOpenAccordion}
+                      openAccordion={openAccordion}
+                    />
                   </Reorder.Item>
                 ))}
               </div>
@@ -113,7 +145,9 @@ export default function GroceryList() {
           <AddItemCard
             setSplitLayout={setSplitLayout}
             categories={grocerySections}
-            selectedCategory={selectedTitle}
+            selectedCategory={selectedCategory}
+            addItem={addItem}
+            handleCategoryChange={handleCategoryChange}
           />
         );
       case "findPrice":
@@ -132,7 +166,7 @@ export default function GroceryList() {
           title={"Grocery List"}
           width="25%"
           buttonText="Find Price"
-          handleButtonClick={handleFindPrice}
+          handleButtonClick={handleFindPriceForm}
         />
       }
     >
