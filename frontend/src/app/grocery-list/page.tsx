@@ -22,7 +22,7 @@ export default function GroceryList() {
   const [currentCard, setCurrentCard] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [items, setItems] = useState<GroceryItem[]>([]);
-  const [openAccordion, setOpenAccordion] = useState<string>("");
+  const [openAccordion, setOpenAccordion] = useState<string[]>([]);
 
   const handleAddItemForm = (title: string) => {
     setSplitLayout(true);
