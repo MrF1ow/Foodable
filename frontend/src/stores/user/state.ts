@@ -1,4 +1,5 @@
-import { createStore } from "zustand/vanilla";
+import { create } from "zustand";
+import { ObjectId } from "mongodb";
 
 export type UserState = {
   id: string;
@@ -14,6 +15,8 @@ export type UserState = {
     latitude: number;
     longitude: number;
   };
+  following?: ObjectId[]; // will get from the db
+  followers?: ObjectId[]; // will get from the db
   // this is the date and time this user state was last updated, we will use this to determine if the user state is stale and needs to be refreshed
   updatedAt: Date;
   role: "guest" | "user" | "admin";
@@ -29,6 +32,30 @@ export type UserActions = {
   setUpdatedAt: (updatedAt: Date) => void;
   setRole: (role: UserState["role"]) => void;
 };
+
+export const createUserActions = (set: any): UserActions => ({
+  setId: (id: string) => set((state: UserState) => ({ ...state, id })),
+
+  setUsername: (username: string) =>
+    set((state: UserState) => ({ ...state, username })),
+
+  setEmail: (email: string) => set((state: UserState) => ({ ...state, email })),
+
+  setAuthToken: (authToken: string | null) =>
+    set((state: UserState) => ({ ...state, authToken })),
+
+  setPreferences: (preferences: UserState["preferences"]) =>
+    set((state: UserState) => ({ ...state, preferences })),
+
+  setLocation: (location: UserState["location"]) =>
+    set((state: UserState) => ({ ...state, location })),
+
+  setUpdatedAt: (updatedAt: Date) =>
+    set((state: UserState) => ({ ...state, updatedAt })),
+
+  setRole: (role: UserState["role"]) =>
+    set((state: UserState) => ({ ...state, role })),
+});
 
 export type UserStore = UserState & UserActions;
 
@@ -61,28 +88,8 @@ export const defaultInitState: UserState = {
 };
 
 export const createUserStore = (initState: UserState = defaultInitState) => {
-  return createStore<UserStore>()((set) => ({
+  return create<UserStore>()((set) => ({
     ...initState,
-
-    // Define actions as part of the store
-    setId: (id: string) => set((state) => ({ ...state, id })),
-
-    setUsername: (username: string) => set((state) => ({ ...state, username })),
-
-    setEmail: (email: string) => set((state) => ({ ...state, email })),
-
-    setAuthToken: (authToken: string | null) =>
-      set((state) => ({ ...state, authToken })),
-
-    setPreferences: (preferences: UserState["preferences"]) =>
-      set((state) => ({ ...state, preferences })),
-
-    setLocation: (location: UserState["location"]) =>
-      set((state) => ({ ...state, location })),
-
-    setUpdatedAt: (updatedAt: Date) =>
-      set((state) => ({ ...state, updatedAt })),
-
-    setRole: (role: UserState["role"]) => set((state) => ({ ...state, role })),
+    ...createUserActions(set),
   }));
 };

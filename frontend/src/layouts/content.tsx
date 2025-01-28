@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useGeneralStore } from "@/stores/general/store";
 
@@ -6,38 +6,35 @@ import { useGeneralStore } from "@/stores/general/store";
 type ContentLayoutProps =
   | {
       split: true;
-      leftSide: React.ReactNode;
-      rightSide: React.ReactNode;
-      all?: never;
+      mainContent: React.ReactNode;
+      subContent: React.ReactNode;
     }
   | {
-      split?: false;
-      leftSide?: never;
-      rightSide?: never;
-      all: React.ReactNode;
+      split: false;
+      mainContent: React.ReactNode;
+      subContent?: never;
     };
 
 export const ContentLayout = ({
   split,
-  leftSide,
-  rightSide,
-  all,
+  mainContent,
+  subContent,
 }: ContentLayoutProps) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   return (
     <div className="w-full h-full bg-background overflow-hidden pt-6">
       {isMobile ? (
-        <div>{all}</div>
+        <div className="h-full overflow-auto pb-[8%]">{mainContent}</div>
       ) : split ? (
         <div className="flex flex-row h-full bg-background">
-          <div className="relative w-[60%] h-auto bg-background">
-            {leftSide}
+          <div className="relative w-[60%] h-auto bg-background overflow-auto">
+            {mainContent}
           </div>
-          <div className="w-[40%] px-24">{rightSide}</div>
+          <div className="w-[40%] px-24">{subContent}</div>
         </div>
       ) : (
-        <div>{all}</div>
+        <div className="overflow-auto">{mainContent}</div>
       )}
     </div>
   );

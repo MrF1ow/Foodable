@@ -60,7 +60,7 @@ export const Navbar = () => {
       /* Bottom Navbar */
     }
     return (
-      <Card className="w-full h-full bg-card-background text-foreground flex items-center justify-center rounded-lg">
+      <Card className="w-full h-full bg-card-background text-foreground flex items-center justify-center rounded-xl">
         <CardContent className="grid grid-cols-5 w-full h-full p-0 gap-0">
           {navOptionsMobile.map(({ name, url, Icon }) => (
             <NavbarItem

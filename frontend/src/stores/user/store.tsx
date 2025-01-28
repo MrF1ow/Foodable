@@ -29,11 +29,11 @@ export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
 };
 
 export const useUserStore = <T,>(selector: (store: UserStore) => T): T => {
-  const userStoreContext = useContext(UserStoreContext);
+  const context = useContext(UserStoreContext);
 
-  if (!userStoreContext) {
+  if (!context) {
     throw new Error("useUserStore must be used within a UserStoreProvider");
   }
 
-  return useStore(userStoreContext, selector);
+  return useStore(context, selector);
 };
