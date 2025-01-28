@@ -36,3 +36,25 @@ export const ContentLayout = ({
     </div>
   );
 };
+
+export const ModifiedContentLayout = ({
+  split,
+  leftSide,
+  rightSide,
+  all,
+}: ContentLayoutProps) => {
+  return (
+    <div className="w-full h-full bg-background overflow-hidden pt-6">
+      {split ? (
+        <div className="flex flex-row h-full bg-background">
+          <div className="relative w-[45%] h-auto bg-background">
+            {leftSide}
+          </div>
+          <div className="w-[55%] px-24">{rightSide}</div>
+        </div>
+      ) : (
+        <div>{all}</div>
+      )}
+    </div>
+  );
+};

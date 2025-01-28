@@ -110,6 +110,22 @@
     z-index: 9999;
   }
 
+  .card-bg-image {
+    background-image: url("healthy.jpeg");
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+  }
+
+  .card-equal {
+    height: 400px; /* Adjust the height as needed */
+    width: 100%; /* Take full width */
+  }
+  
+  .card-content {
+    height: 100%; /* Ensure the content fills the card fully */
+  }
+
 }
 
 @font-face {
