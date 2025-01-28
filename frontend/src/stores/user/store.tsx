@@ -3,7 +3,7 @@
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { useStore } from "zustand";
 
-import { type UserStore, createUserStore } from "@/stores/user-store";
+import { type UserStore, createUserStore } from "@/stores/user/state";
 
 export type UserStoreApi = ReturnType<typeof createUserStore>;
 
@@ -16,7 +16,7 @@ export interface UserStoreProviderProps {
 }
 
 export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
-  const storeRef = useRef<UserStoreApi>();
+  const storeRef = useRef<UserStoreApi | undefined>(undefined);
   if (!storeRef.current) {
     storeRef.current = createUserStore();
   }
@@ -29,11 +29,11 @@ export const UserStoreProvider = ({ children }: UserStoreProviderProps) => {
 };
 
 export const useUserStore = <T,>(selector: (store: UserStore) => T): T => {
-  const userStoreContext = useContext(UserStoreContext);
+  const context = useContext(UserStoreContext);
 
-  if (!userStoreContext) {
+  if (!context) {
     throw new Error("useUserStore must be used within a UserStoreProvider");
   }
 
-  return useStore(userStoreContext, selector);
+  return useStore(context, selector);
 };

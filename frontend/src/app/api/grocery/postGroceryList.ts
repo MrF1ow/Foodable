@@ -2,7 +2,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants";
 import { validateGroceryListWithoutId } from "@/utils/validation";
-import { NewGroceryList } from "@/types";
+import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";

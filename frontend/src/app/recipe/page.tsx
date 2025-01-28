@@ -12,7 +12,7 @@ import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
 import { SearchBar } from "@/components/search-bar";
 import { SideList } from "@/components/side-list";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 import { RecipePopUp } from "@/components/recipe/recipe-popup";
 import logo from "../../../public/images/logo_current_no_shadow.png";
 
@@ -50,8 +50,8 @@ export default function RecipePage() {
             imageUrl={currentImage || logo.src}
           />
         )}
-        <ScrollArea>
-          <div className="flex flex-wrap justify-start gap-4">
+        <div className="h-full overflow-auto">
+          <div className="flex flex-wrap justify-start gap-4 z-10">
             {isLoading ? (
               <Loader /> // show loader if recipes are still loading
             ) : (filteredRecipes ?? []).length > 0 ? (
@@ -68,7 +68,7 @@ export default function RecipePage() {
               <p className="text-foreground">No recipes found.</p>
             )}
           </div>
-        </ScrollArea>
+        </div>
       </>
     );
   };
@@ -79,7 +79,11 @@ export default function RecipePage() {
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       }
     >
-      <ContentLayout split leftSide={<Content />} rightSide={<SideList />} />
+      <ContentLayout
+        split
+        mainContent={<Content />}
+        subContent={<SideList />}
+      />
     </MainLayout>
   );
 }
