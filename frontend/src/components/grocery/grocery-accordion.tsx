@@ -34,7 +34,7 @@ export const GroceryAccordion = ({
     checked: boolean
   ) => {
     const updatedItems = groceryItems.map((item) => {
-      if (item.section === section && item.id === id) {
+      if (item.category === section && item.id === id) {
         return { ...item, checked };
       }
       return item;
@@ -68,14 +68,14 @@ export const GroceryAccordion = ({
 
         <AccordionContent>
           <div className="mt-4 flex flex-col gap-x-4">
-            {groceryItems.filter((item) => item.section === title).length ===
+            {groceryItems.filter((item) => item.category === title).length ===
             0 ? (
               <p className="text-lg text-gray-400">
                 No items currently in this section.
               </p>
             ) : (
               groceryItems
-                .filter((item) => item.section === title)
+                .filter((item) => item.category === title)
                 .map((item) => (
                   <div key={item.id} className="flex mb-2 gap-x-4 items-center">
                     <Checkbox

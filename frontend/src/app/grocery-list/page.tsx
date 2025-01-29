@@ -14,12 +14,10 @@ import {
   grocerySectionOptions,
 } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
-import { InputCard } from "@/components/input-card/input-card";
-import { AddItem } from "@/components/grocery/add-item";
 import { HeaderWithButton } from "@/components/header-with-button";
-import { AddItemCard } from "./add-item-form";
-import { FindPriceCard } from "./find-price-card";
-import { HelperCard } from "./list-helper-card";
+import { AddItem } from "../../components/grocery/add-item";
+import { FindPrice as FindPrice } from "../../components/grocery/find-price";
+import { HelperCard } from "../../components/grocery/list-helper";
 import { GroceryItem } from "@/types/grocery";
 
 export default function GroceryList() {
@@ -146,7 +144,7 @@ export default function GroceryList() {
     switch (currentCard) {
       case "addItem":
         return (
-          <AddItemCard
+          <AddItem
             setSplitLayout={setSplitLayout}
             categories={grocerySections}
             selectedCategory={selectedCategory}
@@ -155,7 +153,7 @@ export default function GroceryList() {
           />
         );
       case "findPrice":
-        return <FindPriceCard setSplitLayout={setSplitLayout} />;
+        return <FindPrice setSplitLayout={setSplitLayout} />;
       case "groceryHelper":
         return <HelperCard setSplitLayout={setSplitLayout} />;
       default:

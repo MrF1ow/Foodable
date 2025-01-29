@@ -17,7 +17,7 @@ interface FindPriceCardProps {
   setSplitLayout: (value: boolean) => void;
 }
 
-export const FindPriceCard = ({ setSplitLayout }: FindPriceCardProps) => {
+export const FindPrice = ({ setSplitLayout }: FindPriceCardProps) => {
   const form = useForm({
     defaultValues: {
       zipCode: "",

@@ -24,16 +24,10 @@ export interface GrocerySection {
 export interface GroceryItem {
   id: string;
   name: string;
-  quantity: string;
-  section: string;
-  checked: boolean;
-}
-
-export interface GroceryItem {
-  name: string;
   quantity: number;
   unit: Units;
   category: GrocerySectionOptions;
+  checked: boolean;
 }
 
 export type GroceryList = NewGroceryList &
