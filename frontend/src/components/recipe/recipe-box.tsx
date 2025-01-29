@@ -6,7 +6,7 @@ import React from "react";
 
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 
 interface RecipeBoxProps {
   recipe: Recipe;
@@ -35,7 +35,7 @@ export const RecipeBox = ({
     <>
       <div
         key={recipe._id?.toString()}
-        className="w-full sm:w-40 md:w-40 aspect-square relative rounded-lg shadow-lg overflow-hidden"
+        className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
         onClick={() => {
           setRecipe(recipe);
           setImage(response.base64Image);

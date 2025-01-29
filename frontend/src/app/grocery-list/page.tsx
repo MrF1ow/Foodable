@@ -8,8 +8,15 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
+import { GeneralHeader } from "@/components/general-header";
+import {
+  grocerySections,
+  grocerySectionOptions,
+} from "@/config/grocery-sections";
 import { grocerySections } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
+import { InputCard } from "@/components/input-card/input-card";
+import { AddItem } from "@/components/grocery/add-item";
 import { HeaderWithButton } from "@/components/header-with-button";
 import { AddItemCard } from "./add-item-form";
 import { FindPriceCard } from "./find-price-card";
@@ -17,6 +24,11 @@ import { HelperCard } from "./list-helper-card";
 import { GroceryItem } from "@/types/grocery";
 
 export default function GroceryList() {
+  const [items, setItems] = useState(grocerySections.slice(0, 6));
+
+  const column1 = items.filter((_, index) => index % 3 === 0);
+  const column2 = items.filter((_, index) => index % 3 === 1);
+  const column3 = items.filter((_, index) => index % 3 === 2);
   const [sections, setSections] = useState(grocerySections.slice(0, 4));
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
@@ -168,6 +180,7 @@ export default function GroceryList() {
         />
       }
     >
+      <ContentLayout split mainContent={<Content />} subContent={<AddItem />} />
       {splitLayout ? (
         <div className="flex h-full w-full">
           <ContentLayout

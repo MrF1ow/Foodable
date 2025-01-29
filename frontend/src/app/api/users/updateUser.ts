@@ -6,7 +6,7 @@ import {
   validateObject,
   isValidObjectId,
 } from "@/utils/validation";
-import { User } from "@/types";
+import { User } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";

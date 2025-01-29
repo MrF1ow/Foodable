@@ -1,5 +1,5 @@
 import React from "react";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 import { RecipeSection } from "./recipe-section";
 
 export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {

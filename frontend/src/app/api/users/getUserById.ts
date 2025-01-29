@@ -4,7 +4,6 @@ import { HTTP_RESPONSES } from "@/lib/constants";
 import {
   validateUser,
   validateObject,
-  isValidObjectId,
 } from "@/utils/validation";
 import { getValueFromSearchParams } from "@/utils/routeHelpers";
 

@@ -3,16 +3,9 @@ import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 // Local imports
-import {
-  RecipeIngredient,
-  GroceryItem,
-  UserRating,
-  User,
-  Recipe,
-  GroceryList,
-  NewUser,
-  NewRecipe,
-} from "@/types";
+import { RecipeIngredient, Recipe, NewRecipe } from "@/types/recipe";
+import { GroceryItem, GroceryList } from "@/types/grocery";
+import { User, UserRating, NewUser } from "@/types/user";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
 export const validateObject = <T>(
