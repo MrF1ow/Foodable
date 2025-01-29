@@ -46,7 +46,7 @@ export const GroceryAccordion = ({
   return (
     <Accordion
       type="multiple"
-      className="w-[564px] bg-card-background rounded-lg shadow-lg"
+      className="w-[562px] bg-card-background rounded-lg shadow-lg"
       value={openAccordion}
       onValueChange={(newValue) => setOpenAccordion(newValue)}
     >

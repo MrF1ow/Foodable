@@ -13,7 +13,6 @@ import {
   grocerySections,
   grocerySectionOptions,
 } from "@/config/grocery-sections";
-import { grocerySections } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
 import { InputCard } from "@/components/input-card/input-card";
 import { AddItem } from "@/components/grocery/add-item";
@@ -24,12 +23,7 @@ import { HelperCard } from "./list-helper-card";
 import { GroceryItem } from "@/types/grocery";
 
 export default function GroceryList() {
-  const [items, setItems] = useState(grocerySections.slice(0, 6));
-
-  const column1 = items.filter((_, index) => index % 3 === 0);
-  const column2 = items.filter((_, index) => index % 3 === 1);
-  const column3 = items.filter((_, index) => index % 3 === 2);
-  const [sections, setSections] = useState(grocerySections.slice(0, 4));
+  const [sections, setSections] = useState(grocerySections.slice(0, 6));
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -180,17 +174,16 @@ export default function GroceryList() {
         />
       }
     >
-      <ContentLayout split mainContent={<Content />} subContent={<AddItem />} />
       {splitLayout ? (
         <div className="flex h-full w-full">
           <ContentLayout
             split
-            leftSide={<Content />}
-            rightSide={renderRightSideCard()}
+            mainContent={<Content />}
+            subContent={renderRightSideCard()}
           />
         </div>
       ) : (
-        <ContentLayout all={<Content />} />
+        <ContentLayout mainContent={<Content />} />
       )}
     </MainLayout>
   );

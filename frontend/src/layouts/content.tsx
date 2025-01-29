@@ -28,10 +28,10 @@ export const ContentLayout = ({
         <div className="h-full overflow-auto pb-[8%]">{mainContent}</div>
       ) : split ? (
         <div className="flex flex-row h-full bg-background">
-          <div className="relative w-[60%] h-auto bg-background overflow-auto">
+          <div className="relative w-[67%] h-auto bg-background overflow-auto">
             {mainContent}
           </div>
-          <div className="w-[40%] px-24">{subContent}</div>
+          <div className="flex-1">{subContent}</div>
         </div>
       ) : (
         <div className="overflow-auto">{mainContent}</div>
