@@ -4,8 +4,9 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TanstackProvider } from "./tanstack-provider";
-import { UserStoreProvider } from "../stores/user/store";
-import { GeneralStoreProvider } from "../stores/general/store";
+import { UserStoreProvider } from "@/stores/user/store";
+import { GeneralStoreProvider } from "@/stores/general/store";
+import { GroceryStoreProvider } from "@/stores/grocery/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -27,12 +28,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
       {/* TanstackProvider handles server-side state */}
       <TanstackProvider>
         <GeneralStoreProvider>
-          {/* UserStoreProvider handles client-side state */}
-          <UserStoreProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              {children}
-            </ThemeProvider>
-          </UserStoreProvider>
+          <GroceryStoreProvider>
+            {/* UserStoreProvider handles client-side state */}
+            <UserStoreProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+              >
+                {children}
+              </ThemeProvider>
+            </UserStoreProvider>
+          </GroceryStoreProvider>
         </GeneralStoreProvider>
       </TanstackProvider>
     </ClerkProvider>

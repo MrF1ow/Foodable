@@ -10,7 +10,7 @@ type ContentLayoutProps =
       subContent: React.ReactNode;
     }
   | {
-      split: false;
+      split?: false;
       mainContent: React.ReactNode;
       subContent?: never;
     };

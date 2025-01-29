@@ -39,14 +39,14 @@ export const initGroceryStore = (): GroceryState => {
   return {
     title: "",
     items: [],
-    map: new Map<string, GroceryItem>(),
+    map: new Map(),
   };
 };
 
 export const defaultInitState: GroceryState = {
   title: "",
   items: [],
-  map: new Map<string, GroceryItem>(),
+  map: new Map(),
 };
 
 export const createGroceryStore = (

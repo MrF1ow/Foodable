@@ -1,3 +1,20 @@
+export type GrocerySectionOptions =
+  | "Bakery"
+  | "Dairy"
+  | "Produce"
+  | "Meat"
+  | "Pantry"
+  | "Frozen"
+  | "Snacks"
+  | "Beverages"
+  | "Baby"
+  | "Household"
+  | "Seafood"
+  | "Personal Care"
+  | "Pet"
+  | "Alcohol"
+  | "Sweets";
+
 export interface GrocerySection {
   title: string;
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -8,6 +25,7 @@ export interface GroceryItem {
   name: string;
   quantity: number;
   unit: Units;
+  category: GrocerySectionOptions;
 }
 
 export type GroceryList = NewGroceryList &

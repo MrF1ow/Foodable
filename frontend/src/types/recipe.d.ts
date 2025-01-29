@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { GrocerySectionOptions } from "./grocery";
 
 export type Recipe = NewRecipe &
   (
@@ -10,6 +11,7 @@ export type RecipeIngredient = {
   name: string;
   quantity: number;
   unit: Units;
+  category: GrocerySectionOptions;
 };
 
 export type NewRecipe = {

@@ -1,9 +1,9 @@
 export type Units =
+  | "pcs"
   | "kg"
   | "g"
   | "l"
   | "ml"
-  | "pcs"
   | "tbsp"
   | "tsp"
   | "lb"

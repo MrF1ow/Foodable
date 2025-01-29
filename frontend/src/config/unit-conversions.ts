@@ -1,4 +1,36 @@
-import { UnitConversions } from "../types";
+import { UnitConversions, Units } from "../types";
+
+export const unitOptions: Units[] = [
+  "pcs",
+  "kg",
+  "g",
+  "l",
+  "ml",
+  "tbsp",
+  "tsp",
+  "lb",
+  "oz",
+  "cup",
+  "pint",
+  "quart",
+  "gallon",
+];
+
+export const unitsAsTuple = [
+  "pcs",
+  "kg",
+  "g",
+  "l",
+  "ml",
+  "tbsp",
+  "tsp",
+  "lb",
+  "oz",
+  "cup",
+  "pint",
+  "quart",
+  "gallon",
+] as const;
 
 export const unitConversions: UnitConversions = {
   kg: {
