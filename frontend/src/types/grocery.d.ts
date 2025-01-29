@@ -4,10 +4,11 @@ export interface GrocerySection {
   color: string;
 }
 
-export type GroceryItem = {
-  name: string; // Ingredient name
-  quantity: number; // Quantity of ingredient
-};
+export interface GroceryItem {
+  name: string;
+  quantity: number;
+  unit: Units;
+}
 
 export type GroceryList = NewGroceryList &
   (
