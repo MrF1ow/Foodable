@@ -57,26 +57,23 @@ export default function GroceryList() {
     setItems(uncheckedItems);
   };
 
+  const currentCategories = getCurrentGrocerySections();
+
   let column1, column2, column3;
 
   if (splitLayout == false) {
-    column1 = sections.filter((_, index) => index % 3 === 0);
-    column2 = sections.filter((_, index) => index % 3 === 1);
-    column3 = sections.filter((_, index) => index % 3 === 2);
+    column1 = currentCategories.filter((_, index) => index % 3 === 0);
+    column2 = currentCategories.filter((_, index) => index % 3 === 1);
+    column3 = currentCategories.filter((_, index) => index % 3 === 2);
   } else if (isMobile == true) {
-    column1 = sections;
+    column1 = currentCategories;
     column2 = undefined;
     column3 = undefined;
   } else {
-    column1 = sections.filter((_, index) => index % 2 === 0);
-    column2 = sections.filter((_, index) => index % 2 === 1);
+    column1 = currentCategories.filter((_, index) => index % 2 === 0);
+    column2 = currentCategories.filter((_, index) => index % 2 === 1);
     column3 = undefined;
   }
-  const currentCategories = getCurrentGrocerySections();
-
-  const column1 = currentCategories.filter((_, index) => index % 3 === 0);
-  const column2 = currentCategories.filter((_, index) => index % 3 === 1);
-  const column3 = currentCategories.filter((_, index) => index % 3 === 2);
 
   const Content = () => {
     return (

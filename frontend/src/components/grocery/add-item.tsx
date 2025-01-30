@@ -27,8 +27,9 @@ import {
   GrocerySectionOptions,
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
+import { unitOptions, unitsAsTuple } from "@/config/unit-conversions";
 
-import * as z from "zod";
+import { z } from "zod";
 
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
@@ -45,34 +46,39 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
     (state) => state.setSelectedCategory
   );
   const schema = z.object({
-    itemName: z.string().min(3, "Item name must be at least 3 characters long"),
-    quantity: z.number().min(1, "Quantity must be at least 1"),
+    itemName: z
+      .string()
+      .min(3, "Item name must be at least 3 characters long")
+      .max(50, "Item name must be less than 50 characters long"),
+    quantity: z
+      .number()
+      .min(1, "Quantity must be at least 1")
+      .max(100, "Quantity must be less than 100"),
     category: z.string().min(1, "Category is required"),
+    unit: z.enum(unitsAsTuple), // Uses unitOptions array
   });
 
   const form = useForm({
     defaultValues: {
       itemName: "",
       quantity: 1,
+      unit: unitsAsTuple[0],
       category: selectedCategory,
     },
     resolver: zodResolver(schema),
   });
 
-  const addItem = (newItem: GroceryItem) => {
-    setItems([...prevItems, newItem]);
-  };
-
   function onSubmit(data: z.infer<typeof schema>) {
+    console.log("Unit", data.unit);
     const newItem: GroceryItem = {
       id: `${selectedCategory}-${data.itemName}-${Math.random().toString(36)}`, // Unique id based on section and a random string
       name: data.itemName,
       quantity: data.quantity,
-      unit: "pcs",
+      unit: data.unit,
       category: selectedCategory,
       checked: false,
     };
-    addItem(newItem);
+    setItems([...prevItems, newItem]);
   }
 
   const handleInputClose = () => {
@@ -122,6 +128,34 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="unit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xl">Select Unit</FormLabel>
+                  <div className="border rounded shadow-sm p-2">
+                    <FormControl>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          {field.value || "pcs"}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          {unitOptions.map((unit) => (
+                            <DropdownMenuItem
+                              key={unit}
+                              onClick={() => field.onChange(unit)}
+                            >
+                              {unit}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </FormControl>
+                  </div>
                 </FormItem>
               )}
             />
