@@ -3,6 +3,15 @@ import { Units } from "@/types";
 import { RecipeIngredient } from "@/types/recipe";
 import { GroceryItem } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
+import { grocerySections } from "@/config/grocery-sections";
+
+export const getCurrentGrocerySections = () => {
+  const currentCategories = useGroceryStore((state) => state.currentCategories);
+
+  return grocerySections.filter((section) =>
+    currentCategories.some((category) => category === section.title)
+  );
+};
 
 export function convertAmount(
   amount: number,

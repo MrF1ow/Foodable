@@ -4,24 +4,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { GrocerySection } from "@/types/grocery";
+import { GrocerySection, GroceryItem } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import { useGroceryStore } from "@/stores/grocery/store";
 
-export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
-  const groceryItems = [
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-    { title: "Croissant", quantity: "2" },
-  ];
+export const GroceryAccordion = ({
+  title,
+  Icon,
+  color,
+  items,
+}: GrocerySection & { items: GroceryItem[] }) => {
+  const groceryItems = useGroceryStore((state) => state.items);
+  const setGroceryItems = useGroceryStore((state) => state.setItems);
+
+  // have the title and each according go through and find their items to display
 
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     new Array(groceryItems.length).fill(false)
@@ -56,9 +54,9 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
                     handleCheckboxChange(index, checked)
                   }
                 />
-                <p className="text-lg">{item.title}</p>
+                <p className="text-lg">{item.name}</p>
                 <p className="bg-background text-foreground text-xs rounded-md p-1">
-                  {item.quantity} pcs
+                  {item.quantity} {item.unit}
                 </p>
               </div>
             ))}
