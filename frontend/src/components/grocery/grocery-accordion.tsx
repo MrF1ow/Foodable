@@ -63,6 +63,7 @@ export const GroceryAccordion = ({
             }}
             onClick={() => handleAddItem?.(title)}
             className="transition-all hover:scale-125"
+            data-testid="add-item-button"
           >
             <Icons.plus />
           </div>

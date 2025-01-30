@@ -61,6 +61,7 @@ export const HelperCard = ({ setSplitLayout }: HelperCardProps) => {
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
               className="btn-primary rounded-full w-12 h-12 hover:bg-gray-500"
+              data-testid="send-button"
             >
               <Icons.send className="!w-8 !h-8" />
             </Button>

@@ -24,7 +24,6 @@ import { useGeneralStore } from "@/stores/general/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
 
 export default function GroceryList() {
-  const [sections, setSections] = useState(grocerySections.slice(0, 6));
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
   const [openAccordion, setOpenAccordion] = useState<string[]>([]);
@@ -123,8 +122,9 @@ export default function GroceryList() {
           <Button
             className="btn-primary rounded-full w-12 h-12 hover:bg-green-500 flex items-center justify-center fixed bottom-4 right-4 z-50"
             onClick={handleHelperForm}
+            data-testid="helper-button"
           >
-            <Icons.ai className="!w-6 !h-6" />
+            <Icons.ai className="!w-6 !h-6" data-testid="send-button" />
           </Button>
         )}
       </div>
