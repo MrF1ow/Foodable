@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { GrocerySection, GroceryItem } from "@/types/grocery";
+import { GrocerySection } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
@@ -14,8 +14,7 @@ export const GroceryAccordion = ({
   title,
   Icon,
   color,
-  items,
-}: GrocerySection & { items: GroceryItem[] }) => {
+}: GrocerySection) => {
   const groceryItems = useGroceryStore((state) => state.items);
   const setGroceryItems = useGroceryStore((state) => state.setItems);
 
