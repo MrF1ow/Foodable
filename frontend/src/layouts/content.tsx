@@ -34,7 +34,7 @@ export const ContentLayout = ({
           <div className="flex-1">{subContent}</div>
         </div>
       ) : (
-        <div className="overflow-auto">{mainContent}</div>
+        <div className="h-[calc(100vh-3rem)] overflow-auto">{mainContent}</div>
       )}
     </div>
   );

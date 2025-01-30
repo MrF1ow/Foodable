@@ -19,14 +19,20 @@ import { AddItem } from "../../components/grocery/add-item";
 import { FindPrice as FindPrice } from "../../components/grocery/find-price";
 import { HelperCard } from "../../components/grocery/list-helper";
 import { GroceryItem } from "@/types/grocery";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { Icons } from "@/components/ui/icons";
+import { Button } from "@/components/ui/button";
 
 export default function GroceryList() {
-  const [sections, setSections] = useState(grocerySections.slice(0, 6));
+  const [sections, setSections] = useState(grocerySections);
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [items, setItems] = useState<GroceryItem[]>([]);
   const [openAccordion, setOpenAccordion] = useState<string[]>([]);
+  const handleCategoryChange = useGroceryStore(
+    (state) => state.setSelectedCategory
+  );
+  const groceryItems = useGroceryStore((state) => state.items);
+  const setItems = useGroceryStore((state) => state.setItems);
 
   const handleAddItemForm = (title: string) => {
     setSplitLayout(true);
@@ -34,17 +40,20 @@ export default function GroceryList() {
     setCurrentCard("addItem");
   };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
-
   const handleFindPriceForm = () => {
     setSplitLayout(true);
     setCurrentCard("findPrice");
   };
 
-  const addItem = (newItem: GroceryItem) => {
-    setItems((prevItems) => [...prevItems, newItem]);
+  const handleHelperForm = () => {
+    setSplitLayout(true);
+    setCurrentCard("groceryHelper");
+  };
+
+  const handleItemDeletion = () => {
+    const uncheckedItems = groceryItems.filter((item) => !item.checked);
+
+    setItems(uncheckedItems);
   };
 
   let column1, column2, column3;
@@ -61,59 +70,16 @@ export default function GroceryList() {
 
   const Content = () => {
     return (
-      <ScrollArea className="w-full h-full">
-        <Reorder.Group values={sections} onReorder={setSections}>
-          <motion.div
-            className="flex flex-wrap gap-4 h-full bg-background w-full"
-            dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-            dragElastic={0.2}
-          >
-            <div className="flex flex-col gap-4">
-              {column1.map((item) => (
-                <Reorder.Item
-                  value={item}
-                  key={item.title} // Use index for unique key
-                  drag
-                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                  whileDrag={{ scale: 1.05 }}
-                  dragSnapToGrid={true}
-                >
-                  <GroceryAccordion
-                    {...item}
-                    handleAddItem={handleAddItemForm}
-                    groceryItems={items}
-                    setItems={setItems}
-                    setOpenAccordion={setOpenAccordion}
-                    openAccordion={openAccordion}
-                  />
-                </Reorder.Item>
-              ))}
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {column2.map((item) => (
-                <Reorder.Item
-                  value={item}
-                  key={item.title} // Use index for unique key
-                  drag
-                  className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                  whileDrag={{ scale: 1.05 }}
-                  dragSnapToGrid={true}
-                >
-                  <GroceryAccordion
-                    {...item}
-                    handleAddItem={handleAddItemForm}
-                    groceryItems={items}
-                    setItems={setItems}
-                    setOpenAccordion={setOpenAccordion}
-                    openAccordion={openAccordion}
-                  />
-                </Reorder.Item>
-              ))}
-            </div>
-            {column3 && (
+      <div>
+        <ScrollArea className="w-full h-full">
+          <Reorder.Group values={sections} onReorder={setSections}>
+            <motion.div
+              className="flex flex-wrap gap-4 h-full bg-background w-full"
+              dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+              dragElastic={0.2}
+            >
               <div className="flex flex-col gap-4">
-                {column3.map((item) => (
+                {column1.map((item) => (
                   <Reorder.Item
                     value={item}
                     key={item.title} // Use index for unique key
@@ -125,18 +91,65 @@ export default function GroceryList() {
                     <GroceryAccordion
                       {...item}
                       handleAddItem={handleAddItemForm}
-                      groceryItems={items}
-                      setItems={setItems}
                       setOpenAccordion={setOpenAccordion}
                       openAccordion={openAccordion}
                     />
                   </Reorder.Item>
                 ))}
               </div>
-            )}
-          </motion.div>
-        </Reorder.Group>
-      </ScrollArea>
+
+              <div className="flex flex-col gap-4">
+                {column2.map((item) => (
+                  <Reorder.Item
+                    value={item}
+                    key={item.title} // Use index for unique key
+                    drag
+                    className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                    whileDrag={{ scale: 1.05 }}
+                    dragSnapToGrid={true}
+                  >
+                    <GroceryAccordion
+                      {...item}
+                      handleAddItem={handleAddItemForm}
+                      setOpenAccordion={setOpenAccordion}
+                      openAccordion={openAccordion}
+                    />
+                  </Reorder.Item>
+                ))}
+              </div>
+              {column3 && (
+                <div className="flex flex-col gap-4">
+                  {column3.map((item) => (
+                    <Reorder.Item
+                      value={item}
+                      key={item.title} // Use index for unique key
+                      drag
+                      className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
+                      whileDrag={{ scale: 1.05 }}
+                      dragSnapToGrid={true}
+                    >
+                      <GroceryAccordion
+                        {...item}
+                        handleAddItem={handleAddItemForm}
+                        setOpenAccordion={setOpenAccordion}
+                        openAccordion={openAccordion}
+                      />
+                    </Reorder.Item>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </Reorder.Group>
+        </ScrollArea>
+        {!splitLayout && (
+          <Button
+            className="btn-primary rounded-full w-12 h-12 hover:bg-green-500 flex items-center justify-center fixed bottom-4 right-4 z-50"
+            onClick={handleHelperForm}
+          >
+            <Icons.ai className="!w-6 !h-6" />
+          </Button>
+        )}
+      </div>
     );
   };
 
@@ -147,9 +160,6 @@ export default function GroceryList() {
           <AddItem
             setSplitLayout={setSplitLayout}
             categories={grocerySections}
-            selectedCategory={selectedCategory}
-            addItem={addItem}
-            handleCategoryChange={handleCategoryChange}
           />
         );
       case "findPrice":
@@ -167,8 +177,22 @@ export default function GroceryList() {
         <HeaderWithButton
           title={"Grocery List"}
           width="25%"
-          buttonText="Find Price"
-          handleButtonClick={handleFindPriceForm}
+          children={
+            <div className="flex items-center justify-center">
+              <Button
+                onClick={handleItemDeletion}
+                className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+              >
+                <Icons.delete className="!h-6 !w-6" />
+              </Button>
+              <Button
+                onClick={handleFindPriceForm}
+                className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+              >
+                {"Find Price"}
+              </Button>
+            </div>
+          }
         />
       }
     >

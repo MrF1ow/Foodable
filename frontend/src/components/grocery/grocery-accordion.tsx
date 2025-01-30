@@ -9,11 +9,10 @@ import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Icons } from "../ui/icons";
+import { useGroceryStore } from "@/stores/grocery/store";
 
 interface GroceryAccordionProps {
   handleAddItem: (title: string) => void;
-  groceryItems: GroceryItem[];
-  setItems: (items: GroceryItem[]) => void;
   openAccordion: string[];
   setOpenAccordion: (value: string[]) => void;
 }
@@ -23,30 +22,32 @@ export const GroceryAccordion = ({
   Icon,
   color,
   handleAddItem,
-  groceryItems,
-  setItems,
   openAccordion,
   setOpenAccordion,
 }: GrocerySection & GroceryAccordionProps) => {
+  const setItems = useGroceryStore((state) => state.setItems);
+  const groceryItems = useGroceryStore((state) => state.items);
+
   const handleCheckboxChange = (
     section: string,
     id: string,
     checked: boolean
   ) => {
+    console.log("Before update", groceryItems);
     const updatedItems = groceryItems.map((item) => {
       if (item.category === section && item.id === id) {
         return { ...item, checked };
       }
       return item;
     });
-
+    console.log("Before update", updatedItems);
     setItems(updatedItems);
   };
 
   return (
     <Accordion
       type="multiple"
-      className="w-[562px] bg-card-background rounded-lg shadow-lg"
+      className="w-[560px] bg-card-background rounded-lg shadow-lg"
       value={openAccordion}
       onValueChange={(newValue) => setOpenAccordion(newValue)}
     >
@@ -66,7 +67,7 @@ export const GroceryAccordion = ({
           </div>
         </AccordionTrigger>
 
-        <AccordionContent>
+        <AccordionContent className="max-h-80 overflow-y-auto">
           <div className="mt-4 flex flex-col gap-x-4">
             {groceryItems.filter((item) => item.category === title).length ===
             0 ? (

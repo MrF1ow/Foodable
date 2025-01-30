@@ -3,20 +3,12 @@ import { GeneralHeader, GeneralHeaderProps } from "./general-header";
 export const HeaderWithButton = ({
   title,
   width,
-  buttonText,
-  handleButtonClick,
-}: GeneralHeaderProps & { buttonText: string } & {
-  handleButtonClick?: () => void;
-}) => {
+  children,
+}: GeneralHeaderProps & { children: React.ReactNode }) => {
   return (
     <div className="h-full flex justify-between items-center">
       <GeneralHeader title={title} width={width} />
-      <button
-        onClick={handleButtonClick}
-        className="text-2xl px-6 py-2 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-      >
-        {buttonText}
-      </button>
+      <div>{children}</div>
     </div>
   );
 };

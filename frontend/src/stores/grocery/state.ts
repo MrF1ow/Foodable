@@ -6,11 +6,13 @@ export type GroceryState = {
   title: string;
   items: GroceryItem[];
   map: Map<string, GroceryItem>;
+  selectedCategory: string;
 };
 
 export type GroceryActions = {
   setTitle: (title: string) => void;
   setItems: (items: GroceryItem[]) => void;
+  setSelectedCategory: (category: string) => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -31,6 +33,8 @@ export const createGroceryActions = (set: any): GroceryActions => ({
         map: newMap, // Update map based on the new items
       };
     }),
+  setSelectedCategory: (category: string) =>
+    set((state: GroceryState) => ({ ...state, selectedCategory: category })),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
@@ -40,6 +44,7 @@ export const initGroceryStore = (): GroceryState => {
     title: "",
     items: [],
     map: new Map(),
+    selectedCategory: "",
   };
 };
 
@@ -47,6 +52,7 @@ export const defaultInitState: GroceryState = {
   title: "",
   items: [],
   map: new Map(),
+  selectedCategory: "",
 };
 
 export const createGroceryStore = (

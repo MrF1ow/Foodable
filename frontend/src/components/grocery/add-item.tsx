@@ -29,40 +29,43 @@ import * as z from "zod";
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
   categories: GrocerySection[];
-  selectedCategory: string;
-  handleCategoryChange: (category: string) => void;
-  addItem: (newItem: GroceryItem) => void;
+  //   handleCategoryChange: (category: string) => void;
+  //   addItem: (newItem: GroceryItem) => void;
 }
 
-export const AddItem = ({
-  setSplitLayout,
-  categories,
-  selectedCategory,
-  handleCategoryChange,
-  addItem,
-}: AddItemCardProps) => {
+export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
+  const prevItems = useGroceryStore((state) => state.items);
+  const setItems = useGroceryStore((state) => state.setItems);
+  const selectedCategory = useGroceryStore((state) => state.selectedCategory);
+  const handleCategoryChange = useGroceryStore(
+    (state) => state.setSelectedCategory
+  );
   const schema = z.object({
     itemName: z.string().min(3, "Item name must be at least 3 characters long"),
-    quantity: z.string().min(1, "Quantity must be at least 1"),
+    quantity: z.number().min(1, "Quantity must be at least 1"),
     category: z.string().min(1, "Category is required"),
   });
 
   const form = useForm({
     defaultValues: {
       itemName: "",
-      quantity: "",
+      quantity: 1,
       category: selectedCategory,
     },
     resolver: zodResolver(schema),
   });
 
+  const addItem = (newItem: GroceryItem) => {
+    setItems([...prevItems, newItem]);
+  };
+
   function onSubmit(data: z.infer<typeof schema>) {
     const newItem: GroceryItem = {
       id: `${selectedCategory}-${data.itemName}-${Math.random().toString(36)}`, // Unique id based on section and a random string
       name: data.itemName,
-      quantity: 0,
+      quantity: data.quantity,
       unit: "pcs",
-      category: "Bakery",
+      category: selectedCategory,
       checked: false,
     };
     addItem(newItem);
@@ -108,6 +111,10 @@ export const AddItem = ({
                       className="!text-xl h-12 "
                       placeholder="Enter quantity"
                       {...field}
+                      onChange={(e) => {
+                        // Parse value as a number
+                        field.onChange(Number(e.target.value));
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
