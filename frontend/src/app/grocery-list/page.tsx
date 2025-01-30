@@ -21,6 +21,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
+import { getCurrentGrocerySections } from "@/utils/listItems";
 
 export default function GroceryList() {
   const [sections, setSections] = useState(grocerySections.slice(0, 6));
@@ -71,6 +72,11 @@ export default function GroceryList() {
     column2 = sections.filter((_, index) => index % 2 === 1);
     column3 = undefined;
   }
+  const currentCategories = getCurrentGrocerySections();
+
+  const column1 = currentCategories.filter((_, index) => index % 3 === 0);
+  const column2 = currentCategories.filter((_, index) => index % 3 === 1);
+  const column3 = currentCategories.filter((_, index) => index % 3 === 2);
 
   const Content = () => {
     return (

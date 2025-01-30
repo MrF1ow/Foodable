@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
-import { GroceryItem } from "@/types/grocery";
+import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 
 export type GroceryState = {
   title: string;
   items: GroceryItem[];
+  currentCategories: GrocerySectionOptions[];
   map: Map<string, GroceryItem>;
   selectedCategory: string;
 };
@@ -13,6 +14,7 @@ export type GroceryActions = {
   setTitle: (title: string) => void;
   setItems: (items: GroceryItem[]) => void;
   setSelectedCategory: (category: string) => void;
+  setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -33,6 +35,8 @@ export const createGroceryActions = (set: any): GroceryActions => ({
         map: newMap, // Update map based on the new items
       };
     }),
+  setCurrentCategories: (categories: GrocerySectionOptions[]) =>
+    set((state: GroceryState) => ({ ...state, currentCategories: categories })),
   setSelectedCategory: (category: string) =>
     set((state: GroceryState) => ({ ...state, selectedCategory: category })),
 });
@@ -43,6 +47,7 @@ export const initGroceryStore = (): GroceryState => {
   return {
     title: "",
     items: [],
+    currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Pantry"],
     map: new Map(),
     selectedCategory: "",
   };
@@ -51,6 +56,7 @@ export const initGroceryStore = (): GroceryState => {
 export const defaultInitState: GroceryState = {
   title: "",
   items: [],
+  currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Pantry"],
   map: new Map(),
   selectedCategory: "",
 };
