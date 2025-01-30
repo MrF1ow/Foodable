@@ -26,7 +26,7 @@ export interface GroceryItem {
   name: string;
   quantity: number;
   unit: Units;
-  category: string;
+  category: GrocerySectionOptions;
   checked: boolean;
 }
 

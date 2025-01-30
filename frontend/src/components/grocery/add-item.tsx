@@ -21,7 +21,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
-import { GroceryItem, GrocerySection } from "@/types/grocery";
+import {
+  GroceryItem,
+  GrocerySection,
+  GrocerySectionOptions,
+} from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 
 import * as z from "zod";
@@ -29,14 +33,14 @@ import * as z from "zod";
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
   categories: GrocerySection[];
-  //   handleCategoryChange: (category: string) => void;
-  //   addItem: (newItem: GroceryItem) => void;
 }
 
 export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
   const prevItems = useGroceryStore((state) => state.items);
   const setItems = useGroceryStore((state) => state.setItems);
-  const selectedCategory = useGroceryStore((state) => state.selectedCategory);
+  const selectedCategory = useGroceryStore(
+    (state) => state.selectedCategory as GrocerySectionOptions
+  );
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
   );

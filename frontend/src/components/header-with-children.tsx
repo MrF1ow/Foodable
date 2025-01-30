@@ -1,6 +1,6 @@
 import { GeneralHeader, GeneralHeaderProps } from "./general-header";
 
-export const HeaderWithButton = ({
+export const HeaderWithChildren = ({
   title,
   width,
   children,

@@ -33,26 +33,27 @@ export const GroceryAccordion = ({
     id: string,
     checked: boolean
   ) => {
-    console.log("Before update", groceryItems);
     const updatedItems = groceryItems.map((item) => {
       if (item.category === section && item.id === id) {
         return { ...item, checked };
       }
       return item;
     });
-    console.log("Before update", updatedItems);
     setItems(updatedItems);
   };
 
   return (
     <Accordion
       type="multiple"
-      className="w-[560px] bg-card-background rounded-lg shadow-lg"
+      className="bg-card-background rounded-lg shadow-lg"
       value={openAccordion}
       onValueChange={(newValue) => setOpenAccordion(newValue)}
     >
-      <AccordionItem value={title} className="w-[80%] mx-auto">
-        <AccordionTrigger className="flex items-center space-x-2 hover:no-underline hover:scale-105">
+      <AccordionItem
+        value={title}
+        className="w-[90%] md:w-[80%] max-w-[560px] mx-auto"
+      >
+        <AccordionTrigger className="flex items-center md:space-x-2 hover:no-underline hover:scale-105">
           <AccordionHeader title={title} Icon={Icon} color={color} />
           <div
             style={{

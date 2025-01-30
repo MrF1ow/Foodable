@@ -8,23 +8,22 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
-import { GeneralHeader } from "@/components/general-header";
 import {
   grocerySections,
   grocerySectionOptions,
 } from "@/config/grocery-sections";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
-import { HeaderWithButton } from "@/components/header-with-button";
+import { HeaderWithChildren } from "@/components/header-with-children";
 import { AddItem } from "../../components/grocery/add-item";
 import { FindPrice as FindPrice } from "../../components/grocery/find-price";
 import { HelperCard } from "../../components/grocery/list-helper";
-import { GroceryItem } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
+import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryList() {
-  const [sections, setSections] = useState(grocerySections);
+  const [sections, setSections] = useState(grocerySections.slice(0, 6));
   const [splitLayout, setSplitLayout] = useState(false);
   const [currentCard, setCurrentCard] = useState("");
   const [openAccordion, setOpenAccordion] = useState<string[]>([]);
@@ -33,6 +32,7 @@ export default function GroceryList() {
   );
   const groceryItems = useGroceryStore((state) => state.items);
   const setItems = useGroceryStore((state) => state.setItems);
+  const isMobile = useGeneralStore((state) => state.isMobile);
 
   const handleAddItemForm = (title: string) => {
     setSplitLayout(true);
@@ -62,6 +62,10 @@ export default function GroceryList() {
     column1 = sections.filter((_, index) => index % 3 === 0);
     column2 = sections.filter((_, index) => index % 3 === 1);
     column3 = sections.filter((_, index) => index % 3 === 2);
+  } else if (isMobile == true) {
+    column1 = sections;
+    column2 = undefined;
+    column3 = undefined;
   } else {
     column1 = sections.filter((_, index) => index % 2 === 0);
     column2 = sections.filter((_, index) => index % 2 === 1);
@@ -72,74 +76,45 @@ export default function GroceryList() {
     return (
       <div>
         <ScrollArea className="w-full h-full">
-          <Reorder.Group values={sections} onReorder={setSections}>
-            <motion.div
-              className="flex flex-wrap gap-4 h-full bg-background w-full"
-              dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
-              dragElastic={0.2}
-            >
-              <div className="flex flex-col gap-4">
-                {column1.map((item) => (
-                  <Reorder.Item
-                    value={item}
-                    key={item.title} // Use index for unique key
-                    drag
-                    className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                    whileDrag={{ scale: 1.05 }}
-                    dragSnapToGrid={true}
-                  >
-                    <GroceryAccordion
-                      {...item}
-                      handleAddItem={handleAddItemForm}
-                      setOpenAccordion={setOpenAccordion}
-                      openAccordion={openAccordion}
-                    />
-                  </Reorder.Item>
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap gap-4 h-full bg-background">
+            <div className="flex flex-col gap-4 w-[100%] md:w-[560px]">
+              {column1.map((item) => (
+                <GroceryAccordion
+                  key={item.title}
+                  {...item}
+                  handleAddItem={handleAddItemForm}
+                  setOpenAccordion={setOpenAccordion}
+                  openAccordion={openAccordion}
+                />
+              ))}
+            </div>
+            {column2 && (
+              <div className="flex flex-col gap-4 w-[100%] md:w-[560px]">
                 {column2.map((item) => (
-                  <Reorder.Item
-                    value={item}
-                    key={item.title} // Use index for unique key
-                    drag
-                    className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                    whileDrag={{ scale: 1.05 }}
-                    dragSnapToGrid={true}
-                  >
-                    <GroceryAccordion
-                      {...item}
-                      handleAddItem={handleAddItemForm}
-                      setOpenAccordion={setOpenAccordion}
-                      openAccordion={openAccordion}
-                    />
-                  </Reorder.Item>
+                  <GroceryAccordion
+                    key={item.title}
+                    {...item}
+                    handleAddItem={handleAddItemForm}
+                    setOpenAccordion={setOpenAccordion}
+                    openAccordion={openAccordion}
+                  />
                 ))}
               </div>
-              {column3 && (
-                <div className="flex flex-col gap-4">
-                  {column3.map((item) => (
-                    <Reorder.Item
-                      value={item}
-                      key={item.title} // Use index for unique key
-                      drag
-                      className="w-full sm:w-1/5 h-auto" // Use responsive widths (1/5 for each item in a row)
-                      whileDrag={{ scale: 1.05 }}
-                      dragSnapToGrid={true}
-                    >
-                      <GroceryAccordion
-                        {...item}
-                        handleAddItem={handleAddItemForm}
-                        setOpenAccordion={setOpenAccordion}
-                        openAccordion={openAccordion}
-                      />
-                    </Reorder.Item>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </Reorder.Group>
+            )}
+            {column3 && (
+              <div className="flex flex-col gap-4 w-[100%] md:w-[560px]">
+                {column3.map((item) => (
+                  <GroceryAccordion
+                    key={item.title}
+                    {...item}
+                    handleAddItem={handleAddItemForm}
+                    setOpenAccordion={setOpenAccordion}
+                    openAccordion={openAccordion}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </ScrollArea>
         {!splitLayout && (
           <Button
@@ -174,7 +149,7 @@ export default function GroceryList() {
   return (
     <MainLayout
       headerComponent={
-        <HeaderWithButton
+        <HeaderWithChildren
           title={"Grocery List"}
           width="25%"
           children={
