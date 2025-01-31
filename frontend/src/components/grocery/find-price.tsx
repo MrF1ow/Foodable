@@ -41,20 +41,18 @@ export const FindPrice = ({ setSplitLayout }: FindPriceCardProps) => {
         title="Find Price"
         onClick={handleInputClose}
         content={
-          <div className="flex flex-col gap-6 mt-6">
+          <div className="flex flex-col gap-6">
             <FormField
               control={form.control}
               name="zipCode"
               render={({ field }) => (
-                <FormItem className="flex items-center w-full">
-                  <FormLabel className="text-2xl mr-20">
-                    Enter Zip Code
-                  </FormLabel>
-                  <FormControl className="flex-1">
+                <FormItem>
+                  <FormLabel className="text-2xl">Enter Zip Code</FormLabel>
+                  <FormControl>
                     <Input
                       type="number"
-                      className="w-auto !text-xl h-12"
-                      placeholder="Enter Zip Code"
+                      className="w-24 !text-xl h-12"
+                      placeholder="123456"
                       {...field}
                     />
                   </FormControl>

@@ -22,7 +22,7 @@ export const InputHeader = ({
         <Icons.close />
       </button>
       <div className="flex items-center justify-center w-full space-x-2">
-        <p className="text-3xl text-center">{title}</p>
+        <p className="p-1 text-3xl text-center">{title}</p>
       </div>
     </div>
   );

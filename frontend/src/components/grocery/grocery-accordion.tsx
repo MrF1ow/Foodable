@@ -89,7 +89,7 @@ export const GroceryAccordion = ({
                     />
                     <p className="text-lg">{item.name}</p>
                     <p className="bg-background text-foreground text-xs rounded-md p-1">
-                      {item.quantity} pcs
+                      {item.quantity} {item.unit}
                     </p>
                   </div>
                 ))

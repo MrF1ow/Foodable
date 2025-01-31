@@ -30,6 +30,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { unitOptions, unitsAsTuple } from "@/config/unit-conversions";
 
 import { z } from "zod";
+import { useGeneralStore } from "@/stores/general/store";
 
 interface AddItemCardProps {
   setSplitLayout: (value: boolean) => void;
@@ -45,6 +46,7 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
   );
+  const isMobile = useGeneralStore((state) => state.isMobile);
   const schema = z.object({
     itemName: z
       .string()
@@ -91,7 +93,7 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
         title="Add Item"
         onClick={handleInputClose}
         content={
-          <div className="flex flex-col gap-6 mt-6">
+          <div className="flex flex-col gap-6">
             <FormField
               control={form.control}
               name="itemName"
@@ -103,69 +105,77 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
                       className="!text-xl h-12"
                       placeholder="Enter item name"
                       {...field}
+                      data-testid="itemName-input"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-2xl">Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      className="!text-xl h-12 "
-                      placeholder="Enter quantity"
-                      {...field}
-                      onChange={(e) => {
-                        // Parse value as a number
-                        field.onChange(Number(e.target.value));
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xl">Select Unit</FormLabel>
-                  <div className="border rounded shadow-sm p-2">
+            <div
+              className={`flex ${
+                isMobile ? "justify-center" : ""
+              } items-center`}
+            >
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem className="mr-8">
+                    <FormLabel className="text-2xl">Quantity</FormLabel>
                     <FormControl>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          {field.value || "pcs"}
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          {unitOptions.map((unit) => (
-                            <DropdownMenuItem
-                              key={unit}
-                              onClick={() => field.onChange(unit)}
-                            >
-                              {unit}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Input
+                        type="number"
+                        className="!text-xl h-12 w-24"
+                        placeholder="Enter quantity"
+                        {...field}
+                        data-testid="quantity-input"
+                        onChange={(e) => {
+                          // Parse value as a number
+                          field.onChange(Number(e.target.value));
+                        }}
+                      />
                     </FormControl>
-                  </div>
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-2xl">Select Unit</FormLabel>
+                    <div className="border rounded shadow-sm p-2">
+                      <FormControl>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="text-xl w- hover:scale-105">
+                            {field.value || "pcs"}
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="max-h-60 m-3 overflow-y-auto">
+                            {unitOptions.map((unit) => (
+                              <DropdownMenuItem
+                                key={unit}
+                                onClick={() => field.onChange(unit)}
+                              >
+                                {unit}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center gap-4">
+                <FormItem className="flex flex-col">
                   <FormLabel className="text-2xl">Select Category</FormLabel>
-                  <div className="border rounded shadow-sm p-2">
+                  <div className="border rounded shadow-sm w-40 py-2">
                     <FormControl>
                       <DropdownMenu>
                         <DropdownMenuTrigger className="text-xl w-40 hover:scale-105">
@@ -200,6 +210,7 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
               className="btn-primary p-8 text-3xl transition-all hover:scale-105 hover:shadow-lg"
+              data-testid="submit-button"
             >
               Submit
             </Button>

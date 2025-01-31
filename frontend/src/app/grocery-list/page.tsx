@@ -120,11 +120,13 @@ export default function GroceryList() {
         </ScrollArea>
         {!splitLayout && (
           <Button
-            className="btn-primary rounded-full w-12 h-12 hover:bg-green-500 flex items-center justify-center fixed bottom-4 right-4 z-50"
+            className={`btn-primary rounded-full w-12 h-12 hover:bg-green-500 flex items-center justify-center fixed bottom-4 right-4 z-50 ${
+              isMobile ? "mb-16" : ""
+            }`}
             onClick={handleHelperForm}
             data-testid="helper-button"
           >
-            <Icons.ai className="!w-6 !h-6" data-testid="send-button" />
+            <Icons.ai className="!w-6 !h-6" />
           </Button>
         )}
       </div>
@@ -178,7 +180,9 @@ export default function GroceryList() {
         <div className="flex h-full w-full">
           <ContentLayout
             split
-            mainContent={<Content />}
+            mainContent={
+              isMobile && splitLayout ? renderRightSideCard() : <Content />
+            }
             subContent={renderRightSideCard()}
           />
         </div>

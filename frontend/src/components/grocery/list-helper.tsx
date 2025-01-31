@@ -35,13 +35,13 @@ export const HelperCard = ({ setSplitLayout }: HelperCardProps) => {
         title="Grocery List Helper"
         onClick={handleInputClose}
         content={
-          <div className="flex flex-col gap-6 mt-6">
-            <p className="!text-lg bg-primary text-white p-4 rounded-lg w-80 ml-auto">
+          <div className="flex flex-col gap-6 mt-2 overflow-y-auto max-h-80">
+            <p className="!text-lg bg-primary text-white p-4 rounded-lg w-[100%]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
               nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
               Nulla quis sem at nibh elementum imperdiet. Duis sagittis
             </p>
-            <p className="!text-lg bg-gray-100 p-4 rounded-lg w-80">
+            <p className="!text-lg bg-gray-100 p-4 rounded-lg w-[80%] ml-auto">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
               nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
               Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum.

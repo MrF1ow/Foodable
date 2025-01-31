@@ -40,7 +40,7 @@ export const MainLayout = ({
     <div className="flex h-screen w-screen bg-background overflow-hidden">
       {/* Bottom Navbar */}
       {isMobile && (
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[8%] bg-background z-50">
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[8%] sm:h-[14%] bg-background z-50 ">
           <Navbar />
         </div>
       )}

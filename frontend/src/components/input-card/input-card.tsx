@@ -13,6 +13,7 @@ import {
   InputContentProp,
   InputFooterProp,
 } from "@/types/input";
+import { useGeneralStore } from "@/stores/general/store";
 
 interface InputSectionProps
   extends InputHeaderProp,
@@ -25,8 +26,13 @@ export const InputCard = ({
   content,
   footer,
 }: InputSectionProps) => {
+  const isMobile = useGeneralStore((state) => state.isMobile);
   return (
-    <Card className="h-full w-full flex flex-col bg-card-background">
+    <Card
+      className={`${isMobile ? "items-center" : ""} ${
+        isMobile ? "h-auto" : "h-full"
+      } w-full flex flex-col bg-card-background`}
+    >
       <InputHeader title={title} onClick={onClick} />
       <CardContent className="flex-grow">{content}</CardContent>
       <InputFooter>{footer}</InputFooter>
