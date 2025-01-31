@@ -78,7 +78,11 @@ export default function GroceryList() {
     return (
       <div>
         <ScrollArea className="w-full h-full">
-          <div className="flex flex-wrap gap-4 h-full bg-background">
+          <div
+            className={`flex flex-wrap gap-4 h-full bg-background ${
+              isMobile ? "justify-center" : ""
+            }`}
+          >
             <div className="flex flex-col gap-4 w-[100%] md:w-[560px]">
               {column1.map((item) => (
                 <GroceryAccordion

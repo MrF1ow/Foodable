@@ -18,7 +18,7 @@ export const MainLayout = ({
   const pathName = usePathname();
 
   const checkScreenWidth = () => {
-    setIsMobile(window.innerWidth < 768);
+    setIsMobile(window.innerWidth <= 768);
   };
 
   useEffect(() => {
