@@ -12,12 +12,14 @@ import { InputCard } from "@/components/input-card/input-card";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { useGeneralStore } from "@/stores/general/store";
+import { useGroceryStore } from "@/stores/grocery/store";
 
-interface FindPriceCardProps {
-  setSplitLayout: (value: boolean) => void;
-}
+export const FindPrice = () => {
+  const isMobile = useGeneralStore((state) => state.isMobile);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
 
-export const FindPrice = ({ setSplitLayout }: FindPriceCardProps) => {
   const form = useForm({
     defaultValues: {
       zipCode: "",
@@ -31,8 +33,7 @@ export const FindPrice = ({ setSplitLayout }: FindPriceCardProps) => {
   }
 
   const handleInputClose = () => {
-    setSplitLayout(false);
-    console.log("Close button clicked");
+    setCurrentForm("", setSplitLayout, isMobile);
   };
 
   return (

@@ -12,7 +12,7 @@ type ContentLayoutProps =
   | {
       split?: false;
       mainContent: React.ReactNode;
-      subContent?: never;
+      subContent?: React.ReactNode;
     };
 
 export const ContentLayout = ({

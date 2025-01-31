@@ -9,7 +9,7 @@ export const MainLayout = ({
   headerComponent,
 }: {
   children: React.ReactNode;
-  headerComponent: React.ReactNode;
+  headerComponent?: React.ReactNode;
 }) => {
   const setIsMobile = useGeneralStore((state) => state.setIsMobile);
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -53,12 +53,18 @@ export const MainLayout = ({
       )}
 
       {/* Main Content */}
-      <div
-        className={`grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] gap-y-2 w-full h-full bg-background p-4 md:p-6`}
-      >
-        <div className="h-full">{headerComponent}</div>
-        <div className="flex-1 h-full">{children}</div>
-      </div>
+      {headerComponent ? (
+        <div
+          className={`grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] gap-y-2 w-full h-full bg-background p-4 md:p-6`}
+        >
+          <div className="h-full">{headerComponent}</div>
+          <div className="flex-1 h-full">{children}</div>
+        </div>
+      ) : (
+        <div className={`w-full h-full bg-background p-4 md:p-6`}>
+          <div className="w-full h-full">{children}</div>
+        </div>
+      )}
     </div>
   );
 };

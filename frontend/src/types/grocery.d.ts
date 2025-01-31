@@ -16,13 +16,12 @@ export type GrocerySectionOptions =
   | "Sweets";
 
 export interface GrocerySection {
-  title: string;
+  title: GrocerySectionOptions;
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   color: string;
 }
 
 export interface GroceryItem {
-  id: string;
   name: string;
   quantity: number;
   unit: Units;

@@ -1,7 +1,7 @@
 import { unitConversions } from "@/config/unit-conversions";
 import { Units } from "@/types";
 import { RecipeIngredient } from "@/types/recipe";
-import { GroceryItem } from "@/types/grocery";
+import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 
@@ -70,4 +70,11 @@ export const getAdditionalIngredients = (
   );
 
   return additionalIngredients;
+};
+
+export const getGroceryAccordingItems = (
+  accordionCategory: GrocerySectionOptions,
+  items: GroceryItem[]
+) => {
+  return items.filter((item) => item.category === accordionCategory);
 };

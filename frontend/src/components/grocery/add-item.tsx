@@ -10,13 +10,10 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
@@ -27,19 +24,19 @@ import {
   GrocerySectionOptions,
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { unitOptions, unitsAsTuple } from "@/config/unit-conversions";
+import { grocerySections } from "@/config/grocery-sections";
+import { unitOptions } from "@/config/unit-conversions";
+
+import { getAddItemFormValidation } from "@/utils/formValidation";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 
-interface AddItemCardProps {
-  setSplitLayout: (value: boolean) => void;
-  categories: GrocerySection[];
-}
-
-export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
-  const prevItems = useGroceryStore((state) => state.items);
-  const setItems = useGroceryStore((state) => state.setItems);
+export const AddItem = () => {
+  const categories = grocerySections;
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const addItem = useGroceryStore((state) => state.addItem);
   const selectedCategory = useGroceryStore(
     (state) => state.selectedCategory as GrocerySectionOptions
   );
@@ -47,44 +44,28 @@ export const AddItem = ({ setSplitLayout, categories }: AddItemCardProps) => {
     (state) => state.setSelectedCategory
   );
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const schema = z.object({
-    itemName: z
-      .string()
-      .min(3, "Item name must be at least 3 characters long")
-      .max(50, "Item name must be less than 50 characters long"),
-    quantity: z
-      .number()
-      .min(1, "Quantity must be at least 1")
-      .max(100, "Quantity must be less than 100"),
-    category: z.string().min(1, "Category is required"),
-    unit: z.enum(unitsAsTuple), // Uses unitOptions array
-  });
+
+  const { AddItemFormSchema, defaultValues, resolver } =
+    getAddItemFormValidation();
 
   const form = useForm({
-    defaultValues: {
-      itemName: "",
-      quantity: 1,
-      unit: unitsAsTuple[0],
-      category: selectedCategory,
-    },
-    resolver: zodResolver(schema),
+    defaultValues,
+    resolver,
   });
 
-  function onSubmit(data: z.infer<typeof schema>) {
-    console.log("Unit", data.unit);
+  function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
     const newItem: GroceryItem = {
-      id: `${selectedCategory}-${data.itemName}-${Math.random().toString(36)}`, // Unique id based on section and a random string
       name: data.itemName,
       quantity: data.quantity,
       unit: data.unit,
       category: selectedCategory,
       checked: false,
     };
-    setItems([...prevItems, newItem]);
+    addItem(newItem);
   }
 
   const handleInputClose = () => {
-    setSplitLayout(false);
+    setCurrentForm("", setSplitLayout, isMobile);
   };
 
   return (

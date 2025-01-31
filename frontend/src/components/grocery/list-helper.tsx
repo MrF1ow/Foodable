@@ -12,12 +12,13 @@ import { InputCard } from "@/components/input-card/input-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
+import { useGeneralStore } from "@/stores/general/store";
+import { useGroceryStore } from "@/stores/grocery/store";
 
-interface HelperCardProps {
-  setSplitLayout: (value: boolean) => void;
-}
-
-export const HelperCard = ({ setSplitLayout }: HelperCardProps) => {
+export const HelperCard = () => {
+  const isMobile = useGeneralStore((state) => state.isMobile);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const form = useForm();
 
   function onSubmit(data: any) {
@@ -25,8 +26,7 @@ export const HelperCard = ({ setSplitLayout }: HelperCardProps) => {
   }
 
   const handleInputClose = () => {
-    setSplitLayout(false);
-    console.log("Close button clicked");
+    setCurrentForm("", setSplitLayout, isMobile);
   };
 
   return (
