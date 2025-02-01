@@ -8,7 +8,7 @@ import {
   fetchAllRecipes,
   fetchRecipesByTitle,
 } from "../api/recipeApi";
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 
 export const useCreateRecipe = () => {
   return useMutation<Recipe, Error, Recipe>({ mutationFn: createRecipe });

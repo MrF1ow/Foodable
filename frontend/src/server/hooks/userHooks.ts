@@ -5,7 +5,7 @@ import {
   updateUser,
   deleteUser,
 } from "../api/userApi";
-import { User } from "@/types";
+import { User } from "@/types/user";
 
 export const useFetchUserById = (id: string) => {
   return useQuery({

@@ -1,4 +1,4 @@
-import { GroceryList } from "@/types";
+import { GroceryList } from "@/types/grocery";
 import axios from "../axiosInstance";
 
 export const fetchGroceryListById = async (id: string) => {

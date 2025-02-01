@@ -35,7 +35,7 @@ export const validateObject = <T>(
 
 // Function to check if an ID is valid
 export const isValidObjectId = (id: any): boolean => {
-  return id !== null && ObjectId.isValid(id);
+  return typeof id === "string" && ObjectId.isValid(id) && id.length === 24;
 };
 
 // Function to check if an array is valid and contains only strings
@@ -94,12 +94,12 @@ export const validateUserWithoutID = (user: NewUser): user is NewUser => {
     typeof user.email === "string" &&
     validateSettings(user.settings) &&
     validatePreferences(user.preferences) &&
-    Array.isArray(user.favoriteRecipes) &&
+    Array.isArray(user.savedItems) &&
     Array.isArray(user.createdRecipes) &&
     Array.isArray(user.groceryLists) &&
     Array.isArray(user.following) &&
     Array.isArray(user.followers) &&
-    user.favoriteRecipes.every(
+    user.savedItems.every(
       (item) => typeof item === "string" || isValidObjectId(item)
     ) &&
     user.createdRecipes.every(

@@ -1,4 +1,4 @@
-import { Recipe } from "@/types";
+import { Recipe } from "@/types/recipe";
 import axios from "../axiosInstance";
 
 export const createRecipe = async (recipe: Recipe) => {

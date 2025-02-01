@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User } from "@/types/user";
 import axios from "../axiosInstance";
 
 export const fetchUserById = async (id: string) => {

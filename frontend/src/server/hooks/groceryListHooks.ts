@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { GroceryList } from "@/types";
+import { GroceryList } from "@/types/grocery";
 import {
   createGroceryList,
   deleteGroceryList,
