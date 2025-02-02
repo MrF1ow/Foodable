@@ -19,7 +19,7 @@ export default function SavedItemsPage() {
     return (
       <>
         {/* Accordion Components */}
-        <div className="h-full flex flex-wrap justify-start gap-4 overflow-y-auto">
+        <div className="flex flex-wrap justify-start gap-4">
           {currentSavedListTitles.map((listTitle) => (
             <GeneralAccordion
               key={listTitle}
@@ -28,7 +28,7 @@ export default function SavedItemsPage() {
               width="85%"
               iconSize={40}
               textSize="2rem"
-              additional={<EditButton />}
+              additional={<EditButton category={listTitle} />}
             />
           ))}
         </div>

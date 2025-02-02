@@ -41,8 +41,10 @@ export const GeneralAccordion = ({
             } as React.CSSProperties
           }
         >
-          {title}
-          {additional}
+          <div className="flex flex-row items-center justify-start ">
+            {title}
+            {additional}
+          </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col w-full overflow-hidden">
           {/* Line at the top, centered */}
