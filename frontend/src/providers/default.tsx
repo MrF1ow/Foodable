@@ -7,6 +7,7 @@ import { TanstackProvider } from "./tanstack-provider";
 import { UserStoreProvider } from "@/stores/user/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
+import { RecipeStoreProvider } from "@/stores/recipe/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -31,13 +32,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <GroceryStoreProvider>
             {/* UserStoreProvider handles client-side state */}
             <UserStoreProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
-                {children}
-              </ThemeProvider>
+              <RecipeStoreProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                >
+                  {children}
+                </ThemeProvider>
+              </RecipeStoreProvider>
             </UserStoreProvider>
           </GroceryStoreProvider>
         </GeneralStoreProvider>

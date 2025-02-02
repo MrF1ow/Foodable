@@ -1,5 +1,8 @@
 import { create } from "zustand";
-import { ObjectId } from "mongodb";
+// MongoDB cant be used in this store, since it is used in client-side pages.
+// import { ObjectId } from "mongodb";
+
+type ObjectId = string;
 
 import { RecipeIngredient } from "@/types/recipe";
 
@@ -13,6 +16,7 @@ export type RecipeState = {
   instructions: string;
   priceApproximation: number;
   timeApproximation: number;
+  isAddItem: boolean;
 };
 
 export type RecipeActions = {
@@ -25,16 +29,17 @@ export type RecipeActions = {
   setInstructions: (instructions: string) => void;
   setPriceApproximation: (priceApproximation: number) => void;
   setTimeApproximation: (timeApproximation: number) => void;
+  setIsAddItem: (isAddItem: boolean) => void;
 };
 
 export const createRecipeActions = (set: any): RecipeActions => ({
   setRecipeId: (recipeId: string) => {
-    const id = new ObjectId(recipeId);
-    set((state: RecipeState) => ({ ...state, recipeId: id }));
+    // const id = new ObjectId(recipeId);
+    set((state: RecipeState) => ({ ...state, recipeId: recipeId }));
   },
   setCreatorId: (creatorId: string) => {
-    const id = new ObjectId(creatorId);
-    set((state: RecipeState) => ({ ...state, creatorId: id }));
+    // const id = new ObjectId(creatorId);
+    set((state: RecipeState) => ({ ...state, creatorId: creatorId }));
   },
   setTitle: (title: string) =>
     set((state: RecipeState) => ({ ...state, title })),
@@ -50,6 +55,8 @@ export const createRecipeActions = (set: any): RecipeActions => ({
     set((state: RecipeState) => ({ ...state, priceApproximation })),
   setTimeApproximation: (timeApproximation: number) =>
     set((state: RecipeState) => ({ ...state, timeApproximation })),
+  setIsAddItem: (isAddItem: boolean) =>
+    set((state: RecipeState) => ({ ...state, isAddItem })),
 });
 
 export type RecipeStore = RecipeState & RecipeActions;
@@ -64,6 +71,7 @@ export const initRecipeStore = (): RecipeState => {
     instructions: "",
     priceApproximation: 0,
     timeApproximation: 0,
+    isAddItem: false,
   };
 };
 
@@ -76,6 +84,7 @@ export const defaultInitState: RecipeState = {
   instructions: "",
   priceApproximation: 0,
   timeApproximation: 0,
+  isAddItem: false,
 };
 
 export const createRecipeStore = (

@@ -1,4 +1,5 @@
 "use client";
+import { List } from "../grocery/list";
 
 // Local Imports
 import {
@@ -17,9 +18,9 @@ export const SideList = () => {
       <CardHeader className="bg-primary text-[#202020] text-center rounded-lg">
         <CardTitle className="text-2xl">Your List</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="flex-1 bg-background overflow-y-auto">
         <ScrollArea>
-          <p>Card Content</p>
+          <List className="mt-4 bg-card-background" />
         </ScrollArea>
       </CardContent>
       <CardFooter className="flex justify-end p-4">

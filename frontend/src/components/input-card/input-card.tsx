@@ -30,7 +30,7 @@ export const InputCard = ({
   return (
     <Card
       className={`${isMobile ? "items-center" : ""} ${
-        isMobile ? "h-auto" : "h-full"
+        isMobile ? "h-[91%]" : "h-full"
       } w-full flex flex-col bg-card-background`}
     >
       <InputHeader title={title} onClick={onClick} />
