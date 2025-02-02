@@ -14,8 +14,7 @@ import {
 import { useRecipeStore } from "@/stores/recipe/store";
 
 export const AddButton = () => {
-  const isAddItem = useRecipeStore((state) => state.isAddItem);
-  //   const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
+  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,7 +29,7 @@ export const AddButton = () => {
         >
           <DropdownMenuItem
             className="text-center bg-primary text-foreground rounded-sm"
-            // onClick={() => setIsAddItem(true)}
+            onClick={() => setIsAddItem(true)}
           >
             Add Item
           </DropdownMenuItem>

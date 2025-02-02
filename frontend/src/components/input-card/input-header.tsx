@@ -1,11 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { InputHeaderProp } from "@/types/input";
 import { Icons } from "../ui/icons";
 
@@ -14,7 +6,7 @@ export const InputHeader = ({
   onClick,
 }: InputHeaderProp & { onClick?: () => void }) => {
   return (
-    <div className="p-4 relative flex items-center w-full overflow-hidden">
+    <div className="p-4 flex-shrink-0 relative flex items-center w-full overflow-hidden">
       <button
         onClick={onClick}
         className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none hover:scale-105"

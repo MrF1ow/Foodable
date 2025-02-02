@@ -34,7 +34,7 @@ export const InputCard = ({
       } w-full flex flex-col bg-card-background`}
     >
       <InputHeader title={title} onClick={onClick} />
-      <CardContent className="flex-grow">{content}</CardContent>
+      <CardContent className="flex-grow overflow-y-auto">{content}</CardContent>
       <InputFooter>{footer}</InputFooter>
     </Card>
   );

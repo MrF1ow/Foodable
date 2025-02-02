@@ -56,7 +56,7 @@ export default function GroceryList() {
   const renderRightSideCard = () => {
     switch (currentCard) {
       case "addItem":
-        return <AddItem />;
+        return <AddItem className="h-full" />;
       case "findPrice":
         return <FindPrice />;
       case "groceryHelper":

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-// MongoDB cant be used in this store, since it is used in client-side pages.
+// MongoDB cant be used in this store since it is used in client-side pages.
+// Gonna have to figure out a way to give these Ids server-side
 // import { ObjectId } from "mongodb";
 
 type ObjectId = string;

@@ -16,6 +16,7 @@ import { Icons } from "../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
+import { useRecipeStore } from "@/stores/recipe/store";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setItems = useGroceryStore((state) => state.setItems);
@@ -30,10 +31,12 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
   const accordionItems = getGroceryAccordingItems(title, groceryItems);
+  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
     setCurrentCategory(title);
+    setIsAddItem(true);
     setCurrentForm("addItem", setSplitLayout, isMobile);
   };
 
