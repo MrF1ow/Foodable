@@ -137,7 +137,10 @@ export const AddItem = ({ className }: { className?: string }) => {
                       <div className="border rounded shadow-sm p-2">
                         <FormControl>
                           <DropdownMenu>
-                            <DropdownMenuTrigger className="text-xl w- hover:scale-105">
+                            <DropdownMenuTrigger
+                              className="text-xl w- hover:scale-105"
+                              data-testid="units-dropdown"
+                            >
                               {field.value || "pcs"}
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="max-h-60 m-3 overflow-y-auto">
@@ -145,6 +148,7 @@ export const AddItem = ({ className }: { className?: string }) => {
                                 <DropdownMenuItem
                                   key={unit}
                                   onClick={() => field.onChange(unit)}
+                                  data-testid={`${unit}-dropdown-item`}
                                 >
                                   {unit}
                                 </DropdownMenuItem>
@@ -166,7 +170,10 @@ export const AddItem = ({ className }: { className?: string }) => {
                     <div className="border rounded shadow-sm w-40 py-2">
                       <FormControl>
                         <DropdownMenu>
-                          <DropdownMenuTrigger className="text-xl w-40 hover:scale-105">
+                          <DropdownMenuTrigger
+                            className="text-xl w-40 hover:scale-105"
+                            data-testid="category-dropdown"
+                          >
                             {selectedCategory ||
                               field.value ||
                               "Select Category"}
@@ -179,6 +186,7 @@ export const AddItem = ({ className }: { className?: string }) => {
                                   field.onChange(section.title);
                                   handleCategoryChange(section.title);
                                 }}
+                                data-testid={`${section.title}-category-item`}
                               >
                                 {section.title}
                               </DropdownMenuItem>

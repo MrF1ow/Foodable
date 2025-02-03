@@ -78,6 +78,7 @@ export default function GroceryList() {
                 <Button
                   onClick={handleItemDeletion}
                   className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                  data-testid="remove-items-button"
                 >
                   <Icons.delete className="!h-6 !w-6" />
                 </Button>
@@ -86,6 +87,7 @@ export default function GroceryList() {
                     setCurrentForm("findPrice", setSplitLayout, isMobile)
                   }
                   className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                  data-testid="find-price-button"
                 >
                   {"Find Price"}
                 </Button>
