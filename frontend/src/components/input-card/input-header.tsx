@@ -10,6 +10,7 @@ export const InputHeader = ({
       <button
         onClick={onClick}
         className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none hover:scale-105"
+        data-testid="close-form-button"
       >
         <Icons.close />
       </button>
