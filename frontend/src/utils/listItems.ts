@@ -86,3 +86,15 @@ export const getIndexOfItemInArray = (
 ) => {
   return items.findIndex((item) => item === itemName);
 };
+
+export const recipeIngredientsToGroceryItems = (
+  recipeIngredients: RecipeIngredient[]
+): GroceryItem[] => {
+  return recipeIngredients.map((ingredient) => ({
+    name: ingredient.name,
+    quantity: ingredient.quantity,
+    unit: ingredient.unit,
+    category: ingredient.category,
+    checked: false,
+  }));
+};

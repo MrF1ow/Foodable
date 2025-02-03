@@ -6,26 +6,24 @@ import React from "react";
 
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
+import { useRecipeStore } from "@/stores/recipe/store";
 import { Recipe } from "@/types/recipe";
 
 interface RecipeBoxProps {
-  recipe: Recipe;
-  setRecipe: (recipe: Recipe) => void;
   setOpen: (isOpen: boolean) => void;
-  setImage: (image: string) => void;
+  indexOfRecipe: number;
 }
 
-export const RecipeBox = ({
-  recipe,
-  setRecipe,
-  setOpen,
-  setImage,
-}: RecipeBoxProps) => {
+export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
+  const allRecipes = useRecipeStore((state) => state.currentRecipes);
+  const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
+  const recipe = allRecipes[indexOfRecipe];
+
   const {
     data: response,
     isLoading,
     error,
-  } = useFetchImageById(recipe.imageId.toString());
+  } = useFetchImageById(recipe.imageId ? recipe.imageId.toString() : "");
 
   if (error) {
     console.error("Error fetching image:", error);
@@ -37,9 +35,8 @@ export const RecipeBox = ({
         key={recipe._id?.toString()}
         className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
         onClick={() => {
-          setRecipe(recipe);
-          setImage(response.base64Image);
           setOpen(true);
+          setImageUrl(response.base64Image);
         }}
       >
         {isLoading ? (

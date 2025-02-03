@@ -6,6 +6,8 @@ import { NextResponse } from "next/server";
 import { RecipeIngredient, Recipe, NewRecipe } from "@/types/recipe";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { User, UserRating, NewUser } from "@/types/user";
+import { unitOptions } from "@/config/unit-conversions";
+import { grocerySectionOptions } from "@/config/grocery-sections";
 import { HTTP_RESPONSES } from "@/lib/constants";
 
 export const validateObject = <T>(
@@ -72,8 +74,11 @@ export function validateRecipeIngredient(
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "string" &&
-    typeof ingredient.brand === "string"
+    typeof ingredient.quantity === "number" &&
+    typeof ingredient.unit === "string" &&
+    // Object.values(unitOptions).includes(ingredient.unit) &&
+    typeof ingredient.category === "string"
+    // Object.values(grocerySectionOptions).includes(ingredient.category)
   );
 }
 
@@ -151,7 +156,6 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
     typeof recipe.description === "string" &&
     Array.isArray(recipe.ingredients) &&
     Array.isArray(recipe.instructions) &&
-    Array.isArray(recipe.instructions) &&
     Array.isArray(recipe.userRatings) &&
     recipe.ingredients.every(validateRecipeIngredient) &&
     recipe.instructions.every((instr: any) => typeof instr === "string") &&
@@ -161,7 +165,9 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
     (recipe.timestamp === undefined ||
-      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
+      (recipe.timestamp instanceof Date &&
+        !isNaN(recipe.timestamp.getTime()))) &&
+    (recipe.imageId === undefined || isValidObjectId(recipe.imageId))
   );
 };
 

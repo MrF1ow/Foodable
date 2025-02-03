@@ -7,6 +7,7 @@ import pfp from "../../../public/images/pfp.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Recipe } from "@/types/recipe";
 import { RecipeContent } from "./recipe-content";
+import { useRecipeStore } from "@/stores/recipe/store";
 
 interface RecipePopUpProps {
   recipe: Recipe;
@@ -15,8 +16,8 @@ interface RecipePopUpProps {
 }
 
 export const RecipePopUp = ({
-  recipe,
   toggleDialog,
+  recipe,
   imageUrl,
 }: RecipePopUpProps) => {
   return (
