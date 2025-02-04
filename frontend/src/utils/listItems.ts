@@ -61,10 +61,9 @@ export function getMissingIngredients(
 }
 
 export const getAdditionalIngredients = (
-  recipeIngredients: RecipeIngredient[]
+  recipeIngredients: RecipeIngredient[],
+  groceryMap: Map<string, GroceryItem>
 ) => {
-  const groceryMap = useGroceryStore((state) => state.map);
-
   const additionalIngredients = getMissingIngredients(
     recipeIngredients,
     groceryMap

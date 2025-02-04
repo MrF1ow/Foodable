@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
+import { convertAmount } from "@/utils/listItems";
 
 export type GroceryState = {
   title: string;
@@ -59,21 +60,28 @@ export const createGroceryActions = (set: any): GroceryActions => ({
 
   addItem: (item: GroceryItem) =>
     set((state: GroceryState) => {
-      const existingItem = state.map.get(item.name.toLowerCase());
+      const itemKey = item.name.toLowerCase();
+      const existingItem = state.map.get(itemKey);
       let newMap;
       let newItems;
 
       if (existingItem) {
-        existingItem.quantity += item.quantity;
+        const convertedQuantity = convertAmount(
+          item.quantity,
+          item.unit,
+          existingItem.unit
+        );
+        existingItem.quantity += convertedQuantity;
         newMap = new Map(state.map);
-        newMap.set(item.name.toLowerCase(), existingItem);
+        newMap.set(itemKey, existingItem);
 
         newItems = state.items.map((i) =>
-          i.name.toLowerCase() === item.name.toLowerCase() ? existingItem : i
+          i.name.toLowerCase() === itemKey ? existingItem : i
         );
       } else {
+        item.checked = false;
         newItems = [...state.items, item];
-        newMap = new Map(state.map).set(item.name.toLowerCase(), item);
+        newMap = new Map(state.map).set(itemKey, item);
       }
       const newSections = state.currentSections.includes(item.category)
         ? state.currentSections

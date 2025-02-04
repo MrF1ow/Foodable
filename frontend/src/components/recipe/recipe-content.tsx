@@ -3,7 +3,7 @@ import { Recipe } from "@/types/recipe";
 import { RecipeSection } from "./recipe-section";
 import { getAdditionalIngredients } from "@/utils/listItems";
 import { Checkbox } from "../ui/checkbox";
-import { GrocerySectionOptions } from "@/types/grocery";
+import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { Icons } from "../ui/icons";
@@ -19,11 +19,15 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
 
   const AddButtonForAdditional = () => {
     const handleIngredientTransfer = () => {
+      const updatedItems = [];
       for (const ingredient of additionalIngredients) {
         if (ingredient.checked) {
           addIngredient(ingredient);
+        } else {
+          updatedItems.push(ingredient);
         }
       }
+      setAdditionalIngredients(updatedItems);
     };
 
     return (
