@@ -70,7 +70,11 @@ export const getAdditionalIngredients = (
     groceryMap
   );
 
-  return additionalIngredients;
+  const groceryItemAdditionalIngredients = recipeIngredientsToGroceryItems(
+    additionalIngredients
+  );
+
+  return groceryItemAdditionalIngredients;
 };
 
 export const getGroceryAccordingItems = (

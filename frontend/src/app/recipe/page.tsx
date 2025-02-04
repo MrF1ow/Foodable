@@ -30,10 +30,12 @@ export default function RecipePage() {
   // when the search query changes, the filtered recipes are updated
   const filteredRecipes =
     searchQuery.trim() === ""
-      ? allRecipes
-      : allRecipes?.filter((recipe) =>
-          recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+      ? allRecipes?.map((recipe, index) => ({ recipe, originalIndex: index }))
+      : allRecipes
+          ?.map((recipe, index) => ({ recipe, originalIndex: index }))
+          .filter(({ recipe }) =>
+            recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+          );
 
   const Content = () => {
     return (
@@ -51,11 +53,11 @@ export default function RecipePage() {
             {allRecipes.length === 0 ? (
               <Loader /> // show loader if recipes are still loading
             ) : (filteredRecipes ?? []).length > 0 ? (
-              (filteredRecipes ?? []).map((recipe, index) => (
+              (filteredRecipes ?? []).map(({ recipe, originalIndex }) => (
                 <RecipeBox
                   key={recipe._id?.toString()}
                   setOpen={setIsOpen}
-                  indexOfRecipe={index}
+                  indexOfRecipe={originalIndex}
                 />
               ))
             ) : (

@@ -13,7 +13,6 @@ import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { getCurrentGrocerySections } from "@/utils/listItems";
 import { List } from "@/components/grocery/list";
 
 export default function GroceryList() {
