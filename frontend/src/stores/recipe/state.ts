@@ -6,7 +6,7 @@ export type RecipeState = {
   currentRecipes: Recipe[]; // The current recipes
   currentRecipeIndex: number; // The index of the current recipe
   additionalIngredients?: RecipeIngredient[];
-  currentImageUrl?: string;
+  currentImageUrl: string;
 };
 
 export type RecipeActions = {
@@ -35,6 +35,7 @@ export const initRecipeStore = (): RecipeState => {
     currentRecipes: [],
     currentRecipeIndex: 0,
     additionalIngredients: [],
+    currentImageUrl: "",
   };
 };
 
@@ -42,6 +43,7 @@ export const defaultInitState: RecipeState = {
   currentRecipes: [],
   currentRecipeIndex: 0,
   additionalIngredients: [],
+  currentImageUrl: "",
 };
 
 export const createRecipeStore = (

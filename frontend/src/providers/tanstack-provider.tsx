@@ -8,7 +8,7 @@ interface TanstackProviderProps {
 
 export const TanstackProvider = ({
   children,
-}: TanstackProviderProps): JSX.Element => {
+}: TanstackProviderProps) => {
   // Create a new query client for each instance of the provider
   const [queryClient] = useState(() => new QueryClient());
   return (

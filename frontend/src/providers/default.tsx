@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TanstackProvider } from "./tanstack-provider";
+import { ReactQueryProvider } from "./react-query-provider";
 import { UserStoreProvider } from "@/stores/user/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
@@ -28,7 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       {/* TanstackProvider handles server-side state */}
-      <TanstackProvider>
+      <ReactQueryProvider>
         <GeneralStoreProvider>
           <SavedItemsStoreProvider>
             <RecipeStoreProvider>
@@ -47,7 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </RecipeStoreProvider>
           </SavedItemsStoreProvider>
         </GeneralStoreProvider>
-      </TanstackProvider>
+      </ReactQueryProvider>
     </ClerkProvider>
   );
 }

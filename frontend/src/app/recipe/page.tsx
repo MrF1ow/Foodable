@@ -4,7 +4,6 @@
 import { useState } from "react";
 
 // Local Imports
-import { useFetchRecipes } from "@/server/hooks/recipeHooks";
 import Loader from "@/components/loader";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { MainLayout } from "@/layouts/main";
@@ -17,6 +16,8 @@ import { useRecipeStore } from "@/stores/recipe/store";
 
 export default function RecipePage() {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);
+  const currentRecipe = useRecipeStore((state) => state.currentRecipeIndex);
+  const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -41,7 +42,13 @@ export default function RecipePage() {
     return (
       <>
         <RecipesFetcher />
-        {isOpen && <RecipePopUp toggleDialog={togglePopUp} />}
+        {isOpen && (
+          <RecipePopUp
+            toggleDialog={togglePopUp}
+            recipe={allRecipes[currentRecipe]}
+            imageUrl={currentImageUrl}
+          />
+        )}
         <div className="h-full overflow-auto">
           <div className="flex flex-wrap justify-start gap-4 z-10">
             {allRecipes.length === 0 ? (

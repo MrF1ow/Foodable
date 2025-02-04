@@ -1,6 +1,6 @@
 // Local Imports
 import { setupGridFS } from "@/lib/mongodb";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 
 // Package Imports
 import { NextResponse } from "next/server";

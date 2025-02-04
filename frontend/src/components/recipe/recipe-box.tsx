@@ -17,6 +17,9 @@ interface RecipeBoxProps {
 export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
+  const setCurrentRecipe = useRecipeStore(
+    (state) => state.setCurrentRecipeIndex
+  );
   const recipe = allRecipes[indexOfRecipe];
 
   const {
@@ -37,6 +40,7 @@ export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
         onClick={() => {
           setOpen(true);
           setImageUrl(response.base64Image);
+          setCurrentRecipe(indexOfRecipe);
         }}
       >
         {isLoading ? (

@@ -1,5 +1,5 @@
 import { getDB } from "@/lib/mongodb";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { isValidObjectId } from "@/utils/validation";
 
 import { NextResponse } from "next/server";

@@ -1,6 +1,6 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateGroceryListWithoutId } from "@/utils/validation";
 import { NewGroceryList } from "@/types/grocery";
 
