@@ -11,10 +11,11 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRecipeStore } from "@/stores/recipe/store";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { split } from "postcss/lib/list";
 
 export const AddButton = () => {
-  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,7 +30,7 @@ export const AddButton = () => {
         >
           <DropdownMenuItem
             className="text-center bg-primary text-foreground rounded-sm"
-            onClick={() => setIsAddItem(true)}
+            onClick={() => setCurrentForm("addItem", false)}
           >
             Add Item
           </DropdownMenuItem>

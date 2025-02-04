@@ -19,9 +19,10 @@ export type GroceryActions = {
   removeItem: (id: string) => void;
   setCurrentForm: (
     card: string,
-    updateSplitLayout: (split: boolean) => void,
-    isMobile: boolean
+    isMobile: boolean,
+    updateSplitLayout?: (split: boolean) => void
   ) => void;
+  resetForm: () => void;
   setCurrentSections: (sections: GrocerySectionOptions[]) => void;
   addSection: (section: GrocerySectionOptions) => void;
   removeSection: (section: GrocerySectionOptions) => void;
@@ -45,6 +46,14 @@ export const createGroceryActions = (set: any): GroceryActions => ({
         ...state,
         items, // Update items
         map: newMap, // Update map based on the new items
+      };
+    }),
+
+  resetForm: () =>
+    set((state: GroceryState) => {
+      return {
+        ...state,
+        currentForm: "",
       };
     }),
 
@@ -121,13 +130,21 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       };
     }),
 
-  setCurrentForm: (card: string, updateSplitLayout: (split: boolean) => void, isMobile: boolean) =>
+  setCurrentForm: (
+    card: string,
+    isMobile: boolean,
+    updateSplitLayout?: (split: boolean) => void
+  ) =>
     set((state: GroceryState) => {
       if (card === "") {
-        updateSplitLayout(false); // Set splitLayout to false when form is cleared
+        if (updateSplitLayout) {
+          updateSplitLayout(false); // Set splitLayout to false when form is cleared
+        }
       } else {
-        if (!isMobile){
-        updateSplitLayout(true); // Set splitLayout to true when form is opened
+        if (!isMobile) {
+          if (updateSplitLayout) {
+            updateSplitLayout(true); // Set splitLayout to true when form is opened
+          }
         }
       }
       return { ...state, currentForm: card };

@@ -33,7 +33,7 @@ export const FindPrice = () => {
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", setSplitLayout, isMobile);
+    setCurrentForm("", isMobile, setSplitLayout);
   };
 
   return (

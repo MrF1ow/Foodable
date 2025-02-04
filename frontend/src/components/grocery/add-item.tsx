@@ -31,7 +31,6 @@ import { getAddItemFormValidation } from "@/utils/formValidation";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
-import { useRecipeStore } from "@/stores/recipe/store";
 
 export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
@@ -46,7 +45,6 @@ export const AddItem = ({ className }: { className?: string }) => {
     (state) => state.setSelectedCategory
   );
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -70,8 +68,7 @@ export const AddItem = ({ className }: { className?: string }) => {
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", setSplitLayout, isMobile);
-    setIsAddItem(false);
+    setCurrentForm("", isMobile, setSplitLayout);
   };
 
   return (

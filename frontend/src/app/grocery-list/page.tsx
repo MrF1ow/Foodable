@@ -43,7 +43,7 @@ export default function GroceryList() {
             }`}
             data-testid="helper-button"
             onClick={() =>
-              setCurrentForm("groceryHelper", setSplitLayout, isMobile)
+              setCurrentForm("groceryHelper", isMobile, setSplitLayout)
             }
           >
             <Icons.ai className="!w-6 !h-6" />
@@ -84,7 +84,7 @@ export default function GroceryList() {
                 </Button>
                 <Button
                   onClick={() =>
-                    setCurrentForm("findPrice", setSplitLayout, isMobile)
+                    setCurrentForm("findPrice", isMobile, setSplitLayout)
                   }
                   className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
                   data-testid="find-price-button"

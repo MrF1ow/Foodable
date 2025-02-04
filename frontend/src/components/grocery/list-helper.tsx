@@ -26,7 +26,7 @@ export const HelperCard = () => {
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", setSplitLayout, isMobile);
+    setCurrentForm("", isMobile, setSplitLayout);
   };
 
   return (

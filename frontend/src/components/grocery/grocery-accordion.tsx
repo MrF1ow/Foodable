@@ -31,13 +31,11 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
   const accordionItems = getGroceryAccordingItems(title, groceryItems);
-  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
     setCurrentCategory(title);
-    setIsAddItem(true);
-    setCurrentForm("addItem", setSplitLayout, isMobile);
+    setCurrentForm("addItem", isMobile, setSplitLayout);
   };
 
   const handleCheckboxChange = (
