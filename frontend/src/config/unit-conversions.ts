@@ -52,6 +52,7 @@ export const unitConversions: UnitConversions = {
     kg: 0.0283495,
     g: 28.3495,
     lb: 0.0625,
+    cup: 0.125,
   },
   l: {
     ml: 1000,

@@ -25,9 +25,6 @@ export default function RecipePage() {
     setIsOpen(!isOpen);
   };
 
-  // fetch all the recipes at once (maybe add a max limit)
-  // types are inferred from the useFetchRecipes hook
-
   // this filteres the recipes based on the search query and returns the filtered recipes
   // if search query is empty, it returns all the recipes
   // when the search query changes, the filtered recipes are updated
