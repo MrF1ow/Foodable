@@ -1,4 +1,4 @@
-interface GeneralHeaderProps {
+export interface GeneralHeaderProps {
   title: string;
   width: string;
 }

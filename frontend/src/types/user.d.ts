@@ -25,7 +25,7 @@ export type NewUser = {
     allergies: string[];
   };
 
-  favoriteRecipes: ObjectId[]; // The recipes the user favorited (they can be the creator or not)
+  savedItems: ObjectId[];
   createdRecipes: ObjectId[]; // The recipes the user created (they are the creator)
   groceryLists: ObjectId[]; // The grocery lists the user created
   following: ObjectId[]; // The users the user is following

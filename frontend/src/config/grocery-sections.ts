@@ -15,7 +15,7 @@ import {
   AlchoholIcon,
   SweetsIcon,
 } from "@/assets/icons/grocery-sections";
-import { GrocerySection } from "@/types/grocery";
+import { GrocerySection, GrocerySectionOptions } from "@/types/grocery";
 
 export const grocerySections: GrocerySection[] = [
   {
@@ -94,3 +94,39 @@ export const grocerySections: GrocerySection[] = [
     color: "#8A2BE2",
   },
 ];
+
+export const grocerySectionOptions: GrocerySectionOptions[] = [
+  "Bakery",
+  "Dairy",
+  "Produce",
+  "Meat",
+  "Pantry",
+  "Frozen",
+  "Snacks",
+  "Beverages",
+  "Baby",
+  "Household",
+  "Seafood",
+  "Personal Care",
+  "Pet",
+  "Alcohol",
+  "Sweets",
+];
+
+export const grocerySectionsAsTuple = [
+  "Bakery",
+  "Dairy",
+  "Produce",
+  "Meat",
+  "Pantry",
+  "Frozen",
+  "Snacks",
+  "Beverages",
+  "Baby",
+  "Household",
+  "Seafood",
+  "Personal Care",
+  "Pet",
+  "Alcohol",
+  "Sweets",
+] as const;

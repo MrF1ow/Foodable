@@ -1,15 +1,18 @@
 import { ObjectId } from "mongodb";
-
-export type RecipeIngredient = {
-  name: string; // Ingredient name
-  quantity: string; // Quantity of ingredient
-};
+import { GrocerySectionOptions } from "./grocery";
 
 export type Recipe = NewRecipe &
   (
     | { id: string; _id?: never } // If `id` exists, `_id` must not be present
     | { _id: ObjectId; id?: never }
   ); // If `_id` exists, `id` must not be present
+
+export type RecipeIngredient = {
+  name: string;
+  quantity: number;
+  unit: Units;
+  category: GrocerySectionOptions;
+};
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator

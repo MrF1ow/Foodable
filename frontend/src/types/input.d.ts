@@ -1,5 +1,6 @@
 export interface InputHeaderProp {
   title: string;
+  onClick?: () => void;
 }
 
 export interface InputContentProp {

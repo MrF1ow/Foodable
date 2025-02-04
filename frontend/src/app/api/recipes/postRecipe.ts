@@ -1,5 +1,5 @@
 import { getDB } from "@/lib/mongodb";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateRecipeWithoutId } from "@/utils/validation";
 import { NewRecipe } from "@/types/recipe";
 

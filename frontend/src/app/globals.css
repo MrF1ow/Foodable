@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-
   :root {
     --background: #f5f5f5;
     --foreground: #111111;
@@ -104,7 +103,6 @@
       display: none;
     }
   }
-
 }
 
 @font-face {

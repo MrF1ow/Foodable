@@ -6,7 +6,9 @@ import { NextResponse } from "next/server";
 import { RecipeIngredient, Recipe, NewRecipe } from "@/types/recipe";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { User, UserRating, NewUser } from "@/types/user";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { unitOptions } from "@/config/unit-conversions";
+import { grocerySectionOptions } from "@/config/grocery-sections";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 
 export const validateObject = <T>(
   obj: any, // this is the object to validate
@@ -35,7 +37,10 @@ export const validateObject = <T>(
 
 // Function to check if an ID is valid
 export const isValidObjectId = (id: any): boolean => {
-  return id !== null && ObjectId.isValid(id);
+  return (
+    id instanceof ObjectId || // Check if it's already an ObjectId
+    (typeof id === "string" && ObjectId.isValid(id) && id.length === 24)
+  );
 };
 
 // Function to check if an array is valid and contains only strings
@@ -72,8 +77,11 @@ export function validateRecipeIngredient(
   return (
     ingredient &&
     typeof ingredient.name === "string" &&
-    typeof ingredient.quantity === "string" &&
-    typeof ingredient.brand === "string"
+    typeof ingredient.quantity === "number" &&
+    typeof ingredient.unit === "string" &&
+    Object.values(unitOptions).includes(ingredient.unit) &&
+    typeof ingredient.category === "string" &&
+    Object.values(grocerySectionOptions).includes(ingredient.category)
   );
 }
 
@@ -94,12 +102,12 @@ export const validateUserWithoutID = (user: NewUser): user is NewUser => {
     typeof user.email === "string" &&
     validateSettings(user.settings) &&
     validatePreferences(user.preferences) &&
-    Array.isArray(user.favoriteRecipes) &&
+    Array.isArray(user.savedItems) &&
     Array.isArray(user.createdRecipes) &&
     Array.isArray(user.groceryLists) &&
     Array.isArray(user.following) &&
     Array.isArray(user.followers) &&
-    user.favoriteRecipes.every(
+    user.savedItems.every(
       (item) => typeof item === "string" || isValidObjectId(item)
     ) &&
     user.createdRecipes.every(
@@ -151,7 +159,6 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
     typeof recipe.description === "string" &&
     Array.isArray(recipe.ingredients) &&
     Array.isArray(recipe.instructions) &&
-    Array.isArray(recipe.instructions) &&
     Array.isArray(recipe.userRatings) &&
     recipe.ingredients.every(validateRecipeIngredient) &&
     recipe.instructions.every((instr: any) => typeof instr === "string") &&
@@ -161,27 +168,29 @@ export const validateRecipeWithoutId = (recipe: any): recipe is NewRecipe => {
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
     (recipe.timestamp === undefined ||
-      (recipe.timestamp instanceof Date && !isNaN(recipe.timestamp.getTime())))
+      (recipe.timestamp instanceof Date &&
+        !isNaN(recipe.timestamp.getTime()))) &&
+    (recipe.imageId === undefined || isValidObjectId(recipe.imageId))
   );
 };
 
 // Function to check if a recipe is valid
 export const validateRecipe = (recipe: any): recipe is Recipe => {
-  if (!recipe) {
-    return false;
-  }
+  if (!recipe) return false;
 
-  if (recipe.id && !isValidObjectId(recipe.id)) {
-    return false;
-  }
+  // Ensure either `id` (string) or `_id` (ObjectId) is present, but not both
+  if (recipe.id && typeof recipe.id !== "string") return false;
+  if (recipe._id && !(recipe._id instanceof ObjectId)) return false;
+  if (recipe.id && recipe._id) return false; // Ensures mutual exclusivity
 
-  if (recipe._id && !isValidObjectId(recipe._id)) {
-    return false;
-  }
+  // Convert `_id` to `id` for validation consistency
+  const recipeCopy = {
+    ...recipe,
+    id: recipe.id ?? (recipe._id ? recipe._id.toString() : undefined),
+  };
+  delete recipeCopy._id;
 
-  const { _id, id, ...recipeWithoutId } = recipe;
-
-  return validateRecipeWithoutId(recipeWithoutId);
+  return validateRecipeWithoutId(recipeCopy);
 };
 
 export const validateGroceryListWithoutId = (

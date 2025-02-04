@@ -1,13 +1,33 @@
+export type GrocerySectionOptions =
+  | "Bakery"
+  | "Dairy"
+  | "Produce"
+  | "Meat"
+  | "Pantry"
+  | "Frozen"
+  | "Snacks"
+  | "Beverages"
+  | "Baby"
+  | "Household"
+  | "Seafood"
+  | "Personal Care"
+  | "Pet"
+  | "Alcohol"
+  | "Sweets";
+
 export interface GrocerySection {
-  title: string;
+  title: GrocerySectionOptions;
   Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   color: string;
 }
 
-export type GroceryItem = {
-  name: string; // Ingredient name
-  quantity: number; // Quantity of ingredient
-};
+export interface GroceryItem {
+  name: string;
+  quantity: number;
+  unit: Units;
+  category: GrocerySectionOptions;
+  checked: boolean;
+}
 
 export type GroceryList = NewGroceryList &
   (

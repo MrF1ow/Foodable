@@ -11,18 +11,18 @@ import { Icons } from "../ui/icons";
 
 export const InputHeader = ({
   title,
-  onClose,
-}: InputHeaderProp & { onClose?: () => void }) => {
+  onClick,
+}: InputHeaderProp & { onClick?: () => void }) => {
   return (
     <div className="p-4 relative flex items-center w-full overflow-hidden">
       <button
-        onClick={onClose}
-        className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none"
+        onClick={onClick}
+        className="absolute rounded-lg bg-card-background hover:bg-secondary transition focus:outline-none hover:scale-105"
       >
         <Icons.close />
       </button>
       <div className="flex items-center justify-center w-full space-x-2">
-        <p className="text-3xl text-center">{title}</p>
+        <p className="p-1 text-3xl text-center">{title}</p>
       </div>
     </div>
   );

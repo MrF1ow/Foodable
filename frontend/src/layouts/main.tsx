@@ -9,7 +9,7 @@ export const MainLayout = ({
   headerComponent,
 }: {
   children: React.ReactNode;
-  headerComponent: React.ReactNode;
+  headerComponent?: React.ReactNode;
 }) => {
   const setIsMobile = useGeneralStore((state) => state.setIsMobile);
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -18,7 +18,7 @@ export const MainLayout = ({
   const pathName = usePathname();
 
   const checkScreenWidth = () => {
-    setIsMobile(window.innerWidth < 768);
+    setIsMobile(window.innerWidth <= 768);
   };
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const MainLayout = ({
     <div className="flex h-screen w-screen bg-background overflow-hidden">
       {/* Bottom Navbar */}
       {isMobile && (
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[8%] bg-background z-50">
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[8%] sm:h-[14%] bg-background z-50 ">
           <Navbar />
         </div>
       )}
@@ -53,12 +53,18 @@ export const MainLayout = ({
       )}
 
       {/* Main Content */}
-      <div
-        className={`grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] gap-y-2 w-full h-full bg-background p-4 md:p-6`}
-      >
-        <div className="h-full">{headerComponent}</div>
-        <div className="flex-1 h-full">{children}</div>
-      </div>
+      {headerComponent ? (
+        <div
+          className={`grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] w-full h-full bg-background p-6 gap-y-2`}
+        >
+          <div className="h-full">{headerComponent}</div>
+          <div className="flex-1 h-full">{children}</div>
+        </div>
+      ) : (
+        <div className={`w-full h-full bg-background p-6`}>
+          {children}
+        </div>
+      )}
     </div>
   );
 };

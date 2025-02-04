@@ -10,9 +10,9 @@ type ContentLayoutProps =
       subContent: React.ReactNode;
     }
   | {
-      split: false;
+      split?: false;
       mainContent: React.ReactNode;
-      subContent?: never;
+      subContent?: React.ReactNode;
     };
 
 export const ContentLayout = ({
@@ -23,18 +23,18 @@ export const ContentLayout = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   return (
-    <div className="w-full h-full bg-background overflow-hidden pt-6">
+    <div className="w-full h-full bg-background overflow-hidden">
       {isMobile ? (
         <div className="h-full overflow-auto pb-[8%]">{mainContent}</div>
       ) : split ? (
         <div className="flex flex-row h-full bg-background">
-          <div className="relative w-[60%] h-auto bg-background overflow-auto">
+          <div className="relative w-[67%] h-auto bg-background overflow-auto">
             {mainContent}
           </div>
-          <div className="w-[40%] px-24">{subContent}</div>
+          <div className="flex-1">{subContent}</div>
         </div>
       ) : (
-        <div className="overflow-auto">{mainContent}</div>
+        <div className="h-full overflow-auto">{mainContent}</div>
       )}
     </div>
   );
