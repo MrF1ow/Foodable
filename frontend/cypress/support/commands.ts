@@ -25,13 +25,36 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+export {};
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      shouldBeVisible(element: string): Chainable<void>;
+      clickAddItemButton(categoryName: string): Chainable<void>;
+      clickButton(testId: string): Chainable<void>;
+      typeText(testId: string, text: string): Chainable<void>;
+      clickCheckbox(itemName: string): Chainable<void>;
+    }
+  }
+}
+
+Cypress.Commands.add("shouldBeVisible", (element: string) => {
+  cy.contains(element).should("be.visible");
+});
+
+Cypress.Commands.add("clickAddItemButton", (categoryName: string) => {
+  cy.get(`[data-testid="${categoryName}-add-item-button"]`).click();
+});
+
+Cypress.Commands.add("clickButton", (testId: string) => {
+  cy.get(`[data-testid="${testId}"]`).click();
+});
+
+Cypress.Commands.add("typeText", (testId: string, text: string) => {
+  cy.get(`[data-testid="${testId}"]`).type(text);
+});
+
+Cypress.Commands.add("clickCheckbox", (itemName: string) => {
+  cy.get("[data-testid=" + itemName + "-checkbox]").click();
+});

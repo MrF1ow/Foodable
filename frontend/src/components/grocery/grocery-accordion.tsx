@@ -16,6 +16,7 @@ import { Icons } from "../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
+import { useRecipeStore } from "@/stores/recipe/store";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setItems = useGroceryStore((state) => state.setItems);
@@ -30,10 +31,12 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
   const accordionItems = getGroceryAccordingItems(title, groceryItems);
+  const setIsAddItem = useRecipeStore((state) => state.setIsAddItem);
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
     setCurrentCategory(title);
+    setIsAddItem(true);
     setCurrentForm("addItem", setSplitLayout, isMobile);
   };
 
@@ -67,7 +70,10 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
         value={title}
         className="w-[90%] md:w-[80%] max-w-[560px] mx-auto"
       >
-        <AccordionTrigger className="flex items-center md:space-x-2 hover:no-underline hover:scale-105">
+        <AccordionTrigger
+          className="flex items-center md:space-x-2 hover:no-underline hover:scale-105"
+          data-testid={`${title}-accordion`}
+        >
           <AccordionHeader title={title} Icon={Icon} color={color} />
           <div
             style={{
@@ -77,7 +83,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
             }}
             onClick={(event) => handleAccordionAdd(event)}
             className="transition-all hover:scale-125"
-            data-testid="add-item-button"
+            data-testid={`${title}-add-item-button`}
           >
             <Icons.plus />
           </div>
@@ -87,7 +93,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
           <div className="mt-4 flex flex-col gap-x-4">
             {accordionItems.length === 0 ? (
               <p className="text-lg text-gray-400">
-                No items currently in this section.
+                No items currently in the {title} section.
               </p>
             ) : (
               accordionItems
@@ -106,6 +112,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
                           checked
                         )
                       }
+                      data-testid={`${item.name}-checkbox`}
                     />
                     <p className="text-lg">
                       {item.name.charAt(0).toUpperCase() + item.name.slice(1)}

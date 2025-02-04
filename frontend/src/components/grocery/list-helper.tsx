@@ -35,7 +35,7 @@ export const HelperCard = () => {
         title="Grocery List Helper"
         onClick={handleInputClose}
         content={
-          <div className="flex flex-col gap-6 mt-2 overflow-y-auto max-h-80">
+          <div className={`flex flex-col gap-6 mt-2 ${isMobile ? "" : ""}`}>
             <p className="!text-lg bg-primary text-white p-4 rounded-lg w-[100%]">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
               nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
