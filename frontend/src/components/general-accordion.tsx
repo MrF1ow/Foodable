@@ -13,6 +13,7 @@ interface GeneralAccordionProps {
   width: string;
   iconSize: number;
   textSize: string;
+  additional?: React.ReactNode;
 }
 
 export const GeneralAccordion = ({
@@ -21,6 +22,7 @@ export const GeneralAccordion = ({
   width,
   iconSize,
   textSize,
+  additional,
 }: GeneralAccordionProps) => {
   return (
     <Accordion
@@ -31,7 +33,7 @@ export const GeneralAccordion = ({
     >
       <AccordionItem value="1" className="p-4">
         <AccordionTrigger
-          className="w-full text-foreground font-bold"
+          className="text-foreground font-bold"
           iconSize={iconSize}
           style={
             {
@@ -39,7 +41,10 @@ export const GeneralAccordion = ({
             } as React.CSSProperties
           }
         >
-          {title}
+          <div className="flex flex-row items-center justify-start ">
+            {title}
+            {additional}
+          </div>
         </AccordionTrigger>
         <AccordionContent className="flex flex-col w-full overflow-hidden">
           {/* Line at the top, centered */}

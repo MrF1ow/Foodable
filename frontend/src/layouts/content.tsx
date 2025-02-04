@@ -23,7 +23,7 @@ export const ContentLayout = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   return (
-    <div className="w-full h-full bg-background overflow-hidden pt-6">
+    <div className="w-full h-full bg-background overflow-hidden">
       {isMobile ? (
         <div className="h-full overflow-auto pb-[8%]">{mainContent}</div>
       ) : split ? (

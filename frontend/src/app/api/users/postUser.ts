@@ -1,6 +1,6 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
-import { HTTP_RESPONSES } from "@/lib/constants";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateUserWithoutID } from "@/utils/validation";
 import { NewUser } from "@/types/user";
 
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
         dietaryRestrictions: user.preferences.dietaryRestrictions || [],
         allergies: user.preferences.allergies || [],
       },
-      favoriteRecipes: user.favoriteRecipes || [],
+      savedItems: user.savedItems || [],
       createdRecipes: user.createdRecipes || [],
       groceryLists: user.groceryLists || [],
       following: user.following || [],

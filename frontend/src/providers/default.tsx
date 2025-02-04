@@ -4,10 +4,12 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TanstackProvider } from "./tanstack-provider";
+import { ReactQueryProvider } from "./react-query-provider";
 import { UserStoreProvider } from "@/stores/user/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
 import { RecipeStoreProvider } from "@/stores/recipe/store";
+import { SavedItemsStoreProvider } from "@/stores/saved/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -27,24 +29,26 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       {/* TanstackProvider handles server-side state */}
-      <TanstackProvider>
+      <ReactQueryProvider>
         <GeneralStoreProvider>
-          <GroceryStoreProvider>
-            {/* UserStoreProvider handles client-side state */}
-            <UserStoreProvider>
-              <RecipeStoreProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                >
-                  {children}
-                </ThemeProvider>
-              </RecipeStoreProvider>
-            </UserStoreProvider>
-          </GroceryStoreProvider>
+          <SavedItemsStoreProvider>
+            <RecipeStoreProvider>
+              <GroceryStoreProvider>
+                {/* UserStoreProvider handles client-side state */}
+                <UserStoreProvider>
+                  <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                  >
+                    {children}
+                  </ThemeProvider>
+                </UserStoreProvider>
+              </GroceryStoreProvider>
+            </RecipeStoreProvider>
+          </SavedItemsStoreProvider>
         </GeneralStoreProvider>
-      </TanstackProvider>
+      </ReactQueryProvider>
     </ClerkProvider>
   );
 }
