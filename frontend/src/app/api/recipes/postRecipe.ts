@@ -1,6 +1,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateRecipeWithoutId } from "@/utils/validation";
+import { createTagsForRecipe } from "@/utils/filterHelpers";
 import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
@@ -20,6 +21,14 @@ export async function POST(req: Request) {
       priceApproximation: recipe.priceApproximation,
       timestamp: recipe.timestamp || new Date(),
     };
+
+    const tags = createTagsForRecipe(
+      recipeToInsert.timeApproximation,
+      recipeToInsert.ingredients,
+      recipeToInsert.priceApproximation
+    );
+
+    recipeToInsert.tags = tags;
 
     if (!validateRecipeWithoutId(recipeToInsert)) {
       return NextResponse.json(

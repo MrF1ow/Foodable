@@ -20,31 +20,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
+import { FilterOptions } from "@/types";
 
-export const FilterButton = () => {
-  // if the value of the filter is 0, it means the filter is not applied
-  // if the value of the filter is 1, it means the filter is applied for less to more
-  // if the value of the filter is -1, it means the filter is applied for more to less
+interface FilterButtonProps {
+  setFilters: (filters: FilterOptions) => void;
+  filter: FilterOptions;
+}
+
+export const FilterButton = ({ setFilters, filter }: FilterButtonProps) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const setRecipeFilters = useGeneralStore(
-    (state) => state.setRecipePageFilters
-  );
-  const recipePageFilter = useGeneralStore((state) => state.recipePageFilters);
 
   const handleFilterChange = (
-    filter: "price" | "time" | "ingredients",
+    filterType: "price" | "time" | "ingredients",
     value: number
   ) => {
-    if (filter === "price")
-      setRecipeFilters({ ...recipePageFilter, price: value });
-    if (filter === "time")
-      setRecipeFilters({ ...recipePageFilter, time: value });
-    if (filter === "ingredients")
-      setRecipeFilters({ ...recipePageFilter, ingredients: value });
+    // Update filter state in zustand store
+    const updatedFilter = { ...filter, [filterType]: value };
+    setFilters(updatedFilter);
   };
 
   const resetFilters = () => {
-    setRecipeFilters({ price: 0, time: 0, ingredients: 0 });
+    setFilters({
+      searchQuery: filter.searchQuery,
+      price: 0,
+      timeApprox: 0,
+      ingredientAmount: 0,
+    });
   };
 
   const preventDropdownClose = (event: Event) => {
@@ -82,14 +83,14 @@ export const FilterButton = () => {
           <DropdownMenuPortal>
             <DropdownMenuSubContent className="bg-card-background text-foreground">
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.price === 1}
+                checked={filter.price === 1}
                 onCheckedChange={() => handleFilterChange("price", 1)}
                 onSelect={preventDropdownClose}
               >
                 Low to High
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.price === -1}
+                checked={filter.price === -1}
                 onCheckedChange={() => handleFilterChange("price", -1)}
                 onSelect={preventDropdownClose}
               >
@@ -106,14 +107,14 @@ export const FilterButton = () => {
           <DropdownMenuPortal>
             <DropdownMenuSubContent className="bg-card-background text-foreground">
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.time === 1}
+                checked={filter.timeApprox === 1}
                 onCheckedChange={() => handleFilterChange("time", 1)}
                 onSelect={preventDropdownClose}
               >
                 Short to Long
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.time === -1}
+                checked={filter.timeApprox === -1}
                 onCheckedChange={() => handleFilterChange("time", -1)}
                 onSelect={preventDropdownClose}
               >
@@ -130,14 +131,14 @@ export const FilterButton = () => {
           <DropdownMenuPortal>
             <DropdownMenuSubContent className="bg-card-background text-foreground">
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.ingredients === 1}
+                checked={filter.ingredientAmount === 1}
                 onCheckedChange={() => handleFilterChange("ingredients", 1)}
                 onSelect={preventDropdownClose}
               >
                 Fewest to Most
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
-                checked={recipePageFilter.ingredients === -1}
+                checked={filter.ingredientAmount === -1}
                 onCheckedChange={() => handleFilterChange("ingredients", -1)}
                 onSelect={preventDropdownClose}
               >

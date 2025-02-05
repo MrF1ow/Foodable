@@ -26,4 +26,5 @@ export type NewRecipe = {
   priceApproximation: number; // The price approximation of the recipe
   timeApproximation: number; // The time approximation of the recipe
   timestamp: Date; // The timestamp of the recipe
+  tags: FilterTags; // The tags of the recipe for filtering purposes
 };
