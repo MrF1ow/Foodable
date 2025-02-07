@@ -29,6 +29,11 @@ export interface GroceryItem {
   checked: boolean;
 }
 
+export interface GroceryListMainInfo {
+  title: string;
+  _id: ObjectId;
+}
+
 export type GroceryList = NewGroceryList &
   (
     | { id: string; _id?: never } // If `id` exists, `_id` must not be present

@@ -14,6 +14,12 @@ export type RecipeIngredient = {
   category: GrocerySectionOptions;
 };
 
+export interface RecipeMainInfo {
+  title: string;
+  imageId: ObjectId;
+  _id: ObjectId;
+}
+
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator
   imageId: ObjectId; // The image ID of the recipe

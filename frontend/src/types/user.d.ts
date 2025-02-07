@@ -1,4 +1,6 @@
 import { ObjectId } from "mongodb";
+import { GroceryList, GroceryListMainInfo } from "./grocery";
+import { RecipeMainInfo } from "./recipe";
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -25,9 +27,13 @@ export type NewUser = {
     allergies: string[];
   };
 
-  savedItems: ObjectId[];
+  savedItems: {
+    recipes: RecipeMainInfo[];
+    groceryLists: GroceryListMainInfo[];
+  };
+
+  currentGroceryList: GroceryList; // The current grocery list the user is working on
   createdRecipes: ObjectId[]; // The recipes the user created (they are the creator)
-  groceryLists: ObjectId[]; // The grocery lists the user created
   following: ObjectId[]; // The users the user is following
   followers: ObjectId[]; // The users that are following the user
   lastLogin: Date; // The last time the user logged in (used for analytics and for potential account termination)
