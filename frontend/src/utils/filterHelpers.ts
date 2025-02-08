@@ -8,46 +8,25 @@ export const createTagsForRecipe = (
 ): FilterTag => {
   const numIngredients = ingredients.length;
 
-  let timeTag: Tag = 1;
-  let priceTag: Tag = 1;
-  let ingredientTag: Tag = 1;
-
-  getTimeTag(timeApproximation);
-  getPriceTag(priceApproximation);
-  getIngredientTag(numIngredients);
+  let timeTag = getTimeTag(timeApproximation);
+  let priceTag = getPriceTag(priceApproximation);
+  let ingredientTag = getIngredientTag(numIngredients);
 
   return {
-    time: timeTag,
-    price: priceTag,
-    ingredient: ingredientTag,
+    time: timeTag as Tag,
+    price: priceTag as Tag,
+    ingredient: ingredientTag as Tag,
   };
 };
 
 export function compareTag(
   a: number,
   b: number,
-  direction: -1 | 0 | 1,
-  tagType: 1 | 2 | 3
+  direction: -1 | 0 | 1
 ): number {
-  const getTagValue = (value: number, tag: 1 | 2 | 3) => {
-    switch (tag) {
-      case 1: // Time tag
-        return getTimeTag(value);
-      case 2: // Price tag
-        return getPriceTag(value);
-      case 3: // Ingredient tag
-        return getIngredientTag(value);
-      default:
-        return 0;
-    }
-  };
-
-  const tagA = getTagValue(a, tagType);
-  const tagB = getTagValue(b, tagType);
-
   if (direction === 0) return 0;
-  if (direction === 1) return tagA - tagB;
-  return tagB - tagA;
+  if (direction === 1) return a - b;
+  return b - a;
 }
 
 function getTimeTag(time: number): number {

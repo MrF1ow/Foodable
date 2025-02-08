@@ -9,7 +9,6 @@ import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { getAdditionalIngredients } from "@/utils/listItems";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { Recipe } from "@/types/recipe";
 
 interface RecipeBoxProps {
   setOpen: (isOpen: boolean) => void;
@@ -18,7 +17,7 @@ interface RecipeBoxProps {
 
 export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
   const groceryItemMap = useGroceryStore((state) => state.map);
-  const allRecipes = useRecipeStore((state) => state.currentRecipes);
+  const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
   const setCurrentRecipe = useRecipeStore(
     (state) => state.setCurrentRecipeIndex
@@ -26,7 +25,7 @@ export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
-  const recipe = allRecipes[indexOfRecipe];
+  const recipe = filteredRecipes[indexOfRecipe];
 
   const {
     data: response,

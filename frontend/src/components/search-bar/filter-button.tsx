@@ -31,17 +31,23 @@ export const FilterButton = ({ setFilters, filter }: FilterButtonProps) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   const handleFilterChange = (
-    filterType: "price" | "time" | "ingredients",
-    value: number
+    filterType: "price" | "timeApprox" | "ingredientAmount",
+    value: -1 | 0 | 1
   ) => {
     // Update filter state in zustand store
-    const updatedFilter = { ...filter, [filterType]: value };
+    const updatedFilter = {
+      searchQuery: filter.searchQuery,
+      price: filterType === "price" ? value : 0,
+      timeApprox: filterType === "timeApprox" ? value : 0,
+      ingredientAmount: filterType === "ingredientAmount" ? value : 0,
+    };
+
     setFilters(updatedFilter);
   };
 
   const resetFilters = () => {
     setFilters({
-      searchQuery: filter.searchQuery,
+      searchQuery: "",
       price: 0,
       timeApprox: 0,
       ingredientAmount: 0,
@@ -108,14 +114,14 @@ export const FilterButton = ({ setFilters, filter }: FilterButtonProps) => {
             <DropdownMenuSubContent className="bg-card-background text-foreground">
               <DropdownMenuCheckboxItem
                 checked={filter.timeApprox === 1}
-                onCheckedChange={() => handleFilterChange("time", 1)}
+                onCheckedChange={() => handleFilterChange("timeApprox", 1)}
                 onSelect={preventDropdownClose}
               >
                 Short to Long
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={filter.timeApprox === -1}
-                onCheckedChange={() => handleFilterChange("time", -1)}
+                onCheckedChange={() => handleFilterChange("timeApprox", -1)}
                 onSelect={preventDropdownClose}
               >
                 Long to Short
@@ -132,14 +138,18 @@ export const FilterButton = ({ setFilters, filter }: FilterButtonProps) => {
             <DropdownMenuSubContent className="bg-card-background text-foreground">
               <DropdownMenuCheckboxItem
                 checked={filter.ingredientAmount === 1}
-                onCheckedChange={() => handleFilterChange("ingredients", 1)}
+                onCheckedChange={() =>
+                  handleFilterChange("ingredientAmount", 1)
+                }
                 onSelect={preventDropdownClose}
               >
                 Fewest to Most
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={filter.ingredientAmount === -1}
-                onCheckedChange={() => handleFilterChange("ingredients", -1)}
+                onCheckedChange={() =>
+                  handleFilterChange("ingredientAmount", -1)
+                }
                 onSelect={preventDropdownClose}
               >
                 Most to Fewest
@@ -156,12 +166,12 @@ export const FilterButton = ({ setFilters, filter }: FilterButtonProps) => {
           >
             Reset
           </Button>
-          <Button
+          {/* <Button
             variant="default"
             className="w-full bg-primary text-foreground"
           >
             Submit
-          </Button>
+          </Button> */}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

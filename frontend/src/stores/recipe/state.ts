@@ -44,41 +44,28 @@ export const createRecipeActions = (set: any): RecipeActions => ({
 
       // Sort by Tags
       filteredRecipes = filteredRecipes.sort((a, b) => {
-        let timeCompare = 0;
-        let priceCompare = 0;
-        let ingredientCompare = 0;
+        let result = 0;
 
         // Sort by time
         if (filter.timeApprox !== 0) {
-          timeCompare = compareTag(
-            a.timeApproximation,
-            b.timeApproximation,
-            filter.timeApprox,
-            1
-          ); // 1 for time tag
+          result = compareTag(a.tags.time, b.tags.time, filter.timeApprox);
         }
 
-        // Sort by price
-        if (filter.price !== 0) {
-          priceCompare = compareTag(
-            a.priceApproximation,
-            b.priceApproximation,
-            filter.price,
-            2
-          ); // 2 for price tag
+        // Sort by price (if time is equal)
+        if (result === 0 && filter.price !== 0) {
+          result = compareTag(a.tags.price, b.tags.price, filter.price);
         }
 
-        // Sort by ingredient amount
-        if (filter.ingredientAmount !== 0) {
-          ingredientCompare = compareTag(
-            a.ingredients.length,
-            b.ingredients.length,
-            filter.ingredientAmount,
-            3
-          ); // 3 for ingredient tag
+        // Sort by ingredient amount (if time and price are equal)
+        if (result === 0 && filter.ingredientAmount !== 0) {
+          result = compareTag(
+            a.tags.ingredient,
+            b.tags.ingredient,
+            filter.ingredientAmount
+          );
         }
 
-        return timeCompare || priceCompare || ingredientCompare;
+        return result;
       });
 
       return {
