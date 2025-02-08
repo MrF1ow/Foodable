@@ -1,7 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject, validateGroceryList } from "@/utils/validation";
+import { validateObject } from "@/utils/validation";
+import { validateGroceryList } from "@/utils/typeValidation/grocery";
 import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports

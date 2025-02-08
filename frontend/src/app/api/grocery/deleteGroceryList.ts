@@ -4,7 +4,7 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "@/utils/validation";
+import { isValidObjectId } from "@/utils/typeValidation/general";
 
 export async function DELETE(req: Request) {
   try {

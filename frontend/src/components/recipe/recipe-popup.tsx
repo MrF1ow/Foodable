@@ -7,7 +7,8 @@ import pfp from "../../../public/images/pfp.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Recipe } from "@/types/recipe";
 import { RecipeContent } from "./recipe-content";
-import { useRecipeStore } from "@/stores/recipe/store";
+import { RecipePopupHeader } from "./recipe-popup-header";
+import { GeneralSave } from "@/components/general-save";
 
 interface RecipePopUpProps {
   recipe: Recipe;
@@ -24,18 +25,7 @@ export const RecipePopUp = ({
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
       <CardContent className="p-0 h-full flex flex-col">
         {/* Recipe Header */}
-        <div className="w-full h-[40%] relative">
-          <img
-            src={imageUrl}
-            alt={recipe.title}
-            className="object-cover w-full h-full"
-          />
-          <div className="absolute w-full bottom-0 left-0 p-4 text-white bg-black bg-opacity-50">
-            <h3 className="text-4xl tracking-widest font-bold truncate p-2">
-              {recipe.title}
-            </h3>
-          </div>
-        </div>
+        <RecipePopupHeader imageUrl={imageUrl} recipe={recipe} />
 
         {/* Recipe Content */}
         <div className="flex-1 overflow-y-auto p-4">

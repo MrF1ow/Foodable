@@ -1,6 +1,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipeWithoutId } from "@/utils/validation";
+import { validateRecipeWithoutId } from "@/utils/typeValidation/recipes";
+import { isValidObjectId } from "@/utils/validation";
 import { createTagsForRecipe } from "@/utils/filterHelpers";
 import { NewRecipe } from "@/types/recipe";
 
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
 
     recipeToInsert.tags = tags;
 
-    if (!validateRecipeWithoutId(recipeToInsert)) {
+    if (!validateRecipeWithoutId(recipeToInsert, isValidObjectId)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }

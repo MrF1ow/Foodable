@@ -20,7 +20,6 @@ import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
 import {
   GroceryItem,
-  GrocerySection,
   GrocerySectionOptions,
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";

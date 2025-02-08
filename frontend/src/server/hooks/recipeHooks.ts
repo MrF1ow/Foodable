@@ -50,6 +50,7 @@ export const useRecipeById = (
     queryFn: () => RecipeApi.fetchRecipeById(id),
     retry: 0,
     enabled,
+    refetchInterval: 30000,
   });
 
   useDataFetching({

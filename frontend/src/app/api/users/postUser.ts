@@ -1,7 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateUserWithoutID } from "@/utils/validation";
+import { validateUserWithoutID } from "@/utils/typeValidation/user";
+import { isValidObjectId } from "@/utils/validation";
 import { NewUser } from "@/types/user";
 
 // Package Imports
@@ -17,16 +18,18 @@ export async function POST(req: Request) {
         dietaryRestrictions: user.preferences.dietaryRestrictions || [],
         allergies: user.preferences.allergies || [],
       },
-      savedItems: user.savedItems || [],
+      savedItems: {
+        recipes: user.savedItems.recipes || [], // Ensure recipes is an array
+        groceryLists: user.savedItems.groceryLists || [], // Ensure groceryLists is an array
+      },
       createdRecipes: user.createdRecipes || [],
-      groceryLists: user.groceryLists || [],
       following: user.following || [],
       followers: user.followers || [],
       lastLogin: user.lastLogin || new Date(),
       dateJoined: user.dateJoined || new Date(),
     };
 
-    if (!validateUserWithoutID(userToInsert)) {
+    if (!validateUserWithoutID(userToInsert, isValidObjectId)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
