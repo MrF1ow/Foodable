@@ -69,6 +69,16 @@ export const createSavedItemsActions = (set: any): SavedItemsActions => ({
   addSavedItem: (savedItem: SavedItem) =>
     set((state: SavedItemsState) => {
       const category = savedItem.category.toLowerCase();
+
+      if (
+        state.savedItems.some(
+          (item) =>
+            item.data._id === savedItem.data._id && item.category === category
+        )
+      ) {
+        return state;
+      }
+
       const updatedSavedItems = [...state.savedItems, savedItem];
 
       let updatedSortedSavedItems = state.sortedSavedItems.map((cat) =>

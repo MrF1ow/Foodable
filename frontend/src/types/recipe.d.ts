@@ -16,6 +16,7 @@ export type RecipeIngredient = {
 
 export interface RecipeMainInfo {
   title: string;
+  category: string;
   imageId: ObjectId;
   _id: ObjectId;
 }

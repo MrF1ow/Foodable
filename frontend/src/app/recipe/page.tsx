@@ -14,12 +14,16 @@ import { RecipePopUp } from "@/components/recipe/recipe-popup";
 import { RecipesFetcher } from "@/components/recipe/recipe-fetcher";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { FilterButton } from "@/components/search-bar/filter-button";
+import { set } from "node_modules/cypress/types/lodash";
 
 export default function RecipePage() {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);
   const currentRecipe = useRecipeStore((state) => state.currentRecipeIndex);
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
   const setFilter = useRecipeStore((state) => state.setFilter);
+  const setCurrentRecipe = useRecipeStore(
+    (state) => state.setCurrentRecipeIndex
+  );
   const filter = useRecipeStore((state) => state.filter);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -57,6 +61,7 @@ export default function RecipePage() {
                 <RecipeBox
                   key={recipe._id?.toString()}
                   setOpen={setIsOpen}
+                  setIndexOfRecipe={setCurrentRecipe}
                   indexOfRecipe={index}
                 />
               ))

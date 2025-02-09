@@ -10,6 +10,7 @@ import { ContentLayout } from "@/layouts/content";
 import { AddButton } from "@/components/saved/add-button";
 import { EditButton } from "@/components/saved/edit-button";
 import { useSavedItemsStore } from "@/stores/saved/store";
+import { useGeneralStore } from "@/stores/general/store";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
 import { GeneralPopUp } from "@/components/general-popup";
@@ -19,26 +20,36 @@ import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
 
 export default function SavedItemsPage() {
+  const isMobile = useGeneralStore((state) => state.isMobile);
   const sortedSavedItems = useSavedItemsStore(
     (state) => state.sortedSavedItems
   );
+  const splitLayout = useGeneralStore((state) => state.splitLayout);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const savedItems = useSavedItemsStore((state) => state.savedItems);
   const currentItem = useSavedItemsStore((state) => state.currentItemIndex);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const setItemIndex = useSavedItemsStore((state) => state.setCurrentItemIndex);
 
   const togglePopUp = () => {
-    setIsOpen(!isOpen);
+    setSplitLayout(!splitLayout);
   };
 
-  const Content = () => {
+  const renderRightSideCard = () => {
     return (
       <>
-        {isOpen && savedItems[currentItem] && (
+        {splitLayout && savedItems[currentItem] && (
           <GeneralPopUp
             toggleDialog={togglePopUp}
             data={savedItems[currentItem].data as Recipe | GroceryList}
           />
         )}
+      </>
+    );
+  };
+
+  const Content = () => {
+    return (
+      <>
         {/* Accordion Components */}
         <div className="flex flex-wrap justify-start gap-4">
           {sortedSavedItems.map(({ title, items }) => (
@@ -46,23 +57,29 @@ export default function SavedItemsPage() {
               key={title}
               title={capitalizeTitle(title)}
               content={
-                <div className="space-y-2">
+                <div className="flex flex-row items-center w-full space-x-2 overflow-x-auto">
                   {items.length > 0 ? (
                     items.map((item, index) => {
+                      const dataToPass = {
+                        ...item.data,
+                        timestamp: new Date(item.data.timestamp),
+                      };
                       const typeOfData = validateRecipe(
-                        item.data,
+                        dataToPass,
                         isValidObjectId
                       )
                         ? "recipe"
                         : "grocery";
 
                       console.log("typeOfData", typeOfData);
+                      console.log("item", item);
 
                       if (typeOfData === "recipe") {
                         return (
                           <RecipeBox
                             key={item.data._id}
-                            setOpen={setIsOpen}
+                            setOpen={setSplitLayout}
+                            setIndexOfRecipe={setItemIndex}
                             indexOfRecipe={index}
                           />
                         );
@@ -84,7 +101,7 @@ export default function SavedItemsPage() {
                   )}
                 </div>
               }
-              width="85%"
+              width={isMobile ? (splitLayout ? "100%" : "85%") : "85%"}
               iconSize={40}
               textSize="2rem"
               additional={<EditButton category={title} />}
@@ -102,7 +119,11 @@ export default function SavedItemsPage() {
     <MainLayout
       headerComponent={<GeneralHeader title={"Saved Items"} width="25%" />}
     >
-      <ContentLayout mainContent={<Content />} />
+      <ContentLayout
+        split={splitLayout}
+        mainContent={<Content />}
+        subContent={renderRightSideCard()}
+      />
     </MainLayout>
   );
 }

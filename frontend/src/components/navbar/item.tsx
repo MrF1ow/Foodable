@@ -19,6 +19,7 @@ export const NavbarItem = ({
   isMobile: boolean;
 }) => {
   const setCurrent = useGeneralStore((state) => state.setCurrentPage);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const resetForm = useGroceryStore((state) => state.resetForm);
   const isActive = active === url;
 
@@ -34,6 +35,7 @@ export const NavbarItem = ({
 
   const handleNavClick = () => {
     setCurrent(url);
+    setSplitLayout(false);
     resetForm();
   };
 

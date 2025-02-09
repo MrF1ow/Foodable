@@ -37,7 +37,7 @@ export const RecipeSection = ({
   additional?: React.ReactNode;
 }) => {
   return (
-    <div className="flex flex-col w-full mt-8">
+    <div className="flex flex-col item-center w-full mt-8">
       {additional ? (
         <RecipeSectionTitle title={title} additional={additional} />
       ) : (

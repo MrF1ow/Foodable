@@ -32,6 +32,7 @@ export interface GroceryItem {
 export interface GroceryListMainInfo {
   title: string;
   _id: ObjectId;
+  category: string;
 }
 
 export type GroceryList = NewGroceryList &

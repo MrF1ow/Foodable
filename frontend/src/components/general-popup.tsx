@@ -17,7 +17,11 @@ interface GeneralPopUpProps {
 }
 
 export const GeneralPopUp = ({ toggleDialog, data }: GeneralPopUpProps) => {
-  const typeOfData = validateRecipe(data, isValidObjectId)
+  const dataToPass = {
+    ...data,
+    timestamp: new Date(data.timestamp),
+  };
+  const typeOfData = validateRecipe(dataToPass, isValidObjectId)
     ? "recipe"
     : "grocery";
 
@@ -31,7 +35,9 @@ export const GeneralPopUp = ({ toggleDialog, data }: GeneralPopUpProps) => {
             imageUrl={currentImageUrl}
             recipe={data as Recipe}
           />
-          <RecipeContent recipe={data as Recipe} />
+          <div className="flex-1 overflow-y-auto p-4">
+            <RecipeContent recipe={data as Recipe} />
+          </div>
         </CardContent>
       );
     } else {
@@ -45,13 +51,11 @@ export const GeneralPopUp = ({ toggleDialog, data }: GeneralPopUpProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <Card className="w-[400px] max-w-[90%] p-4 rounded-xl shadow-lg bg-card-background text-foreground">
-        <MainCardContent />
+      <Card className="absolute top-0 left-0 p-0 w-full h-full rounded-xl shadow-lg bg-card-background text-foreground overflow-hidden">
         <div className="absolute top-0 left-0 text-foreground p-4 z-50">
           <BiArrowBack onClick={toggleDialog} size={40} />
         </div>
+        <MainCardContent />
       </Card>
-    </div>
   );
 };

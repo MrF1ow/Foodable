@@ -12,16 +12,19 @@ import { useGroceryStore } from "@/stores/grocery/store";
 
 interface RecipeBoxProps {
   setOpen: (isOpen: boolean) => void;
+  setIndexOfRecipe: (index: number) => void;
+  setSplit?: (split: boolean) => void;
   indexOfRecipe: number;
 }
 
-export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
+export const RecipeBox = ({
+  setOpen,
+  setIndexOfRecipe,
+  indexOfRecipe,
+}: RecipeBoxProps) => {
   const groceryItemMap = useGroceryStore((state) => state.map);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
-  const setCurrentRecipe = useRecipeStore(
-    (state) => state.setCurrentRecipeIndex
-  );
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
@@ -40,7 +43,7 @@ export const RecipeBox = ({ setOpen, indexOfRecipe }: RecipeBoxProps) => {
   const handleRecipeClick = () => {
     setOpen(true);
     setImageUrl(response.base64Image);
-    setCurrentRecipe(indexOfRecipe);
+    setIndexOfRecipe(indexOfRecipe);
     const fetchedAdditionalIngredients = getAdditionalIngredients(
       recipe.ingredients,
       groceryItemMap
