@@ -1,13 +1,18 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 import { Recipe } from "@/types/recipe";
 import { FilterOptions } from "@/types";
 import { GroceryItem } from "@/types/grocery";
 import { compareTag } from "@/utils/filterHelpers";
 import { RecipeMetaData } from "@/types/saved";
+import { metadata } from "@/app/layout";
 
 export type RecipeState = {
-  openedRecipe: Recipe | null;
+  openedRecipe: {
+    recipe: Recipe | null;
+    metadata: RecipeMetaData | null;
+  };
   currentRecipes: RecipeMetaData[]; // The current recipes
   fullRecipes: Record<string, Recipe>; // The full recipes stored in cache
   filteredRecipes: RecipeMetaData[]; // The filtered recipes
@@ -23,6 +28,7 @@ export type RecipeState = {
 
 export type RecipeActions = {
   setOpenedRecipe: (recipe: Recipe | null) => void;
+  getCurrentMetadata: (id: string) => RecipeMetaData;
   setCurrentRecipes: (recipes: RecipeMetaData[], append?: boolean) => void;
   setCurrentRecipeId: (id: string) => void;
   setFilter: (filter: FilterOptions) => void;
@@ -38,8 +44,24 @@ export type RecipeActions = {
 };
 
 export const createRecipeActions = (set: any, get: any): RecipeActions => ({
-  setOpenedRecipe: (recipe: Recipe | null) =>
-    set((state: RecipeState) => ({ openedRecipe: recipe })),
+  setOpenedRecipe: (recipe: Recipe | null) => {
+    const currentMetadata = recipe
+      ? get().currentRecipes.find(
+          (recipe: RecipeMetaData) =>
+            recipe._id.toString() === recipe._id.toString()
+        )
+      : null;
+
+    set((state: RecipeState) => ({
+      openedRecipe: { recipe, metadata: currentMetadata },
+    }));
+
+    setTimeout(() => get().fetchFullRecipe(recipe!._id.toString()), 0);
+  },
+  getCurrentMetadata: (id: string): RecipeMetaData =>
+    get().currentRecipes.find(
+      (recipe: RecipeMetaData) => recipe._id.toString() === id
+    ),
   setCurrentRecipes: (recipes: RecipeMetaData[], append = false) =>
     set((state: RecipeState) => ({
       currentRecipes: append ? [...state.currentRecipes, ...recipes] : recipes,
@@ -104,15 +126,30 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 
   fetchFullRecipe: async (id: string) => {
     if (get().fullRecipes[id]) {
-      set((state: RecipeState) => ({ openedRecipe: state.fullRecipes[id] }));
+      console.log("Recipe already cached");
+      const metadata = get().currentRecipes.find(
+        (recipe: RecipeMetaData) =>
+          recipe._id.toString() === recipe._id.toString()
+      );
+      set((state: RecipeState) => ({
+        openedRecipe: { recipe: state.fullRecipes[id], metadata },
+      }));
     }
 
     try {
       const response = await fetch(`/api/recipes?id=${id}`);
       const recipe = await response.json();
 
+      const metadata = get().currentRecipes.find(
+        (recipe: RecipeMetaData) =>
+          recipe._id.toString() === recipe._id.toString()
+      );
+
       set((state: RecipeState) => ({
-        openedRecipe: recipe,
+        openedRecipe: {
+          recipe: recipe,
+          metadata,
+        },
         fullRecipes: { ...state.fullRecipes, [id]: recipe },
       }));
     } catch (error) {
@@ -124,7 +161,10 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 export type RecipeStore = RecipeState & RecipeActions;
 
 export const initRecipeStore = (): RecipeState => ({
-  openedRecipe: null,
+  openedRecipe: {
+    recipe: null,
+    metadata: null,
+  },
   currentRecipes: [],
   currentRecipeId: "",
   fullRecipes: {},
@@ -144,7 +184,10 @@ export const initRecipeStore = (): RecipeState => ({
 });
 
 export const defaultInitState: RecipeState = {
-  openedRecipe: null,
+  openedRecipe: {
+    recipe: null,
+    metadata: null,
+  },
   currentRecipes: [],
   currentRecipeId: "",
   fullRecipes: {},

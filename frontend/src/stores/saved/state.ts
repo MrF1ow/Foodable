@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
 import { SavedCategory, MainMetaData } from "@/types/saved";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
@@ -12,7 +14,7 @@ export type SavedItemsState = {
   };
   sortedSavedItems: SavedCategory[];
   currentItemId: string;
-  currentItemType?: "recipe" | "grocery";
+  currentItemType: "recipe" | "grocery" | "";
 };
 
 export type SavedItemsActions = {
@@ -120,64 +122,55 @@ export const createSavedItemsActions = (
       };
     }),
 
-  setCurrentItemId: (id: string) =>
+  setCurrentItemId: (id: string) => {
     set((state: SavedItemsState) => {
       const foundItem = state.savedItems.find(
         (item) => item._id.toString() === id
       );
-      const itemType = foundItem?.category === "recipe" ? "recipe" : "grocery";
+      const itemType = foundItem?.type === "recipe" ? "recipe" : "grocery";
       return { ...state, currentItemId: id, currentItemType: itemType };
-    }),
+    });
 
-  cacheFullData: async (id: string ) => {
+    // Wait for state update, then call `cacheFullData`
+    setTimeout(() => get().cacheFullData(id), 0);
+  },
+
+  cacheFullData: async (id: string) => {
     const type = get().currentItemType;
+
     if (type === "recipe") {
       if (get().fullSavedDataCache.recipes[id]) {
-        set((state: SavedItemsState) => ({
-          currentItem: state.fullSavedDataCache.recipes[id],
-        }));
-      }
-      try {
-        const response = await fetch(`/api/recipes?id=${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch recipe");
-        }
-        const recipe = await response.json();
-        set((state: SavedItemsState) => ({
-          currentItem: recipe,
-          fullSavedDataCache: {
-            ...state.fullSavedDataCache,
-            recipes: { ...state.fullSavedDataCache.recipes, [id]: recipe },
-          },
-        }));
-      } catch (error) {
-        console.error("Error fetching recipe:", error);
+        set(() => ({ currentItem: get().fullSavedDataCache.recipes[id] }));
+        return;
       }
     } else if (type === "grocery") {
       if (get().fullSavedDataCache.groceryLists[id]) {
-        set((state: SavedItemsState) => ({
-          currentItem: state.fullSavedDataCache.groceryLists[id],
-        }));
+        set(() => ({ currentItem: get().fullSavedDataCache.groceryLists[id] }));
+        return;
       }
-      try {
-        const response = await fetch(`/api/grocery?id=${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch grocery list");
-        }
-        const groceryList = await response.json();
-        set((state: SavedItemsState) => ({
-          currentItem: groceryList,
-          fullSavedDataCache: {
-            ...state.fullSavedDataCache,
-            groceryLists: {
-              ...state.fullSavedDataCache.groceryLists,
-              [id]: groceryList,
-            },
+    }
+
+    try {
+      const response = await fetch(
+        type === "recipe" ? `/api/recipes?id=${id}` : `/api/grocery?id=${id}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch data");
+
+      const data = await response.json();
+      set((state: SavedItemsState) => ({
+        currentItem: data,
+        fullSavedDataCache: {
+          ...state.fullSavedDataCache,
+          [type === "recipe" ? "recipes" : "groceryLists"]: {
+            ...state.fullSavedDataCache[
+              type === "recipe" ? "recipes" : "groceryLists"
+            ],
+            [id]: data,
           },
-        }));
-      } catch (error) {
-        console.error("Error fetching grocery list:", error);
-      }
+        },
+      }));
+    } catch (error) {
+      console.error(`Error fetching ${type}:`, error);
     }
   },
 });
@@ -193,6 +186,7 @@ export const defaultInitState: SavedItemsState = {
     recipes: {},
     groceryLists: {},
   },
+  currentItemType: "",
 };
 
 export const createSavedItemsStore = (

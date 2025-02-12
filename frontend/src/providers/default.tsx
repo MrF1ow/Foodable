@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
-import { TanstackProvider } from "./tanstack-provider";
 import { ReactQueryProvider } from "./react-query-provider";
 import { UserStoreProvider } from "@/stores/user/store";
 import { GeneralStoreProvider } from "@/stores/general/store";

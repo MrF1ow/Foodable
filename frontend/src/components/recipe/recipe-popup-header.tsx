@@ -1,14 +1,17 @@
 import { Recipe } from "@/types/recipe";
 import { GeneralSave } from "@/components/general-save";
+import { RecipeMetaData } from "@/types/saved";
 
 interface RecipePopupHeaderProps {
   imageUrl: string;
   recipe: Recipe;
+  metadata: RecipeMetaData;
 }
 
 export const RecipePopupHeader = ({
   imageUrl,
   recipe,
+  metadata,
 }: RecipePopupHeaderProps) => {
   return (
     <div className="w-full h-[40%] relative">
@@ -21,7 +24,7 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        <GeneralSave data={recipe} />
+        <GeneralSave data={metadata} />
       </div>
     </div>
   );

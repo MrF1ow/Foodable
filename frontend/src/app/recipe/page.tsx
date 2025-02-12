@@ -17,7 +17,6 @@ import { FilterButton } from "@/components/search-bar/filter-button";
 
 export default function RecipePage() {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);
-  const currentRecipe = useRecipeStore((state) => state.currentRecipeId);
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
   const setFilter = useRecipeStore((state) => state.setFilter);
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipeId);
@@ -54,7 +53,6 @@ export default function RecipePage() {
                   setId={setCurrentRecipe}
                   fetchAndStore={fetchAndStoreRecipe}
                   data={data}
-                  recipeId={data._id.toString()}
                 />
               ))
             ) : (

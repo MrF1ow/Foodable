@@ -20,7 +20,7 @@ export default function SavedItemsPage() {
   );
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setItemIndex = useSavedItemsStore((state) => state.setCurrentItemId);
+  const setItem = useSavedItemsStore((state) => state.setCurrentItemId);
   const currentType = useSavedItemsStore((state) => state.currentItemType);
   const data = useSavedItemsStore((state) => state.currentItem);
   const cacheFullData = useSavedItemsStore((state) => state.cacheFullData);
@@ -63,8 +63,7 @@ export default function SavedItemsPage() {
                           <RecipeBox
                             key={item._id.toString()}
                             setOpen={setSplitLayout}
-                            setId={setItemIndex}
-                            recipeId={item._id.toString()}
+                            setId={setItem}
                             fetchAndStore={cacheFullData}
                             data={item}
                           />

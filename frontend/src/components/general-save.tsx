@@ -50,16 +50,15 @@ export const GeneralSave = ({ data }: GeneralSaveProps) => {
       setNewListTitle("");
     }
 
-    let toInsert: GroceryMetaData | SavedRecipeMetaData = {} as any;
+    console.log("Data:", data);
 
-    if (data.type === "grocery") {
-      toInsert = data as GroceryMetaData;
-    } else if (data.type === "recipe") {
-      toInsert = {
-        ...data,
-        category: selectedList,
-      } as SavedRecipeMetaData;
-    }
+    const toInsert = {
+      ...data,
+      category: selectedList,
+    };
+    console.log(toInsert);
+    console.log(selectedList);
+    console.log(lists);
 
     if (selectedList) {
       addSavedItem(toInsert);

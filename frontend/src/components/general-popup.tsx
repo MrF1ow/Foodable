@@ -21,6 +21,7 @@ export const GeneralPopUp = ({
   data,
 }: GeneralPopUpProps) => {
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
+  const getMetadata = useRecipeStore((state) => state.getCurrentMetadata);
 
   const MainCardContent = () => {
     if (typeOfData === "recipe") {
@@ -29,6 +30,7 @@ export const GeneralPopUp = ({
           <RecipePopupHeader
             imageUrl={currentImageUrl}
             recipe={data as Recipe}
+            metadata={getMetadata((data as Recipe).id)}
           />
           <div className="flex-1 overflow-y-auto p-4">
             <RecipeContent recipe={data as Recipe} />

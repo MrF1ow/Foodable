@@ -7,22 +7,19 @@ import React from "react";
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { RecipeMetaData } from "@/types/saved";
+import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 interface RecipeBoxProps {
   setOpen: (isOpen: boolean) => void;
   setId: (id: string) => void;
-  setSplit?: (split: boolean) => void;
   fetchAndStore: (id: string) => Promise<void>;
-  data: RecipeMetaData;
-  recipeId: string;
+  data: RecipeMetaData | SavedRecipeMetaData;
 }
 
 export const RecipeBox = ({
   setOpen,
   setId,
   data,
-  recipeId,
   fetchAndStore,
 }: RecipeBoxProps) => {
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
@@ -35,9 +32,9 @@ export const RecipeBox = ({
 
   const handleRecipeClick = async () => {
     await fetchAndStore(data._id.toString());
-    setOpen(true);
+    setId(data._id.toString());
     setImageUrl(response.base64Image);
-    setId(recipeId);
+    setOpen(true);
   };
 
   return (

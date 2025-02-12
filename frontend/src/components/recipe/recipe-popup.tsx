@@ -18,7 +18,9 @@ interface RecipePopUpProps {
 }
 
 export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
-  const recipe = useRecipeStore((state) => state.openedRecipe);
+  const recipe = useRecipeStore((state) => state.openedRecipe.recipe);
+  const recipeMetadata = useRecipeStore((state) => state.openedRecipe.metadata);
+
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
@@ -39,7 +41,11 @@ export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
       <CardContent className="p-0 h-full flex flex-col">
         {/* Recipe Header */}
-        <RecipePopupHeader imageUrl={imageUrl} recipe={recipe} />
+        <RecipePopupHeader
+          imageUrl={imageUrl}
+          recipe={recipe}
+          metadata={recipeMetadata!}
+        />
 
         {/* Recipe Content */}
         <div className="flex-1 overflow-y-auto p-4">
