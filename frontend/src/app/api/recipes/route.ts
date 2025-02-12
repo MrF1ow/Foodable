@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   } else if (searchParams.has("title")) {
     return getRecipeByTitle(request);
   } else {
-    return getAllRecipes();
+    return getAllRecipes(request);
   }
 }
 

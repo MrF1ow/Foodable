@@ -1,4 +1,5 @@
 // Package Imports
+import { useEffect } from "react";
 import { BiArrowBack } from "react-icons/bi";
 
 // Local Imports
@@ -8,19 +9,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Recipe } from "@/types/recipe";
 import { RecipeContent } from "./recipe-content";
 import { RecipePopupHeader } from "./recipe-popup-header";
-import { GeneralSave } from "@/components/general-save";
+import { useRecipeStore } from "@/stores/recipe/store";
 
 interface RecipePopUpProps {
-  recipe: Recipe;
+  recipeId: string;
   toggleDialog: () => void;
   imageUrl: string;
 }
 
 export const RecipePopUp = ({
   toggleDialog,
-  recipe,
+  recipeId,
   imageUrl,
 }: RecipePopUpProps) => {
+  const fetchFullRecipe = useRecipeStore((state) => state.fetchFullRecipe);
+  useEffect(() => {
+    fetchFullRecipe(recipeId);
+  }, [recipeId]);
+
+  const recipe = useRecipeStore((state) => state.fullRecipes[recipeId]);
+  console.log("Recipe:", recipe);
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
       <CardContent className="p-0 h-full flex flex-col">

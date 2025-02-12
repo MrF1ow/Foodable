@@ -54,7 +54,7 @@ export const RecipeApi = {
 
   fetchAllRecipes: async () => {
     try {
-      const response = await axios.get("/recipes");
+      const response = await axios.get("/recipes?metadata=true");
       return response.data;
     } catch (error) {
       console.error("Error getting recipes:", error);

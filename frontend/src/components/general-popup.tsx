@@ -4,8 +4,6 @@ import { BiArrowBack } from "react-icons/bi";
 
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
-import { validateRecipe } from "@/utils/typeValidation/recipes";
-import { isValidObjectId } from "@/utils/typeValidation/general";
 import { RecipeContent } from "./recipe/recipe-content";
 import { RecipePopupHeader } from "./recipe/recipe-popup-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,18 +11,15 @@ import { useRecipeStore } from "@/stores/recipe/store";
 
 interface GeneralPopUpProps {
   toggleDialog: () => void;
+  typeOfData: "recipe" | "grocery";
   data: Recipe | GroceryList;
 }
 
-export const GeneralPopUp = ({ toggleDialog, data }: GeneralPopUpProps) => {
-  const dataToPass = {
-    ...data,
-    timestamp: new Date(data.timestamp),
-  };
-  const typeOfData = validateRecipe(dataToPass, isValidObjectId)
-    ? "recipe"
-    : "grocery";
-
+export const GeneralPopUp = ({
+  toggleDialog,
+  typeOfData,
+  data,
+}: GeneralPopUpProps) => {
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
 
   const MainCardContent = () => {
@@ -51,11 +46,11 @@ export const GeneralPopUp = ({ toggleDialog, data }: GeneralPopUpProps) => {
   };
 
   return (
-      <Card className="absolute top-0 left-0 p-0 w-full h-full rounded-xl shadow-lg bg-card-background text-foreground overflow-hidden">
-        <div className="absolute top-0 left-0 text-foreground p-4 z-50">
-          <BiArrowBack onClick={toggleDialog} size={40} />
-        </div>
-        <MainCardContent />
-      </Card>
+    <Card className="absolute top-0 left-0 p-0 w-full h-full rounded-xl shadow-lg bg-card-background text-foreground overflow-hidden">
+      <div className="absolute top-0 left-0 text-foreground p-4 z-50">
+        <BiArrowBack onClick={toggleDialog} size={40} />
+      </div>
+      <MainCardContent />
+    </Card>
   );
 };

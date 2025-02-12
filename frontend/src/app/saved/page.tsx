@@ -14,10 +14,10 @@ import { useGeneralStore } from "@/stores/general/store";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
 import { GeneralPopUp } from "@/components/general-popup";
-import { validateRecipe } from "@/utils/typeValidation/recipes";
-import { isValidObjectId } from "@/utils/typeValidation/general";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
+import { useRecipeById } from "@/server/hooks/recipeHooks";
+import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
 export default function SavedItemsPage() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -27,20 +27,48 @@ export default function SavedItemsPage() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const savedItems = useSavedItemsStore((state) => state.savedItems);
-  const currentItem = useSavedItemsStore((state) => state.currentItemIndex);
-  const setItemIndex = useSavedItemsStore((state) => state.setCurrentItemIndex);
+  const currentItem = useSavedItemsStore((state) => state.currentItemId);
+  const setItemIndex = useSavedItemsStore((state) => state.setCurrentItemId);
+  const currentType = useSavedItemsStore((state) => state.currentItemType);
 
   const togglePopUp = () => {
     setSplitLayout(!splitLayout);
   };
 
+  const [data, setData] = useState<Recipe | GroceryList | null>(null);
+
+  if (currentType === "recipe") {
+    const { recipe, isLoadingRecipe, errorRecipe } = useRecipeById(
+      currentItem,
+      { enabled: true }
+    );
+    if (errorRecipe) {
+      console.error("Error fetching recipe:", errorRecipe);
+    }
+    setData(recipe);
+  } else if (currentType === "grocery") {
+    const {
+      data: groceryList,
+      isLoading,
+      error,
+    } = useFetchGroceryListById(currentItem);
+
+    if (error) {
+      console.error("Error fetching grocery list:", error);
+    }
+    if (groceryList) {
+      setData(groceryList);
+    }
+  }
+
   const renderRightSideCard = () => {
     return (
       <>
-        {splitLayout && savedItems[currentItem] && (
+        {splitLayout && currentType && data && (
           <GeneralPopUp
             toggleDialog={togglePopUp}
-            data={savedItems[currentItem].data as Recipe | GroceryList}
+            typeOfData={currentType}
+            data={data}
           />
         )}
       </>
@@ -59,37 +87,26 @@ export default function SavedItemsPage() {
               content={
                 <div className="flex flex-row items-center w-full space-x-2 overflow-x-auto">
                   {items.length > 0 ? (
-                    items.map((item, index) => {
-                      const dataToPass = {
-                        ...item.data,
-                        timestamp: new Date(item.data.timestamp),
-                      };
-                      const typeOfData = validateRecipe(
-                        dataToPass,
-                        isValidObjectId
-                      )
-                        ? "recipe"
-                        : "grocery";
-
-                      console.log("typeOfData", typeOfData);
-                      console.log("item", item);
+                    items.map((item) => {
+                      const typeOfData = item.type;
 
                       if (typeOfData === "recipe") {
                         return (
                           <RecipeBox
-                            key={item.data._id}
+                            key={item._id.toString()}
                             setOpen={setSplitLayout}
-                            setIndexOfRecipe={setItemIndex}
-                            indexOfRecipe={index}
+                            setId={setItemIndex}
+                            recipeId={item._id.toString()}
+                            data={item}
                           />
                         );
-                      } else {
+                      } else if (typeOfData === "grocery") {
                         return (
                           <div
-                            key={item.data._id}
+                            key={item._id.toString()}
                             className="p-2 border rounded-lg"
                           >
-                            {item.data.title}
+                            {item.title}
                           </div>
                         );
                       }

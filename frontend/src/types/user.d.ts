@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
-import { GroceryList, GroceryListMainInfo } from "./grocery";
-import { RecipeMainInfo } from "./recipe";
+import { GroceryList } from "./grocery";
+import { MainSavedInfo } from "./saved";
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -28,8 +28,8 @@ export type NewUser = {
   };
 
   savedItems: {
-    recipes: RecipeMainInfo[];
-    groceryLists: GroceryListMainInfo[];
+    recipes: MainSavedInfo[];
+    groceryLists: MainSavedInfo[];
   };
 
   currentGroceryList: GroceryList; // The current grocery list the user is working on

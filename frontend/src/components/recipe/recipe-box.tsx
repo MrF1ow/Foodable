@@ -7,54 +7,44 @@ import React from "react";
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { getAdditionalIngredients } from "@/utils/listItems";
-import { useGroceryStore } from "@/stores/grocery/store";
+import { RecipeMetaData } from "@/types/saved";
 
 interface RecipeBoxProps {
   setOpen: (isOpen: boolean) => void;
-  setIndexOfRecipe: (index: number) => void;
+  setId: (id: string) => void;
   setSplit?: (split: boolean) => void;
-  indexOfRecipe: number;
+  fetchAndStore: (id: string) => Promise<void>;
+  data: RecipeMetaData;
+  recipeId: string;
 }
 
 export const RecipeBox = ({
   setOpen,
-  setIndexOfRecipe,
-  indexOfRecipe,
+  setId,
+  data,
+  recipeId,
+  fetchAndStore,
 }: RecipeBoxProps) => {
-  const groceryItemMap = useGroceryStore((state) => state.map);
-  const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
-  const setAdditionalIngredients = useRecipeStore(
-    (state) => state.setAdditionalIngredients
-  );
-  const recipe = filteredRecipes[indexOfRecipe];
 
-  const {
-    data: response,
-    isLoading,
-    error,
-  } = useFetchImageById(recipe.imageId ? recipe.imageId.toString() : "");
+  const { data: response, isLoading, error } = useFetchImageById(data.imageId);
 
   if (error) {
     console.error("Error fetching image:", error);
   }
 
-  const handleRecipeClick = () => {
+  const handleRecipeClick = async () => {
     setOpen(true);
     setImageUrl(response.base64Image);
-    setIndexOfRecipe(indexOfRecipe);
-    const fetchedAdditionalIngredients = getAdditionalIngredients(
-      recipe.ingredients,
-      groceryItemMap
-    );
-    setAdditionalIngredients(fetchedAdditionalIngredients);
+    setId(recipeId);
+
+    await fetchAndStore(data._id.toString());
   };
 
   return (
     <>
       <div
-        key={recipe._id?.toString()}
+        key={data._id.toString()}
         className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
         onClick={handleRecipeClick}
       >
@@ -66,14 +56,14 @@ export const RecipeBox = ({
         ) : (
           <Image
             src={response.base64Image}
-            alt={recipe.title}
+            alt={data.title}
             fill
             className="object-cover"
           />
         )}
         {/* Make this a Hover Box */}
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
-          <h3 className="text-lg font-semibold truncate">{recipe.title}</h3>
+          <h3 className="text-lg font-semibold truncate">{data.title}</h3>
         </div>
       </div>
     </>

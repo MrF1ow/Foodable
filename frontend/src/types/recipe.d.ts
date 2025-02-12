@@ -3,8 +3,8 @@ import { GrocerySectionOptions } from "./grocery";
 
 export type Recipe = NewRecipe &
   (
-    | { id: string; _id?: never } // If `id` exists, `_id` must not be present
-    | { _id: ObjectId; id?: never }
+    | { id: string; _id: never } // If `id` exists, `_id` must not be present
+    | { _id: ObjectId; id: never }
   ); // If `_id` exists, `id` must not be present
 
 export type RecipeIngredient = {
@@ -13,13 +13,6 @@ export type RecipeIngredient = {
   unit: Units;
   category: GrocerySectionOptions;
 };
-
-export interface RecipeMainInfo {
-  title: string;
-  category: string;
-  imageId: ObjectId;
-  _id: ObjectId;
-}
 
 export type NewRecipe = {
   creatorId: ObjectId; // The user ID of the creator

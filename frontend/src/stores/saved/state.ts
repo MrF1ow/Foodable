@@ -1,34 +1,39 @@
 import { create } from "zustand";
-import { SavedCategory, SavedItem } from "@/types/saved";
+import { SavedCategory, MainMetaData } from "@/types/saved";
+import { Recipe } from "@/types/recipe";
+import { GroceryList } from "@/types/grocery";
 
 export type SavedItemsState = {
-  savedItems: SavedItem[];
+  savedItems: MainMetaData[];
+  fullSavedDataCache: {
+    recipes: Record<string, Recipe>;
+    groceryLists: Record<string, GroceryList>;
+  };
   sortedSavedItems: SavedCategory[];
-  currentItemIndex: number;
+  currentItemId: string;
+  currentItemType?: "recipe" | "grocery";
 };
 
 export type SavedItemsActions = {
   addSavedCategory: (category: string) => void;
   removeSavedCategory: (category: string) => void;
   updateSavedCategory: (oldCategory: string, newCategory: string) => void;
-  setSavedItems: (savedItems: SavedItem[]) => void;
-  addSavedItem: (savedItem: SavedItem) => void;
+  setSavedItems: (savedItems: MainMetaData[]) => void;
+  addSavedItem: (savedItem: MainMetaData) => void;
   removeSavedItem: (index: number) => void;
-  setCurrentItemIndex: (index: number) => void;
+  setCurrentItemId: (id: string) => void;
+  cacheFullData: (data: Recipe | GroceryList) => void;
 };
 
 export const createSavedItemsActions = (set: any): SavedItemsActions => ({
   addSavedCategory: (category: string) =>
     set((state: SavedItemsState) => {
       const lowerCaseCategory = category.toLowerCase();
-
-      // Prevent duplicates
       if (
         state.sortedSavedItems.some((cat) => cat.title === lowerCaseCategory)
       ) {
         return state;
       }
-
       return {
         sortedSavedItems: [
           ...state.sortedSavedItems,
@@ -52,48 +57,40 @@ export const createSavedItemsActions = (set: any): SavedItemsActions => ({
           ? { ...item, category: newCategory }
           : item
       );
-
       const updatedSortedSavedItems = state.sortedSavedItems.map((cat) =>
         cat.title === oldCategory ? { ...cat, title: newCategory } : cat
       );
-
       return {
         savedItems: updatedSavedItems,
         sortedSavedItems: updatedSortedSavedItems,
       };
     }),
 
-  setSavedItems: (savedItems: SavedItem[]) =>
+  setSavedItems: (savedItems: MainMetaData[]) =>
     set((state: SavedItemsState) => ({ ...state, savedItems })),
 
-  addSavedItem: (savedItem: SavedItem) =>
+  addSavedItem: (savedItem: MainMetaData) =>
     set((state: SavedItemsState) => {
       const category = savedItem.category.toLowerCase();
-
       if (
         state.savedItems.some(
-          (item) =>
-            item.data._id === savedItem.data._id && item.category === category
+          (item) => item._id === savedItem._id && item.category === category
         )
       ) {
         return state;
       }
-
       const updatedSavedItems = [...state.savedItems, savedItem];
-
       let updatedSortedSavedItems = state.sortedSavedItems.map((cat) =>
         cat.title === category
           ? { ...cat, items: [...cat.items, savedItem] }
           : cat
       );
-
       if (!state.sortedSavedItems.some((cat) => cat.title === category)) {
         updatedSortedSavedItems = [
           ...state.sortedSavedItems,
           { title: category, items: [savedItem] },
         ];
       }
-
       return {
         savedItems: updatedSavedItems,
         sortedSavedItems: updatedSortedSavedItems,
@@ -104,35 +101,66 @@ export const createSavedItemsActions = (set: any): SavedItemsActions => ({
     set((state: SavedItemsState) => {
       const itemToRemove = state.savedItems[index];
       if (!itemToRemove) return state;
-
       const updatedSavedItems = state.savedItems.filter((_, i) => i !== index);
       const updatedSortedSavedItems = state.sortedSavedItems.map((cat) =>
         cat.title === itemToRemove.category
-          ? { ...cat, items: cat.items.filter((item) => item !== itemToRemove) }
+          ? {
+              ...cat,
+              items: cat.items.filter((item) => item._id !== itemToRemove._id),
+            }
           : cat
       );
-
       return {
         savedItems: updatedSavedItems,
         sortedSavedItems: updatedSortedSavedItems,
       };
     }),
 
-  setCurrentItemIndex: (index: number) =>
-    set((state: SavedItemsState) => ({ ...state, currentItemIndex: index })),
+  setCurrentItemId: (id: string) =>
+    set((state: SavedItemsState) => {
+      const foundItem = state.savedItems.find(
+        (item) => item._id.toString() === id
+      );
+      const itemType = foundItem?.category === "recipe" ? "recipe" : "grocery";
+      return { ...state, currentItemId: id, currentItemType: itemType };
+    }),
+
+  cacheFullData: (data: Recipe | GroceryList) =>
+    set((state: SavedItemsState) => {
+      if ("ingredients" in data) {
+        return {
+          fullDataCache: {
+            ...state.fullSavedDataCache,
+            recipes: {
+              ...state.fullSavedDataCache.recipes,
+              [data._id?.toString() || data.id]: data,
+            },
+          },
+        };
+      } else {
+        return {
+          fullSavedDataCache: {
+            ...state.fullSavedDataCache,
+            groceryLists: {
+              ...state.fullSavedDataCache.groceryLists,
+              [data._id?.toString() || data.id]: data,
+            },
+          },
+        };
+      }
+    }),
 });
 
 export type SavedItemsStore = SavedItemsState & SavedItemsActions;
 
 export const defaultInitState: SavedItemsState = {
   savedItems: [],
-  sortedSavedItems: [
-    {
-      title: "favorites",
-      items: [],
-    },
-  ],
-  currentItemIndex: 0,
+  sortedSavedItems: [{ title: "favorites", items: [] }],
+  currentItemId: "",
+  fullSavedDataCache: {
+    recipes: {},
+    groceryLists: {},
+  },
 };
 
 export const createSavedItemsStore = (

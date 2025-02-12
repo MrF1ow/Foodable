@@ -14,23 +14,19 @@ import { RecipePopUp } from "@/components/recipe/recipe-popup";
 import { RecipesFetcher } from "@/components/recipe/recipe-fetcher";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { FilterButton } from "@/components/search-bar/filter-button";
-import { set } from "node_modules/cypress/types/lodash";
 
 export default function RecipePage() {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);
-  const currentRecipe = useRecipeStore((state) => state.currentRecipeIndex);
+  const currentRecipe = useRecipeStore((state) => state.currentRecipeId);
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
   const setFilter = useRecipeStore((state) => state.setFilter);
-  const setCurrentRecipe = useRecipeStore(
-    (state) => state.setCurrentRecipeIndex
-  );
+  const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipeId);
   const filter = useRecipeStore((state) => state.filter);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log("Filtered recipes updated:", filteredRecipes);
-  }, [filteredRecipes]);
+  const fetchAndStoreRecipe = useRecipeStore(
+    (state) => state.fetchAndStoreRecipe
+  );
 
   const setSearchQuery = (searchQuery: string) => {
     console.log("searchQuery", searchQuery);
@@ -48,7 +44,7 @@ export default function RecipePage() {
         {isOpen && (
           <RecipePopUp
             toggleDialog={togglePopUp}
-            recipe={filteredRecipes[currentRecipe]}
+            recipeId={currentRecipe}
             imageUrl={currentImageUrl}
           />
         )}
@@ -57,12 +53,14 @@ export default function RecipePage() {
             {allRecipes.length === 0 ? (
               <Loader /> // show loader if recipes are still loading
             ) : filteredRecipes.length > 0 ? (
-              filteredRecipes.map((recipe, index) => (
+              filteredRecipes.map((data) => (
                 <RecipeBox
-                  key={recipe._id?.toString()}
+                  key={data._id.toString()}
                   setOpen={setIsOpen}
-                  setIndexOfRecipe={setCurrentRecipe}
-                  indexOfRecipe={index}
+                  setId={setCurrentRecipe}
+                  fetchAndStore={fetchAndStoreRecipe}
+                  data={data}
+                  recipeId={data._id.toString()}
                 />
               ))
             ) : (
