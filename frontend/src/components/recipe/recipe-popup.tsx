@@ -1,34 +1,40 @@
 // Package Imports
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 
 // Local Imports
 import { Card, CardContent } from "@/components/ui/card";
 import pfp from "../../../public/images/pfp.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Recipe } from "@/types/recipe";
 import { RecipeContent } from "./recipe-content";
 import { RecipePopupHeader } from "./recipe-popup-header";
 import { useRecipeStore } from "@/stores/recipe/store";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { getAdditionalIngredients } from "@/utils/listItems";
 
 interface RecipePopUpProps {
-  recipeId: string;
   toggleDialog: () => void;
   imageUrl: string;
 }
 
-export const RecipePopUp = ({
-  toggleDialog,
-  recipeId,
-  imageUrl,
-}: RecipePopUpProps) => {
-  const fetchFullRecipe = useRecipeStore((state) => state.fetchFullRecipe);
-  useEffect(() => {
-    fetchFullRecipe(recipeId);
-  }, [recipeId]);
+export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
+  const recipe = useRecipeStore((state) => state.openedRecipe);
+  const setAdditionalIngredients = useRecipeStore(
+    (state) => state.setAdditionalIngredients
+  );
+  const groceryMap = useGroceryStore((state) => state.map);
 
-  const recipe = useRecipeStore((state) => state.fullRecipes[recipeId]);
-  console.log("Recipe:", recipe);
+  useEffect(() => {
+    if (recipe) {
+      const additionalIngredients = getAdditionalIngredients(
+        recipe.ingredients,
+        groceryMap
+      );
+      setAdditionalIngredients(additionalIngredients);
+    }
+  }, [recipe]);
+
+  if (!recipe) return null;
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
       <CardContent className="p-0 h-full flex flex-col">

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 // Local Imports
 import { MainLayout } from "@/layouts/main";
 import { GeneralHeader } from "@/components/general-header";
@@ -11,13 +9,9 @@ import { AddButton } from "@/components/saved/add-button";
 import { EditButton } from "@/components/saved/edit-button";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { Recipe } from "@/types/recipe";
-import { GroceryList } from "@/types/grocery";
 import { GeneralPopUp } from "@/components/general-popup";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
-import { useRecipeById } from "@/server/hooks/recipeHooks";
-import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
 export default function SavedItemsPage() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -26,40 +20,14 @@ export default function SavedItemsPage() {
   );
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const savedItems = useSavedItemsStore((state) => state.savedItems);
-  const currentItem = useSavedItemsStore((state) => state.currentItemId);
   const setItemIndex = useSavedItemsStore((state) => state.setCurrentItemId);
   const currentType = useSavedItemsStore((state) => state.currentItemType);
+  const data = useSavedItemsStore((state) => state.currentItem);
+  const cacheFullData = useSavedItemsStore((state) => state.cacheFullData);
 
   const togglePopUp = () => {
     setSplitLayout(!splitLayout);
   };
-
-  const [data, setData] = useState<Recipe | GroceryList | null>(null);
-
-  if (currentType === "recipe") {
-    const { recipe, isLoadingRecipe, errorRecipe } = useRecipeById(
-      currentItem,
-      { enabled: true }
-    );
-    if (errorRecipe) {
-      console.error("Error fetching recipe:", errorRecipe);
-    }
-    setData(recipe);
-  } else if (currentType === "grocery") {
-    const {
-      data: groceryList,
-      isLoading,
-      error,
-    } = useFetchGroceryListById(currentItem);
-
-    if (error) {
-      console.error("Error fetching grocery list:", error);
-    }
-    if (groceryList) {
-      setData(groceryList);
-    }
-  }
 
   const renderRightSideCard = () => {
     return (
@@ -97,6 +65,7 @@ export default function SavedItemsPage() {
                             setOpen={setSplitLayout}
                             setId={setItemIndex}
                             recipeId={item._id.toString()}
+                            fetchAndStore={cacheFullData}
                             data={item}
                           />
                         );

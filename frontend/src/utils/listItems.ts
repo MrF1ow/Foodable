@@ -4,7 +4,7 @@ import { RecipeIngredient } from "@/types/recipe";
 import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { SavedItem } from "@/types/saved";
+import { MainMetaData } from "@/types/saved";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -13,8 +13,6 @@ export const getCurrentGrocerySections = () => {
     currentCategories.some((category) => category === section.title)
   );
 };
-
-
 
 export function convertAmount(
   amount: number,
@@ -87,7 +85,7 @@ export const getGroceryAccordingItems = (
 
 export const getIndexOfItemInArray = (
   itemName: string,
-  items: (GroceryItem | RecipeIngredient | SavedItem | string)[]
+  items: (GroceryItem | RecipeIngredient | MainMetaData | string)[]
 ) => {
   return items.findIndex((item) => item === itemName);
 };

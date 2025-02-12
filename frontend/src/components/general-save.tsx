@@ -23,13 +23,15 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { Recipe } from "@/types/recipe";
-import { GroceryList } from "@/types/grocery";
-import { SavedItem } from "@/types/saved";
+import {
+  GroceryMetaData,
+  RecipeMetaData,
+  SavedRecipeMetaData,
+} from "@/types/saved";
 import { capitalizeTitle } from "@/utils/other";
 
 interface GeneralSaveProps {
-  data: Recipe | GroceryList;
+  data: RecipeMetaData | GroceryMetaData;
 }
 
 export const GeneralSave = ({ data }: GeneralSaveProps) => {
@@ -48,13 +50,19 @@ export const GeneralSave = ({ data }: GeneralSaveProps) => {
       setNewListTitle("");
     }
 
-    const itemToAdd = {
-      category: selectedList,
-      data: data,
-    } as SavedItem;
+    let toInsert: GroceryMetaData | SavedRecipeMetaData = {} as any;
+
+    if (data.type === "grocery") {
+      toInsert = data as GroceryMetaData;
+    } else if (data.type === "recipe") {
+      toInsert = {
+        ...data,
+        category: selectedList,
+      } as SavedRecipeMetaData;
+    }
 
     if (selectedList) {
-      addSavedItem(itemToAdd);
+      addSavedItem(toInsert);
     }
   };
 

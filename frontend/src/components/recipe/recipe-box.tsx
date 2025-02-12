@@ -34,11 +34,10 @@ export const RecipeBox = ({
   }
 
   const handleRecipeClick = async () => {
+    await fetchAndStore(data._id.toString());
     setOpen(true);
     setImageUrl(response.base64Image);
     setId(recipeId);
-
-    await fetchAndStore(data._id.toString());
   };
 
   return (

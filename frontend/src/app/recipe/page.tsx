@@ -24,9 +24,7 @@ export default function RecipePage() {
   const filter = useRecipeStore((state) => state.filter);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const fetchAndStoreRecipe = useRecipeStore(
-    (state) => state.fetchAndStoreRecipe
-  );
+  const fetchAndStoreRecipe = useRecipeStore((state) => state.fetchFullRecipe);
 
   const setSearchQuery = (searchQuery: string) => {
     console.log("searchQuery", searchQuery);
@@ -42,11 +40,7 @@ export default function RecipePage() {
       <>
         <RecipesFetcher />
         {isOpen && (
-          <RecipePopUp
-            toggleDialog={togglePopUp}
-            recipeId={currentRecipe}
-            imageUrl={currentImageUrl}
-          />
+          <RecipePopUp toggleDialog={togglePopUp} imageUrl={currentImageUrl} />
         )}
         <div className="h-full overflow-auto">
           <div className="flex flex-wrap justify-start gap-4 z-10">

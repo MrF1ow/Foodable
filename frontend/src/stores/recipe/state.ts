@@ -7,6 +7,7 @@ import { compareTag } from "@/utils/filterHelpers";
 import { RecipeMetaData } from "@/types/saved";
 
 export type RecipeState = {
+  openedRecipe: Recipe | null;
   currentRecipes: RecipeMetaData[]; // The current recipes
   fullRecipes: Record<string, Recipe>; // The full recipes stored in cache
   filteredRecipes: RecipeMetaData[]; // The filtered recipes
@@ -21,13 +22,13 @@ export type RecipeState = {
 };
 
 export type RecipeActions = {
+  setOpenedRecipe: (recipe: Recipe | null) => void;
   setCurrentRecipes: (recipes: RecipeMetaData[], append?: boolean) => void;
   setCurrentRecipeId: (id: string) => void;
   setFilter: (filter: FilterOptions) => void;
   setFilteredRecipes: (filteredRecipes: RecipeMetaData[]) => void;
   setAdditionalIngredients: (items: GroceryItem[]) => void;
   setCurrentImageUrl: (url: string) => void;
-  fetchAndStoreRecipe: (recipeId: string) => Promise<void>;
 
   // Pagination
   loadMoreRecipes: () => Promise<void>;
@@ -37,6 +38,8 @@ export type RecipeActions = {
 };
 
 export const createRecipeActions = (set: any, get: any): RecipeActions => ({
+  setOpenedRecipe: (recipe: Recipe | null) =>
+    set((state: RecipeState) => ({ openedRecipe: recipe })),
   setCurrentRecipes: (recipes: RecipeMetaData[], append = false) =>
     set((state: RecipeState) => ({
       currentRecipes: append ? [...state.currentRecipes, ...recipes] : recipes,
@@ -85,29 +88,6 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
   setCurrentImageUrl: (url: string) =>
     set((state: RecipeState) => ({ currentImageUrl: url })),
 
-  fetchAndStoreRecipe: async (recipeId: string) => {
-    const state = get();
-
-    if (state.fullRecipes[recipeId]) return; // Avoids refetching
-
-    try {
-      const response = await fetch(`/api/recipes?id=${recipeId}`);
-      if (!response.ok) throw new Error("Failed to fetch recipe");
-
-      const recipe: Recipe = await response.json();
-
-      set((state: RecipeState) => ({
-        ...state,
-        fullRecipes: {
-          ...state.fullRecipes,
-          [recipeId]: recipe,
-        },
-      }));
-    } catch (error) {
-      console.error("Error fetching recipe:", error);
-    }
-  },
-
   loadMoreRecipes: async () => {
     const { currentPage, currentRecipes } = get();
     const nextPage = currentPage + 1;
@@ -123,15 +103,16 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
   },
 
   fetchFullRecipe: async (id: string) => {
-    if (get().fullRecipes[id]) return; // Avoids refetching
+    if (get().fullRecipes[id]) {
+      set((state: RecipeState) => ({ openedRecipe: state.fullRecipes[id] }));
+    }
 
     try {
       const response = await fetch(`/api/recipes?id=${id}`);
       const recipe = await response.json();
 
-      console.log("Fetched recipe:", recipe);
-
       set((state: RecipeState) => ({
+        openedRecipe: recipe,
         fullRecipes: { ...state.fullRecipes, [id]: recipe },
       }));
     } catch (error) {
@@ -143,6 +124,7 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 export type RecipeStore = RecipeState & RecipeActions;
 
 export const initRecipeStore = (): RecipeState => ({
+  openedRecipe: null,
   currentRecipes: [],
   currentRecipeId: "",
   fullRecipes: {},
@@ -162,6 +144,7 @@ export const initRecipeStore = (): RecipeState => ({
 });
 
 export const defaultInitState: RecipeState = {
+  openedRecipe: null,
   currentRecipes: [],
   currentRecipeId: "",
   fullRecipes: {},

@@ -4,6 +4,7 @@ import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
 
 export type SavedItemsState = {
+  currentItem: Recipe | GroceryList | null;
   savedItems: MainMetaData[];
   fullSavedDataCache: {
     recipes: Record<string, Recipe>;
@@ -22,10 +23,13 @@ export type SavedItemsActions = {
   addSavedItem: (savedItem: MainMetaData) => void;
   removeSavedItem: (index: number) => void;
   setCurrentItemId: (id: string) => void;
-  cacheFullData: (data: Recipe | GroceryList) => void;
+  cacheFullData: (id: string) => Promise<void>;
 };
 
-export const createSavedItemsActions = (set: any): SavedItemsActions => ({
+export const createSavedItemsActions = (
+  set: any,
+  get: any
+): SavedItemsActions => ({
   addSavedCategory: (category: string) =>
     set((state: SavedItemsState) => {
       const lowerCaseCategory = category.toLowerCase();
@@ -125,35 +129,63 @@ export const createSavedItemsActions = (set: any): SavedItemsActions => ({
       return { ...state, currentItemId: id, currentItemType: itemType };
     }),
 
-  cacheFullData: (data: Recipe | GroceryList) =>
-    set((state: SavedItemsState) => {
-      if ("ingredients" in data) {
-        return {
-          fullDataCache: {
+  cacheFullData: async (id: string ) => {
+    const type = get().currentItemType;
+    if (type === "recipe") {
+      if (get().fullSavedDataCache.recipes[id]) {
+        set((state: SavedItemsState) => ({
+          currentItem: state.fullSavedDataCache.recipes[id],
+        }));
+      }
+      try {
+        const response = await fetch(`/api/recipes?id=${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch recipe");
+        }
+        const recipe = await response.json();
+        set((state: SavedItemsState) => ({
+          currentItem: recipe,
+          fullSavedDataCache: {
             ...state.fullSavedDataCache,
-            recipes: {
-              ...state.fullSavedDataCache.recipes,
-              [data._id?.toString() || data.id]: data,
-            },
+            recipes: { ...state.fullSavedDataCache.recipes, [id]: recipe },
           },
-        };
-      } else {
-        return {
+        }));
+      } catch (error) {
+        console.error("Error fetching recipe:", error);
+      }
+    } else if (type === "grocery") {
+      if (get().fullSavedDataCache.groceryLists[id]) {
+        set((state: SavedItemsState) => ({
+          currentItem: state.fullSavedDataCache.groceryLists[id],
+        }));
+      }
+      try {
+        const response = await fetch(`/api/grocery?id=${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch grocery list");
+        }
+        const groceryList = await response.json();
+        set((state: SavedItemsState) => ({
+          currentItem: groceryList,
           fullSavedDataCache: {
             ...state.fullSavedDataCache,
             groceryLists: {
               ...state.fullSavedDataCache.groceryLists,
-              [data._id?.toString() || data.id]: data,
+              [id]: groceryList,
             },
           },
-        };
+        }));
+      } catch (error) {
+        console.error("Error fetching grocery list:", error);
       }
-    }),
+    }
+  },
 });
 
 export type SavedItemsStore = SavedItemsState & SavedItemsActions;
 
 export const defaultInitState: SavedItemsState = {
+  currentItem: null,
   savedItems: [],
   sortedSavedItems: [{ title: "favorites", items: [] }],
   currentItemId: "",
@@ -166,7 +198,7 @@ export const defaultInitState: SavedItemsState = {
 export const createSavedItemsStore = (
   initState: SavedItemsState = defaultInitState
 ) =>
-  create<SavedItemsStore>((set) => ({
+  create<SavedItemsStore>((set, get) => ({
     ...initState,
-    ...createSavedItemsActions(set),
+    ...createSavedItemsActions(set, get),
   }));
