@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Local Imports
 import Loader from "@/components/loader";
@@ -23,7 +23,6 @@ export default function RecipePage() {
   const filter = useRecipeStore((state) => state.filter);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const fetchAndStoreRecipe = useRecipeStore((state) => state.fetchFullRecipe);
 
   const setSearchQuery = (searchQuery: string) => {
     console.log("searchQuery", searchQuery);
@@ -51,7 +50,6 @@ export default function RecipePage() {
                   key={data._id.toString()}
                   setOpen={setIsOpen}
                   setId={setCurrentRecipe}
-                  fetchAndStore={fetchAndStoreRecipe}
                   data={data}
                 />
               ))

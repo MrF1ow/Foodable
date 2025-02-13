@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 import { SavedCategory, MainMetaData } from "@/types/saved";
 import { Recipe } from "@/types/recipe";
@@ -128,11 +128,18 @@ export const createSavedItemsActions = (
         (item) => item._id.toString() === id
       );
       const itemType = foundItem?.type === "recipe" ? "recipe" : "grocery";
+      console.log("Setting current item:", id, itemType);
       return { ...state, currentItemId: id, currentItemType: itemType };
     });
 
-    // Wait for state update, then call `cacheFullData`
-    setTimeout(() => get().cacheFullData(id), 0);
+    setTimeout(() => {
+      const currentItemType = get().currentItemType;
+      if (currentItemType !== "") {
+        get().cacheFullData(id);
+      } else {
+        console.error("Type not set yet!");
+      }
+    }, 0);
   },
 
   cacheFullData: async (id: string) => {
@@ -192,7 +199,26 @@ export const defaultInitState: SavedItemsState = {
 export const createSavedItemsStore = (
   initState: SavedItemsState = defaultInitState
 ) =>
-  create<SavedItemsStore>((set, get) => ({
-    ...initState,
-    ...createSavedItemsActions(set, get),
-  }));
+  create<SavedItemsStore>()(
+    persist(
+      (set, get) => ({
+        ...initState,
+        ...createSavedItemsActions(set, get),
+      }),
+      {
+        name: "saved-items-store",
+        storage: createJSONStorage(() => sessionStorage),
+        partialize: (state) => ({
+          sortedSavedItems: state.sortedSavedItems,
+          fullSavedDataCache: state.fullSavedDataCache,
+        }),
+        merge(persistedState: any, currentState) {
+          return {
+            ...currentState,
+            sortedSavedItems: persistedState.sortedSavedItems,
+            fullSavedDataCache: persistedState.fullSavedDataCache,
+          };
+        },
+      }
+    )
+  );

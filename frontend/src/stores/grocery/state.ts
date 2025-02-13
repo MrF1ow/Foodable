@@ -165,17 +165,6 @@ export const createGroceryActions = (set: any): GroceryActions => ({
 
 export type GroceryStore = GroceryState & GroceryActions;
 
-export const initGroceryStore = (): GroceryState => {
-  return {
-    title: "",
-    items: [],
-    currentForm: "",
-    currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Pantry"],
-    currentSections: [],
-    map: new Map(),
-    selectedCategory: "Bakery",
-  };
-};
 
 export const defaultInitState: GroceryState = {
   title: "",

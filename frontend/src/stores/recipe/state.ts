@@ -1,12 +1,11 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 import { Recipe } from "@/types/recipe";
 import { FilterOptions } from "@/types";
 import { GroceryItem } from "@/types/grocery";
 import { compareTag } from "@/utils/filterHelpers";
 import { RecipeMetaData } from "@/types/saved";
-import { metadata } from "@/app/layout";
 
 export type RecipeState = {
   openedRecipe: {
@@ -67,8 +66,14 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
       currentRecipes: append ? [...state.currentRecipes, ...recipes] : recipes,
     })),
 
-  setCurrentRecipeId: (id: string) =>
-    set((state: RecipeState) => ({ currentRecipeIndex: id })),
+  setCurrentRecipeId: (id: string) => {
+    set((state: RecipeState) => ({ currentRecipeId: id }));
+
+    if (id !== "") {
+      console.log("Setting current recipe:", id);
+      setTimeout(() => get().fetchFullRecipe(id), 0);
+    }
+  },
 
   setFilter: (filter: FilterOptions) =>
     set((state: RecipeState) => {
@@ -126,7 +131,6 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 
   fetchFullRecipe: async (id: string) => {
     if (get().fullRecipes[id]) {
-      console.log("Recipe already cached");
       const metadata = get().currentRecipes.find(
         (recipe: RecipeMetaData) =>
           recipe._id.toString() === recipe._id.toString()
@@ -148,7 +152,7 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
       set((state: RecipeState) => ({
         openedRecipe: {
           recipe: recipe,
-          metadata,
+          metadata: metadata,
         },
         fullRecipes: { ...state.fullRecipes, [id]: recipe },
       }));
@@ -159,29 +163,6 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 });
 
 export type RecipeStore = RecipeState & RecipeActions;
-
-export const initRecipeStore = (): RecipeState => ({
-  openedRecipe: {
-    recipe: null,
-    metadata: null,
-  },
-  currentRecipes: [],
-  currentRecipeId: "",
-  fullRecipes: {},
-  filter: {
-    searchQuery: "",
-    timeApprox: 0,
-    price: 0,
-    ingredientAmount: 0,
-  },
-  filteredRecipes: [],
-  additionalIngredients: [],
-  currentImageUrl: "",
-
-  // Pagination
-  currentPage: 1,
-  hasMorePages: true,
-});
 
 export const defaultInitState: RecipeState = {
   openedRecipe: {
@@ -206,11 +187,20 @@ export const defaultInitState: RecipeState = {
   hasMorePages: true,
 };
 
-export const createRecipeStore = (
-  initState: RecipeState = defaultInitState
-) => {
-  return create<RecipeStore>((set, get) => ({
-    ...initState,
-    ...createRecipeActions(set, get),
-  }));
-};
+export const createRecipeStore = (initState: RecipeState = defaultInitState) =>
+  create<RecipeStore>()(
+    persist(
+      (set, get) => ({
+        ...initState,
+        ...createRecipeActions(set, get),
+      }),
+      {
+        name: "recipe-store",
+        storage: createJSONStorage(() => sessionStorage),
+        partialize: (state) => ({
+          fullRecipes: state.fullRecipes,
+        }),
+        // need to figure out merging and rehydration
+      }
+    )
+  );

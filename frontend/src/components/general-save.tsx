@@ -26,7 +26,6 @@ import {
 import {
   GroceryMetaData,
   RecipeMetaData,
-  SavedRecipeMetaData,
 } from "@/types/saved";
 import { capitalizeTitle } from "@/utils/other";
 
@@ -35,7 +34,7 @@ interface GeneralSaveProps {
 }
 
 export const GeneralSave = ({ data }: GeneralSaveProps) => {
-  const lists = useSavedItemsStore((state) => state.sortedSavedItems); // Now using sortedSavedItems
+  const lists = useSavedItemsStore((state) => state.sortedSavedItems);
   const addSavedList = useSavedItemsStore((state) => state.addSavedCategory);
   const addSavedItem = useSavedItemsStore((state) => state.addSavedItem);
   const [newListTitle, setNewListTitle] = useState("");

@@ -23,7 +23,6 @@ export default function SavedItemsPage() {
   const setItem = useSavedItemsStore((state) => state.setCurrentItemId);
   const currentType = useSavedItemsStore((state) => state.currentItemType);
   const data = useSavedItemsStore((state) => state.currentItem);
-  const cacheFullData = useSavedItemsStore((state) => state.cacheFullData);
 
   const togglePopUp = () => {
     setSplitLayout(!splitLayout);
@@ -64,7 +63,6 @@ export default function SavedItemsPage() {
                             key={item._id.toString()}
                             setOpen={setSplitLayout}
                             setId={setItem}
-                            fetchAndStore={cacheFullData}
                             data={item}
                           />
                         );

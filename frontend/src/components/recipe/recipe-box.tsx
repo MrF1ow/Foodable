@@ -12,16 +12,10 @@ import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 interface RecipeBoxProps {
   setOpen: (isOpen: boolean) => void;
   setId: (id: string) => void;
-  fetchAndStore: (id: string) => Promise<void>;
   data: RecipeMetaData | SavedRecipeMetaData;
 }
 
-export const RecipeBox = ({
-  setOpen,
-  setId,
-  data,
-  fetchAndStore,
-}: RecipeBoxProps) => {
+export const RecipeBox = ({ setOpen, setId, data }: RecipeBoxProps) => {
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
 
   const { data: response, isLoading, error } = useFetchImageById(data.imageId);
@@ -31,7 +25,7 @@ export const RecipeBox = ({
   }
 
   const handleRecipeClick = async () => {
-    await fetchAndStore(data._id.toString());
+    console.log("Opening recipe:", data._id.toString());
     setId(data._id.toString());
     setImageUrl(response.base64Image);
     setOpen(true);
