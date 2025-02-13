@@ -58,7 +58,7 @@ describe("Visit Grocery Page", () => {
     cy.clickButton("submit-button");
     cy.contains("Milk").should("be.visible");
 
-    cy.clickCheckbox(itemName);
+    cy.contains(itemName).parent().find("input[type='checkbox']").check();
 
     cy.clickButton("remove-items-button");
     cy.contains("Milk").should("not.exist");
@@ -95,5 +95,41 @@ describe("Visit Grocery Page", () => {
 
     cy.shouldBeVisible(itemName);
     cy.shouldBeVisible("1 lb");
+  });
+
+  it("should persist items after page reload", () => {
+    const categoryName = "Fruits";
+    const itemName = "Apple";
+    
+    cy.clickAddItemButton(categoryName);
+    cy.typeText("itemName-input", itemName);
+    cy.clickButton("submit-button");
+    
+    cy.reload();
+    
+    cy.shouldBeVisible(itemName);
+  });
+
+  it("should toggle split layout", () => {
+    cy.clickButton("toggle-layout-button");
+    cy.get("body").should("have.class", "split-layout");
+    
+    cy.clickButton("toggle-layout-button");
+    cy.get("body").should("not.have.class", "split-layout");
+  });
+
+  it("should mark items as checked and unchecked", () => {
+    const categoryName = "Vegetables";
+    const itemName = "Carrot";
+    
+    cy.clickAddItemButton(categoryName);
+    cy.typeText("itemName-input", itemName);
+    cy.clickButton("submit-button");
+    
+    cy.contains(itemName).parent().find("input[type='checkbox']").check();
+    cy.contains(itemName).parent().find("input[type='checkbox']").should("be.checked");
+    
+    cy.contains(itemName).parent().find("input[type='checkbox']").uncheck();
+    cy.contains(itemName).parent().find("input[type='checkbox']").should("not.be.checked");
   });
 });

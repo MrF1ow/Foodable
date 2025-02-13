@@ -31,6 +31,11 @@ export type UserActions = {
   setLocation: (location: UserState["location"]) => void;
   setUpdatedAt: (updatedAt: Date) => void;
   setRole: (role: UserState["role"]) => void;
+  setUser: (id: string, username: string) => void;
+  setFollowers: (followers: string[]) => void;
+  setFollowing: (following: string[]) => void;
+  removeFollower: (followerId: string) => void;
+  removeFollowing: (followingId: string) => void;
 };
 
 export const createUserActions = (set: any): UserActions => ({
@@ -55,6 +60,20 @@ export const createUserActions = (set: any): UserActions => ({
 
   setRole: (role: UserState["role"]) =>
     set((state: UserState) => ({ ...state, role })),
+
+  setUser: (id, username) => set({ id, username }),
+
+  setFollowers: (followers) => set({ followers }),
+
+  setFollowing: (following) => set({ following }),
+
+  removeFollower: (followerId) => set((state: any) => ({
+    following: state.following.filter((f: string) => f !== followerId)
+  })),
+
+  removeFollowing: (followingId) => set((state: any) => ({
+    following: state.following.filter((f: string) => f !== followingId)
+  }))
 });
 
 export type UserStore = UserState & UserActions;
