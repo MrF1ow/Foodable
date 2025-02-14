@@ -22,6 +22,7 @@ export default function RecipePage() {
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipeId);
   const filter = useRecipeStore((state) => state.filter);
   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes);
+  const fetchFullRecipe = useRecipeStore((state) => state.fetchFullRecipe);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const setSearchQuery = (searchQuery: string) => {
@@ -49,6 +50,7 @@ export default function RecipePage() {
                 <RecipeBox
                   key={data._id.toString()}
                   setOpen={setIsOpen}
+                  fetchAndStore={fetchFullRecipe}
                   setId={setCurrentRecipe}
                   data={data}
                 />

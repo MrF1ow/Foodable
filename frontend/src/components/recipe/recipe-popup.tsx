@@ -18,8 +18,11 @@ interface RecipePopUpProps {
 }
 
 export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
-  const recipe = useRecipeStore((state) => state.openedRecipe.recipe);
-  const recipeMetadata = useRecipeStore((state) => state.openedRecipe.metadata);
+  const recipe = useRecipeStore((state) => state.currentRecipe.data);
+  const getMetadata = useRecipeStore((state) => state.getCurrentMetadata);
+  const [recipeMetadata, setRecipeMetadata] = useState(
+    getMetadata(recipe!._id.toString())
+  );
 
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
@@ -44,7 +47,7 @@ export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
         <RecipePopupHeader
           imageUrl={imageUrl}
           recipe={recipe}
-          metadata={recipeMetadata!}
+          metadata={recipeMetadata}
         />
 
         {/* Recipe Content */}

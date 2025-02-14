@@ -8,20 +8,23 @@ import { RecipeContent } from "./recipe/recipe-content";
 import { RecipePopupHeader } from "./recipe/recipe-popup-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRecipeStore } from "@/stores/recipe/store";
+import { Metadata, RecipeMetaData } from "@/types/saved";
+import { useEffect } from "react";
 
 interface GeneralPopUpProps {
   toggleDialog: () => void;
   typeOfData: "recipe" | "grocery";
   data: Recipe | GroceryList;
+  metadata: Metadata;
 }
 
 export const GeneralPopUp = ({
   toggleDialog,
   typeOfData,
   data,
+  metadata,
 }: GeneralPopUpProps) => {
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
-  const getMetadata = useRecipeStore((state) => state.getCurrentMetadata);
 
   const MainCardContent = () => {
     if (typeOfData === "recipe") {
@@ -30,7 +33,7 @@ export const GeneralPopUp = ({
           <RecipePopupHeader
             imageUrl={currentImageUrl}
             recipe={data as Recipe}
-            metadata={getMetadata((data as Recipe).id)}
+            metadata={metadata as RecipeMetaData}
           />
           <div className="flex-1 overflow-y-auto p-4">
             <RecipeContent recipe={data as Recipe} />

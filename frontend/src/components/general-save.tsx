@@ -30,7 +30,7 @@ import {
 import { capitalizeTitle } from "@/utils/other";
 
 interface GeneralSaveProps {
-  data: RecipeMetaData | GroceryMetaData;
+  data: RecipeMetaData | GroceryMetaData | any;
 }
 
 export const GeneralSave = ({ data }: GeneralSaveProps) => {

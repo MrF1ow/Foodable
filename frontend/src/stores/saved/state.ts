@@ -1,20 +1,23 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import { SavedCategory, MainMetaData } from "@/types/saved";
+import { SavedCategory, MainMetaData, Metadata } from "@/types/saved";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
 
 export type SavedItemsState = {
-  currentItem: Recipe | GroceryList | null;
+  currentItem: {
+    id: string;
+    type: "recipe" | "grocery" | null;
+    data: Recipe | GroceryList | null;
+    metadata: Metadata | null;
+  };
   savedItems: MainMetaData[];
   fullSavedDataCache: {
     recipes: Record<string, Recipe>;
     groceryLists: Record<string, GroceryList>;
   };
   sortedSavedItems: SavedCategory[];
-  currentItemId: string;
-  currentItemType: "recipe" | "grocery" | "";
 };
 
 export type SavedItemsActions = {
@@ -23,6 +26,9 @@ export type SavedItemsActions = {
   updateSavedCategory: (oldCategory: string, newCategory: string) => void;
   setSavedItems: (savedItems: MainMetaData[]) => void;
   addSavedItem: (savedItem: MainMetaData) => void;
+  getCurrentType: () => "recipe" | "grocery" | null;
+  getCurrentData: () => Recipe | GroceryList | null;
+  getCurrentMetadata: (id: string) => Metadata | null;
   removeSavedItem: (index: number) => void;
   setCurrentItemId: (id: string) => void;
   cacheFullData: (id: string) => Promise<void>;
@@ -122,6 +128,15 @@ export const createSavedItemsActions = (
       };
     }),
 
+  getCurrentType: () => get().currentItem.type,
+  getCurrentData: () => get().currentItem.data,
+  getCurrentMetadata: (id: string) => {
+    const foundItem = get().savedItems.find(
+      (item: Metadata) => item._id.toString() === id
+    );
+    return foundItem?.metadata || null;
+  },
+
   setCurrentItemId: (id: string) => {
     set((state: SavedItemsState) => {
       const foundItem = state.savedItems.find(
@@ -129,30 +144,28 @@ export const createSavedItemsActions = (
       );
       const itemType = foundItem?.type === "recipe" ? "recipe" : "grocery";
       console.log("Setting current item:", id, itemType);
-      return { ...state, currentItemId: id, currentItemType: itemType };
+      return {
+        ...state,
+        currentItem: { id, type: itemType, metadata: foundItem },
+      };
     });
-
-    setTimeout(() => {
-      const currentItemType = get().currentItemType;
-      if (currentItemType !== "") {
-        get().cacheFullData(id);
-      } else {
-        console.error("Type not set yet!");
-      }
-    }, 0);
   },
 
   cacheFullData: async (id: string) => {
-    const type = get().currentItemType;
+    const type = get().currentItem.type;
 
     if (type === "recipe") {
       if (get().fullSavedDataCache.recipes[id]) {
-        set(() => ({ currentItem: get().fullSavedDataCache.recipes[id] }));
+        set(() => ({
+          currentItem: { id: id, data: get().fullSavedDataCache.recipes[id] },
+        }));
         return;
       }
     } else if (type === "grocery") {
       if (get().fullSavedDataCache.groceryLists[id]) {
-        set(() => ({ currentItem: get().fullSavedDataCache.groceryLists[id] }));
+        set(() => ({
+          currentItem: { id: id, data: get().fullSavedDataCache.grocery[id] },
+        }));
         return;
       }
     }
@@ -165,7 +178,9 @@ export const createSavedItemsActions = (
 
       const data = await response.json();
       set((state: SavedItemsState) => ({
-        currentItem: data,
+        currentItem: {
+          data: data,
+        },
         fullSavedDataCache: {
           ...state.fullSavedDataCache,
           [type === "recipe" ? "recipes" : "groceryLists"]: {
@@ -185,15 +200,18 @@ export const createSavedItemsActions = (
 export type SavedItemsStore = SavedItemsState & SavedItemsActions;
 
 export const defaultInitState: SavedItemsState = {
-  currentItem: null,
+  currentItem: {
+    id: "",
+    type: null,
+    data: null,
+    metadata: null,
+  },
   savedItems: [],
   sortedSavedItems: [{ title: "favorites", items: [] }],
-  currentItemId: "",
   fullSavedDataCache: {
     recipes: {},
     groceryLists: {},
   },
-  currentItemType: "",
 };
 
 export const createSavedItemsStore = (

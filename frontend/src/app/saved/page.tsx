@@ -12,6 +12,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { GeneralPopUp } from "@/components/general-popup";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
+import { useEffect } from "react";
 
 export default function SavedItemsPage() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -21,14 +22,24 @@ export default function SavedItemsPage() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setItem = useSavedItemsStore((state) => state.setCurrentItemId);
-  const currentType = useSavedItemsStore((state) => state.currentItemType);
-  const data = useSavedItemsStore((state) => state.currentItem);
+  const currentType = useSavedItemsStore((state) => state.currentItem.type);
+  // const currentType = getType();
+  const currentMetadata = useSavedItemsStore(
+    (state) => state.currentItem.metadata
+  );
+  const data = useSavedItemsStore((state) => state.currentItem.data);
+  const fetchAndStore = useSavedItemsStore((state) => state.cacheFullData);
 
   const togglePopUp = () => {
     setSplitLayout(!splitLayout);
   };
 
   const renderRightSideCard = () => {
+    useEffect(() => {
+      console.log("data", data);
+      console.log("metadata", currentMetadata);
+      console.log("typeOfData", currentType);
+    }, [data, currentMetadata, currentType]);
     return (
       <>
         {splitLayout && currentType && data && (
@@ -36,6 +47,7 @@ export default function SavedItemsPage() {
             toggleDialog={togglePopUp}
             typeOfData={currentType}
             data={data}
+            metadata={currentMetadata!}
           />
         )}
       </>
@@ -62,6 +74,7 @@ export default function SavedItemsPage() {
                           <RecipeBox
                             key={item._id.toString()}
                             setOpen={setSplitLayout}
+                            fetchAndStore={fetchAndStore}
                             setId={setItem}
                             data={item}
                           />

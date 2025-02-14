@@ -8,15 +8,15 @@ import { compareTag } from "@/utils/filterHelpers";
 import { RecipeMetaData } from "@/types/saved";
 
 export type RecipeState = {
-  openedRecipe: {
-    recipe: Recipe | null;
+  currentRecipe: {
+    id: string;
+    data: Recipe | null;
     metadata: RecipeMetaData | null;
   };
   currentRecipes: RecipeMetaData[]; // The current recipes
   fullRecipes: Record<string, Recipe>; // The full recipes stored in cache
   filteredRecipes: RecipeMetaData[]; // The filtered recipes
 
-  currentRecipeId: string;
   filter: FilterOptions; // The filter options
   additionalIngredients: GroceryItem[];
   currentImageUrl: string;
@@ -67,12 +67,17 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
     })),
 
   setCurrentRecipeId: (id: string) => {
-    set((state: RecipeState) => ({ currentRecipeId: id }));
+    set((state: RecipeState) => {
+      const metadata = get().currentRecipes.find(
+        (recipe: RecipeMetaData) => recipe._id.toString() === id
+      );
+      return {
+        ...state,
+        currentRecipe: { id: id, metadata: metadata },
+      };
+    });
 
-    if (id !== "") {
-      console.log("Setting current recipe:", id);
-      setTimeout(() => get().fetchFullRecipe(id), 0);
-    }
+    console.log("Current Recipe Info:", get().currentRecipe);
   },
 
   setFilter: (filter: FilterOptions) =>
@@ -136,7 +141,7 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
           recipe._id.toString() === recipe._id.toString()
       );
       set((state: RecipeState) => ({
-        openedRecipe: { recipe: state.fullRecipes[id], metadata },
+        currentRecipe: { id: id, data: state.fullRecipes[id], metadata },
       }));
     }
 
@@ -150,9 +155,8 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
       );
 
       set((state: RecipeState) => ({
-        openedRecipe: {
-          recipe: recipe,
-          metadata: metadata,
+        currentRecipe: {
+          data: recipe,
         },
         fullRecipes: { ...state.fullRecipes, [id]: recipe },
       }));
@@ -165,12 +169,12 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 export type RecipeStore = RecipeState & RecipeActions;
 
 export const defaultInitState: RecipeState = {
-  openedRecipe: {
-    recipe: null,
+  currentRecipe: {
+    id: "",
+    data: null,
     metadata: null,
   },
   currentRecipes: [],
-  currentRecipeId: "",
   fullRecipes: {},
   filter: {
     searchQuery: "",

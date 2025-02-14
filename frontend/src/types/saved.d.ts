@@ -30,3 +30,5 @@ export interface NewGroceryMetaData {
 export type GroceryMetaData = NewGroceryMetaData & { _id: ObjectId };
 
 export type MainMetaData = SavedRecipeMetaData| GroceryMetaData;
+
+export type Metadata = RecipeMetaData | GroceryMetaData | MainMetaData;
