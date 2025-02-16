@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   GrocerySection,
   GroceryItem,
@@ -17,6 +17,10 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useRecipeStore } from "@/stores/recipe/store";
+import {
+  useUpdateGroceryList,
+  useFetchGroceryListById,
+} from "@/server/hooks/groceryListHooks";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setItems = useGroceryStore((state) => state.setItems);
@@ -29,6 +33,11 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
+  const currentList = useGroceryStore((state) => state.currentList);
+  const groceryLists = useGroceryStore((state) => state.groceryLists);
+  const setCurrentGroceryLists = useGroceryStore(
+    (state) => state.setCurrentGroceryLists
+  );
 
   const accordionItems = getGroceryAccordingItems(title, groceryItems);
 
@@ -37,7 +46,11 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     setCurrentCategory(title);
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
-
+  const { updateGroceryList } = useUpdateGroceryList();
+  const { data: groceryList } =
+    currentList.title !== "New List"
+      ? useFetchGroceryListById(currentList._id)
+      : { data: null };
   const handleCheckboxChange = (
     section: GrocerySectionOptions,
     name: string,
@@ -53,6 +66,19 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
       return item;
     });
     setItems(updatedItems);
+    if (groceryList) {
+      console.log("groceryList getting updated", groceryList);
+      groceryList.items = updatedItems;
+      updateGroceryList(groceryList);
+
+      groceryLists.forEach((list) => {
+        if (list._id === groceryList._id) {
+          list.items = groceryList.items;
+        }
+      });
+
+      setCurrentGroceryLists(groceryLists);
+    }
   };
 
   return (

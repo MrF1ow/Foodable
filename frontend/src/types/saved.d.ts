@@ -17,18 +17,19 @@ export interface UnsavedRecipeMetaData {
   };
 }
 
+export interface UnsavedGroceryMetaData {
+  type: "grocery";
+  title: string;
+}
+
 export type RecipeMetaData = UnsavedRecipeMetaData & { _id: ObjectId };
+
+export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId };
 
 export type SavedRecipeMetaData = RecipeMetaData & { category: string };
 
-export interface NewGroceryMetaData {
-  type: "grocery";
-  title: string;
-  category: string;
-}
+export type SavedGroceryMetaData = GroceryMetaData & { category: string };
 
-export type GroceryMetaData = NewGroceryMetaData & { _id: ObjectId };
+export type MainMetaData = SavedRecipeMetaData | SavedGroceryMetaData;
 
-export type MainMetaData = SavedRecipeMetaData | GroceryMetaData;
-
-export type Metadata = RecipeMetaData | MainMetaData;
+export type Metadata = RecipeMetaData | GroceryMetaData | MainMetaData;

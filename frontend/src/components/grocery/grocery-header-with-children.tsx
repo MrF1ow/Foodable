@@ -1,12 +1,14 @@
-import { GeneralHeader, GeneralHeaderProps } from "./general-header";
+import { GroceryHeader, GroceryHeaderProps } from "./grocery-header";
 import { useGeneralStore } from "@/stores/general/store";
 
-export const HeaderWithChildren = ({
+export const GroceryHeaderWithChildren = ({
   title,
   width,
   children,
-}: GeneralHeaderProps & {
+  editButton,
+}: GroceryHeaderProps & {
   children: React.ReactNode;
+  editButton?: React.ReactNode;
 }) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
@@ -15,7 +17,9 @@ export const HeaderWithChildren = ({
         isMobile ? "justify-center" : "justify-between"
       } items-center`}
     >
-      {!isMobile && <GeneralHeader title={title} width={width} />}
+      {!isMobile && (
+        <GroceryHeader title={title} width={width} editButton={editButton} />
+      )}
       <div>{children}</div>
     </div>
   );

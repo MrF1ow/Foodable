@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useRef } from "react";
 import {
   FormField,
   FormItem,
@@ -18,25 +19,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
-import {
-  GroceryItem,
-  GrocerySectionOptions,
-} from "@/types/grocery";
+import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
+import { showToast } from "@/providers/react-query-provider";
 
 import { getAddItemFormValidation } from "@/utils/formValidation";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
+import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
 export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const addItem = useGroceryStore((state) => state.addItem);
-  const items = useGroceryStore((state) => state.items);
+  const {
+    groceryLists,
+    items,
+    setCurrentGroceryLists,
+    setItems,
+    addItem,
+    currentList,
+  } = useGroceryStore((state) => state);
   const selectedCategory = useGroceryStore(
     (state) => state.selectedCategory as GrocerySectionOptions
   );
@@ -44,6 +51,7 @@ export const AddItem = ({ className }: { className?: string }) => {
     (state) => state.setSelectedCategory
   );
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const { updateGroceryList, isUpdatingGroceryList } = useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -61,9 +69,20 @@ export const AddItem = ({ className }: { className?: string }) => {
       category: selectedCategory,
       checked: false,
     };
-    console.log("Category:", selectedCategory);
-    console.log("Items", items);
     addItem(newItem);
+    groceryLists.forEach((list) => {
+      if (list._id === currentList?._id) {
+        list.items = [...list.items, newItem];
+        updateGroceryList(list);
+      }
+    });
+
+    showToast(
+      TOAST_SEVERITY.SUCCESS,
+      "Item Added",
+      `${newItem.quantity} ${newItem.unit} of ${newItem.name} added`,
+      3000
+    );
   }
 
   const handleInputClose = () => {
@@ -109,14 +128,21 @@ export const AddItem = ({ className }: { className?: string }) => {
                       <FormLabel className="text-2xl">Quantity</FormLabel>
                       <FormControl>
                         <Input
-                          type="number"
+                          type="text"
                           className="!text-xl h-12 w-24"
                           placeholder="Enter quantity"
                           {...field}
+                          value={field.value === 0 ? "" : field.value}
                           data-testid="quantity-input"
                           onChange={(e) => {
-                            // Parse value as a number
-                            field.onChange(Number(e.target.value));
+                            const value = e.target.value.replace(
+                              /^0+(?!$)/,
+                              ""
+                            ); // Remove leading zeros
+                            if (value === "" || /^\d+$/.test(value)) {
+                              // Allow empty or numeric input
+                              field.onChange(value === "" ? "" : Number(value));
+                            }
                           }}
                         />
                       </FormControl>
@@ -191,7 +217,6 @@ export const AddItem = ({ className }: { className?: string }) => {
                         </DropdownMenu>
                       </FormControl>
                     </div>
-
                     <FormMessage />
                   </FormItem>
                 )}

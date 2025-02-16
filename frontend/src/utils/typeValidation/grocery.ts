@@ -16,6 +16,7 @@ export function validateGroceryItem(item: any): item is GroceryItem {
   );
 }
 
+
 export const validateGroceryListWithoutId = (
   groceryList: any,
   validateIdFn: (id: any) => boolean

@@ -24,9 +24,9 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { id, ...groceryListWithoutId } = groceryList;
-
     const db = await getDB();
+
+    const { id, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
@@ -35,13 +35,6 @@ export async function PUT(req: Request) {
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
-
-    if (!updatedGroceryList) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     if (!updatedGroceryList) {
       return NextResponse.json(

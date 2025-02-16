@@ -11,22 +11,35 @@ import GroceryPage from "../src/app/grocery-list/page";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { RecipeStoreProvider } from "@/stores/recipe/store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 describe("GroceryPage Unit/Integration Tests", () => {
+  let queryClient: QueryClient;
+
   beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
     render(
-      <RecipeStoreProvider>
-        <GroceryStoreProvider>
-          <GeneralStoreProvider>
-            <GroceryPage />
-          </GeneralStoreProvider>
-        </GroceryStoreProvider>
-      </RecipeStoreProvider>
+      <QueryClientProvider client={queryClient}>
+        <RecipeStoreProvider>
+          <GroceryStoreProvider>
+            <GeneralStoreProvider>
+              <GroceryPage />
+            </GeneralStoreProvider>
+          </GroceryStoreProvider>
+        </RecipeStoreProvider>
+      </QueryClientProvider>
     );
   });
 
   it("renders the Grocery List header", () => {
-    expect(screen.getByText("Grocery List")).toBeInTheDocument();
+    expect(screen.getByText("New List")).toBeInTheDocument();
   });
 
   it("renders a list of categories", () => {

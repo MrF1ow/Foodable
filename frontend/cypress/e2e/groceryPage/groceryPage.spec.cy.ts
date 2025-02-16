@@ -1,10 +1,13 @@
+import { list } from "postcss";
+
 describe("Visit Grocery Page", () => {
   beforeEach(() => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
   });
 
   it("Grocery Page Should Load Successfully", () => {
-    cy.shouldBeVisible("Grocery List");
+    cy.shouldBeVisible("New List");
   });
 
   it("should render the category and allow clicking it", () => {
@@ -95,5 +98,49 @@ describe("Visit Grocery Page", () => {
 
     cy.shouldBeVisible(itemName);
     cy.shouldBeVisible("1 lb");
+  });
+
+  const listTitle = "Cypress Test";
+  const newListTitle = "New Cypress Test";
+
+  it("will allow the creation of a grocery list", () => {
+    cy.clickButton("list-edit");
+
+    cy.typeText("list-title", listTitle);
+
+    cy.clickButton("list-submit");
+
+    cy.shouldBeVisible(listTitle);
+  });
+
+  it("will allow the renaming of a grocery list", () => {
+    cy.clickButton("grocery-header");
+
+    cy.contains(listTitle).click();
+
+    cy.clickButton("list-edit");
+
+    cy.typeText("list-title", newListTitle);
+
+    cy.clickButton("list-submit");
+    cy.wait(500);
+
+    cy.shouldBeVisible(newListTitle);
+  });
+
+  it("will allow the deletion of a grocery list", () => {
+    cy.clickButton("grocery-header");
+
+    cy.contains(listTitle).click();
+
+    cy.clickButton("list-edit");
+
+    cy.clickButton("list-delete");
+
+    cy.shouldBeVisible("New List");
+
+    cy.clickButton("grocery-header");
+
+    cy.shouldBeVisible("No lists available");
   });
 });

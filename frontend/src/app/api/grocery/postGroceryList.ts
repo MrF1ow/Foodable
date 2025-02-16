@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const groceryListToInsert: NewGroceryList = {
       ...groceryList,
       title: groceryList.title,
-      items: [],
+      items: groceryList.items || [],
       timestamp: groceryList.timestamp || new Date(),
     };
 

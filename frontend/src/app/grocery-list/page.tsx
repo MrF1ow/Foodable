@@ -1,11 +1,8 @@
 "use client";
 
 // Local Imports
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main";
 import { ContentLayout } from "@/layouts/content";
-import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
-import { HeaderWithChildren } from "@/components/header-with-children";
 import { AddItem } from "@/components/grocery/add-item";
 import { FindPrice as FindPrice } from "@/components/grocery/find-price";
 import { HelperCard } from "@/components/grocery/list-helper";
@@ -14,6 +11,14 @@ import { Button } from "@/components/ui/button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { List } from "@/components/grocery/list";
+import { EditButton } from "@/components/grocery/edit-button";
+import { GroceryHeaderWithChildren } from "@/components/grocery/grocery-header-with-children";
+import { GroceryListsFetcher } from "@/components/grocery/grocery-fetcher";
+import { GroceryListsUpdater } from "@/components/grocery/grocery-updater";
+import { GroceryListDeleter } from "@/components/grocery/grocery-deleter";
+import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { showToast } from "@/providers/react-query-provider";
 
 export default function GroceryList() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
@@ -24,16 +29,40 @@ export default function GroceryList() {
   const groceryItems = useGroceryStore((state) => state.items);
   const setItems = useGroceryStore((state) => state.setItems);
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const currentList = useGroceryStore((state) => state.currentList);
+  const groceryLists = useGroceryStore((state) => state.groceryLists);
+  const setCurrentGroceryLists = useGroceryStore(
+    (state) => state.setCurrentGroceryLists
+  );
+
+  const { updateGroceryList } = useUpdateGroceryList();
 
   const handleItemDeletion = () => {
     const uncheckedItems = groceryItems.filter((item) => !item.checked);
+    groceryLists.forEach((list) => {
+      if (list._id === currentList._id) {
+        list.items = uncheckedItems;
+        updateGroceryList(list);
+      }
+    });
+
+    setCurrentGroceryLists(groceryLists);
 
     setItems(uncheckedItems);
+    showToast(
+      TOAST_SEVERITY.SUCCESS,
+      "Deleted",
+      `Checked Items have been Removed`,
+      3000
+    );
   };
 
   const Content = () => {
     return (
       <>
+        <GroceryListsFetcher />
+        {/* <GroceryListsUpdater /> */}
+        <GroceryListDeleter />
         <List />
         {!splitLayout && (
           <Button
@@ -69,8 +98,8 @@ export default function GroceryList() {
     return (
       <MainLayout
         headerComponent={
-          <HeaderWithChildren
-            title={"Grocery List"}
+          <GroceryHeaderWithChildren
+            title={currentList.title}
             width="25%"
             children={
               <div className="flex items-center justify-center">
