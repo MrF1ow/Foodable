@@ -4,7 +4,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { SavedCategory, MainMetaData, Metadata } from "@/types/saved";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
-import { Item } from "@radix-ui/react-accordion";
 
 export type SavedItemsState = {
   currentItem: {
@@ -22,15 +21,13 @@ export type SavedItemsState = {
 };
 
 export type SavedItemsActions = {
+  getCurrentMetadata: (id: string) => Metadata;
   addSavedCategory: (category: string) => void;
   removeSavedCategory: (category: string) => void;
   updateSavedCategory: (oldCategory: string, newCategory: string) => void;
   setSavedItems: (savedItems: MainMetaData[]) => void;
   addSavedItem: (savedItem: MainMetaData) => void;
-  getCurrentType: () => "recipe" | "grocery" | null;
-  getCurrentData: () => Recipe | GroceryList | null;
-  getCurrentMetadata: (id: string) => Metadata | null;
-  removeSavedItem: (index: number) => void;
+  removeSavedItem: (item: MainMetaData) => void;
   setCurrentItemId: (id: string) => void;
   cacheFullData: (id: string) => Promise<void>;
 };
@@ -39,6 +36,8 @@ export const createSavedItemsActions = (
   set: any,
   get: any
 ): SavedItemsActions => ({
+  getCurrentMetadata: (id: string): Metadata =>
+    get().savedItems.find((item: Metadata) => item._id.toString() === id),
   addSavedCategory: (category: string) =>
     set((state: SavedItemsState) => {
       const lowerCaseCategory = category.toLowerCase();
@@ -110,10 +109,14 @@ export const createSavedItemsActions = (
       };
     }),
 
-  removeSavedItem: (index: number) =>
+  removeSavedItem: (item: MainMetaData) =>
     set((state: SavedItemsState) => {
+      const index = state.savedItems.findIndex(
+        (savedItem) =>
+          savedItem._id === item._id && savedItem.category === item.category
+      );
+      if (index === -1) return state;
       const itemToRemove = state.savedItems[index];
-      if (!itemToRemove) return state;
       const updatedSavedItems = state.savedItems.filter((_, i) => i !== index);
       const updatedSortedSavedItems = state.sortedSavedItems.map((cat) =>
         cat.title === itemToRemove.category
@@ -128,15 +131,6 @@ export const createSavedItemsActions = (
         sortedSavedItems: updatedSortedSavedItems,
       };
     }),
-
-  getCurrentType: () => get().currentItem.type,
-  getCurrentData: () => get().currentItem.data,
-  getCurrentMetadata: (id: string) => {
-    const foundItem = get().savedItems.find(
-      (item: Metadata) => item._id.toString() === id
-    );
-    return foundItem?.metadata || null;
-  },
 
   setCurrentItemId: (id: string) => {
     set((state: SavedItemsState) => {

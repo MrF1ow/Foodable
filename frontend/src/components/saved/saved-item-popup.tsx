@@ -1,15 +1,16 @@
 "use client";
 
+// Package Imports
 import { BiArrowBack } from "react-icons/bi";
 
+// Local Imports
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
 import { RecipeContent } from "../recipe/recipe-content";
 import { RecipePopupHeader } from "../recipe/recipe-popup-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { Metadata, RecipeMetaData } from "@/types/saved";
-import { useEffect } from "react";
+import { Metadata, RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 interface SavedItemPopupProps {
   toggleDialog: () => void;
@@ -33,7 +34,8 @@ export const SavedItemPopup = ({
           <RecipePopupHeader
             imageUrl={currentImageUrl}
             recipe={data as Recipe}
-            metadata={metadata as RecipeMetaData}
+            metadata={metadata as RecipeMetaData | SavedRecipeMetaData}
+            setOpen={toggleDialog}
           />
           <div className="flex-1 overflow-y-auto p-4">
             <RecipeContent recipe={data as Recipe} />

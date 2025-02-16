@@ -13,18 +13,20 @@ import { SavedItemPopup } from "@/components/saved/saved-item-popup";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
 import Loader from "@/components/loader";
+import { useEffect } from "react";
 
 export default function SavedItemsPage() {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const sortedSavedItems = useSavedItemsStore(
     (state) => state.sortedSavedItems
   );
+  const getMetadata = useSavedItemsStore((state) => state.getCurrentMetadata);
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setItem = useSavedItemsStore((state) => state.setCurrentItemId);
   const currentType = useSavedItemsStore((state) => state.currentItem.type);
-  const currentMetadata = useSavedItemsStore(
-    (state) => state.currentItem.metadata
+  const currentMetadata = useSavedItemsStore((state) =>
+    getMetadata(state.currentItem.id)
   );
   const data = useSavedItemsStore((state) => state.currentItem.data);
   const fetchAndStore = useSavedItemsStore((state) => state.cacheFullData);
@@ -34,6 +36,9 @@ export default function SavedItemsPage() {
   };
 
   const renderRightSideCard = () => {
+    useEffect(() => {
+      console.log("Current Metadata:", currentMetadata);
+    }, []);
     return (
       <>
         {splitLayout && currentType && data && currentMetadata ? (

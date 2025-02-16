@@ -5,17 +5,17 @@ import { Recipe } from "@/types/recipe";
 import { FilterOptions } from "@/types";
 import { GroceryItem } from "@/types/grocery";
 import { compareTag } from "@/utils/filterHelpers";
-import { RecipeMetaData } from "@/types/saved";
+import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 export type RecipeState = {
   currentRecipe: {
     id: string;
     data: Recipe | null;
-    metadata: RecipeMetaData | null;
+    metadata: RecipeMetaData | SavedRecipeMetaData | null;
   };
-  currentRecipes: RecipeMetaData[]; // The current recipes
+  currentRecipes: (RecipeMetaData | SavedRecipeMetaData)[]; // The current recipes
   fullRecipes: Record<string, Recipe>; // The full recipes stored in cache
-  filteredRecipes: RecipeMetaData[]; // The filtered recipes
+  filteredRecipes: (RecipeMetaData | SavedRecipeMetaData)[]; // The filtered recipes
 
   filter: FilterOptions; // The filter options
   additionalIngredients: GroceryItem[];
@@ -27,13 +27,16 @@ export type RecipeState = {
 
 export type RecipeActions = {
   setOpenedRecipe: (recipe: Recipe | null) => void;
-  getCurrentMetadata: (id: string) => RecipeMetaData;
+  getCurrentMetadata: (id: string) => RecipeMetaData | SavedRecipeMetaData;
   setCurrentRecipes: (recipes: RecipeMetaData[], append?: boolean) => void;
   setCurrentRecipeId: (id: string) => void;
   setFilter: (filter: FilterOptions) => void;
-  setFilteredRecipes: (filteredRecipes: RecipeMetaData[]) => void;
+  setFilteredRecipes: (
+    filteredRecipes: (RecipeMetaData | SavedRecipeMetaData)[]
+  ) => void;
   setAdditionalIngredients: (items: GroceryItem[]) => void;
   setCurrentImageUrl: (url: string) => void;
+  replaceRecipe: (savedData: SavedRecipeMetaData) => void;
 
   // Pagination
   loadMoreRecipes: () => Promise<void>;
@@ -57,7 +60,7 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 
     setTimeout(() => get().fetchFullRecipe(recipe!._id.toString()), 0);
   },
-  getCurrentMetadata: (id: string): RecipeMetaData =>
+  getCurrentMetadata: (id: string): RecipeMetaData | SavedRecipeMetaData =>
     get().currentRecipes.find(
       (recipe: RecipeMetaData) => recipe._id.toString() === id
     ),
@@ -111,7 +114,7 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
       return { ...state, filter, filteredRecipes };
     }),
 
-  setFilteredRecipes: (recipes: RecipeMetaData[]) =>
+  setFilteredRecipes: (recipes: (RecipeMetaData | SavedRecipeMetaData)[]) =>
     set((state: RecipeState) => ({ filteredRecipes: recipes })),
 
   setAdditionalIngredients: (items: GroceryItem[]) =>
@@ -119,6 +122,24 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
 
   setCurrentImageUrl: (url: string) =>
     set((state: RecipeState) => ({ currentImageUrl: url })),
+
+  replaceRecipe: (newData: SavedRecipeMetaData | RecipeMetaData): void => {
+    set((state: RecipeState) => {
+      const updatedRecipes = state.currentRecipes.map((recipe) =>
+        recipe._id.toString() === newData._id.toString() ? newData : recipe
+      );
+
+      return {
+        currentRecipes: updatedRecipes,
+        filteredRecipes: updatedRecipes,
+        currentRecipe: {
+          id: get().currentRecipe.id,
+          data: get().currentRecipe.data,
+          metadata: newData,
+        },
+      };
+    });
+  },
 
   loadMoreRecipes: async () => {
     const { currentPage, currentRecipes } = get();

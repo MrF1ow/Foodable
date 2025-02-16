@@ -26,7 +26,6 @@ export default function RecipePage() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const setSearchQuery = (searchQuery: string) => {
-    console.log("searchQuery", searchQuery);
     setFilter({ ...filter, searchQuery });
   };
 
