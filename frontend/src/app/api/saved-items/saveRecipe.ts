@@ -1,26 +1,25 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/utils/typeValidation/general";
+import { validateObject } from "@/utils/validation";
+import { validateSavedRecipeMetadata } from "@/utils/typeValidation/saved";
 
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 export async function POST_RECIPE(req: Request) {
   try {
-    const { userId, itemId, itemTitle, itemImageId, itemCategory } =
-      await req.json(); // Parse request body
+    // need to add userId from clerk.js
+    const data = await req.json(); // Parse request
 
-    if (!userId || !itemId || !itemTitle || !itemImageId || !itemCategory) {
-      return NextResponse.json(
-        { message: "userId and itemId are required" },
-        { status: 400 }
-      );
-    }
-    if (!isValidObjectId(userId) || !isValidObjectId(itemId)) {
-      return NextResponse.json(
-        { message: "Invalid userId or itemId" },
-        { status: 400 }
-      );
+    const validationResponse = validateObject(
+      data,
+      validateSavedRecipeMetadata,
+      HTTP_RESPONSES.BAD_REQUEST,
+      400
+    );
+
+    if (validationResponse) {
+      return validationResponse;
     }
 
     const db = await getDB();

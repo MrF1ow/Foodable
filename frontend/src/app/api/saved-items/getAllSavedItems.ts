@@ -1,13 +1,14 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { isValidObjectId } from "@/utils/typeValidation/general";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
-    const { userId } = await req.json(); // Parse request body
+    const userId = getValueFromSearchParams(req, "id");
 
     if (!userId) {
       return NextResponse.json(
