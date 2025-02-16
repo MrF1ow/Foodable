@@ -4,26 +4,26 @@ import { BiArrowBack } from "react-icons/bi";
 
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
-import { RecipeContent } from "./recipe/recipe-content";
-import { RecipePopupHeader } from "./recipe/recipe-popup-header";
+import { RecipeContent } from "../recipe/recipe-content";
+import { RecipePopupHeader } from "../recipe/recipe-popup-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { Metadata, RecipeMetaData } from "@/types/saved";
 import { useEffect } from "react";
 
-interface GeneralPopUpProps {
+interface SavedItemPopupProps {
   toggleDialog: () => void;
   typeOfData: "recipe" | "grocery";
   data: Recipe | GroceryList;
   metadata: Metadata;
 }
 
-export const GeneralPopUp = ({
+export const SavedItemPopup = ({
   toggleDialog,
   typeOfData,
   data,
   metadata,
-}: GeneralPopUpProps) => {
+}: SavedItemPopupProps) => {
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
 
   const MainCardContent = () => {

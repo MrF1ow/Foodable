@@ -9,10 +9,10 @@ import { AddButton } from "@/components/saved/add-button";
 import { EditButton } from "@/components/saved/edit-button";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { GeneralPopUp } from "@/components/general-popup";
+import { SavedItemPopup } from "@/components/saved/saved-item-popup";
 import { RecipeBox } from "@/components/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
-import { useEffect } from "react";
+import Loader from "@/components/loader";
 
 export default function SavedItemsPage() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -23,7 +23,6 @@ export default function SavedItemsPage() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setItem = useSavedItemsStore((state) => state.setCurrentItemId);
   const currentType = useSavedItemsStore((state) => state.currentItem.type);
-  // const currentType = getType();
   const currentMetadata = useSavedItemsStore(
     (state) => state.currentItem.metadata
   );
@@ -35,20 +34,17 @@ export default function SavedItemsPage() {
   };
 
   const renderRightSideCard = () => {
-    useEffect(() => {
-      console.log("data", data);
-      console.log("metadata", currentMetadata);
-      console.log("typeOfData", currentType);
-    }, [data, currentMetadata, currentType]);
     return (
       <>
-        {splitLayout && currentType && data && (
-          <GeneralPopUp
+        {splitLayout && currentType && data && currentMetadata ? (
+          <SavedItemPopup
             toggleDialog={togglePopUp}
             typeOfData={currentType}
-            data={data}
-            metadata={currentMetadata!}
+            data={data!}
+            metadata={currentMetadata}
           />
+        ) : (
+          <Loader />
         )}
       </>
     );

@@ -29,11 +29,11 @@ import {
 } from "@/types/saved";
 import { capitalizeTitle } from "@/utils/other";
 
-interface GeneralSaveProps {
+interface SaveBookmarkProps {
   data: RecipeMetaData | GroceryMetaData | any;
 }
 
-export const GeneralSave = ({ data }: GeneralSaveProps) => {
+export const SaveBookmark = ({ data }: SaveBookmarkProps) => {
   const lists = useSavedItemsStore((state) => state.sortedSavedItems);
   const addSavedList = useSavedItemsStore((state) => state.addSavedCategory);
   const addSavedItem = useSavedItemsStore((state) => state.addSavedItem);
@@ -49,15 +49,10 @@ export const GeneralSave = ({ data }: GeneralSaveProps) => {
       setNewListTitle("");
     }
 
-    console.log("Data:", data);
-
     const toInsert = {
       ...data,
       category: selectedList,
     };
-    console.log(toInsert);
-    console.log(selectedList);
-    console.log(lists);
 
     if (selectedList) {
       addSavedItem(toInsert);

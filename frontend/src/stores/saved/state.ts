@@ -4,6 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { SavedCategory, MainMetaData, Metadata } from "@/types/saved";
 import { Recipe } from "@/types/recipe";
 import { GroceryList } from "@/types/grocery";
+import { Item } from "@radix-ui/react-accordion";
 
 export type SavedItemsState = {
   currentItem: {
@@ -149,6 +150,7 @@ export const createSavedItemsActions = (
         currentItem: { id, type: itemType, metadata: foundItem },
       };
     });
+    console.log("Current Item:", get().currentItem);
   },
 
   cacheFullData: async (id: string) => {
@@ -157,14 +159,24 @@ export const createSavedItemsActions = (
     if (type === "recipe") {
       if (get().fullSavedDataCache.recipes[id]) {
         set(() => ({
-          currentItem: { id: id, data: get().fullSavedDataCache.recipes[id] },
+          currentItem: {
+            id: id,
+            data: get().fullSavedDataCache.recipes[id],
+            metadata: get().currentItem.metadata,
+            type: get().currentItem.type,
+          },
         }));
         return;
       }
     } else if (type === "grocery") {
       if (get().fullSavedDataCache.groceryLists[id]) {
         set(() => ({
-          currentItem: { id: id, data: get().fullSavedDataCache.grocery[id] },
+          currentItem: {
+            id: id,
+            data: get().fullSavedDataCache.grocery[id],
+            metadata: get().currentItem.metadata,
+            type: get().currentItem.type,
+          },
         }));
         return;
       }
@@ -179,6 +191,7 @@ export const createSavedItemsActions = (
       const data = await response.json();
       set((state: SavedItemsState) => ({
         currentItem: {
+          ...state.currentItem,
           data: data,
         },
         fullSavedDataCache: {
@@ -194,6 +207,8 @@ export const createSavedItemsActions = (
     } catch (error) {
       console.error(`Error fetching ${type}:`, error);
     }
+
+    console.log("Current Item:", get().currentItem);
   },
 });
 

@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/recipe";
-import { GeneralSave } from "@/components/general-save";
+import { SaveBookmark } from "@/components/saved/save-bookmark";
 import { RecipeMetaData } from "@/types/saved";
 
 interface RecipePopupHeaderProps {
@@ -24,7 +24,7 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        <GeneralSave data={metadata} />
+        <SaveBookmark data={metadata} />
       </div>
     </div>
   );
