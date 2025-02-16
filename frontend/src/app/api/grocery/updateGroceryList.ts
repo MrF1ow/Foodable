@@ -3,15 +3,16 @@ import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateObject } from "@/utils/validation";
 import { validateGroceryList } from "@/utils/typeValidation/grocery";
-import { GroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import { GroceryList } from "@/types/grocery";
 
 export async function PUT(req: Request) {
   try {
     const groceryList: GroceryList = await req.json();
+
     const preValidationResponse = validateObject(
       groceryList,
       validateGroceryList,

@@ -24,6 +24,13 @@ export async function GET(req: Request) {
       .collection("recipes")
       .findOne({ _id: new ObjectId(id) });
 
+    if (!recipe) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
     const validationResponse = validateObject(
       recipe,
       validateRecipe,

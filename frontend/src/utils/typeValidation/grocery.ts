@@ -1,11 +1,18 @@
 import { GroceryItem, GroceryList } from "@/types/grocery";
+import { isValidDate } from "./general";
+import { unitOptions } from "@/config/unit-conversions";
+import { grocerySectionOptions } from "@/config/grocery-sections";
 
 export function validateGroceryItem(item: any): item is GroceryItem {
   return (
     item &&
     typeof item.name === "string" &&
     typeof item.quantity === "number" &&
-    typeof item.brand === "string"
+    typeof item.unit === "string" &&
+    Object.values(unitOptions).includes(item.unit) &&
+    typeof item.category === "string" &&
+    Object.values(grocerySectionOptions).includes(item.category) &&
+    typeof item.checked === "boolean"
   );
 }
 
@@ -20,9 +27,7 @@ export const validateGroceryListWithoutId = (
     Array.isArray(groceryList.items) &&
     (groceryList.items.length === 0 ||
       groceryList.items.every(validateGroceryItem)) &&
-    (groceryList.timestamp === undefined ||
-      (groceryList.timestamp instanceof Date &&
-        !isNaN(groceryList.timestamp.getTime())))
+    (groceryList.timestamp === undefined || isValidDate(groceryList.timestamp))
   );
 };
 
@@ -31,19 +36,20 @@ export const validateGroceryList = (
   groceryList: any,
   validateIdFn: (id: any) => boolean
 ): groceryList is GroceryList => {
-  if (!groceryList) {
-    return false;
-  }
+  if (!groceryList) return false;
 
-  if (groceryList.id && !validateIdFn(groceryList.id)) {
-    return false;
-  }
+  // Ensure either `id` (string) or `_id` (ObjectId) is present, but not both
+  if (groceryList.id && typeof groceryList.id !== "string") return false;
+  if (groceryList._id && !validateIdFn(groceryList._id)) return false;
+  if (groceryList.id && groceryList._id) return false; // Ensures mutual exclusivity
 
-  if (groceryList._id && !validateIdFn(groceryList._id)) {
-    return false;
-  }
+  const groceryListCopy = {
+    ...groceryList,
+    id:
+      groceryList.id ??
+      (groceryList._id ? groceryList._id.toString() : undefined),
+  };
+  delete groceryListCopy._id;
 
-  const { _id, id, ...groceryListWithoutId } = groceryList;
-
-  return validateGroceryListWithoutId(groceryListWithoutId, validateIdFn);
+  return validateGroceryListWithoutId(groceryListCopy, validateIdFn);
 };

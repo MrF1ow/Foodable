@@ -24,6 +24,13 @@ export async function GET(req: Request) {
       .collection("groceryLists")
       .findOne({ _id: new ObjectId(id) });
 
+    if (!groceryList) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
     const validationResponse = validateObject(
       groceryList,
       validateGroceryList,

@@ -2,6 +2,7 @@ import { RecipeIngredient, Recipe, NewRecipe } from "@/types/recipe";
 import { unitOptions } from "@/config/unit-conversions";
 import { grocerySectionOptions } from "@/config/grocery-sections";
 import { validateUserRating } from "./user";
+import { isValidDate } from "./general";
 
 export function validateRecipeIngredient(
   ingredient: any
@@ -33,12 +34,12 @@ export const validateRecipeWithoutId = (
     recipe.instructions.every((instr: any) => typeof instr === "string") &&
     // Check if all user ratings are valid if they exist
     (recipe.userRatings.length === 0 ||
-      recipe.userRatings.every(validateUserRating)) &&
+      recipe.userRatings.every((rating: any) =>
+        validateUserRating(rating, validateIdFn)
+      )) &&
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
-    (recipe.timestamp === undefined ||
-      (recipe.timestamp instanceof Date &&
-        !isNaN(recipe.timestamp.getTime()))) &&
+    (recipe.timestamp === undefined || isValidDate(recipe.timestamp)) &&
     (recipe.imageId === undefined || validateIdFn(recipe.imageId))
   );
 };
