@@ -40,7 +40,7 @@ export const GroceryApi = {
   },
   fetchAllGroceryLists: async () => {
     try {
-      const response = await axios.get(`/grocery`);
+      const response = await axios.get(`/grocery?metadata=true`);
       return response.data;
     } catch (error) {
       console.error("Error getting grocery lists: ", error);

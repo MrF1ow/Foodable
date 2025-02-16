@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     return getGroceryListById(request);
   }
 
-  return getGroceryLists();
+  return getGroceryLists(request);
 }
 
 // Handling POST request

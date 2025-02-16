@@ -34,6 +34,7 @@ export const RecipesFetcher = () => {
     }
   }, [fetchedRecipes, currentRecipes, setCurrentRecipes]);
 
+  // make into toasts
   if (isLoadingRecipes) return <p>Loading recipes...</p>;
   if (errorRecipes) return <p>Error loading recipes: {errorRecipes.message}</p>;
 

@@ -16,14 +16,12 @@ export const GroceryListsFetcher = () => {
     errorGroceryLists,
   } = useFetchAllGroceryLists({ enabled: true });
 
-  const setCurrentGroceryLists = useGroceryStore(
-    (state) => state.setCurrentGroceryLists
-  );
-  const currentGroceryLists = useGroceryStore((state) => state.groceryLists);
   const setCurrentLists = useGroceryStore((state) => state.setCurrentLists);
   const currentLists = useGroceryStore((state) => state.currentLists);
-  const listDeleted = useGroceryStore((state) => state.listDeleted);
-  const setItems = useGroceryStore((state) => state.setItems);
+  const setCurrentGroceryList = useGroceryStore(
+    (state) => state.setCurrentGroceryListId
+  );
+  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
 
   useEffect(() => {
     if (isLoadingGroceryLists && toast.current) {
@@ -37,43 +35,32 @@ export const GroceryListsFetcher = () => {
   }, [isLoadingGroceryLists]);
 
   useEffect(() => {
-    if (!listDeleted) {
+    const fetchData = async () => {
       if (fetchedGroceryLists && fetchedGroceryLists.length > 0) {
-        console.log("Current Lists from fetcher", currentLists);
-        console.log("Lists fetched from db", fetchedGroceryLists);
         const isDifferent =
-          currentGroceryLists.length !== fetchedGroceryLists.length ||
+          currentLists.length !==
           fetchedGroceryLists.some(
             (list: GroceryList, index: number) =>
-              list._id !== currentGroceryLists[index]?._id
+              list._id !== currentLists[index]?._id
           );
+
         if (isDifferent) {
-          setCurrentGroceryLists(fetchedGroceryLists);
+          setCurrentLists(fetchedGroceryLists);
 
-          const newLists = fetchedGroceryLists.map((list) => ({
-            title: list.title,
-            _id: list._id,
-            category: "",
-          }));
+          if (!currentLists.length) {
+            setCurrentLists(fetchedGroceryLists);
+          }
 
-          setCurrentLists(newLists);
-          //   currentLists.forEach((currentList) => {
-          //     const matchedList = fetchedGroceryLists.find(
-          //       (fetchedList) => fetchedList._id === currentList._id
-          //     );
-          //     if (matchedList) {
-          //       console.log(
-          //         "Items being set:",
-          //         matchedList.title,
-          //         matchedList.items
-          //       );
-          //       setItems(matchedList.items);
-          //     }
-          //   });
+          setCurrentLists(currentLists);
+          // set the first list as the current list
+          setCurrentGroceryList(currentLists[0]._id.toString());
+          await fetchAndStore(currentLists[0]._id.toString());
         }
       }
-    }
-  }, [fetchedGroceryLists]);
+    };
+
+    fetchData();
+  }, [fetchedGroceryLists, currentLists, setCurrentLists]);
 
   return <Toast ref={toast} position="bottom-center" />;
 };

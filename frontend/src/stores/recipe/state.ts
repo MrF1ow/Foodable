@@ -164,19 +164,16 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
       set((state: RecipeState) => ({
         currentRecipe: { id: id, data: state.fullRecipes[id], metadata },
       }));
+      return;
     }
 
     try {
       const response = await fetch(`/api/recipes?id=${id}`);
       const recipe = await response.json();
 
-      const metadata = get().currentRecipes.find(
-        (recipe: RecipeMetaData) =>
-          recipe._id.toString() === recipe._id.toString()
-      );
-
       set((state: RecipeState) => ({
         currentRecipe: {
+          ...state.currentRecipe,
           data: recipe,
         },
         fullRecipes: { ...state.fullRecipes, [id]: recipe },

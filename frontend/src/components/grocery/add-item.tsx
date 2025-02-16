@@ -36,14 +36,8 @@ export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const {
-    groceryLists,
-    items,
-    setCurrentGroceryLists,
-    setItems,
-    addItem,
-    currentList,
-  } = useGroceryStore((state) => state);
+  const currentGroceryList = useGroceryStore((state) => state.currentList.data);
+  const { addItem } = useGroceryStore((state) => state);
   const selectedCategory = useGroceryStore(
     (state) => state.selectedCategory as GrocerySectionOptions
   );
@@ -70,12 +64,8 @@ export const AddItem = ({ className }: { className?: string }) => {
       checked: false,
     };
     addItem(newItem);
-    groceryLists.forEach((list) => {
-      if (list._id === currentList?._id) {
-        list.items = [...list.items, newItem];
-        updateGroceryList(list);
-      }
-    });
+    if (!currentGroceryList) return;
+    updateGroceryList(currentGroceryList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,

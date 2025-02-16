@@ -34,6 +34,8 @@ interface EditButtonProps {
 
 export const EditButton = ({ list: list }: EditButtonProps) => {
   const [newTitle, setNewTitle] = useState(list.title);
+  const currentId = useGroceryStore((state) => state.currentList.id);
+  const currentGroceryList = useGroceryStore((state) => state.currentList.data);
   const [isOpen, setIsOpen] = useState(false);
   const { updateGroceryList } = useUpdateGroceryList();
   const deleteGroceryList = useDeleteGroceryList();
@@ -42,15 +44,9 @@ export const EditButton = ({ list: list }: EditButtonProps) => {
     (state) => state.currentLists
   );
 
-  const {
-    updateCurrentListItem,
-    setCurrentList,
-    setItems,
-    items,
-    groceryLists,
-    setListDeleted,
-    currentList,
-  } = useGroceryStore((state) => state);
+  const { updateCurrentListItem, setItems, currentList, setCurrentList } = useGroceryStore(
+    (state) => state
+  );
 
   const { removeCurrentList } = useGroceryStore((state) => state);
 
@@ -64,21 +60,17 @@ export const EditButton = ({ list: list }: EditButtonProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (indexOfTitle !== -1 && list.title !== "New List") {
-      updateCurrentListItem(indexOfTitle, newTitle);
-      groceryLists.forEach((list) => {
-        if (list._id === currentList._id) {
-          list.title = currentList.title;
-          updateGroceryList(list);
-        }
-      });
+      updateCurrentListItem(currentId, newTitle);
+      if (!currentGroceryList) return;
+      updateGroceryList(currentGroceryList);
     } else {
       try {
         const list = await createGroceryList({
           creatorId: "000000000000000000000000", // Will need to change this
           title: newTitle,
-          items: items,
+          items: [],
         });
-        setCurrentList({ title: newTitle, _id: list._id, category: "" });
+        setCurrentList(list);
         setItems(items);
       } catch (error) {
         console.error(error);

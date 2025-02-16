@@ -11,10 +11,8 @@ import { Button } from "@/components/ui/button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { List } from "@/components/grocery/list";
-import { EditButton } from "@/components/grocery/edit-button";
 import { GroceryHeaderWithChildren } from "@/components/grocery/grocery-header-with-children";
 import { GroceryListsFetcher } from "@/components/grocery/grocery-fetcher";
-import { GroceryListsUpdater } from "@/components/grocery/grocery-updater";
 import { GroceryListDeleter } from "@/components/grocery/grocery-deleter";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
@@ -26,28 +24,18 @@ export default function GroceryList() {
   const currentCard = useGroceryStore((state) => state.currentForm);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
 
-  const groceryItems = useGroceryStore((state) => state.items);
+  const groceryItems = useGroceryStore((state) => state.currentList.items);
   const setItems = useGroceryStore((state) => state.setItems);
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const currentList = useGroceryStore((state) => state.currentList);
-  const groceryLists = useGroceryStore((state) => state.groceryLists);
-  const setCurrentGroceryLists = useGroceryStore(
-    (state) => state.setCurrentGroceryLists
-  );
+  const currentList = useGroceryStore((state) => state.currentList.data);
 
   const { updateGroceryList } = useUpdateGroceryList();
 
   const handleItemDeletion = () => {
     const uncheckedItems = groceryItems.filter((item) => !item.checked);
-    groceryLists.forEach((list) => {
-      if (list._id === currentList._id) {
-        list.items = uncheckedItems;
-        updateGroceryList(list);
-      }
-    });
-
-    setCurrentGroceryLists(groceryLists);
-
+    if (!currentList) return;
+    currentList!.items = uncheckedItems;
+    updateGroceryList(currentList);
     setItems(uncheckedItems);
     showToast(
       TOAST_SEVERITY.SUCCESS,
@@ -99,7 +87,7 @@ export default function GroceryList() {
       <MainLayout
         headerComponent={
           <GroceryHeaderWithChildren
-            title={currentList.title}
+            title={currentList!.title}
             width="25%"
             children={
               <div className="flex items-center justify-center">
