@@ -5,40 +5,34 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { GroceryListMainInfo } from "@/types/grocery";
 import { EditButton } from "@/components/grocery/edit-button";
-import { Button } from "../ui/button";
+import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
 
 export interface GroceryHeaderProps {
-  title: string;
+  metadata: GroceryMetaData | UnsavedGroceryMetaData;
   width: string;
 }
 
-export const GroceryHeader = ({ title, width }: GroceryHeaderProps) => {
-  const {
-    currentLists,
-    setCurrentLists,
-    currentList,
-    setCurrentList,
-    setItems,
-    groceryLists,
-  } = useGroceryStore((state) => state);
+export const GroceryHeader = ({ metadata, width }: GroceryHeaderProps) => {
+  const setCurrentListById = useGroceryStore(
+    (state) => state.setCurrentGroceryListId
+  );
+  const fetchFullGroceryList = useGroceryStore(
+    (state) => state.fetchFullGroceryList
+  );
+  const { currentLists, currentList } = useGroceryStore((state) => state);
 
-  const setList = (list: GroceryListMainInfo) => {
-    if (list._id === undefined) {
-      setItems([]);
-    } else {
-      const matchedList = groceryLists.find(
-        (groceryList) => groceryList._id === list._id
-      );
-      setItems(matchedList?.items || []);
+  const setList = async () => {
+    if ("_id" in metadata && metadata._id) {
+      setCurrentListById(metadata._id.toString());
+      await fetchFullGroceryList(metadata._id.toString());
     }
-    setCurrentList(list);
   };
 
-  const filteredLists = currentLists.filter(
-    (list) => list._id !== currentList._id
-  );
+  const filteredLists =
+    "_id" in metadata && metadata._id
+      ? currentLists.filter((list) => list._id !== metadata._id)
+      : currentLists;
 
   return (
     <div
@@ -50,12 +44,12 @@ export const GroceryHeader = ({ title, width }: GroceryHeaderProps) => {
           className="text-foreground text-4xl cursor-pointer outline-none bg-transparent"
           data-testid="grocery-header"
         >
-          {currentList.title || title}
+          {currentList.metadata?.title || "New List"}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {filteredLists.length > 0 ? (
             filteredLists.map((list, index) => (
-              <DropdownMenuItem key={index} onClick={() => setList(list)}>
+              <DropdownMenuItem key={index} onClick={() => setList()}>
                 {list.title}
               </DropdownMenuItem>
             ))
@@ -65,7 +59,7 @@ export const GroceryHeader = ({ title, width }: GroceryHeaderProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <span>
-        <EditButton list={currentList} />
+        <EditButton metadata={metadata} />
       </span>
     </div>
   );

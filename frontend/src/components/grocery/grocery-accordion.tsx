@@ -16,16 +16,16 @@ import { Icons } from "../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
-import { useRecipeStore } from "@/stores/recipe/store";
 import {
   useUpdateGroceryList,
   useFetchGroceryListById,
 } from "@/server/hooks/groceryListHooks";
+import { GroceryMetaData } from "@/types/saved";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setItems = useGroceryStore((state) => state.setItems);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const groceryItems = useGroceryStore((state) => state.items);
+  const groceryItems = useGroceryStore((state) => state.currentList.items);
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
@@ -33,11 +33,15 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
-  const currentList = useGroceryStore((state) => state.currentList);
-  const groceryLists = useGroceryStore((state) => state.groceryLists);
-  const setCurrentGroceryLists = useGroceryStore(
-    (state) => state.setCurrentGroceryLists
-  );
+  const currentList = useGroceryStore((state) => state.currentList.data);
+  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
+  const replaceList = useGroceryStore((state) => state.replaceList);
+
+  const { updateGroceryList } = useUpdateGroceryList();
+  const { data: groceryList } =
+    currentList?.title !== "New List"
+      ? useFetchGroceryListById(currentList?._id)
+      : { data: null };
 
   const accordionItems = getGroceryAccordingItems(title, groceryItems);
 
@@ -46,12 +50,8 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     setCurrentCategory(title);
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
-  const { updateGroceryList } = useUpdateGroceryList();
-  const { data: groceryList } =
-    currentList.title !== "New List"
-      ? useFetchGroceryListById(currentList._id)
-      : { data: null };
-  const handleCheckboxChange = (
+
+  const handleCheckboxChange = async (
     section: GrocerySectionOptions,
     name: string,
     checked: boolean
@@ -69,15 +69,20 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     if (groceryList) {
       console.log("groceryList getting updated", groceryList);
       groceryList.items = updatedItems;
+
+      // update the grocery list with the new items
       updateGroceryList(groceryList);
 
-      groceryLists.forEach((list) => {
-        if (list._id === groceryList._id) {
-          list.items = groceryList.items;
-        }
-      });
+      // after updating the grocery list, fetch the updated list
+      await fetchAndStore(groceryList._id.toString());
 
-      setCurrentGroceryLists(groceryLists);
+      const toInsert = {
+        type: "grocery",
+        _id: groceryList._id,
+        title: groceryList.title,
+      } as GroceryMetaData;
+
+      replaceList(groceryList._id.toString(), toInsert);
     }
   };
 

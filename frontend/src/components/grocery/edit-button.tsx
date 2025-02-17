@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { GroceryList, GroceryListMainInfo } from "@/types/grocery";
 import { getIndexOfItemInArray } from "@/utils/listItems";
 import {
   useCreateGroceryList,
@@ -26,43 +25,54 @@ import {
   useUpdateGroceryList,
   useFetchGroceryListById,
 } from "@/server/hooks/groceryListHooks";
-import { useFetchAllGroceryLists } from "@/server/hooks/groceryListHooks";
+import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
+import { GroceryList } from "@/types/grocery";
 
 interface EditButtonProps {
-  list: GroceryListMainInfo;
+  metadata: GroceryMetaData | UnsavedGroceryMetaData;
 }
 
-export const EditButton = ({ list: list }: EditButtonProps) => {
-  const [newTitle, setNewTitle] = useState(list.title);
-  const currentId = useGroceryStore((state) => state.currentList.id);
-  const currentGroceryList = useGroceryStore((state) => state.currentList.data);
+export const EditButton = ({ metadata }: EditButtonProps) => {
+  const [newTitle, setNewTitle] = useState(metadata.title);
   const [isOpen, setIsOpen] = useState(false);
+
   const { updateGroceryList } = useUpdateGroceryList();
   const deleteGroceryList = useDeleteGroceryList();
+  const { updateCurrentListItem, setCurrentList, removeCurrentList } =
+    useGroceryStore((state) => ({
+      updateCurrentListItem: state.updateCurrentListItem,
+      setCurrentList: state.setCurrentList,
+      removeCurrentList: state.removeCurrentList,
+    }));
 
-  const currentGroceryListTitles = useGroceryStore(
-    (state) => state.currentLists
+  const currentGroceryListTitles = useGroceryStore((state) =>
+    state.currentLists.map((list) => list.title)
   );
-
-  const { updateCurrentListItem, setItems, currentList, setCurrentList } = useGroceryStore(
-    (state) => state
-  );
-
-  const { removeCurrentList } = useGroceryStore((state) => state);
 
   const indexOfTitle = getIndexOfItemInArray(
-    list.title,
-    currentGroceryListTitles.map((list) => list.title)
+    metadata.title,
+    currentGroceryListTitles
   );
 
-  const { createGroceryList, isCreatingGroceryList, createError, createData } =
-    useCreateGroceryList();
+  const { createGroceryList } = useCreateGroceryList();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (indexOfTitle !== -1 && list.title !== "New List") {
-      updateCurrentListItem(currentId, newTitle);
-      if (!currentGroceryList) return;
-      updateGroceryList(currentGroceryList);
+
+    if (indexOfTitle !== -1 && "_id" in metadata) {
+      if (!metadata._id) return;
+      updateCurrentListItem(metadata._id.toString(), newTitle);
+      const {
+        data: response,
+        isLoading,
+        error,
+      } = useFetchGroceryListById(metadata._id.toString());
+      if (error) {
+        console.error("Error fetching grocery list:", error);
+      }
+      const list = response;
+      const newList = { ...list, title: newTitle };
+      updateGroceryList(newList as GroceryList);
     } else {
       try {
         const list = await createGroceryList({
@@ -70,21 +80,25 @@ export const EditButton = ({ list: list }: EditButtonProps) => {
           title: newTitle,
           items: [],
         });
-        setCurrentList(list);
-        setItems(items);
+        const listMetadata = {
+          type: "grocery",
+          _id: list._id,
+          title: list.title,
+        } as GroceryMetaData;
+
+        setCurrentList(listMetadata);
       } catch (error) {
-        console.error(error);
+        console.error("Error creating grocery list:", error);
       }
     }
+
     setIsOpen(false);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (list._id !== undefined) {
-      setListDeleted(true);
-      removeCurrentList(list.title);
-      setItems([]);
+    if ("_id" in metadata && metadata._id) {
+      removeCurrentList(metadata._id.toString());
       setIsOpen(false);
     }
   };

@@ -6,6 +6,7 @@ import {
 import { useGroceryStore } from "@/stores/grocery/store";
 import { GroceryList } from "@/types/grocery";
 import { Toast } from "primereact/toast";
+import { UnsavedGroceryMetaData } from "@/types/saved";
 
 export const GroceryListsFetcher = () => {
   const toast = useRef<Toast>(null);
@@ -21,6 +22,7 @@ export const GroceryListsFetcher = () => {
   const setCurrentGroceryList = useGroceryStore(
     (state) => state.setCurrentGroceryListId
   );
+  const setNewCurrentList = useGroceryStore((state) => state.setNewCurrentList);
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
 
   useEffect(() => {
@@ -53,8 +55,16 @@ export const GroceryListsFetcher = () => {
 
           setCurrentLists(currentLists);
           // set the first list as the current list
-          setCurrentGroceryList(currentLists[0]._id.toString());
-          await fetchAndStore(currentLists[0]._id.toString());
+          if (!currentLists.length) {
+            setCurrentGroceryList(currentLists[0]._id.toString());
+            await fetchAndStore(currentLists[0]._id.toString());
+          } else {
+            const newList = {
+              type: "grocery",
+              title: "New List",
+            } as UnsavedGroceryMetaData;
+            setNewCurrentList(newList);
+          }
         }
       }
     };

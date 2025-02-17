@@ -1,14 +1,14 @@
 import { GroceryHeader, GroceryHeaderProps } from "./grocery-header";
 import { useGeneralStore } from "@/stores/general/store";
+import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
+
 
 export const GroceryHeaderWithChildren = ({
-  title,
   width,
+  metadata,
   children,
-  editButton,
 }: GroceryHeaderProps & {
   children: React.ReactNode;
-  editButton?: React.ReactNode;
 }) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
@@ -17,9 +17,7 @@ export const GroceryHeaderWithChildren = ({
         isMobile ? "justify-center" : "justify-between"
       } items-center`}
     >
-      {!isMobile && (
-        <GroceryHeader title={title} width={width} editButton={editButton} />
-      )}
+      {!isMobile && <GroceryHeader metadata={metadata} width={width} />}
       <div>{children}</div>
     </div>
   );

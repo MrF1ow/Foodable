@@ -13,10 +13,10 @@ import { useGeneralStore } from "@/stores/general/store";
 import { List } from "@/components/grocery/list";
 import { GroceryHeaderWithChildren } from "@/components/grocery/grocery-header-with-children";
 import { GroceryListsFetcher } from "@/components/grocery/grocery-fetcher";
-import { GroceryListDeleter } from "@/components/grocery/grocery-deleter";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
+import { GroceryMetaData } from "@/types/saved";
 
 export default function GroceryList() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
@@ -28,6 +28,9 @@ export default function GroceryList() {
   const setItems = useGroceryStore((state) => state.setItems);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList.data);
+  const currentMetadata = useGroceryStore(
+    (state) => state.currentList.metadata
+  );
 
   const { updateGroceryList } = useUpdateGroceryList();
 
@@ -49,8 +52,6 @@ export default function GroceryList() {
     return (
       <>
         <GroceryListsFetcher />
-        {/* <GroceryListsUpdater /> */}
-        <GroceryListDeleter />
         <List />
         {!splitLayout && (
           <Button
@@ -87,7 +88,7 @@ export default function GroceryList() {
       <MainLayout
         headerComponent={
           <GroceryHeaderWithChildren
-            title={currentList!.title}
+            metadata={currentMetadata!}
             width="25%"
             children={
               <div className="flex items-center justify-center">

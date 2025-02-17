@@ -1,16 +1,11 @@
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
-import { Icons } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
-import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
 
 export const List = ({ className }: { className?: string }) => {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   const currentCategories = getCurrentGrocerySections();

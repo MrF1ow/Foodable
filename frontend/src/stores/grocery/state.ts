@@ -16,7 +16,6 @@ import { convertAmount } from "@/utils/listItems";
 export type GroceryState = {
   currentList: {
     id: string;
-    title: string;
     data: GroceryList | null;
     metadata:
       | GroceryMetaData
@@ -44,12 +43,14 @@ export type GroceryActions = {
   setItems: (items: GroceryItem[]) => void;
   addItem: (item: GroceryItem) => void;
   removeItem: (id: string) => void;
+  replaceList: (id: string, newData: GroceryMetaData) => void;
   setCurrentForm: (
     card: string,
     isMobile: boolean,
     updateSplitLayout?: (split: boolean) => void
   ) => void;
   resetForm: () => void;
+  setNewCurrentList: (list: UnsavedGroceryMetaData) => void;
   setCurrentSections: (sections: GrocerySectionOptions[]) => void;
   addSection: (section: GrocerySectionOptions) => void;
   removeSection: (section: GrocerySectionOptions) => void;
@@ -114,6 +115,17 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           items: items, // Update items based on the new items
         },
         map: newMap, // Update map based on the new items
+      };
+    }),
+
+  setNewCurrentList: (list: UnsavedGroceryMetaData) =>
+    set((state: GroceryState) => {
+      return {
+        ...state,
+        currentList: {
+          title: list.title,
+          metadata: list,
+        },
       };
     }),
 
@@ -186,6 +198,29 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           items: newItems,
         },
         map: newMap,
+      };
+    }),
+
+  replaceList: (id: string, newData: GroceryMetaData) =>
+    set((state: GroceryState) => {
+      const index = state.currentLists.findIndex(
+        (list: GroceryMetaData) => list._id.toString() === id
+      );
+
+      if (index === -1) return state;
+
+      const newLists = [
+        ...state.currentLists.slice(0, index),
+        newData,
+        ...state.currentLists.slice(index + 1),
+      ];
+
+      return {
+        currentLists: newLists,
+        currentList: {
+          id: id,
+          metadata: newData,
+        },
       };
     }),
 
@@ -342,7 +377,6 @@ export type GroceryStore = GroceryState & GroceryActions;
 export const defaultInitState: GroceryState = {
   currentList: {
     id: "",
-    title: "",
     data: null,
     metadata: null,
     items: [],
