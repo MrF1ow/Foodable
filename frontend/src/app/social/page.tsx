@@ -78,30 +78,18 @@ export default function Social() {
   }, [setUser, setFollowers, setFollowing]);
 
   // Filter followers based on search query
-  const filteredFollowers = React.useMemo(
-    () =>
-      followers?.filter((followerId: any) =>
-        followerId.toLowerCase().includes(searchFollowingQuery.toLowerCase())
-      ),
-    [searchFollowingQuery, followers]
-  );
+  const filteredFollowers =
+    followers?.filter((followerId: any) =>
+      followerId.toLowerCase().includes(searchFollowingQuery.toLowerCase())
+    ) || [];
 
-  // Filter following based on search query
-  const filteredFollowing = React.useMemo(
-    () =>
-      following?.filter((followingId: any) =>
-        followingId.toLowerCase().includes(searchFollowingQuery.toLowerCase())
-      ),
-    [searchFollowingQuery, following]
-  );
+  const filteredFollowing =
+    following?.filter((followingId: any) =>
+      followingId.toLowerCase().includes(searchFollowingQuery.toLowerCase())
+    ) || [];
 
-  // Filter recipes based on search query
-  const filteredRecipes = React.useMemo(
-    () =>
-      recipes.filter((recipe) =>
-        recipe.name.toLowerCase().includes(searchRecipesQuery.toLowerCase())
-      ),
-    [searchRecipesQuery, recipes]
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.name.toLowerCase().includes(searchRecipesQuery.toLowerCase())
   );
 
   // Handle deleting a follower

@@ -5,6 +5,7 @@ export type UserState = {
   id: string;
   username: string;
   email: string;
+  language: string;
   // This is the JWT token that we will use to authenticate requests to the server, if it is null then the user is not authenticated
   authToken: string | null;
   preferences: {
@@ -26,6 +27,7 @@ export type UserActions = {
   setId: (id: string) => void;
   setUsername: (username: string) => void;
   setEmail: (email: string) => void;
+  setLanguage: (language: string) => void;
   setAuthToken: (authToken: string | null) => void;
   setPreferences: (preferences: UserState["preferences"]) => void;
   setLocation: (location: UserState["location"]) => void;
@@ -45,6 +47,8 @@ export const createUserActions = (set: any): UserActions => ({
     set((state: UserState) => ({ ...state, username })),
 
   setEmail: (email: string) => set((state: UserState) => ({ ...state, email })),
+  
+  setLanguage: (language: string) => set((state: UserState) => ({ ...state, language })),
 
   setAuthToken: (authToken: string | null) =>
     set((state: UserState) => ({ ...state, authToken })),
@@ -83,6 +87,7 @@ export const initUserStore = (): UserState => {
     id: "",
     username: "",
     email: "",
+    language: "",
     authToken: null,
     preferences: {
       dietaryRestrictions: null,
@@ -97,6 +102,7 @@ export const defaultInitState: UserState = {
   id: "",
   username: "",
   email: "",
+  language: "",
   authToken: null,
   preferences: {
     dietaryRestrictions: null,
