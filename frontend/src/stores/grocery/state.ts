@@ -5,6 +5,7 @@ import {
   GroceryItem,
   GroceryList,
   GrocerySectionOptions,
+  NewGroceryList,
 } from "@/types/grocery";
 import {
   GroceryMetaData,
@@ -15,14 +16,8 @@ import { convertAmount } from "@/utils/listItems";
 
 export type GroceryState = {
   currentList: {
-    id: string;
-    data: GroceryList | null;
-    metadata:
-      | GroceryMetaData
-      | SavedGroceryMetaData
-      | UnsavedGroceryMetaData
-      | null;
-    items: GroceryItem[]; // The current items in
+    data: GroceryList | NewGroceryList;
+    metadata: GroceryMetaData | SavedGroceryMetaData | null;
   };
   currentLists: GroceryMetaData[];
   fullGroceryLists: Record<string, GroceryList>; // The full grocery lists stored in cache
@@ -35,14 +30,18 @@ export type GroceryState = {
 };
 
 export type GroceryActions = {
-  getCurrentMetadata: (id: string) => void;
+  getCurrentMetadata: (
+    id?: string
+  ) => GroceryMetaData | SavedGroceryMetaData | undefined;
   getCurrentTitle: (id: string) => void;
+  getCurrentData: (id?: string) => GroceryList | NewGroceryList | null;
+  getCurrentItems: (id?: string) => GroceryItem[];
 
   setCurrentList: (list: GroceryMetaData) => void;
   setTitle: (title: string) => void;
-  setItems: (items: GroceryItem[]) => void;
-  addItem: (item: GroceryItem) => void;
-  removeItem: (id: string) => void;
+  setItems: (items: GroceryItem[], id?: string) => void;
+  addItem: (item: GroceryItem, id?: string) => void;
+  removeItem: (name: string, id?: string) => void;
   replaceList: (id: string, newData: GroceryMetaData) => void;
   setCurrentForm: (
     card: string,
@@ -50,7 +49,6 @@ export type GroceryActions = {
     updateSplitLayout?: (split: boolean) => void
   ) => void;
   resetForm: () => void;
-  setNewCurrentList: (list: UnsavedGroceryMetaData) => void;
   setCurrentSections: (sections: GrocerySectionOptions[]) => void;
   addSection: (section: GrocerySectionOptions) => void;
   removeSection: (section: GrocerySectionOptions) => void;
@@ -58,32 +56,53 @@ export type GroceryActions = {
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   removeCurrentList: (id: string) => void;
   updateCurrentListItem(id: string, newTitle: string): void;
-  setCurrentLists: (
-    lists: (GroceryMetaData | UnsavedGroceryMetaData)[]
+  setNewCurrentList: (
+    data?: GroceryList,
+    metadata?: GroceryMetaData,
+    items?: GroceryItem[]
   ) => void;
-  setCurrentGroceryListId: (id: string) => void;
+  setCurrentLists: (lists?: GroceryMetaData[]) => void;
+  addList: (list: GroceryMetaData) => void;
+  removeList: (id: string) => void;
+  setCurrentGroceryListId: (id?: string) => void;
 
   fetchFullGroceryList: (id: string) => Promise<void>;
 };
 
 export const createGroceryActions = (set: any, get: any): GroceryActions => ({
-  getCurrentMetadata: (id: string): GroceryMetaData | SavedGroceryMetaData =>
-    get().currentLists.find(
-      (recipe: GroceryMetaData) => recipe._id.toString() === id
-    ),
+  getCurrentMetadata: (
+    id?: string
+  ): GroceryMetaData | SavedGroceryMetaData | undefined => {
+    if (!id) return get().currentLists[0];
+    return get().currentLists.find(
+      (list: GroceryMetaData) => list._id?.toString() === id
+    );
+  },
 
   getCurrentTitle: (id: string): string => {
     const list = get().currentLists.find(
-      (recipe: GroceryMetaData) => recipe._id.toString() === id
+      (list: GroceryMetaData) => list._id?.toString() === id
     );
     return list ? list.title : "";
   },
+
+  getCurrentData: (id?: string): GroceryList | NewGroceryList | null => {
+    if (!id) return get().currentList.data;
+    return get().fullGroceryLists[id];
+  },
+
+  getCurrentItems: (id?: string): GroceryItem[] => {
+    if (!id) return get().currentList.data.items;
+    const foundData = get().fullGroceryLists[id];
+    return foundData ? foundData.items : [];
+  },
+
   setCurrentList: (list: GroceryMetaData) =>
     set((state: GroceryState) => {
       return {
         ...state,
         currentList: {
-          id: list._id.toString(),
+          id: list._id?.toString(),
           title: list.title,
           metadata: list,
         },
@@ -99,7 +118,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         },
       };
     }),
-  setItems: (items: GroceryItem[]) =>
+  setItems: (items: GroceryItem[], id?: string) =>
     set((state: GroceryState) => {
       const newMap = new Map<string, GroceryItem>();
 
@@ -108,24 +127,36 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         newMap.set(item.name.toLowerCase(), item);
       });
 
+      if (!id) {
+        return {
+          ...state,
+          currentList: {
+            ...state.currentList,
+            data: {
+              items: items,
+            },
+          },
+          map: newMap,
+        };
+      }
+
       return {
         ...state,
         currentList: {
           ...state.currentList,
-          items: items, // Update items based on the new items
+          data: {
+            items: items, // Update items based on the new items
+          },
+        },
+        // Update the full grocery list with the new items
+        fullGroceryLists: {
+          ...state.fullGroceryLists,
+          [id]: {
+            ...state.fullGroceryLists[id],
+            items: items,
+          },
         },
         map: newMap, // Update map based on the new items
-      };
-    }),
-
-  setNewCurrentList: (list: UnsavedGroceryMetaData) =>
-    set((state: GroceryState) => {
-      return {
-        ...state,
-        currentList: {
-          title: list.title,
-          metadata: list,
-        },
       };
     }),
 
@@ -137,14 +168,14 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
       };
     }),
 
-  addItem: (item: GroceryItem) =>
+  addItem: (item: GroceryItem, id?: string) =>
     set((state: GroceryState) => {
       const itemKey = item.name.toLowerCase();
       const existingItem = state.map.get(itemKey);
       let newMap;
       let newItems;
 
-      const items = get().currentList.items;
+      const items = get().currentList.data.items;
 
       if (existingItem) {
         const convertedQuantity = convertAmount(
@@ -168,22 +199,49 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         ? state.currentSections
         : [...state.currentSections, item.category];
 
+      console.log("New Items", newItems);
+
+      if (!id) {
+        return {
+          ...state,
+          currentList: {
+            ...state.currentList,
+            data: {
+              ...state.currentList.data,
+              items: newItems,
+            },
+          },
+          map: newMap,
+          currentSections: newSections,
+        };
+      }
+
       return {
         ...state,
         currentList: {
           ...state.currentList,
-          items: newItems,
+          data: {
+            ...state.currentList.data,
+            items: newItems,
+          },
+        },
+        fullGroceryLists: {
+          ...state.fullGroceryLists,
+          [id]: {
+            ...state.fullGroceryLists[id],
+            items: newItems,
+          },
         },
         map: newMap,
         currentSections: newSections,
       };
     }),
 
-  removeItem: (name: string) =>
+  removeItem: (name: string, id?: string) =>
     set((state: GroceryState) => {
       if (!state.map.has(name.toLowerCase())) return state; // Item not found
 
-      const items = get().currentList.items;
+      const items = get().currentList.data.items;
 
       const newItems = items.filter(
         (item: GroceryItem) => item.name.toLowerCase() !== name.toLowerCase()
@@ -191,11 +249,35 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
       const newMap = new Map(state.map);
       newMap.delete(name.toLowerCase());
 
+      if (!id) {
+        return {
+          ...state,
+          currentList: {
+            ...state.currentList,
+            data: {
+              ...state.currentList.data,
+              items: newItems,
+            },
+          },
+          map: newMap,
+        };
+      }
+
       return {
         ...state,
         currentList: {
           ...state.currentList,
-          items: newItems,
+          data: {
+            ...state.currentList.data,
+            items: newItems,
+          },
+        },
+        fullGroceryLists: {
+          ...state.fullGroceryLists,
+          [id]: {
+            ...state.fullGroceryLists[id],
+            items: newItems,
+          },
         },
         map: newMap,
       };
@@ -204,7 +286,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   replaceList: (id: string, newData: GroceryMetaData) =>
     set((state: GroceryState) => {
       const index = state.currentLists.findIndex(
-        (list: GroceryMetaData) => list._id.toString() === id
+        (list: GroceryMetaData) => list._id?.toString() === id
       );
 
       if (index === -1) return state;
@@ -276,7 +358,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   removeCurrentList: (id: string) => {
     set((state: GroceryState) => {
       const newCurrentLists = state.currentLists.filter(
-        (list) => list._id.toString() !== id.toString()
+        (list) => list._id?.toString() !== id.toString()
       );
 
       const updatedFullGroceryLists = { ...state.fullGroceryLists };
@@ -291,10 +373,10 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   updateCurrentListItem: (id: string, newTitle: string) =>
     set((state: GroceryState) => {
       const foundItem = state.currentLists.find(
-        (item: GroceryMetaData) => item._id.toString() === id
+        (item: GroceryMetaData) => item._id?.toString() === id
       );
       const index = state.currentLists.findIndex(
-        (item: GroceryMetaData) => item._id.toString() === id
+        (item: GroceryMetaData) => item._id?.toString() === id
       );
 
       if (!foundItem) return state;
@@ -325,33 +407,101 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         fullGroceryLists: updatedFullGroceryLists,
       };
     }),
+  // Set the current list to a new list
+  setNewCurrentList: (data?: GroceryList, metadata?: GroceryMetaData) => {
+    set({
+      currentList: {
+        data:
+          data ||
+          ({
+            _id: null,
+            title: "New List",
+            creatorId: "000000000000000000000000",
+            items: [],
+          } as NewGroceryList),
+        metadata:
+          metadata ||
+          ({
+            type: "grocery",
+            title: "New List",
+            _id: null,
+          } as GroceryMetaData),
+      },
+    });
+  },
+  // Set the current lists to the any lists passed in
   setCurrentLists: (lists) =>
     set({
       currentLists: [
-        { type: "grocery", title: "New List" } as UnsavedGroceryMetaData,
-        ...lists,
+        {
+          type: "grocery",
+          title: "New List",
+          _id: null,
+        } as UnsavedGroceryMetaData,
+        ...(lists ?? []),
       ],
     }),
 
-  setCurrentGroceryListId: (id: string) => {
+  addList: (list: GroceryMetaData) => {
     set((state: GroceryState) => {
+      return {
+        currentLists: [...state.currentLists, list],
+      };
+    });
+  },
+
+  removeList: (id: string) => {
+    set((state: GroceryState) => {
+      return {
+        currentLists: state.currentLists.filter(
+          (list: GroceryMetaData) => list._id?.toString() !== id
+        ),
+      };
+    });
+  },
+
+  setCurrentGroceryListId: (id?: string) => {
+    set((state: GroceryState) => {
+      if (!id) {
+        console.log("Setting current list to null");
+        return {
+          currentList: {
+            data: {
+              _id: null,
+              title: "New List",
+              creatorId: "000000000000000000000000",
+              items: [],
+            },
+            metadata: {
+              type: "grocery",
+              title: "New List",
+              _id: null,
+            },
+          },
+        };
+      }
+      console.log("Setting current list to id:", id);
       const metadata = state.currentLists.find(
-        (list: GroceryMetaData) => list._id.toString() === id
+        (list: GroceryMetaData) => list._id?.toString() === id
       );
       return {
-        currentList: { id: id, metadata },
+        currentList: { ...state.currentList, metadata },
       };
     });
   },
 
   fetchFullGroceryList: async (id: string) => {
+    if (!id) return;
+
+    console.log("Fetching grocery list with id:", id);
     if (get().fullGroceryLists[id]) {
       const metadata = get().currentLists.find(
-        (list: GroceryMetaData) => list._id.toString() === id
+        (list: GroceryMetaData) => list._id?.toString() === id
       );
       set((state: GroceryState) => ({
         currentList: { id: id, data: state.fullGroceryLists[id], metadata },
       }));
+      console.log("Current List After Fetch from Cache:", get().currentList);
       return;
     }
 
@@ -364,8 +514,13 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           ...state.fullGroceryLists,
           [id]: groceryList,
         },
-        currentList: { ...state.currentList, data: groceryList },
+        currentList: {
+          ...state.currentList,
+          data: groceryList,
+        },
       }));
+
+      console.log("Current List After Fetch:", get().currentList);
     } catch (error) {
       console.error("Error fetching grocery list", error);
     }
@@ -374,14 +529,42 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
 
 export type GroceryStore = GroceryState & GroceryActions;
 
-export const defaultInitState: GroceryState = {
+export const initState: GroceryState = {
   currentList: {
-    id: "",
-    data: null,
+    data: {
+      _id: null,
+      title: "New List",
+      creatorId: "000000000000000000000000",
+      items: [],
+    },
     metadata: null,
-    items: [],
   },
   currentLists: [],
+  fullGroceryLists: {},
+  currentCategories: [],
+  currentSections: [],
+  selectedCategory: "Bakery",
+  map: new Map(),
+  currentForm: "",
+};
+
+export const defaultInitState: GroceryState = {
+  currentList: {
+    data: {
+      _id: null,
+      title: "New List",
+      creatorId: "000000000000000000000000",
+      items: [],
+    },
+    metadata: {
+      type: "grocery",
+      title: "New List",
+      _id: null,
+    },
+  },
+  currentLists: [
+    { type: "grocery", title: "New List", _id: null } as GroceryMetaData,
+  ],
   fullGroceryLists: {},
   currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Pantry"],
   currentSections: [],

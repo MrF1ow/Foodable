@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InputCard } from "@/components/input-card/input-card";
 import { Button } from "@/components/ui/button";
-import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
+import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
@@ -31,21 +31,21 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { get } from "node_modules/axios/index.cjs";
 
 export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const currentGroceryList = useGroceryStore((state) => state.currentList.data);
+  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
+  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const { addItem } = useGroceryStore((state) => state);
-  const selectedCategory = useGroceryStore(
-    (state) => state.selectedCategory as GrocerySectionOptions
-  );
+  const selectedCategory = useGroceryStore((state) => state.selectedCategory);
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
   );
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const { updateGroceryList, isUpdatingGroceryList } = useUpdateGroceryList();
+  const { updateGroceryList } = useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -55,7 +55,7 @@ export const AddItem = ({ className }: { className?: string }) => {
     resolver,
   });
 
-  function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
+  async function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
     const newItem: GroceryItem = {
       name: data.itemName,
       quantity: data.quantity,
@@ -63,9 +63,19 @@ export const AddItem = ({ className }: { className?: string }) => {
       category: selectedCategory,
       checked: false,
     };
-    addItem(newItem);
-    if (!currentGroceryList) return;
-    updateGroceryList(currentGroceryList);
+
+    const list = getCurrentList();
+
+    if (!list) return;
+
+    if ("_id" in list && list._id) {
+      addItem(newItem, list._id);
+      const newList = getCurrentList() as GroceryList;
+      updateGroceryList(newList as GroceryList);
+      await fetchAndStore(newList._id.toString());
+    } else {
+      addItem(newItem);
+    }
 
     showToast(
       TOAST_SEVERITY.SUCCESS,

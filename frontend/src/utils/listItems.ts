@@ -80,7 +80,9 @@ export const getGroceryAccordingItems = (
   accordionCategory: GrocerySectionOptions,
   items: GroceryItem[]
 ) => {
-  return items.filter((item) => item.category === accordionCategory);
+  return items.length === 0
+    ? []
+    : items.filter((item) => item.category === accordionCategory);
 };
 
 export const getIndexOfItemInArray = (

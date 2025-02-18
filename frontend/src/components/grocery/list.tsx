@@ -2,11 +2,26 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
 import { useGeneralStore } from "@/stores/general/store";
+import { useGroceryStore } from "@/stores/grocery/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
+import { GroceryList, NewGroceryList } from "@/types/grocery";
+import { useEffect } from "react";
 
-export const List = ({ className }: { className?: string }) => {
+export const List = ({
+  className,
+  groceryList,
+}: {
+  className?: string;
+  groceryList: GroceryList | NewGroceryList;
+}) => {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const currentList = useGroceryStore((state) => state.currentList.data);
+
+  useEffect(() => {
+    console.log("List useEffect");
+    console.log("Current List", currentList);
+  }, []);
 
   const currentCategories = getCurrentGrocerySections();
 
@@ -35,20 +50,32 @@ export const List = ({ className }: { className?: string }) => {
         >
           <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
             {column1.map((item) => (
-              <GroceryAccordion key={item.title} {...item} />
+              <GroceryAccordion
+                key={item.title}
+                {...item}
+                groceryList={groceryList}
+              />
             ))}
           </div>
           {column2 && (
             <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
               {column2.map((item) => (
-                <GroceryAccordion key={item.title} {...item} />
+                <GroceryAccordion
+                  key={item.title}
+                  {...item}
+                  groceryList={groceryList}
+                />
               ))}
             </div>
           )}
           {column3 && (
             <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
               {column3.map((item) => (
-                <GroceryAccordion key={item.title} {...item} />
+                <GroceryAccordion
+                  key={item.title}
+                  {...item}
+                  groceryList={groceryList}
+                />
               ))}
             </div>
           )}

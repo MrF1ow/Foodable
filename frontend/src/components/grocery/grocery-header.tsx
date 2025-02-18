@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { useGroceryStore } from "@/stores/grocery/store";
 import {
   DropdownMenu,
@@ -6,14 +8,13 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { EditButton } from "@/components/grocery/edit-button";
-import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
+import { GroceryMetaData, SavedGroceryMetaData } from "@/types/saved";
 
 export interface GroceryHeaderProps {
-  metadata: GroceryMetaData | UnsavedGroceryMetaData;
   width: string;
 }
 
-export const GroceryHeader = ({ metadata, width }: GroceryHeaderProps) => {
+export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const setCurrentListById = useGroceryStore(
     (state) => state.setCurrentGroceryListId
   );
@@ -22,15 +23,24 @@ export const GroceryHeader = ({ metadata, width }: GroceryHeaderProps) => {
   );
   const { currentLists, currentList } = useGroceryStore((state) => state);
 
-  const setList = async () => {
-    if ("_id" in metadata && metadata._id) {
-      setCurrentListById(metadata._id.toString());
-      await fetchFullGroceryList(metadata._id.toString());
+  const getCurrentMetadata = useGroceryStore(
+    (state) => state.getCurrentMetadata
+  );
+  const [metadata, setMetadata] = useState<
+    GroceryMetaData | SavedGroceryMetaData
+  >(getCurrentMetadata() as GroceryMetaData | SavedGroceryMetaData);
+
+  const setList = async (item: GroceryMetaData) => {
+    if (item._id) {
+      setCurrentListById(item._id.toString());
+      await fetchFullGroceryList(item._id.toString());
+    } else if (!item._id) {
+      setCurrentListById();
     }
   };
 
   const filteredLists =
-    "_id" in metadata && metadata._id
+    metadata._id && currentLists
       ? currentLists.filter((list) => list._id !== metadata._id)
       : currentLists;
 
@@ -49,7 +59,13 @@ export const GroceryHeader = ({ metadata, width }: GroceryHeaderProps) => {
         <DropdownMenuContent>
           {filteredLists.length > 0 ? (
             filteredLists.map((list, index) => (
-              <DropdownMenuItem key={index} onClick={() => setList()}>
+              <DropdownMenuItem
+                key={index}
+                onClick={() => {
+                  console.log("List", list);
+                  setList(list);
+                }}
+              >
                 {list.title}
               </DropdownMenuItem>
             ))
@@ -59,7 +75,7 @@ export const GroceryHeader = ({ metadata, width }: GroceryHeaderProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
       <span>
-        <EditButton metadata={metadata} />
+        <EditButton />
       </span>
     </div>
   );

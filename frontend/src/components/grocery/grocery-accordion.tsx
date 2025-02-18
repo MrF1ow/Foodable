@@ -4,11 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GrocerySection,
-  GroceryItem,
   GrocerySectionOptions,
+  GroceryList,
+  NewGroceryList,
+  GroceryItem,
 } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,16 +18,15 @@ import { Icons } from "../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
-import {
-  useUpdateGroceryList,
-  useFetchGroceryListById,
-} from "@/server/hooks/groceryListHooks";
-import { GroceryMetaData } from "@/types/saved";
+import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 
-export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
+export const GroceryAccordion = ({
+  title,
+  Icon,
+  color,
+}: GrocerySection & { groceryList: GroceryList | NewGroceryList }) => {
   const setItems = useGroceryStore((state) => state.setItems);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const groceryItems = useGroceryStore((state) => state.currentList.items);
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
@@ -33,17 +34,21 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
-  const currentList = useGroceryStore((state) => state.currentList.data);
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
-  const replaceList = useGroceryStore((state) => state.replaceList);
+  const getCurrentItems = useGroceryStore((state) => state.getCurrentItems);
+  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
+  const [groceryItems, setGroceryItems] = useState<GroceryItem[]>(
+    getCurrentItems() || []
+  );
+  const [accordionItems, setAccordionItems] = useState<GroceryItem[]>([]);
+
+  // useEffect(() => {
+  //   console.log("GroceryAccordion useEffect");
+  //   setGroceryItems(getCurrentItems());
+  //   setAccordionItems(getGroceryAccordingItems(title, groceryItems));
+  // }, []);
 
   const { updateGroceryList } = useUpdateGroceryList();
-  const { data: groceryList } =
-    currentList?.title !== "New List"
-      ? useFetchGroceryListById(currentList?._id)
-      : { data: null };
-
-  const accordionItems = getGroceryAccordingItems(title, groceryItems);
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -65,24 +70,26 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
       }
       return item;
     });
-    setItems(updatedItems);
-    if (groceryList) {
-      console.log("groceryList getting updated", groceryList);
-      groceryList.items = updatedItems;
+
+    const list = getCurrentList();
+
+    console.log("List", list);
+
+    if (!list) return;
+
+    if ("_id" in list && list._id) {
+      setItems(updatedItems, list._id);
+      const newList = getCurrentList(list._id) as GroceryList;
+
+      console.log("New List", newList);
 
       // update the grocery list with the new items
-      updateGroceryList(groceryList);
+      updateGroceryList(newList as GroceryList);
 
       // after updating the grocery list, fetch the updated list
-      await fetchAndStore(groceryList._id.toString());
-
-      const toInsert = {
-        type: "grocery",
-        _id: groceryList._id,
-        title: groceryList.title,
-      } as GroceryMetaData;
-
-      replaceList(groceryList._id.toString(), toInsert);
+      await fetchAndStore(newList._id.toString());
+    } else {
+      setItems(updatedItems);
     }
   };
 

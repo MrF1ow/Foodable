@@ -26,12 +26,12 @@ export async function PUT(req: Request) {
 
     const db = await getDB();
 
-    const { id, ...groceryListWithoutId } = groceryList;
+    const { id, _id, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: ObjectId.createFromHexString(id || _id) },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );

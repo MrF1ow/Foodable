@@ -5,7 +5,6 @@ import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
 
 export const GroceryHeaderWithChildren = ({
   width,
-  metadata,
   children,
 }: GroceryHeaderProps & {
   children: React.ReactNode;
@@ -17,7 +16,7 @@ export const GroceryHeaderWithChildren = ({
         isMobile ? "justify-center" : "justify-between"
       } items-center`}
     >
-      {!isMobile && <GroceryHeader metadata={metadata} width={width} />}
+      {!isMobile && <GroceryHeader width={width} />}
       <div>{children}</div>
     </div>
   );

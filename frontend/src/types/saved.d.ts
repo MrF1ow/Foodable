@@ -24,7 +24,7 @@ export interface UnsavedGroceryMetaData {
 
 export type RecipeMetaData = UnsavedRecipeMetaData & { _id: ObjectId };
 
-export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId };
+export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId | null };
 
 export type SavedRecipeMetaData = RecipeMetaData & { category: string };
 

@@ -37,11 +37,41 @@ export const useFetchAllGroceryLists = ({ enabled = true }: useQueryProps) => {
   };
 };
 
-export const useFetchGroceryListById = (id: string) => {
-  return useQuery<GroceryList, Error>({
+export const useFetchGroceryListById = ({
+  id,
+  enabled = true,
+}: {
+  id: string;
+  enabled?: boolean;
+}) => {
+  const errorMessage = ERROR_FETCHING_GROCERY_LIST;
+
+  const {
+    data: groceryList,
+    isLoading: isLoadingGroceryList,
+    refetch: refetchGroceryList,
+    error: errorGroceryList,
+    isError: isErrorGroceryList,
+  } = useQuery({
     queryKey: ["groceryList", id],
     queryFn: () => GroceryApi.fetchGroceryListById(id),
+    enabled: !!id && enabled, // Only fetch if ID is valid
+    retry: 0,
   });
+
+  useDataFetching({
+    isLoading: isLoadingGroceryList,
+    isError: isErrorGroceryList,
+    error: errorGroceryList,
+    errorMessage,
+  });
+
+  return {
+    groceryList,
+    isLoadingGroceryList,
+    refetchGroceryList,
+    errorGroceryList,
+  };
 };
 
 export const useCreateGroceryList = () => {
@@ -73,7 +103,7 @@ export const useUpdateGroceryList = () => {
   return {
     updateGroceryList: mutation.mutate,
     isUpdatingGroceryList: mutation.isPending,
-    createError: mutation.error,
+    updateError: mutation.error,
   };
 };
 

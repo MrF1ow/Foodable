@@ -19,7 +19,7 @@ export async function DELETE(req: Request) {
 
     const deletedGroceryList = await db
       .collection("groceryLists")
-      .findOneAndDelete({ _id: new ObjectId(id) });
+      .findOneAndDelete({ _id: ObjectId.createFromHexString(id) });
 
     if (!deletedGroceryList) {
       return NextResponse.json(

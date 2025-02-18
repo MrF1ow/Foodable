@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
     const groceryList = await db
       .collection("groceryLists")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: ObjectId.createFromHexString(id) });
 
     if (!groceryList) {
       return NextResponse.json(

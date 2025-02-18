@@ -25,68 +25,69 @@ import {
   useUpdateGroceryList,
   useFetchGroceryListById,
 } from "@/server/hooks/groceryListHooks";
-import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
+import { GroceryMetaData, SavedGroceryMetaData } from "@/types/saved";
 import { GroceryList } from "@/types/grocery";
 
-interface EditButtonProps {
-  metadata: GroceryMetaData | UnsavedGroceryMetaData;
-}
+export const EditButton = () => {
+  const getCurrentMetadata = useGroceryStore(
+    (state) => state.getCurrentMetadata
+  );
+  const [metadata, setMetadata] = useState<
+    GroceryMetaData | SavedGroceryMetaData
+  >(getCurrentMetadata() as GroceryMetaData | SavedGroceryMetaData);
 
-export const EditButton = ({ metadata }: EditButtonProps) => {
   const [newTitle, setNewTitle] = useState(metadata.title);
   const [isOpen, setIsOpen] = useState(false);
 
   const { updateGroceryList } = useUpdateGroceryList();
-  const deleteGroceryList = useDeleteGroceryList();
-  const { updateCurrentListItem, setCurrentList, removeCurrentList } =
-    useGroceryStore((state) => ({
-      updateCurrentListItem: state.updateCurrentListItem,
-      setCurrentList: state.setCurrentList,
-      removeCurrentList: state.removeCurrentList,
-    }));
-
-  const currentGroceryListTitles = useGroceryStore((state) =>
-    state.currentLists.map((list) => list.title)
-  );
-
-  const indexOfTitle = getIndexOfItemInArray(
-    metadata.title,
-    currentGroceryListTitles
-  );
-
   const { createGroceryList } = useCreateGroceryList();
+  const { deleteGroceryList } = useDeleteGroceryList();
+
+  const updateCurrentListItem = useGroceryStore(
+    (state) => state.updateCurrentListItem
+  );
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const removeCurrentList = useGroceryStore((state) => state.removeCurrentList);
+  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
+  const addList = useGroceryStore((state) => state.addList);
+  const removeList = useGroceryStore((state) => state.removeList);
+  const getCurrentItems = useGroceryStore((state) => state.getCurrentItems);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (indexOfTitle !== -1 && "_id" in metadata) {
-      if (!metadata._id) return;
+    if (metadata.title !== newTitle && metadata._id) {
       updateCurrentListItem(metadata._id.toString(), newTitle);
-      const {
-        data: response,
-        isLoading,
-        error,
-      } = useFetchGroceryListById(metadata._id.toString());
-      if (error) {
-        console.error("Error fetching grocery list:", error);
+
+      // Fetch the list and update the title
+      const { groceryList, isLoadingGroceryList, errorGroceryList } =
+        useFetchGroceryListById({
+          id: metadata._id?.toString() || "",
+          enabled: !!metadata._id,
+        });
+      if (errorGroceryList) {
+        console.error("Error fetching grocery list:", errorGroceryList);
       }
-      const list = response;
-      const newList = { ...list, title: newTitle };
+      const list = groceryList;
+      const newList = { ...list, _id: list?._id, title: newTitle };
       updateGroceryList(newList as GroceryList);
     } else {
       try {
+        const currentItems = getCurrentItems() || [];
         const list = await createGroceryList({
           creatorId: "000000000000000000000000", // Will need to change this
           title: newTitle,
-          items: [],
+          items: currentItems,
         });
+        await fetchAndStore(list._id.toString());
         const listMetadata = {
           type: "grocery",
           _id: list._id,
-          title: list.title,
+          title: newTitle,
         } as GroceryMetaData;
 
         setCurrentList(listMetadata);
+        addList(listMetadata);
       } catch (error) {
         console.error("Error creating grocery list:", error);
       }
@@ -97,10 +98,10 @@ export const EditButton = ({ metadata }: EditButtonProps) => {
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if ("_id" in metadata && metadata._id) {
-      removeCurrentList(metadata._id.toString());
-      setIsOpen(false);
-    }
+    if (!metadata._id) return;
+    removeCurrentList(metadata._id.toString());
+    removeList(metadata._id.toString());
+    setIsOpen(false);
   };
 
   return (
@@ -141,16 +142,18 @@ export const EditButton = ({ metadata }: EditButtonProps) => {
           {/* For some reason the DialogFooter is not taking up the full width */}
           <DialogFooter className="w-full flex items-center justify-between mt-4">
             {/* Left side: Delete button */}
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="destructive"
-                data-testid="list-delete"
-                onClick={handleDeleteList}
-              >
-                Delete
-              </Button>
-            </DialogClose>
+            {metadata._id ? (
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  data-testid="list-delete"
+                  onClick={handleDeleteList}
+                >
+                  Delete
+                </Button>
+              </DialogClose>
+            ) : null}
 
             {/* Right side: Cancel and Submit buttons */}
             <div className="flex space-x-2">

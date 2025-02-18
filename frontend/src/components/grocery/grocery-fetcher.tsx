@@ -6,7 +6,6 @@ import {
 import { useGroceryStore } from "@/stores/grocery/store";
 import { GroceryList } from "@/types/grocery";
 import { Toast } from "primereact/toast";
-import { UnsavedGroceryMetaData } from "@/types/saved";
 
 export const GroceryListsFetcher = () => {
   const toast = useRef<Toast>(null);
@@ -19,11 +18,6 @@ export const GroceryListsFetcher = () => {
 
   const setCurrentLists = useGroceryStore((state) => state.setCurrentLists);
   const currentLists = useGroceryStore((state) => state.currentLists);
-  const setCurrentGroceryList = useGroceryStore(
-    (state) => state.setCurrentGroceryListId
-  );
-  const setNewCurrentList = useGroceryStore((state) => state.setNewCurrentList);
-  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
 
   useEffect(() => {
     if (isLoadingGroceryLists && toast.current) {
@@ -37,40 +31,21 @@ export const GroceryListsFetcher = () => {
   }, [isLoadingGroceryLists]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (fetchedGroceryLists && fetchedGroceryLists.length > 0) {
-        const isDifferent =
-          currentLists.length !==
-          fetchedGroceryLists.some(
-            (list: GroceryList, index: number) =>
-              list._id !== currentLists[index]?._id
-          );
+    // If there are no grocery lists, do nothing
+    if (!fetchedGroceryLists || fetchedGroceryLists.length === 0) return;
 
-        if (isDifferent) {
-          setCurrentLists(fetchedGroceryLists);
+    // If the lists are different, update the current lists
+    const isDifferent =
+      currentLists.length !== fetchedGroceryLists.length ||
+      fetchedGroceryLists.some(
+        (list: GroceryList, index: number) =>
+          list._id !== currentLists[index]?._id
+      );
 
-          if (!currentLists.length) {
-            setCurrentLists(fetchedGroceryLists);
-          }
-
-          setCurrentLists(currentLists);
-          // set the first list as the current list
-          if (!currentLists.length) {
-            setCurrentGroceryList(currentLists[0]._id.toString());
-            await fetchAndStore(currentLists[0]._id.toString());
-          } else {
-            const newList = {
-              type: "grocery",
-              title: "New List",
-            } as UnsavedGroceryMetaData;
-            setNewCurrentList(newList);
-          }
-        }
-      }
-    };
-
-    fetchData();
-  }, [fetchedGroceryLists, currentLists, setCurrentLists]);
+    if (isDifferent) {
+      setCurrentLists(fetchedGroceryLists);
+    }
+  }, [fetchedGroceryLists, setCurrentLists]);
 
   return <Toast ref={toast} position="bottom-center" />;
 };
