@@ -35,18 +35,16 @@ export const GroceryAccordion = ({
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
-  const getCurrentItems = useGroceryStore((state) => state.getCurrentItems);
   const getCurrentList = useGroceryStore((state) => state.getCurrentData);
-  const [groceryItems, setGroceryItems] = useState<GroceryItem[]>(
-    getCurrentItems() || []
-  );
+  const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
   const [accordionItems, setAccordionItems] = useState<GroceryItem[]>([]);
 
-  // useEffect(() => {
-  //   console.log("GroceryAccordion useEffect");
-  //   setGroceryItems(getCurrentItems());
-  //   setAccordionItems(getGroceryAccordingItems(title, groceryItems));
-  // }, []);
+  useEffect(() => {
+    console.log("GroceryAccordion useEffect");
+    const currentList = getCurrentList();
+    setGroceryItems(currentList?.items || []);
+    setAccordionItems(getGroceryAccordingItems(title, groceryItems));
+  }, []);
 
   const { updateGroceryList } = useUpdateGroceryList();
 

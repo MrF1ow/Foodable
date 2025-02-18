@@ -21,6 +21,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const fetchFullGroceryList = useGroceryStore(
     (state) => state.fetchFullGroceryList
   );
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { currentLists, currentList } = useGroceryStore((state) => state);
 
   const getCurrentMetadata = useGroceryStore(
@@ -37,6 +38,11 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     } else if (!item._id) {
       setCurrentListById();
     }
+  };
+
+  const handleDropDownClick = (item: GroceryMetaData) => {
+    setCurrentList(item);
+    setList(item);
   };
 
   const filteredLists =
@@ -62,7 +68,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
               <DropdownMenuItem
                 key={index}
                 onClick={() => {
-                  console.log("List", list);
+                  setCurrentList(list);
                   setList(list);
                 }}
               >

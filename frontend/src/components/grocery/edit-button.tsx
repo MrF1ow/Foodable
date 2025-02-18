@@ -51,7 +51,7 @@ export const EditButton = () => {
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const addList = useGroceryStore((state) => state.addList);
   const removeList = useGroceryStore((state) => state.removeList);
-  const getCurrentItems = useGroceryStore((state) => state.getCurrentItems);
+  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,11 +73,12 @@ export const EditButton = () => {
       updateGroceryList(newList as GroceryList);
     } else {
       try {
-        const currentItems = getCurrentItems() || [];
+        const currentList = getCurrentList();
+        const currentItems = currentList?.items;
         const list = await createGroceryList({
           creatorId: "000000000000000000000000", // Will need to change this
           title: newTitle,
-          items: currentItems,
+          items: currentItems || [],
         });
         await fetchAndStore(list._id.toString());
         const listMetadata = {
