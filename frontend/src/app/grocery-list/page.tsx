@@ -24,10 +24,6 @@ export default function GroceryList() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const currentCard = useGroceryStore((state) => state.currentForm);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-
-  const groceryItems = useGroceryStore(
-    (state) => state.currentList.data?.items
-  );
   const setItems = useGroceryStore((state) => state.setItems);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList.data);
@@ -37,16 +33,31 @@ export default function GroceryList() {
     null | GroceryList | NewGroceryList
   >(getCurrentData());
 
+  useEffect(() => {
+    console.log("GroceryList useEffect");
+    console.log("Current List", currentList);
+    console.log("Grocery List", groceryList);
+  }, []);
+
   const { updateGroceryList } = useUpdateGroceryList();
 
   const handleItemDeletion = () => {
+    const groceryList = getCurrentData();
+    console.log("Grocery List", groceryList);
+    const groceryItems = groceryList?.items;
+    console.log("Grocery Items", groceryItems);
+    if (!groceryItems) return;
+
     const uncheckedItems = groceryItems.filter((item) => !item.checked);
-    if (!currentList) return;
-    currentList!.items = uncheckedItems;
+    console.log("Unchecked Items", uncheckedItems);
+    groceryList!.items = uncheckedItems;
+    console.log("Updated Grocery List", groceryList);
     setItems(uncheckedItems);
+
     // only make the API call if the list is saved and has an id in the database
-    if ("_id" in currentList) {
-      updateGroceryList(currentList);
+    if ("_id" in groceryList && groceryList._id) {
+      console.log("Updating Grocery List");
+      updateGroceryList(groceryList);
     }
     showToast(
       TOAST_SEVERITY.SUCCESS,

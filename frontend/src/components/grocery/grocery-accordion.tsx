@@ -19,6 +19,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import { cn } from "@/lib/utils";
 
 export const GroceryAccordion = ({
   title,
@@ -37,14 +38,20 @@ export const GroceryAccordion = ({
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const getCurrentList = useGroceryStore((state) => state.getCurrentData);
   const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
-  const [accordionItems, setAccordionItems] = useState<GroceryItem[]>([]);
+  const [accordionItems, setAccordionItems] = useState<
+    GroceryItem[] | undefined
+  >([]);
+
+  const currentList = useGroceryStore((state) => state.getCurrentData());
 
   useEffect(() => {
-    console.log("GroceryAccordion useEffect");
-    const currentList = getCurrentList();
     setGroceryItems(currentList?.items || []);
-    setAccordionItems(getGroceryAccordingItems(title, groceryItems));
-  }, []);
+    const items = getGroceryAccordingItems(
+      title,
+      currentList?.items as GroceryItem[]
+    );
+    setAccordionItems(items);
+  }, [currentList]);
 
   const { updateGroceryList } = useUpdateGroceryList();
 
@@ -125,7 +132,7 @@ export const GroceryAccordion = ({
 
         <AccordionContent className="max-h-80 overflow-y-auto">
           <div className="mt-4 flex flex-col gap-x-4">
-            {accordionItems.length === 0 ? (
+            {accordionItems === undefined || accordionItems.length === 0 ? (
               <p className="text-lg text-gray-400">
                 No items currently in the {title} section.
               </p>

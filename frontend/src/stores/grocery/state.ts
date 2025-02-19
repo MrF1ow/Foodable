@@ -87,8 +87,11 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   },
 
   getCurrentData: (id?: string): GroceryList | NewGroceryList | null => {
+    console.log("Getting current data with id:", id);
+    console.log("Current List:", get().currentList);
     if (!id) return get().currentList.data;
-    return get().fullGroceryLists[id];
+    console.log("Full Grocery Lists:", get().fullGroceryLists);
+    return get().fullGroceryLists[id] as GroceryList;
   },
 
   getCurrentItems: (id?: string): GroceryItem[] => {
@@ -133,6 +136,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           currentList: {
             ...state.currentList,
             data: {
+              ...state.currentList.data,
               items: items,
             },
           },
@@ -145,6 +149,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         currentList: {
           ...state.currentList,
           data: {
+            ...state.currentList.data,
             items: items, // Update items based on the new items
           },
         },

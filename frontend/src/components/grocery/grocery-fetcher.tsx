@@ -6,6 +6,7 @@ import {
 import { useGroceryStore } from "@/stores/grocery/store";
 import { GroceryList } from "@/types/grocery";
 import { Toast } from "primereact/toast";
+import { list } from "postcss";
 
 export const GroceryListsFetcher = () => {
   const toast = useRef<Toast>(null);
@@ -39,7 +40,8 @@ export const GroceryListsFetcher = () => {
       currentLists.length !== fetchedGroceryLists.length ||
       fetchedGroceryLists.some(
         (list: GroceryList, index: number) =>
-          list._id !== currentLists[index]?._id
+          list._id !== currentLists[index]?._id ||
+          list.title !== currentLists[index]?.title
       );
 
     if (isDifferent) {

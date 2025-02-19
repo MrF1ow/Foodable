@@ -41,6 +41,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   };
 
   const handleDropDownClick = (item: GroceryMetaData) => {
+    console.log("item", item);
     setCurrentList(item);
     setList(item);
   };
@@ -67,10 +68,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
             filteredLists.map((list, index) => (
               <DropdownMenuItem
                 key={index}
-                onClick={() => {
-                  setCurrentList(list);
-                  setList(list);
-                }}
+                onClick={() => handleDropDownClick(list)}
               >
                 {list.title}
               </DropdownMenuItem>
