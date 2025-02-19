@@ -35,6 +35,8 @@ declare global {
       clickButton(testId: string): Chainable<void>;
       typeText(testId: string, text: string): Chainable<void>;
       clickCheckbox(itemName: string): Chainable<void>;
+      deleteList(listName: string): Chainable<void>;
+      deleteCurrentList(): Chainable<void>;
     }
   }
 }
@@ -45,16 +47,34 @@ Cypress.Commands.add("shouldBeVisible", (element: string) => {
 
 Cypress.Commands.add("clickAddItemButton", (categoryName: string) => {
   cy.get(`[data-testid="${categoryName}-add-item-button"]`).click();
+  cy.wait(500);
 });
 
 Cypress.Commands.add("clickButton", (testId: string) => {
   cy.get(`[data-testid="${testId}"]`).click();
+  cy.wait(500);
 });
 
 Cypress.Commands.add("typeText", (testId: string, text: string) => {
   cy.get(`[data-testid="${testId}"]`).type(text);
+  cy.wait(500);
 });
 
 Cypress.Commands.add("clickCheckbox", (itemName: string) => {
   cy.get("[data-testid=" + itemName + "-checkbox]").click();
+  cy.wait(500);
+});
+
+Cypress.Commands.add("deleteCurrentList", () => {
+  cy.clickButton("list-edit");
+  cy.clickButton("list-delete");
+  cy.wait(500);
+});
+
+Cypress.Commands.add("deleteList", (listName: string) => {
+  cy.clickButton("grocery-header");
+  cy.contains(listName).click();
+  cy.clickButton("list-edit");
+  cy.clickButton("list-delete");
+  cy.wait(500);
 });

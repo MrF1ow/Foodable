@@ -143,4 +143,150 @@ describe("Visit Grocery Page", () => {
 
     cy.shouldBeVisible("No lists available");
   });
+
+  it("will remember the items in the saved grocery list", () => {
+    const categoryName = "Bakery";
+    cy.clickAddItemButton(categoryName);
+    cy.shouldBeVisible("Add Item");
+
+    cy.typeText("itemName-input", "Bread");
+    cy.typeText("quantity-input", "3{leftarrow}{backspace}");
+    cy.clickButton("submit-button");
+
+    cy.shouldBeVisible("Bread");
+    cy.shouldBeVisible("3");
+
+    cy.clickButton("list-edit");
+
+    cy.typeText("list-title", listTitle);
+
+    cy.clickButton("list-submit");
+
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
+
+    cy.clickButton("Bakery-accordion");
+    cy.shouldBeVisible("No items currently in the Bakery section");
+
+    cy.clickButton("grocery-header");
+
+    cy.contains(listTitle).click();
+
+    cy.clickButton("Bakery-accordion");
+    cy.shouldBeVisible("Bread");
+    cy.shouldBeVisible("3");
+
+    cy.deleteCurrentList();
+  });
+
+  it("will switch between grocery lists", () => {
+    const bakerySection = "Bakery";
+    cy.clickAddItemButton(bakerySection);
+    cy.shouldBeVisible("Add Item");
+
+    cy.typeText("itemName-input", "Bread");
+    cy.typeText("quantity-input", "3{leftarrow}{backspace}");
+    cy.clickButton("submit-button");
+
+    cy.shouldBeVisible("Bread");
+    cy.shouldBeVisible("3");
+
+    cy.clickButton("list-edit");
+    cy.typeText("list-title", "Bread List");
+    cy.clickButton("list-submit");
+
+    cy.clickButton("grocery-header");
+    cy.contains("New List").click();
+
+    const dairySection = "Dairy";
+    cy.clickAddItemButton(dairySection);
+    cy.shouldBeVisible("Add Item");
+
+    cy.typeText("itemName-input", "Milk");
+    cy.typeText("quantity-input", "2{leftarrow}{backspace}");
+    cy.clickButton("submit-button");
+
+    cy.shouldBeVisible("Milk");
+    cy.shouldBeVisible("2");
+
+    cy.clickButton("list-edit");
+    cy.typeText("list-title", "Milk List");
+    cy.clickButton("list-submit");
+
+    cy.clickButton("grocery-header");
+    cy.contains("New List").click();
+
+    cy.clickButton("Bakery-accordion");
+    cy.shouldBeVisible("No items currently in the Bakery section");
+
+    cy.clickButton("Dairy-accordion");
+    cy.shouldBeVisible("No items currently in the Dairy section");
+
+    cy.clickButton("grocery-header");
+    cy.contains("Bread List").click();
+
+    cy.shouldBeVisible("Bread List");
+    cy.clickButton("Bakery-accordion");
+    cy.shouldBeVisible("Bread");
+    cy.shouldBeVisible("3");
+
+    cy.clickButton("Dairy-accordion");
+    cy.shouldBeVisible("No items currently in the Dairy section");
+
+    cy.clickButton("grocery-header");
+    cy.contains("Milk List").click();
+
+    cy.shouldBeVisible("Milk List");
+    cy.clickButton("Bakery-accordion");
+    cy.shouldBeVisible("No items currently in the Bakery section");
+
+    cy.clickButton("Dairy-accordion");
+    cy.shouldBeVisible("Milk");
+    cy.shouldBeVisible("2");
+
+    cy.deleteCurrentList();
+    cy.deleteList("Bread List");
+  });
+
+  it("will allow the deletion of items from a list", () => {
+    const bakerySection = "Bakery";
+    const itemName = "Bread";
+    cy.clickAddItemButton(bakerySection);
+    cy.shouldBeVisible("Add Item");
+
+    cy.typeText("itemName-input", itemName);
+    cy.typeText("quantity-input", "3{leftarrow}{backspace}");
+    cy.clickButton("submit-button");
+
+    cy.shouldBeVisible(itemName);
+    cy.shouldBeVisible("3");
+
+    cy.clickButton("list-edit");
+    cy.typeText("list-title", listTitle);
+    cy.clickButton("list-submit");
+    cy.shouldBeVisible(listTitle);
+
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
+
+    cy.clickButton("grocery-header");
+    cy.contains(listTitle).click();
+
+    cy.clickButton("Bakery-accordion");
+
+    cy.clickCheckbox(itemName);
+
+    cy.clickButton("remove-items-button");
+
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
+
+    cy.clickButton("grocery-header");
+    cy.contains(listTitle).click();
+
+    cy.clickButton("Bakery-accordion");
+    cy.contains(itemName).should("not.exist");
+
+    cy.deleteCurrentList();
+  });
 });
