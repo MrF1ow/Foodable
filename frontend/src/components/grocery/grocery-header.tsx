@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useGroceryStore } from "@/stores/grocery/store";
 import {
@@ -22,7 +22,8 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     (state) => state.fetchFullGroceryList
   );
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const { currentLists, currentList } = useGroceryStore((state) => state);
+  const currentLists = useGroceryStore((state) => state.currentLists);
+  const currentList = useGroceryStore((state) => state.currentList);
 
   const getCurrentMetadata = useGroceryStore(
     (state) => state.getCurrentMetadata
@@ -48,7 +49,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
 
   const filteredLists =
     metadata._id && currentLists
-      ? currentLists.filter((list) => list._id !== metadata._id)
+      ? currentLists.filter((list) => list._id !== metadata._id || !list._id)
       : currentLists;
 
   return (

@@ -1,45 +1,35 @@
-"use client";
-
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { useStore } from "zustand";
-
-import { type GroceryStore, createGroceryStore } from "@/stores/grocery/state";
+import { createGroceryStore, type GroceryStore } from "@/stores/grocery/state";
 
 export type GroceryStoreApi = ReturnType<typeof createGroceryStore>;
 
-export const GroceryStoreContext = createContext<GroceryStoreApi | undefined>(
+const GroceryStoreContext = createContext<GroceryStoreApi | undefined>(
   undefined
 );
 
-export interface GroceryStoreProviderProps {
-  children: ReactNode;
-}
-
 export const GroceryStoreProvider = ({
   children,
-}: GroceryStoreProviderProps) => {
-  const storeRef = useRef<GroceryStoreApi | undefined>(undefined);
-  if (!storeRef.current) {
-    storeRef.current = createGroceryStore();
-  }
+}: {
+  children: React.ReactNode;
+}) => {
+  const [store] = useState(() => createGroceryStore());
 
   return (
-    <GroceryStoreContext.Provider value={storeRef.current}>
+    <GroceryStoreContext.Provider value={store}>
       {children}
     </GroceryStoreContext.Provider>
   );
 };
 
 export const useGroceryStore = <T,>(
-  selector: (store: GroceryStore) => T
+  selector: (state: GroceryStore) => T
 ): T => {
-  const context = useContext(GroceryStoreContext);
-
-  if (!context) {
+  const store = useContext(GroceryStoreContext);
+  if (!store) {
     throw new Error(
       "useGroceryStore must be used within a GroceryStoreProvider"
     );
   }
-
-  return useStore(context, selector);
+  return useStore(store, selector);
 };

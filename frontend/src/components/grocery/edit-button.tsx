@@ -18,12 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { getIndexOfItemInArray } from "@/utils/listItems";
 import {
   useCreateGroceryList,
   useDeleteGroceryList,
   useUpdateGroceryList,
-  useFetchGroceryListById,
 } from "@/server/hooks/groceryListHooks";
 import { GroceryMetaData, SavedGroceryMetaData } from "@/types/saved";
 import { GroceryList } from "@/types/grocery";
@@ -46,8 +44,7 @@ export const EditButton = () => {
   const updateCurrentListItem = useGroceryStore(
     (state) => state.updateCurrentListItem
   );
-  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const removeCurrentList = useGroceryStore((state) => state.removeCurrentList);
+
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const addList = useGroceryStore((state) => state.addList);
   const removeList = useGroceryStore((state) => state.removeList);
@@ -56,38 +53,34 @@ export const EditButton = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (metadata.title !== newTitle && metadata._id) {
-      updateCurrentListItem(metadata._id.toString(), newTitle);
+    const currentList = getCurrentList();
+    console.log("Current List", currentList);
+    if (!currentList) return;
 
-      // Fetch the list and update the title
-      const { groceryList, isLoadingGroceryList, errorGroceryList } =
-        useFetchGroceryListById({
-          id: metadata._id?.toString() || "",
-          enabled: !!metadata._id,
-        });
-      if (errorGroceryList) {
-        console.error("Error fetching grocery list:", errorGroceryList);
-      }
-      const list = groceryList;
-      const newList = { ...list, _id: list?._id, title: newTitle };
+    if (metadata.title !== newTitle && metadata._id) {
+      console.log("Updating List");
+      updateCurrentListItem(metadata._id.toString(), newTitle);
+      const newList = {
+        ...currentList,
+        title: newTitle,
+      };
+      console.log("New", newList);
       updateGroceryList(newList as GroceryList);
     } else {
+      console.log("Creating List");
       try {
-        const currentList = getCurrentList();
         const currentItems = currentList?.items;
-        const list = await createGroceryList({
+        const response = await createGroceryList({
           creatorId: "000000000000000000000000", // Will need to change this
           title: newTitle,
           items: currentItems || [],
         });
-        await fetchAndStore(list._id.toString());
+        await fetchAndStore(response._id.toString());
         const listMetadata = {
           type: "grocery",
-          _id: list._id,
+          _id: response._id,
           title: newTitle,
         } as GroceryMetaData;
-
-        setCurrentList(listMetadata);
         addList(listMetadata);
       } catch (error) {
         console.error("Error creating grocery list:", error);
@@ -100,8 +93,8 @@ export const EditButton = () => {
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!metadata._id) return;
-    removeCurrentList(metadata._id.toString());
     removeList(metadata._id.toString());
+    deleteGroceryList(metadata._id.toString());
     setIsOpen(false);
   };
 

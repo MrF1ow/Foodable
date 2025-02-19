@@ -33,9 +33,8 @@ export type GroceryActions = {
   getCurrentMetadata: (
     id?: string
   ) => GroceryMetaData | SavedGroceryMetaData | undefined;
-  getCurrentTitle: (id: string) => void;
   getCurrentData: (id?: string) => GroceryList | NewGroceryList | null;
-  getCurrentItems: (id?: string) => GroceryItem[];
+  getCurrentLists: () => GroceryMetaData[];
 
   setCurrentList: (list: GroceryMetaData) => void;
   setTitle: (title: string) => void;
@@ -54,7 +53,6 @@ export type GroceryActions = {
   removeSection: (section: GrocerySectionOptions) => void;
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
-  removeCurrentList: (id: string) => void;
   updateCurrentListItem(id: string, newTitle: string): void;
   setNewCurrentList: (
     data?: GroceryList,
@@ -73,40 +71,24 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   getCurrentMetadata: (
     id?: string
   ): GroceryMetaData | SavedGroceryMetaData | undefined => {
-    if (!id) return get().currentLists[0];
+    if (!id) return get().currentList.metadata;
     return get().currentLists.find(
       (list: GroceryMetaData) => list._id?.toString() === id
     );
   },
 
-  getCurrentTitle: (id: string): string => {
-    const list = get().currentLists.find(
-      (list: GroceryMetaData) => list._id?.toString() === id
-    );
-    return list ? list.title : "";
-  },
-
   getCurrentData: (id?: string): GroceryList | NewGroceryList | null => {
-    console.log("Getting current data with id:", id);
-    console.log("Current List:", get().currentList);
     if (!id) return get().currentList.data;
-    console.log("Full Grocery Lists:", get().fullGroceryLists);
     return get().fullGroceryLists[id] as GroceryList;
   },
 
-  getCurrentItems: (id?: string): GroceryItem[] => {
-    if (!id) return get().currentList.data.items;
-    const foundData = get().fullGroceryLists[id];
-    return foundData ? foundData.items : [];
-  },
+  getCurrentLists: (): GroceryMetaData[] => get().currentLists,
 
   setCurrentList: (list: GroceryMetaData) =>
     set((state: GroceryState) => {
       return {
         ...state,
         currentList: {
-          id: list._id?.toString(),
-          title: list.title,
           metadata: list,
         },
       };
@@ -360,16 +342,27 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
     set((state: GroceryState) => ({ ...state, currentCategories: categories })),
   setSelectedCategory: (category: GrocerySectionOptions) =>
     set((state: GroceryState) => ({ ...state, selectedCategory: category })),
-  removeCurrentList: (id: string) => {
+  removeList: (id: string) => {
     set((state: GroceryState) => {
-      const newCurrentLists = state.currentLists.filter(
-        (list) => list._id?.toString() !== id.toString()
-      );
+      const newCurrentLists = [
+        ...state.currentLists.filter(
+          (list) => list._id?.toString() !== id.toString()
+        ),
+      ];
 
       const updatedFullGroceryLists = { ...state.fullGroceryLists };
       delete updatedFullGroceryLists[id];
 
       return {
+        currentList: {
+          data: {
+            _id: null,
+            title: "New List",
+            creatorId: "000000000000000000000000",
+            items: [],
+          },
+          metadata: newCurrentLists.length > 0 ? newCurrentLists[0] : null,
+        },
         currentLists: newCurrentLists,
         fullGroceryLists: updatedFullGroceryLists,
       };
@@ -405,7 +398,10 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
       return {
         currentList: {
           ...state.currentList,
-          title: newTitle,
+          data: {
+            ...state.currentList.data,
+            title: newTitle,
+          },
           metadata: newItem,
         },
         currentLists: updatedCurrentLists,
@@ -451,16 +447,6 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
     set((state: GroceryState) => {
       return {
         currentLists: [...state.currentLists, list],
-      };
-    });
-  },
-
-  removeList: (id: string) => {
-    set((state: GroceryState) => {
-      return {
-        currentLists: state.currentLists.filter(
-          (list: GroceryMetaData) => list._id?.toString() !== id
-        ),
       };
     });
   },
@@ -520,8 +506,12 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           [id]: groceryList,
         },
         currentList: {
-          ...state.currentList,
           data: groceryList,
+          metadata: {
+            type: "grocery",
+            title: groceryList.title,
+            _id: groceryList._id,
+          },
         },
       }));
 

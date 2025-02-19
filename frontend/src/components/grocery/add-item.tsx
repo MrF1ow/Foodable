@@ -31,7 +31,6 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { get } from "node_modules/axios/index.cjs";
 
 export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
