@@ -1,14 +1,13 @@
-beforeEach(() => {
-  cy.visit("/grocery-list", { failOnStatusCode: false });
-  cy.wait(500);
-});
-
 describe("Visit Grocery Page", () => {
   it("Grocery Page Should Load Successfully", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.shouldBeVisible("New List");
   });
 
   it("should render the category and allow clicking it", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     cy.shouldBeVisible("Add Item");
@@ -19,6 +18,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("should render the Find Price button and allow clicking it", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.clickButton("find-price-button");
     cy.shouldBeVisible("Find Price");
     cy.shouldBeVisible("Select Stores");
@@ -26,11 +27,15 @@ describe("Visit Grocery Page", () => {
   });
 
   it("should render the AI Helper button and allow clicking it", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.clickButton("helper-button");
     cy.shouldBeVisible("Grocery List Helper");
   });
 
   it("should add item to a category", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     cy.shouldBeVisible("Add Item");
@@ -44,6 +49,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("should prevent adding an empty item", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     cy.clickButton("submit-button");
@@ -51,6 +58,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("should allow removing an item", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Dairy";
     cy.clickAddItemButton(categoryName);
 
@@ -65,6 +74,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("it should change the category through the dropdown", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     const itemName = "Milk";
@@ -82,6 +93,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("it should change the units through the dropdown", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Meat";
     cy.clickAddItemButton(categoryName);
     const itemName = "Bacon";
@@ -101,6 +114,8 @@ describe("Visit Grocery Page", () => {
   const newListTitle = "New Cypress Test";
 
   it("will allow the creation of a grocery list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.clickButton("list-edit");
 
     cy.typeText("list-title", listTitle);
@@ -111,6 +126,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("will allow the renaming of a grocery list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.clickButton("grocery-header");
 
     cy.contains(listTitle).click();
@@ -128,6 +145,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("will allow the deletion of a grocery list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     cy.clickButton("grocery-header");
 
     cy.contains(listTitle).click();
@@ -148,6 +167,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("will remember the items in the saved grocery list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     cy.shouldBeVisible("Add Item");
@@ -185,6 +206,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("will switch between grocery lists", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const bakerySection = "Bakery";
     cy.clickAddItemButton(bakerySection);
     cy.shouldBeVisible("Add Item");
@@ -254,6 +277,8 @@ describe("Visit Grocery Page", () => {
   });
 
   it("will allow the deletion of items from a list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
     const bakerySection = "Bakery";
     const itemName = "Bread";
     cy.clickAddItemButton(bakerySection);
