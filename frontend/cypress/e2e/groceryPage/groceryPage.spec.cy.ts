@@ -1,11 +1,9 @@
-import { list } from "postcss";
+beforeEach(() => {
+  cy.visit("/grocery-list", { failOnStatusCode: false });
+  cy.wait(500);
+});
 
 describe("Visit Grocery Page", () => {
-  beforeEach(() => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-  });
-
   it("Grocery Page Should Load Successfully", () => {
     cy.shouldBeVisible("New List");
   });
@@ -61,8 +59,7 @@ describe("Visit Grocery Page", () => {
     cy.clickButton("submit-button");
     cy.contains("Milk").should("be.visible");
 
-    cy.contains(itemName).parent().find("input[type='checkbox']").check();
-
+    cy.clickCheckbox(itemName);
     cy.clickButton("remove-items-button");
     cy.contains("Milk").should("not.exist");
   });
