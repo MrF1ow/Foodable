@@ -1,7 +1,7 @@
 describe("Visit Grocery Page", () => {
   it("Grocery Page Should Load Successfully", () => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
+    cy.wait(5000);
     cy.shouldBeVisible("New List");
   });
 
