@@ -2,10 +2,8 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
 import { useGeneralStore } from "@/stores/general/store";
-import { useGroceryStore } from "@/stores/grocery/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
 import { GroceryList, NewGroceryList } from "@/types/grocery";
-import { useEffect } from "react";
 
 export const List = ({
   className,
@@ -16,12 +14,6 @@ export const List = ({
 }) => {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const currentList = useGroceryStore((state) => state.currentList.data);
-
-  useEffect(() => {
-    console.log("List useEffect");
-    console.log("Current List", currentList);
-  }, []);
 
   const currentCategories = getCurrentGrocerySections();
 

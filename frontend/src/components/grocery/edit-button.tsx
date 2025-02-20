@@ -3,6 +3,7 @@
 // Package Imports
 import { MdEdit } from "react-icons/md";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   Dialog,
@@ -25,8 +26,11 @@ import {
 } from "@/server/hooks/groceryListHooks";
 import { GroceryMetaData, SavedGroceryMetaData } from "@/types/saved";
 import { GroceryList } from "@/types/grocery";
+import { GROCERY_LISTS } from "@/lib/constants/process";
 
 export const EditButton = () => {
+  const queryClient = useQueryClient();
+
   const getCurrentMetadata = useGroceryStore(
     (state) => state.getCurrentMetadata
   );
@@ -48,20 +52,20 @@ export const EditButton = () => {
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const addList = useGroceryStore((state) => state.addList);
   const removeList = useGroceryStore((state) => state.removeList);
-  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
+  const currentList = useGroceryStore((state) => state.currentList);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const currentList = getCurrentList();
-    console.log("Current List", currentList);
-    if (!currentList) return;
+    const currentGroceryList = currentList.data;
+
+    if (!currentGroceryList) return;
 
     if (metadata.title !== newTitle && metadata._id) {
       console.log("Updating List");
       updateCurrentListItem(metadata._id.toString(), newTitle);
       const newList = {
-        ...currentList,
+        ...currentGroceryList,
         title: newTitle,
       };
       console.log("New", newList);
@@ -69,7 +73,7 @@ export const EditButton = () => {
     } else {
       console.log("Creating List");
       try {
-        const currentItems = currentList?.items;
+        const currentItems = currentGroceryList?.items;
         const response = await createGroceryList({
           creatorId: "000000000000000000000000", // Will need to change this
           title: newTitle,
@@ -81,6 +85,7 @@ export const EditButton = () => {
           _id: response._id,
           title: newTitle,
         } as GroceryMetaData;
+        setMetadata(listMetadata);
         addList(listMetadata);
       } catch (error) {
         console.error("Error creating grocery list:", error);
@@ -93,9 +98,23 @@ export const EditButton = () => {
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!metadata._id) return;
-    removeList(metadata._id.toString());
-    deleteGroceryList(metadata._id.toString());
-    setIsOpen(false);
+
+    deleteGroceryList(metadata._id.toString(), {
+      onSuccess: () => {
+        if (metadata._id) {
+          removeList(metadata._id.toString());
+          setIsOpen(false);
+          console.log("Successfully deleted grocery list");
+          queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
+        }
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
+      },
+      onError: (error) => {
+        console.error("Failed to delete grocery list:", error);
+      },
+    });
   };
 
   return (

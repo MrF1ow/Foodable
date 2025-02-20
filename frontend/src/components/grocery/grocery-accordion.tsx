@@ -19,7 +19,6 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
-import { cn } from "@/lib/utils";
 
 export const GroceryAccordion = ({
   title,
@@ -28,27 +27,29 @@ export const GroceryAccordion = ({
 }: GrocerySection & { groceryList: GroceryList | NewGroceryList }) => {
   const setItems = useGroceryStore((state) => state.setItems);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const isMobile = useGeneralStore((state) => state.isMobile);
+
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const isMobile = useGeneralStore((state) => state.isMobile);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
   const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
   const getCurrentList = useGroceryStore((state) => state.getCurrentData);
+  const openAccordion = useGroceryStore((state) => state.currentSections);
+  const currentList = useGroceryStore((state) => state.currentList);
+
   const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
   const [accordionItems, setAccordionItems] = useState<
     GroceryItem[] | undefined
   >([]);
 
-  const currentList = useGroceryStore((state) => state.getCurrentData());
-
   useEffect(() => {
-    setGroceryItems(currentList?.items || []);
+    if (!currentList) return;
+    setGroceryItems(currentList.data.items as GroceryItem[]);
     const items = getGroceryAccordingItems(
       title,
-      currentList?.items as GroceryItem[]
+      currentList?.data.items as GroceryItem[]
     );
     setAccordionItems(items);
   }, [currentList]);
@@ -76,17 +77,14 @@ export const GroceryAccordion = ({
       return item;
     });
 
-    const list = getCurrentList();
-
+    const list = currentList.data as GroceryList | NewGroceryList;
     console.log("List", list);
 
     if (!list) return;
 
     if ("_id" in list && list._id) {
       setItems(updatedItems, list._id);
-      const newList = getCurrentList(list._id) as GroceryList;
-
-      console.log("New List", newList);
+      const newList = getCurrentList(list._id.toString()) as GroceryList;
 
       // update the grocery list with the new items
       updateGroceryList(newList as GroceryList);

@@ -16,42 +16,27 @@ import { GroceryListsFetcher } from "@/components/grocery/grocery-fetcher";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
-import { useEffect, useState } from "react";
-import type { NewGroceryList, GroceryList } from "@/types/grocery";
+import type { GroceryList } from "@/types/grocery";
 
 export default function GroceryList() {
-  const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const currentCard = useGroceryStore((state) => state.currentForm);
+  const splitLayout = useGeneralStore((state) => state.splitLayout);
+  const isMobile = useGeneralStore((state) => state.isMobile);
+
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setItems = useGroceryStore((state) => state.setItems);
-  const isMobile = useGeneralStore((state) => state.isMobile);
-  const currentList = useGroceryStore((state) => state.currentList.data);
-
-  const getCurrentData = useGroceryStore((state) => state.getCurrentData);
-  const [groceryList, setGroceryList] = useState<
-    null | GroceryList | NewGroceryList
-  >(getCurrentData());
-
-  useEffect(() => {
-    console.log("GroceryList useEffect");
-    console.log("Current List", currentList);
-    console.log("Grocery List", groceryList);
-  }, []);
+  const currentCard = useGroceryStore((state) => state.currentForm);
+  const currentList = useGroceryStore((state) => state.currentList);
 
   const { updateGroceryList } = useUpdateGroceryList();
 
   const handleItemDeletion = () => {
-    const groceryList = getCurrentData();
-    console.log("Grocery List", groceryList);
+    const groceryList = currentList.data;
     const groceryItems = groceryList?.items;
-    console.log("Grocery Items", groceryItems);
     if (!groceryItems) return;
 
     const uncheckedItems = groceryItems.filter((item) => !item.checked);
-    console.log("Unchecked Items", uncheckedItems);
-    groceryList!.items = uncheckedItems;
-    console.log("Updated Grocery List", groceryList);
+    groceryList.items = uncheckedItems;
     setItems(uncheckedItems);
 
     // only make the API call if the list is saved and has an id in the database
@@ -72,7 +57,7 @@ export default function GroceryList() {
       <>
         <GroceryListsFetcher />
 
-        {groceryList && <List groceryList={groceryList} />}
+        {currentList.data && <List groceryList={currentList.data} />}
         {!splitLayout && (
           <Button
             className={`btn-primary rounded-full w-12 h-12 hover:bg-primary flex items-center justify-center fixed bottom-4 right-4 z-50 ${

@@ -1,24 +1,16 @@
 import { useEffect, useRef } from "react";
-import {
-  useFetchAllGroceryLists,
-  useDeleteGroceryList,
-} from "@/server/hooks/groceryListHooks";
+import { useFetchAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { GroceryList } from "@/types/grocery";
 import { Toast } from "primereact/toast";
-import { list } from "postcss";
 
 export const GroceryListsFetcher = () => {
   const toast = useRef<Toast>(null);
 
-  const {
-    groceryLists: fetchedGroceryLists,
-    isLoadingGroceryLists,
-    errorGroceryLists,
-  } = useFetchAllGroceryLists({ enabled: true });
-
   const setCurrentLists = useGroceryStore((state) => state.setCurrentLists);
   const currentLists = useGroceryStore((state) => state.currentLists);
+  const { groceryLists: fetchedGroceryLists, isLoadingGroceryLists } =
+    useFetchAllGroceryLists({ enabled: true });
 
   useEffect(() => {
     if (isLoadingGroceryLists && toast.current) {
@@ -34,6 +26,8 @@ export const GroceryListsFetcher = () => {
   useEffect(() => {
     // If there are no grocery lists, do nothing
     if (!fetchedGroceryLists || fetchedGroceryLists.length === 0) return;
+
+    console.log("fetchedGroceryLists", fetchedGroceryLists);
 
     // If the lists are different, update the current lists
     const isDifferent =
