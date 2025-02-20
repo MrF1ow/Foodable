@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 import { InputHeader } from "./input-header";
 import { InputFooter } from "./input-footer";

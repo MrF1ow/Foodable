@@ -1,5 +1,5 @@
 import { InputHeaderProp } from "@/types/input";
-import { Icons } from "../ui/icons";
+import { Icons } from "@/components/ui/icons";
 
 export const InputHeader = ({
   title,

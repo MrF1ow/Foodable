@@ -1,18 +1,18 @@
 "use client";
 
 // Local Imports
-import { MainLayout } from "@/layouts/main";
-import { ContentLayout } from "@/layouts/content";
-import { AddItem } from "@/components/grocery/add-item";
-import { FindPrice as FindPrice } from "@/components/grocery/find-price";
-import { HelperCard } from "@/components/grocery/list-helper";
+import { MainLayout } from "@/layouts/common/main";
+import { ContentLayout } from "@/layouts/common/content";
+import { AddItem } from "@/components/common/grocery/add-item";
+import { FindPrice as FindPrice } from "@/components/common/grocery/find-price";
+import { HelperCard } from "@/components/common/grocery/list-helper";
 import { Icons } from "@/components/ui/icons";
 import { Button } from "@/components/ui/button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { List } from "@/components/grocery/list";
-import { GroceryHeaderWithChildren } from "@/components/grocery/grocery-header-with-children";
-import { GroceryListsFetcher } from "@/components/grocery/grocery-fetcher";
+import { List } from "@/components/common/grocery/list";
+import { GroceryHeaderWithChildren } from "@/components/common/grocery/grocery-header-with-children";
+import { GroceryListsFetcher } from "@/components/common/grocery/grocery-fetcher";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";

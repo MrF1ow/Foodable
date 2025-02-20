@@ -14,7 +14,7 @@ import {
 } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Icons } from "../ui/icons";
+import { Icons } from "../../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";

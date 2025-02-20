@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { InputCard } from "@/components/input-card/input-card";
+import { InputCard } from "@/components/common/input-card/input-card";
 import { Button } from "@/components/ui/button";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";

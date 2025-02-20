@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-import { Navbar } from "@/components/navbar";
+import { Navbar } from "@/components/common/navbar";
 import { useGeneralStore } from "@/stores/general/store";
 
 export const MainLayout = ({

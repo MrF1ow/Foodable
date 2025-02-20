@@ -4,7 +4,7 @@ import { BiArrowBack } from "react-icons/bi";
 
 // Local Imports
 import { Card, CardContent } from "@/components/ui/card";
-import pfp from "../../../public/images/pfp.jpg";
+import pfp from "../../../../public/images/pfp.jpg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RecipeContent } from "./recipe-content";
 import { RecipePopupHeader } from "./recipe-popup-header";

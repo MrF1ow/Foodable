@@ -1,8 +1,8 @@
 "use client";
 
-import { MainLayout } from "@/layouts/main";
+import { MainLayout } from "@/layouts/common/main";
 import { GeneralHeader } from "@/components/general-header";
-import { ContentLayout } from "@/layouts/content";
+import { ContentLayout } from "@/layouts/common/content";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUserStore } from "@/stores/user/store";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 // Button component
 import { Button } from "@/components/ui/button";
 import { GeneralAccordion } from "@/components/general-accordion";
-import { InputCard } from "@/components/input-card/input-card";  // Import your InputCard component
+import { InputCard } from "@/components/common/input-card/input-card";  // Import your InputCard component
 import { Input } from "@/components/ui/input"; // Import the new Input component
 
 export default function SettingsPage() {

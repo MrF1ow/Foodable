@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
 import Link from "next/link";
@@ -11,9 +11,9 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import logoNoShadow from "../../../public/images/logo_current_no_shadow.png";
+import logoNoShadow from "../../../../public/images/logo_current_no_shadow.png";
 import { NavbarItem } from "./item";
-import ThemeSwitch from "../theme-switch";
+import ThemeSwitch from "@/components/theme-switch";
 import { useGeneralStore } from "@/stores/general/store";
 
 export const Navbar = () => {

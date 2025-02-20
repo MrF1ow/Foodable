@@ -8,7 +8,7 @@ import {
   Form,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { InputCard } from "@/components/input-card/input-card";
+import { InputCard } from "@/components/common/input-card/input-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";

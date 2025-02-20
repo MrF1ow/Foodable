@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
 
-import { AuthenticationLayout } from "@/layouts/authentication";
+import { AuthenticationLayout } from "@/layouts/common/authentication";
 
 export default function SignUpPage() {
   return (

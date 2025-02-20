@@ -1,5 +1,5 @@
 import { Recipe } from "@/types/recipe";
-import { SaveBookmark } from "@/components/saved/save-bookmark";
+import { SaveBookmark } from "@/components/common/saved/save-bookmark";
 import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 interface RecipePopupHeaderProps {

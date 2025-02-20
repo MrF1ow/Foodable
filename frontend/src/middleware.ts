@@ -4,29 +4,19 @@ import { NextResponse } from "next/server";
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isUserRoute = createRouteMatcher(["/user(.*)"]);
 
-const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/(.*)", // for testing - must be removed
-  "/404",
-]);
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/"]);
 
 export default clerkMiddleware(async (auth, request) => {
-  // Allow users with the `admin` role to access the admin route
-  if (
-    isAdminRoute(request) &&
-    (await auth()).sessionClaims?.metadata?.role !== "admin"
-  ) {
-    const url = new URL("/sign-in", request.url);
+  const userRole = (await auth()).sessionClaims?.metadata?.role;
+
+  // Protect all routes starting with `/admin`
+  if (isAdminRoute(request) && !(userRole === "admin")) {
+    const url = new URL("/", request.url);
     return NextResponse.redirect(url);
   }
 
-  // Allow users with the `admin` or `user` role to access the user route
-  if (
-    isUserRoute(request) &&
-    (await auth()).sessionClaims?.metadata?.role !== "admin" &&
-    (await auth()).sessionClaims?.metadata?.role !== "user"
-  ) {
+  // Allow registered users to access the user route
+  if (isUserRoute(request) && !(userRole === "admin" || userRole === "user")) {
     const url = new URL("/sign-in", request.url);
     return NextResponse.redirect(url);
   }

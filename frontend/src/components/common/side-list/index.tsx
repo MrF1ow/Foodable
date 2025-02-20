@@ -16,6 +16,7 @@ import { AddItem } from "../grocery/add-item";
 
 export const SideList = () => {
   const currentForm = useGroceryStore((state) => state.currentForm);
+  const currentList = useGroceryStore((state) => state.currentList);
   return (
     <div className="w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6">
       <Card className="h-full flex flex-col bg-card-background rounded-lg">
@@ -27,7 +28,10 @@ export const SideList = () => {
             {currentForm === "addItem" ? (
               <AddItem />
             ) : (
-              <List className="mt-4 bg-card-background" />
+              <List
+                className="mt-4 bg-card-background"
+                groceryList={currentList.data}
+              />
             )}
           </ScrollArea>
         </CardContent>

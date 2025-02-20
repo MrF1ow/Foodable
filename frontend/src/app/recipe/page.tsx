@@ -5,15 +5,15 @@ import { useState } from "react";
 
 // Local Imports
 import Loader from "@/components/loader";
-import { RecipeBox } from "@/components/recipe/recipe-box";
-import { MainLayout } from "@/layouts/main";
-import { ContentLayout } from "@/layouts/content";
-import { SearchBar } from "@/components/search-bar";
-import { SideList } from "@/components/side-list";
-import { RecipePopUp } from "@/components/recipe/recipe-popup";
-import { RecipesFetcher } from "@/components/recipe/recipe-fetcher";
+import { RecipeBox } from "@/components/common/recipe/recipe-box";
+import { MainLayout } from "@/layouts/common/main";
+import { ContentLayout } from "@/layouts/common/content";
+import { SearchBar } from "@/components/common/search-bar";
+import { SideList } from "@/components/common/side-list";
+import { RecipePopUp } from "@/components/common/recipe/recipe-popup";
+import { RecipesFetcher } from "@/components/common/recipe/recipe-fetcher";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { FilterButton } from "@/components/search-bar/filter-button";
+import { FilterButton } from "@/components/common/search-bar/filter-button";
 
 export default function RecipePage() {
   const allRecipes = useRecipeStore((state) => state.currentRecipes);

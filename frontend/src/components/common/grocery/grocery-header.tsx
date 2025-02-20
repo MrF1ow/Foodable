@@ -1,5 +1,5 @@
 // Package Imports
-import React, { useEffect } from "react";
+import React from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { EditButton } from "@/components/grocery/edit-button";
+import { EditButton } from "@/components/common/grocery/edit-button";
 import { GroceryMetaData } from "@/types/saved";
 
 export interface GroceryHeaderProps {

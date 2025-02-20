@@ -1,16 +1,16 @@
 "use client";
 
 // Local Imports
-import { MainLayout } from "@/layouts/main";
+import { MainLayout } from "@/layouts/common/main";
 import { GeneralHeader } from "@/components/general-header";
 import { GeneralAccordion } from "@/components/general-accordion";
-import { ContentLayout } from "@/layouts/content";
-import { AddButton } from "@/components/saved/add-button";
-import { EditButton } from "@/components/saved/edit-button";
+import { ContentLayout } from "@/layouts/common/content";
+import { AddButton } from "@/components/common/saved/add-button";
+import { EditButton } from "@/components/common/saved/edit-button";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { SavedItemPopup } from "@/components/saved/saved-item-popup";
-import { RecipeBox } from "@/components/recipe/recipe-box";
+import { SavedItemPopup } from "@/components/common/saved/saved-item-popup";
+import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
 import Loader from "@/components/loader";
 import { useEffect } from "react";

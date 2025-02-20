@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GroceryAccordion } from "@/components/grocery/grocery-accordion";
+import { GroceryAccordion } from "@/components/common/grocery/grocery-accordion";
 import { useGeneralStore } from "@/stores/general/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
 import { GroceryList, NewGroceryList } from "@/types/grocery";

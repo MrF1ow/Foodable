@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Recipe } from "@/types/recipe";
 import { RecipeSection } from "./recipe-section";
-import { getAdditionalIngredients } from "@/utils/listItems";
-import { Checkbox } from "../ui/checkbox";
-import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
+import { Checkbox } from "@/components/ui/checkbox";
+import { GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { Icons } from "../ui/icons";
+import { Icons } from "@/components/ui/icons";
 
 export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
   const addIngredient = useGroceryStore((state) => state.addItem);
