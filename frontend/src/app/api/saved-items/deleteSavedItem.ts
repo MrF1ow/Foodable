@@ -1,15 +1,15 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/utils/validation";
+import { isValidObjectId } from "@/utils/typeValidation/general";
 
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
-export async function DELETE(req: Request) {
+export async function DELETE(req: Request, type: "recipe" | "groceryList") {
   try {
-    const { userId, itemId } = await req.json();
+    const { userId, itemId, itemCategory } = await req.json();
 
-    if (!userId || !itemId) {
+    if (!userId || !itemId || !itemCategory) {
       return NextResponse.json(
         { message: "userId and itemId are required" },
         { status: 400 }
@@ -26,12 +26,55 @@ export async function DELETE(req: Request) {
     const db = await getDB();
     const usersCollection = db.collection("users");
 
-    const result = await usersCollection.updateOne(
+    const user = await usersCollection.findOne(
       { _id: ObjectId.createFromHexString(userId) },
-      { $pull: { savedItems: itemId } }
+      { projection: { savedItems: 1 } }
     );
 
-    if (result.modifiedCount === 0) {
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    // Array to store the items
+    let arr = [];
+
+    if (type === "recipe") {
+      arr = user.savedItems?.recipes;
+    } else if (type === "groceryList") {
+      arr = user.savedItems?.groceryLists;
+    }
+
+    const updatedArr = arr.filter(
+      (item: any) =>
+        item._id.toString() !== itemId || item.category !== itemCategory
+    );
+
+    if (updatedArr.length === arr.length) {
+      return NextResponse.json({ message: "Item not found" }, { status: 404 });
+    }
+
+    let result;
+    if (type === "recipe") {
+      result = await usersCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        {
+          $set: {
+            "savedItems.recipes": updatedArr,
+          },
+        }
+      );
+    } else if (type === "groceryList") {
+      result = await usersCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        {
+          $set: {
+            "savedItems.groceryLists": updatedArr,
+          },
+        }
+      );
+    }
+
+    if (result && result.modifiedCount === 0) {
       return NextResponse.json(
         { message: "Item not found or user not found" },
         { status: 404 }

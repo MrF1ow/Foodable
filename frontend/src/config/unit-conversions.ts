@@ -80,6 +80,7 @@ export const unitConversions: UnitConversions = {
     pint: 0.5,
     quart: 0.25,
     gallon: 0.0625,
+    oz: 8,
   },
   tbsp: {
     l: 0.0147868,

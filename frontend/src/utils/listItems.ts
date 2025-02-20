@@ -4,7 +4,7 @@ import { RecipeIngredient } from "@/types/recipe";
 import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { SavedItem } from "@/types/saved";
+import { MainMetaData } from "@/types/saved";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -61,28 +61,34 @@ export function getMissingIngredients(
 }
 
 export const getAdditionalIngredients = (
-  recipeIngredients: RecipeIngredient[]
+  recipeIngredients: RecipeIngredient[],
+  groceryMap: Map<string, GroceryItem>
 ) => {
-  const groceryMap = useGroceryStore((state) => state.map);
-
   const additionalIngredients = getMissingIngredients(
     recipeIngredients,
     groceryMap
   );
 
-  return additionalIngredients;
+  const groceryItemAdditionalIngredients = recipeIngredientsToGroceryItems(
+    additionalIngredients
+  );
+
+  return groceryItemAdditionalIngredients;
 };
 
 export const getGroceryAccordingItems = (
   accordionCategory: GrocerySectionOptions,
   items: GroceryItem[]
 ) => {
-  return items.filter((item) => item.category === accordionCategory);
+  if (!items) return;
+  return items.length === 0
+    ? []
+    : items.filter((item) => item.category === accordionCategory);
 };
 
 export const getIndexOfItemInArray = (
   itemName: string,
-  items: (GroceryItem | RecipeIngredient | SavedItem | string)[]
+  items: (GroceryItem | RecipeIngredient | MainMetaData | string)[]
 ) => {
   return items.findIndex((item) => item === itemName);
 };

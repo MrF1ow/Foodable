@@ -12,6 +12,7 @@ export const RecipesFetcher = () => {
   } = useAllRecipes({ enabled: true });
 
   const setCurrentRecipes = useRecipeStore((state) => state.setCurrentRecipes);
+  const setFilterRecipes = useRecipeStore((state) => state.setFilteredRecipes);
   const currentRecipes = useRecipeStore((state) => state.currentRecipes);
 
   useEffect(() => {
@@ -26,10 +27,14 @@ export const RecipesFetcher = () => {
 
       if (isDifferent) {
         setCurrentRecipes(fetchedRecipes.slice(0, 100)); // Limit to 100 recipes
+        if (!currentRecipes.length) {
+          setFilterRecipes(fetchedRecipes.slice(0, 100));
+        }
       }
     }
   }, [fetchedRecipes, currentRecipes, setCurrentRecipes]);
 
+  // make into toasts
   if (isLoadingRecipes) return <p>Loading recipes...</p>;
   if (errorRecipes) return <p>Error loading recipes: {errorRecipes.message}</p>;
 

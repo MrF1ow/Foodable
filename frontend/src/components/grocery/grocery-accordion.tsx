@@ -4,11 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   GrocerySection,
-  GroceryItem,
   GrocerySectionOptions,
+  GroceryList,
+  NewGroceryList,
+  GroceryItem,
 } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,21 +18,43 @@ import { Icons } from "../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
-import { useRecipeStore } from "@/stores/recipe/store";
+import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 
-export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
+export const GroceryAccordion = ({
+  title,
+  Icon,
+  color,
+}: GrocerySection & { groceryList: GroceryList | NewGroceryList }) => {
   const setItems = useGroceryStore((state) => state.setItems);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const groceryItems = useGroceryStore((state) => state.items);
+  const isMobile = useGeneralStore((state) => state.isMobile);
+
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const isMobile = useGeneralStore((state) => state.isMobile);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const openAccordion = useGroceryStore((state) => state.currentSections);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
+  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
+  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
+  const openAccordion = useGroceryStore((state) => state.currentSections);
+  const currentList = useGroceryStore((state) => state.currentList);
 
-  const accordionItems = getGroceryAccordingItems(title, groceryItems);
+  const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
+  const [accordionItems, setAccordionItems] = useState<
+    GroceryItem[] | undefined
+  >([]);
+
+  useEffect(() => {
+    if (!currentList) return;
+    setGroceryItems(currentList.data.items as GroceryItem[]);
+    const items = getGroceryAccordingItems(
+      title,
+      currentList?.data.items as GroceryItem[]
+    );
+    setAccordionItems(items);
+  }, [currentList]);
+
+  const { updateGroceryList } = useUpdateGroceryList();
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -38,7 +62,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
 
-  const handleCheckboxChange = (
+  const handleCheckboxChange = async (
     section: GrocerySectionOptions,
     name: string,
     checked: boolean
@@ -52,7 +76,24 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
       }
       return item;
     });
-    setItems(updatedItems);
+
+    const list = currentList.data as GroceryList | NewGroceryList;
+    console.log("List", list);
+
+    if (!list) return;
+
+    if ("_id" in list && list._id) {
+      setItems(updatedItems, list._id);
+      const newList = getCurrentList(list._id.toString()) as GroceryList;
+
+      // update the grocery list with the new items
+      updateGroceryList(newList as GroceryList);
+
+      // after updating the grocery list, fetch the updated list
+      await fetchAndStore(newList._id.toString());
+    } else {
+      setItems(updatedItems);
+    }
   };
 
   return (
@@ -89,7 +130,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
 
         <AccordionContent className="max-h-80 overflow-y-auto">
           <div className="mt-4 flex flex-col gap-x-4">
-            {accordionItems.length === 0 ? (
+            {accordionItems === undefined || accordionItems.length === 0 ? (
               <p className="text-lg text-gray-400">
                 No items currently in the {title} section.
               </p>

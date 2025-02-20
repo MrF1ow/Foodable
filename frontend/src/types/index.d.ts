@@ -26,3 +26,19 @@ export interface useQueryProps {
   active?: boolean;
   enabled: boolean;
 }
+
+export interface FilterOptions {
+  searchQuery: string;
+  // -1 is descending, 0 is no sorting, 1 is ascending
+  timeApprox: -1 | 0 | 1;
+  price: -1 | 0 | 1;
+  ingredientAmount: -1 | 0 | 1;
+}
+
+export type Tag = 1 | 2 | 3 | 4 | 5;
+
+export interface FilterTag {
+  time: Tag;
+  price: Tag;
+  ingredient: Tag;
+}

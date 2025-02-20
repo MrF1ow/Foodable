@@ -2,14 +2,18 @@ import React from "react";
 
 import { IoIosSearch } from "react-icons/io";
 import { Input } from "@/components/ui/input";
-import { FilterButton } from "./filter-button";
 
 interface SearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  FilterButton: React.ComponentType;
 }
 
-export const SearchBar = ({ searchQuery, setSearchQuery }: SearchBarProps) => {
+export const SearchBar = ({
+  searchQuery,
+  setSearchQuery,
+  FilterButton,
+}: SearchBarProps) => {
   return (
     <div className="flex items-center w-full max-w-md">
       <div className="relative flex-1">

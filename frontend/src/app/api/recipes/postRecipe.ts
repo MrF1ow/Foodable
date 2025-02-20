@@ -1,6 +1,8 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipeWithoutId } from "@/utils/validation";
+import { validateRecipeWithoutId } from "@/utils/typeValidation/recipes";
+import { isValidObjectId } from "@/utils/validation";
+import { createTagsForRecipe } from "@/utils/filterHelpers";
 import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
@@ -21,12 +23,21 @@ export async function POST(req: Request) {
       timestamp: recipe.timestamp || new Date(),
     };
 
-    if (!validateRecipeWithoutId(recipeToInsert)) {
+    const tags = createTagsForRecipe(
+      recipeToInsert.timeApproximation,
+      recipeToInsert.ingredients,
+      recipeToInsert.priceApproximation
+    );
+
+    recipeToInsert.tags = tags;
+
+    if (!validateRecipeWithoutId(recipeToInsert, isValidObjectId)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
+
     const db = await getDB();
 
     const result = await db.collection("recipes").insertOne(recipeToInsert);

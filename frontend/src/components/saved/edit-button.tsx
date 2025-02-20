@@ -27,31 +27,34 @@ interface EditButtonProps {
 export const EditButton = ({ category }: EditButtonProps) => {
   const [newTitle, setNewTitle] = useState(category);
 
-  const currentSavedListTitles = useSavedItemsStore(
-    (state) => state.currentLists
+  const currentSavedCategories = useSavedItemsStore(
+    (state) => state.sortedSavedItems
   );
 
-  const updateSavedList = useSavedItemsStore(
-    (state) => state.updateCurrentListItem
+  const updateSavedCategory = useSavedItemsStore(
+    (state) => state.updateSavedCategory
+  );
+  const deleteSavedCategory = useSavedItemsStore(
+    (state) => state.removeSavedCategory
   );
 
-  const deleteSavedList = useSavedItemsStore(
-    (state) => state.removeCurrentList
+  const indexOfCategory = getIndexOfItemInArray(
+    category,
+    currentSavedCategories.map((cat) => cat.title)
   );
 
-  const indexOfTitle = getIndexOfItemInArray(category, currentSavedListTitles);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (indexOfTitle === -1) return; // Ensure index exists before updating
+    if (indexOfCategory === -1) return; // Ensure category exists before updating
 
-    updateSavedList(indexOfTitle, newTitle);
+    updateSavedCategory(category, newTitle);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
-    deleteSavedList(category);
+    deleteSavedCategory(category);
   };
 
   return (

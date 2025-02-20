@@ -1,20 +1,18 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import {
-  validateObject,
-  isValidObjectId,
-  validateGroceryList,
-} from "@/utils/validation";
-import { GroceryList } from "@/types/grocery";
+import { validateObject } from "@/utils/validation";
+import { validateGroceryList } from "@/utils/typeValidation/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import { GroceryList } from "@/types/grocery";
 
 export async function PUT(req: Request) {
   try {
     const groceryList: GroceryList = await req.json();
+
     const preValidationResponse = validateObject(
       groceryList,
       validateGroceryList,
@@ -26,24 +24,17 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { id, ...groceryListWithoutId } = groceryList;
-
     const db = await getDB();
+
+    const { id, _id, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: ObjectId.createFromHexString(id || _id) },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
-
-    if (!updatedGroceryList) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     if (!updatedGroceryList) {
       return NextResponse.json(

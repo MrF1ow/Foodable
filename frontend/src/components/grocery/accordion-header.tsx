@@ -1,5 +1,4 @@
 import { GrocerySection } from "@/types/grocery";
-import { Icons } from "../ui/icons";
 
 export const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
   return (

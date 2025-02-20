@@ -1,6 +1,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipe, validateObject } from "@/utils/validation";
+import { validateObject } from "@/utils/validation";
+import { validateRecipe } from "@/utils/typeValidation/recipes";
 import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
@@ -22,6 +23,13 @@ export async function GET(req: Request) {
     const recipe = await db
       .collection("recipes")
       .findOne({ _id: new ObjectId(id) });
+
+    if (!recipe) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
 
     const validationResponse = validateObject(
       recipe,

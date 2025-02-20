@@ -10,4 +10,10 @@ export default defineConfig({
     viewportHeight: 1080,
     viewportWidth: 1920,
   },
+  component: {
+    devServer: {
+      framework: "next",
+      bundler: "webpack",
+    },
+  },
 });

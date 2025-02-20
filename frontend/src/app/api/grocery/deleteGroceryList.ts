@@ -4,7 +4,7 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "@/utils/validation";
+import { isValidObjectId } from "@/utils/typeValidation/general";
 
 export async function DELETE(req: Request) {
   try {
@@ -19,7 +19,7 @@ export async function DELETE(req: Request) {
 
     const deletedGroceryList = await db
       .collection("groceryLists")
-      .findOneAndDelete({ _id: new ObjectId(id) });
+      .findOneAndDelete({ _id: ObjectId.createFromHexString(id) });
 
     if (!deletedGroceryList) {
       return NextResponse.json(

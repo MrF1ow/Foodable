@@ -1,4 +1,5 @@
 import { GET as getGroceryListById } from "./getGroceryListById";
+import { GET as getGroceryLists } from "./getAllGroceryLists";
 import { POST as postGroceryList } from "./postGroceryList";
 import { PUT as updateGroceryList } from "./updateGroceryList";
 import { DELETE as deleteGroceryList } from "./deleteGroceryList";
@@ -6,7 +7,14 @@ import type { NextRequest } from "next/server";
 
 // Handling GET request
 export async function GET(request: NextRequest) {
-  return getGroceryListById(request);
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
+
+  if (id) {
+    return getGroceryListById(request);
+  }
+
+  return getGroceryLists(request);
 }
 
 // Handling POST request

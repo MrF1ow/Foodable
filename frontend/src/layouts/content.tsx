@@ -31,7 +31,7 @@ export const ContentLayout = ({
           <div className="relative w-[67%] h-auto bg-background overflow-auto">
             {mainContent}
           </div>
-          <div className="flex-1">{subContent}</div>
+          <div className="relative flex-1">{subContent}</div>
         </div>
       ) : (
         <div className="h-full overflow-auto">{mainContent}</div>

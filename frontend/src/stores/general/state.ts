@@ -4,22 +4,12 @@ export type GeneralState = {
   currentPage: string;
   isMobile: boolean;
   splitLayout: boolean;
-  recipePageFilters: {
-    price: number;
-    time: number;
-    ingredients: number;
-  };
 };
 
 export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
-  setRecipePageFilters: (filters: {
-    price: number;
-    time: number;
-    ingredients: number;
-  }) => void;
 };
 
 export type GeneralStore = GeneralState & GeneralActions;
@@ -29,11 +19,6 @@ export const initGeneralStore = (): GeneralState => {
     currentPage: "Recipes",
     isMobile: false,
     splitLayout: false,
-    recipePageFilters: {
-      price: 0,
-      time: 0,
-      ingredients: 0,
-    },
   };
 };
 
@@ -41,11 +26,6 @@ export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
   isMobile: false,
   splitLayout: false,
-  recipePageFilters: {
-    price: 0,
-    time: 0,
-    ingredients: 0,
-  },
 };
 
 export const createGeneralStore = (
@@ -70,11 +50,5 @@ export const createGeneralStore = (
         ...state,
         splitLayout: state.isMobile ? false : splitLayout, // Prevent enabling splitLayout if isMobile is true
       })),
-
-    setRecipePageFilters: (filters: {
-      price: number;
-      time: number;
-      ingredients: number;
-    }) => set((state) => ({ ...state, recipePageFilters: filters })),
   }));
 };

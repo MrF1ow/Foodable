@@ -1,7 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateGroceryListWithoutId } from "@/utils/validation";
+import { validateGroceryListWithoutId } from "@/utils/typeValidation/grocery";
+import { isValidObjectId } from "@/utils/validation";
 import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports
@@ -14,11 +15,11 @@ export async function POST(req: Request) {
     const groceryListToInsert: NewGroceryList = {
       ...groceryList,
       title: groceryList.title,
-      items: [],
+      items: groceryList.items || [],
       timestamp: groceryList.timestamp || new Date(),
     };
 
-    if (!validateGroceryListWithoutId(groceryListToInsert)) {
+    if (!validateGroceryListWithoutId(groceryListToInsert, isValidObjectId)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }

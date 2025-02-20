@@ -1,4 +1,4 @@
-import { GroceryList } from "@/types/grocery";
+import { GroceryList, NewGroceryList } from "@/types/grocery";
 import axios from "../axiosInstance";
 
 export const GroceryApi = {
@@ -11,7 +11,7 @@ export const GroceryApi = {
       throw error;
     }
   },
-  createGroceryList: async (groceryList: GroceryList) => {
+  createGroceryList: async (groceryList: NewGroceryList) => {
     try {
       const response = await axios.post("/grocery", groceryList);
       return response.data;
@@ -35,6 +35,15 @@ export const GroceryApi = {
       return response.data;
     } catch (error) {
       console.error("Error deleting grocery list: ", error);
+      throw error;
+    }
+  },
+  fetchAllGroceryLists: async () => {
+    try {
+      const response = await axios.get(`/grocery?metadata=true`);
+      return response.data;
+    } catch (error) {
+      console.error("Error getting grocery lists: ", error);
       throw error;
     }
   },

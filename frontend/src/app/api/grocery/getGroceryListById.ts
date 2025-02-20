@@ -1,7 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject, validateGroceryList } from "@/utils/validation";
+import { validateObject } from "@/utils/validation";
+import { validateGroceryList } from "@/utils/typeValidation/grocery";
 import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
 // Package Imports
@@ -21,7 +22,14 @@ export async function GET(req: Request) {
 
     const groceryList = await db
       .collection("groceryLists")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: ObjectId.createFromHexString(id) });
+
+    if (!groceryList) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
 
     const validationResponse = validateObject(
       groceryList,

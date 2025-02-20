@@ -21,7 +21,7 @@ import { useSavedItemsStore } from "@/stores/saved/store";
 
 export const AddButton = () => {
   const [newListTitle, setNewListTitle] = useState("");
-  const addSavedList = useSavedItemsStore((state) => state.addCurrentList);
+  const addSavedList = useSavedItemsStore((state) => state.addSavedCategory);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

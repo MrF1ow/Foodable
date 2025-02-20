@@ -3,7 +3,7 @@ import { GroceryList } from "@/types/grocery";
 import axios from "../axiosInstance";
 
 export const SavedItemsApi = {
-  saveItem: async (item: Recipe | GroceryList) => {
+  saveItem: async (item: Recipe | GroceryList ) => {
     try {
       const req = {
         itemId: item.id,

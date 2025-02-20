@@ -3,8 +3,8 @@ import { GrocerySectionOptions } from "./grocery";
 
 export type Recipe = NewRecipe &
   (
-    | { id: string; _id?: never } // If `id` exists, `_id` must not be present
-    | { _id: ObjectId; id?: never }
+    | { id: string; _id: never } // If `id` exists, `_id` must not be present
+    | { _id: ObjectId; id: never }
   ); // If `_id` exists, `id` must not be present
 
 export type RecipeIngredient = {
@@ -26,4 +26,5 @@ export type NewRecipe = {
   priceApproximation: number; // The price approximation of the recipe
   timeApproximation: number; // The time approximation of the recipe
   timestamp: Date; // The timestamp of the recipe
+  tags: FilterTags; // The tags of the recipe for filtering purposes
 };

@@ -1,24 +1,46 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipe, validateObject } from "@/utils/validation";
+import { validateObject } from "@/utils/validation";
+import { validateRecipe } from "@/utils/typeValidation/recipes";
 
 import { NextResponse } from "next/server";
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
+
     const db = await getDB();
 
-    const recipes = await db.collection("recipes").find().toArray();
+    const projection = fetchMetadata
+      ? {
+          type: "recipe",
+          _id: 1,
+          title: 1,
+          category: 1,
+          imageId: 1,
+          "tags.time": 1,
+          "tags.price": 1,
+          "tags.ingredient": 1,
+        }
+      : {};
 
-    for (const recipe of recipes) {
-      const validationResponse = validateObject(
-        recipe,
-        validateRecipe,
-        HTTP_RESPONSES.BAD_REQUEST,
-        400
-      );
-      if (validationResponse) {
-        return validationResponse;
+    const recipes = await db
+      .collection("recipes")
+      .find({}, { projection })
+      .toArray();
+
+    if (!fetchMetadata) {
+      for (const recipe of recipes) {
+        const validationResponse = validateObject(
+          recipe,
+          validateRecipe,
+          HTTP_RESPONSES.BAD_REQUEST,
+          400
+        );
+        if (validationResponse) {
+          return validationResponse;
+        }
       }
     }
 

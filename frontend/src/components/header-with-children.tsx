@@ -5,7 +5,9 @@ export const HeaderWithChildren = ({
   title,
   width,
   children,
-}: GeneralHeaderProps & { children: React.ReactNode }) => {
+}: GeneralHeaderProps & {
+  children: React.ReactNode;
+}) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
     <div
