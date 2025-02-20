@@ -61,7 +61,7 @@ describe("Visit Grocery Page", () => {
     cy.clickButton("submit-button");
     cy.contains("Milk").should("be.visible");
 
-    cy.clickCheckbox(itemName);
+    cy.contains(itemName).parent().find("input[type='checkbox']").check();
 
     cy.clickButton("remove-items-button");
     cy.contains("Milk").should("not.exist");
