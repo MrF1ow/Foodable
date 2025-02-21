@@ -31,6 +31,18 @@ services:
       - database-v:/data/db
       - ./database/init.js:/docker-entrypoint-initdb.d/init.js
 
+  ngrok:
+    container_name: ngrok-c
+    image: ngrok/ngrok:latest
+    command:
+      - "http"
+      - "http://host.docker.internal:8000"
+      - "--domain=better-liberal-adder.ngrok-free.app"
+    environment:
+      - NGROK_AUTHTOKEN= ${NGROK_AUTHTOKEN}
+    ports:
+      - 4040:4040
+
 volumes:
   frontend-v-node-modules:
     name: "frontend-v-node-modules"
