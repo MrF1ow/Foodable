@@ -1,7 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import * as Clerk from "@clerk/elements/common";
 import * as SignUp from "@clerk/elements/sign-up";
+import { useUser } from "@clerk/nextjs";
+import { completeOnboarding } from "./_actions";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,6 +23,23 @@ import { Icons } from "@/components/ui/icons";
 import { AuthenticationLayout } from "@/layouts/common/authentication";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const { user } = useUser();
+
+  const handleSignUpComplete = async () => {
+    try {
+      const response = await completeOnboarding();
+      if (response.error) {
+        console.error("Onboarding Error:", response.error);
+      } else {
+        await user?.reload();
+        router.push("/recipes");
+      }
+    } catch (err) {
+      console.error("Unexpected Error:", err);
+    }
+  };
+
   return (
     <AuthenticationLayout>
       <div className="grid w-full grow items-center px-4 sm:justify-center">

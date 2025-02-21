@@ -2,8 +2,13 @@ import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
 import Link from "next/link";
+import { SignOutButton, useUser, Protect } from "@clerk/nextjs";
 
-import { navOptions, navOptionsMobile } from "@/config/nav-options";
+import {
+  userNavOptions,
+  userNavOptionsMobile,
+  guestNavOptions,
+} from "@/config/nav-options";
 
 import {
   Card,
@@ -19,6 +24,8 @@ import { useGeneralStore } from "@/stores/general/store";
 export const Navbar = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const activeItem = useGeneralStore((state) => state.currentPage);
+
+  const { user } = useUser();
 
   if (!isMobile) {
     {
@@ -37,21 +44,34 @@ export const Navbar = () => {
         </CardHeader>
 
         <CardContent className="flex flex-col items-center flex-grow gap-y-6">
-          {navOptions.map(({ name, url, Icon }) => (
-            <NavbarItem
-              key={name}
-              Icon={Icon}
-              text={name}
-              url={url}
-              active={activeItem}
-              isMobile={isMobile}
-            />
-          ))}
+          {user && user.publicMetadata.role === "user"
+            ? userNavOptions.map(({ name, url, Icon }) => (
+                <NavbarItem
+                  key={name}
+                  Icon={Icon}
+                  text={name}
+                  url={url}
+                  active={activeItem}
+                  isMobile={isMobile}
+                />
+              ))
+            : guestNavOptions.map(({ name, url, Icon }) => (
+                <NavbarItem
+                  key={name}
+                  Icon={Icon}
+                  text={name}
+                  url={url}
+                  active={activeItem}
+                  isMobile={isMobile}
+                />
+              ))}
         </CardContent>
 
         <CardFooter className="flex flex-col items-center justify-center gap-y-6">
           <ThemeSwitch />
-          <CiLogout size={25} className="font-bold" />
+          <SignOutButton>
+            <CiLogout size={25} className="font-bold" />
+          </SignOutButton>
         </CardFooter>
       </Card>
     );
@@ -62,16 +82,27 @@ export const Navbar = () => {
     return (
       <Card className="w-full h-full bg-card-background text-foreground flex items-center justify-center rounded-xl">
         <CardContent className="grid grid-cols-5 w-full h-full p-0 gap-0">
-          {navOptionsMobile.map(({ name, url, Icon }) => (
-            <NavbarItem
-              key={name}
-              Icon={Icon}
-              text={name}
-              url={url}
-              active={activeItem}
-              isMobile={isMobile}
-            />
-          ))}
+          {user && user.publicMetadata.role === "user" || user && user.publicMetadata.role === "admin"
+            ? userNavOptionsMobile.map(({ name, url, Icon }) => (
+                <NavbarItem
+                  key={name}
+                  Icon={Icon}
+                  text={name}
+                  url={url}
+                  active={activeItem}
+                  isMobile={isMobile}
+                />
+              ))
+            : guestNavOptions.map(({ name, url, Icon }) => (
+                <NavbarItem
+                  key={name}
+                  Icon={Icon}
+                  text={name}
+                  url={url}
+                  active={activeItem}
+                  isMobile={isMobile}
+                />
+              ))}
         </CardContent>
       </Card>
     );

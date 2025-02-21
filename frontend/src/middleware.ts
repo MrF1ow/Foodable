@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isUserRoute = createRouteMatcher(["/user(.*)"]);
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/"]);
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)", "/(.*)"]);
 
 export default clerkMiddleware(async (auth, request) => {
   const userRole = (await auth()).sessionClaims?.metadata?.role;

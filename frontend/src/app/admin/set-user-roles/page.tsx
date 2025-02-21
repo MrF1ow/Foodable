@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { removeRole, setRole } from "./actions";
+import { removeRole, setRole } from "./_actions";
 
 import { MainLayout } from "@/layouts/admin/main";
 import { ContentLayout } from "@/layouts/admin/content";

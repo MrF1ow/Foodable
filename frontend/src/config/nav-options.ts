@@ -12,7 +12,25 @@ interface NavOption {
   Icon: IconType;
 }
 
-export const navOptions: NavOption[] = [
+export const guestNavOptions: NavOption[] = [
+  {
+    name: "Recipes",
+    url: "/recipe",
+    Icon: GiCook,
+  },
+  {
+    name: "Grocery List",
+    url: "/grocery-list",
+    Icon: MdChecklist,
+  },
+  {
+    name: "Settings",
+    url: "/settings",
+    Icon: IoMdSettings,
+  },
+];
+
+export const userNavOptions: NavOption[] = [
   {
     name: "Recipes",
     url: "/recipe",
@@ -40,7 +58,7 @@ export const navOptions: NavOption[] = [
   },
 ];
 
-export const navOptionsMobile: NavOption[] = [
+export const userNavOptionsMobile: NavOption[] = [
   {
     name: "Saved Items",
     url: "/saved",
