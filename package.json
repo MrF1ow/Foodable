@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@clerk/nextjs": "^4.31.6",
     "mongo": "^0.1.0",
-    "mongodb": "^6.11.0"
+    "mongodb": "^6.11.0",
+    "next": "^15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

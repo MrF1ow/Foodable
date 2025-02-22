@@ -1,11 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import * as Clerk from "@clerk/elements/common";
 import * as SignUp from "@clerk/elements/sign-up";
-import { useUser } from "@clerk/nextjs";
-import { completeOnboarding } from "./_actions";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,136 +17,220 @@ import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
 
 import { AuthenticationLayout } from "@/layouts/common/authentication";
+import { cn } from "@/lib/utils";
 
 export default function SignUpPage() {
-  const router = useRouter();
-  const { user } = useUser();
-
-  const handleSignUpComplete = async () => {
-    try {
-      const response = await completeOnboarding();
-      if (response.error) {
-        console.error("Onboarding Error:", response.error);
-      } else {
-        await user?.reload();
-        router.push("/recipes");
-      }
-    } catch (err) {
-      console.error("Unexpected Error:", err);
-    }
-  };
-
   return (
     <AuthenticationLayout>
-      <div className="grid w-full grow items-center px-4 sm:justify-center">
+      <div className="flex flex-col w-full justify-center items-center px-4 sm:justify-center">
+        <h1 className="text-primary text-4xl font-bold mb-6">Foodable</h1>
         <SignUp.Root>
           <Clerk.Loading>
             {(isGlobalLoading) => (
-              <SignUp.Step name="start">
-                <h1 className="absolute hidden lg:block lg:top-20 left-1/2 transform -translate-x-1/2 text-primary lg:text-4xl font-bold">
-                  Foodable
-                </h1>
-                <Card className="w-full sm:w-96 bg-card-background text-foreground">
-                  <CardHeader className="text-center">
-                    <CardDescription className="mb-2">
-                      Welcome!👋
-                    </CardDescription>
-                    <CardTitle className="text-xl">
-                      Create your account
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid gap-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Clerk.Field name="first_name" className="space-y-2">
-                        <Clerk.Label asChild>
-                          <Label>First Name</Label>
-                        </Clerk.Label>
-                        <Clerk.Input required asChild>
-                          <Input className="bg-background" />
-                        </Clerk.Input>
-                        <Clerk.FieldError className="block text-sm text-destructive" />
-                      </Clerk.Field>
-                      <Clerk.Field name="last_name" className="space-y-2">
-                        <Clerk.Label asChild>
-                          <Label>Last Name</Label>
-                        </Clerk.Label>
-                        <Clerk.Input required asChild>
-                          <Input className="bg-background" />
-                        </Clerk.Input>
-                        <Clerk.FieldError className="block text-sm text-destructive" />
-                      </Clerk.Field>
-                    </div>
-                    <Clerk.Field name="identifier" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>Email</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="email" required asChild>
-                        <Input className="bg-background" />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
-                    <Clerk.Field name="password" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>Password</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="password" required asChild>
-                        <Input className="bg-background" />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
-                  </CardContent>
-                  <CardFooter>
-                    <div className="grid w-full gap-y-4">
-                      <SignUp.Captcha className="empty:hidden" />
-                      <SignUp.Action submit asChild>
-                        <Button disabled={isGlobalLoading}>
-                          <Clerk.Loading>
-                            {(isLoading) => {
-                              return isLoading ? (
+              <>
+                <SignUp.Step name="start">
+                  <Card className="w-full sm:w-96 bg-card-background text-foreground">
+                    <CardHeader className="text-center">
+                      <CardDescription className="mb-2">
+                        Welcome back!👋
+                      </CardDescription>
+                      <CardTitle className="text-xl">
+                        Login to your account
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-y-4">
+                      <Clerk.Connection name="google" asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          type="button"
+                          disabled={isGlobalLoading}
+                        >
+                          <Clerk.Loading scope="provider:google">
+                            {(isLoading) =>
+                              isLoading ? (
                                 <Icons.spinner className="size-4 animate-spin" />
                               ) : (
-                                "Sign Up"
-                              );
-                            }}
+                                <>
+                                  <Icons.google className="mr-2 size-4" />
+                                  Google
+                                </>
+                              )
+                            }
                           </Clerk.Loading>
                         </Button>
-                      </SignUp.Action>
+                      </Clerk.Connection>
                       <p className="flex items-center gap-x-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
                         or
                       </p>
-                      <div className="w-full">
-                        <Clerk.Connection name="google" asChild>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            type="button"
-                            disabled={isGlobalLoading}
-                            className="w-full"
-                          >
-                            <Clerk.Loading scope="provider:google">
-                              {(isLoading) =>
-                                isLoading ? (
+                      <Clerk.Field name="emailAddress" className="space-y-2">
+                        <Clerk.Label asChild>
+                          <Label>Email address</Label>
+                        </Clerk.Label>
+                        <Clerk.Input type="email" required asChild>
+                          <Input />
+                        </Clerk.Input>
+                        <Clerk.FieldError className="block text-sm text-destructive" />
+                      </Clerk.Field>
+                      <Clerk.Field name="password" className="space-y-2">
+                        <Clerk.Label asChild>
+                          <Label>Password</Label>
+                        </Clerk.Label>
+                        <Clerk.Input type="password" required asChild>
+                          <Input />
+                        </Clerk.Input>
+                        <Clerk.FieldError className="block text-sm text-destructive" />
+                      </Clerk.Field>
+                    </CardContent>
+                    <CardFooter>
+                      <div className="grid w-full gap-y-4">
+                        <SignUp.Captcha className="empty:hidden" />
+                        <SignUp.Action submit asChild>
+                          <Button disabled={isGlobalLoading}>
+                            <Clerk.Loading>
+                              {(isLoading) => {
+                                return isLoading ? (
                                   <Icons.spinner className="size-4 animate-spin" />
                                 ) : (
-                                  <>
-                                    <Icons.google className="mr-2 size-4" />
-                                    Google
-                                  </>
-                                )
-                              }
+                                  "Continue"
+                                );
+                              }}
                             </Clerk.Loading>
                           </Button>
-                        </Clerk.Connection>
+                        </SignUp.Action>
+                        <Button variant="link" size="sm" asChild>
+                          <Clerk.Link navigate="sign-in">
+                            Already have an account? Sign in
+                          </Clerk.Link>
+                        </Button>
                       </div>
-                      <Button variant="link" size="sm" asChild>
-                        <Clerk.Link navigate="sign-in">
-                          Already have an account? Sign in
-                        </Clerk.Link>
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </SignUp.Step>
+                    </CardFooter>
+                  </Card>
+                </SignUp.Step>
+
+                <SignUp.Step name="continue">
+                  <Card className="w-full sm:w-96 bg-card-background text-foreground">
+                    <CardHeader>
+                      <CardTitle>Continue registration</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Clerk.Field name="username" className="space-y-2">
+                        <Clerk.Label>
+                          <Label>Username</Label>
+                        </Clerk.Label>
+                        <Clerk.Input type="text" required asChild>
+                          <Input />
+                        </Clerk.Input>
+                        <Clerk.FieldError className="block text-sm text-destructive" />
+                      </Clerk.Field>
+                    </CardContent>
+                    <CardFooter>
+                      <div className="grid w-full gap-y-4">
+                        <SignUp.Action submit asChild>
+                          <Button disabled={isGlobalLoading}>
+                            <Clerk.Loading>
+                              {(isLoading) => {
+                                return isLoading ? (
+                                  <Icons.spinner className="size-4 animate-spin" />
+                                ) : (
+                                  "Continue"
+                                );
+                              }}
+                            </Clerk.Loading>
+                          </Button>
+                        </SignUp.Action>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </SignUp.Step>
+
+                <SignUp.Step name="verifications">
+                  <SignUp.Strategy name="email_code">
+                    <Card className="w-full sm:w-96 bg-card-background text-foreground">
+                      <CardHeader>
+                        <CardTitle>Verify your email</CardTitle>
+                        <CardDescription>
+                          Use the verification link sent to your email address
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="grid gap-y-4">
+                        <div className="grid items-center justify-center gap-y-2">
+                          <Clerk.Field name="code" className="space-y-2">
+                            <Clerk.Label className="sr-only">
+                              Email address
+                            </Clerk.Label>
+                            <div className="flex justify-center text-center">
+                              <Clerk.Input
+                                type="otp"
+                                className="flex justify-center has-[:disabled]:opacity-50"
+                                autoSubmit
+                                render={({ value, status }) => {
+                                  return (
+                                    <div
+                                      data-status={status}
+                                      className={cn(
+                                        "relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
+                                        {
+                                          "z-10 ring-2 ring-ring ring-offset-background":
+                                            status === "cursor" ||
+                                            status === "selected",
+                                        }
+                                      )}
+                                    >
+                                      {value}
+                                      {status === "cursor" && (
+                                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                          <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                }}
+                              />
+                            </div>
+                            <Clerk.FieldError className="block text-center text-sm text-destructive" />
+                          </Clerk.Field>
+                          <SignUp.Action
+                            asChild
+                            resend
+                            className="text-muted-foreground"
+                            fallback={({ resendableAfter }) => (
+                              <Button variant="link" size="sm" disabled>
+                                Didn&apos;t receive a code? Resend (
+                                <span className="tabular-nums">
+                                  {resendableAfter}
+                                </span>
+                                )
+                              </Button>
+                            )}
+                          >
+                            <Button type="button" variant="link" size="sm">
+                              Didn&apos;t receive a code? Resend
+                            </Button>
+                          </SignUp.Action>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <div className="grid w-full gap-y-4">
+                          <SignUp.Action submit asChild>
+                            <Button disabled={isGlobalLoading}>
+                              <Clerk.Loading>
+                                {(isLoading) => {
+                                  return isLoading ? (
+                                    <Icons.spinner className="size-4 animate-spin" />
+                                  ) : (
+                                    "Continue"
+                                  );
+                                }}
+                              </Clerk.Loading>
+                            </Button>
+                          </SignUp.Action>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  </SignUp.Strategy>
+                </SignUp.Step>
+              </>
             )}
           </Clerk.Loading>
         </SignUp.Root>

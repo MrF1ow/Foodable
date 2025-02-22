@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ReactQueryProvider } from "./react-query-provider";
@@ -11,20 +11,6 @@ import { RecipeStoreProvider } from "@/stores/recipe/store";
 import { SavedItemsStoreProvider } from "@/stores/saved/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    // Initialize theme based on localStorage or system preference
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    if (storedTheme === "dark" || (!storedTheme && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
   return (
     <ClerkProvider>
       {/* TanstackProvider handles server-side state */}
@@ -39,6 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
+                    disableTransitionOnChange
                   >
                     {children}
                   </ThemeProvider>

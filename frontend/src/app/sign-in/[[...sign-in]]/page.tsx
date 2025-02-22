@@ -20,14 +20,12 @@ import { AuthenticationLayout } from "@/layouts/common/authentication";
 export default function SignInPage() {
   return (
     <AuthenticationLayout>
-      <div className="grid w-full grow items-center px-4 sm:justify-center">
+      <div className="flex flex-col w-full justify-center items-center px-4 sm:justify-center">
+        <h1 className="text-primary text-4xl font-bold mb-6">Foodable</h1>
         <SignIn.Root>
           <Clerk.Loading>
             {(isGlobalLoading) => (
               <SignIn.Step name="start">
-                <h1 className="absolute hidden lg:block lg:top-28 left-1/2 transform -translate-x-1/2 text-primary lg:text-4xl font-bold">
-                  Foodable
-                </h1>
                 <Card className="w-full sm:w-96 bg-card-background text-foreground">
                   <CardHeader className="text-center">
                     <CardDescription className="mb-2">
