@@ -39,30 +39,6 @@ export default function SignUpPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-y-4">
-                      <Clerk.Connection name="google" asChild>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          type="button"
-                          disabled={isGlobalLoading}
-                        >
-                          <Clerk.Loading scope="provider:google">
-                            {(isLoading) =>
-                              isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                <>
-                                  <Icons.google className="mr-2 size-4" />
-                                  Google
-                                </>
-                              )
-                            }
-                          </Clerk.Loading>
-                        </Button>
-                      </Clerk.Connection>
-                      <p className="flex items-center gap-x-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
-                        or
-                      </p>
                       <Clerk.Field name="emailAddress" className="space-y-2">
                         <Clerk.Label asChild>
                           <Label>Email address</Label>
@@ -98,6 +74,30 @@ export default function SignUpPage() {
                             </Clerk.Loading>
                           </Button>
                         </SignUp.Action>
+                        <p className="flex items-center gap-x-3 text-sm text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
+                          or
+                        </p>
+                        <Clerk.Connection name="google" asChild>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            type="button"
+                            disabled={isGlobalLoading}
+                          >
+                            <Clerk.Loading scope="provider:google">
+                              {(isLoading) =>
+                                isLoading ? (
+                                  <Icons.spinner className="size-4 animate-spin" />
+                                ) : (
+                                  <>
+                                    <Icons.google className="mr-2 size-4" />
+                                    Google
+                                  </>
+                                )
+                              }
+                            </Clerk.Loading>
+                          </Button>
+                        </Clerk.Connection>
                         <Button variant="link" size="sm" asChild>
                           <Clerk.Link navigate="sign-in">
                             Already have an account? Sign in
