@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
 import Link from "next/link";
 
-import { navOptions } from "@/config/nav-options";
+import { adminNavOptions } from "@/config/nav-options";
 
 import {
   Card,
@@ -29,7 +29,7 @@ export const Navbar = () => {
       </CardHeader>
 
       <CardContent className="flex flex-col items-center flex-grow gap-y-6">
-        {navOptions.map(({ name, url, Icon }) => (
+        {adminNavOptions.map(({ name, url, Icon }) => (
           <NavbarItem key={name} Icon={Icon} text={name} url={url} />
         ))}
       </CardContent>

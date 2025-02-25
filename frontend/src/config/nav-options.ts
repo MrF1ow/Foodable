@@ -30,6 +30,34 @@ export const guestNavOptions: NavOption[] = [
   },
 ];
 
+export const adminNavOptions: NavOption[] = [
+  {
+    name: "Recipes",
+    url: "/recipe",
+    Icon: GiCook,
+  },
+  {
+    name: "Grocery List",
+    url: "/grocery-list",
+    Icon: MdChecklist,
+  },
+  {
+    name: "Saved Items",
+    url: "/saved",
+    Icon: IoBookmark,
+  },
+  {
+    name: "Social",
+    url: "/social",
+    Icon: FaUserFriends,
+  },
+  {
+    name: "Settings",
+    url: "/settings",
+    Icon: IoMdSettings,
+  },
+];
+
 export const userNavOptions: NavOption[] = [
   {
     name: "Recipes",
