@@ -1,18 +1,15 @@
 import { Recipe } from "@/types/recipe";
 import { SaveBookmark } from "@/components/common/saved/save-bookmark";
-import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 interface RecipePopupHeaderProps {
   imageUrl: string;
   recipe: Recipe;
-  metadata: RecipeMetaData | SavedRecipeMetaData;
   setOpen?: (arg0: boolean) => void;
 }
 
 export const RecipePopupHeader = ({
   imageUrl,
   recipe,
-  metadata,
   setOpen,
 }: RecipePopupHeaderProps) => {
   return (
@@ -26,7 +23,7 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        <SaveBookmark data={metadata} setOpen={setOpen}/>
+        {/* <SaveBookmark recipe={recipe} setOpen={setOpen} /> */}
       </div>
     </div>
   );

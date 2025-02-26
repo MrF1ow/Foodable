@@ -52,9 +52,14 @@ export const RecipeApi = {
     }
   },
 
-  fetchAllRecipes: async () => {
+  fetchAllRecipes: async (includeMetadata = true) => {
     try {
-      const response = await axios.get("/recipes?metadata=true");
+      const baseUrl =
+        typeof window === "undefined"
+          ? process.env.NEXT_PUBLIC_API_BASE_URL
+          : "";
+      const queryParam = includeMetadata ? "?metadata=true" : "";
+      const response = await axios.get(`${baseUrl}/recipes${queryParam}`);
       return response.data;
     } catch (error) {
       console.error("Error getting recipes:", error);

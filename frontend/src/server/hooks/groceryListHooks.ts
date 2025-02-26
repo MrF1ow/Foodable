@@ -20,6 +20,9 @@ export const useFetchAllGroceryLists = ({ enabled = true }: useQueryProps) => {
     queryFn: GroceryApi.fetchAllGroceryLists,
     retry: 0,
     enabled,
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnReconnect: true, // Refetch on reconnect
+    staleTime: 1000 * 60 * 5, // Data is considered stale after 5 minutes
   });
 
   useDataFetching({

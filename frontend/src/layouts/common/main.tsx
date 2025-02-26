@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -15,6 +17,8 @@ export const MainLayout = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
 
+  const [isClient, setIsClient] = React.useState(false);
+
   const pathName = usePathname();
 
   const checkScreenWidth = () => {
@@ -22,6 +26,7 @@ export const MainLayout = ({
   };
 
   useEffect(() => {
+    setIsClient(true);
     checkScreenWidth(); // Initial check
     window.addEventListener("resize", checkScreenWidth); // Listen to screen resizes
 
@@ -35,6 +40,8 @@ export const MainLayout = ({
     const pageName = pathName || "/home";
     setCurrentPage(pageName);
   }, [pathName, setCurrentPage]);
+
+  if (!isClient) return null;
 
   return (
     <div className="flex h-screen w-screen bg-background overflow-hidden">
@@ -61,9 +68,7 @@ export const MainLayout = ({
           <div className="flex-1 h-full">{children}</div>
         </div>
       ) : (
-        <div className={`w-full h-full bg-background p-6`}>
-          {children}
-        </div>
+        <div className={`w-full h-full bg-background p-6`}>{children}</div>
       )}
     </div>
   );

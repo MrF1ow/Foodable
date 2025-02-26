@@ -1,24 +1,38 @@
-import React from "react";
-import { ReactQueryProvider } from "./react-query-provider";
+"use client";
+
 import { UserStoreProvider } from "@/stores/user/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
 import { RecipeStoreProvider } from "@/stores/recipe/store";
 import { SavedItemsStoreProvider } from "@/stores/saved/store";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ReactQueryProvider } from "@/providers/react-query-provider";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }: { children: React.ReactNode }) {
+  //   const queryClient = getQueryClient();
   return (
+    // <QueryClientProvider client={queryClient}>
     <ReactQueryProvider>
       <GeneralStoreProvider>
         <SavedItemsStoreProvider>
           <RecipeStoreProvider>
             <GroceryStoreProvider>
               {/* UserStoreProvider handles client-side state */}
-              <UserStoreProvider>{children}</UserStoreProvider>
+              <UserStoreProvider>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                </ThemeProvider>
+              </UserStoreProvider>
             </GroceryStoreProvider>
           </RecipeStoreProvider>
         </SavedItemsStoreProvider>
       </GeneralStoreProvider>
     </ReactQueryProvider>
+    // </QueryClientProvider>
   );
 }

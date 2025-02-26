@@ -11,6 +11,7 @@ import { RecipePopupHeader } from "./recipe-popup-header";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { getAdditionalIngredients } from "@/utils/listItems";
+import { useRecipeById } from "@/server/hooks/recipeHooks";
 
 interface RecipePopUpProps {
   toggleDialog: () => void;
@@ -18,16 +19,29 @@ interface RecipePopUpProps {
 }
 
 export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
-  const recipe = useRecipeStore((state) => state.currentRecipe.data);
-  const getMetadata = useRecipeStore((state) => state.getCurrentMetadata);
-  const [recipeMetadata, setRecipeMetadata] = useState(
-    getMetadata(recipe!._id.toString())
-  );
-
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
   const groceryMap = useGroceryStore((state) => state.map);
+  const currentData = useRecipeStore((state) => state.currentRecipe);
+  const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
+
+  if (!currentData) return null;
+
+  const { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe } = useRecipeById(
+    currentData._id.toString(),
+    { enabled: true }
+  );
+
+  useEffect(() => {
+    if (isErrorRecipe) {
+      console.error("Error fetching recipe:", errorRecipe);
+    }
+    if (recipe && recipe._id) {
+      console.log("Recipe fetched successfully:", recipe);
+      setCurrentData(recipe);
+    }
+  }, [isErrorRecipe, recipe]);
 
   useEffect(() => {
     if (recipe) {
@@ -39,36 +53,38 @@ export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
     }
   }, [recipe]);
 
-  if (!recipe) return null;
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
       <CardContent className="p-0 h-full flex flex-col">
-        {/* Recipe Header */}
-        <RecipePopupHeader
-          imageUrl={imageUrl}
-          recipe={recipe}
-          metadata={recipeMetadata}
-        />
+        {/* Loading State: Making it Look Better */}
+        {isLoadingRecipe && <div>Loading...</div>}
 
-        {/* Recipe Content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <RecipeContent recipe={recipe} />
-        </div>
+        {recipe && !isLoadingRecipe && (
+          <>
+            {/* Recipe Header */}
+            <RecipePopupHeader imageUrl={imageUrl} recipe={recipe} />
 
-        {/* Back Button */}
-        <div className="absolute top-0 left-0 text-foreground p-4 z-50">
-          <BiArrowBack onClick={toggleDialog} size={40} />
-        </div>
+            {/* Recipe Content */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <RecipeContent recipe={recipe} />
+            </div>
 
-        {/* Profile Picture */}
-        <div className="absolute top-0 right-0 text-foreground p-4 z-50">
-          <Avatar>
-            <AvatarImage src={pfp.src} alt={"PFP"} width={60} height={60} />
-            <AvatarFallback>
-              <div>Hello</div>
-            </AvatarFallback>
-          </Avatar>
-        </div>
+            {/* Back Button */}
+            <div className="absolute top-0 left-0 text-foreground p-4 z-50">
+              <BiArrowBack onClick={toggleDialog} size={40} />
+            </div>
+
+            {/* Profile Picture */}
+            <div className="absolute top-0 right-0 text-foreground p-4 z-50">
+              <Avatar>
+                <AvatarImage src={pfp.src} alt={"PFP"} width={60} height={60} />
+                <AvatarFallback>
+                  <div>Hello</div>
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

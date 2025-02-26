@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { errorNotification } from "@/app/functions/errorNotif";
+import { errorNotification } from "@/app/functions/notifications";
 import { CustomError } from "@/types/error";
 
 export const useErrorNotification = (
@@ -9,5 +9,5 @@ export const useErrorNotification = (
 ) => {
   useEffect(() => {
     errorNotification(isError, title, error);
-  }, [isError]);
+  }, [isError, title, error]);
 };

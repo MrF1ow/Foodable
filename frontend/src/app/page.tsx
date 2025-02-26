@@ -8,10 +8,12 @@ import logoWithShadow from "../../public/images/logo_current.png";
 import logoNoShadow from "../../public/images/logo_current_no_shadow.png";
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const [logo, setLogo] = useState(logoWithShadow);
 
   useEffect(() => {
+    setIsClient(true);
     if (typeof window !== "undefined") {
       setIsLargeScreen(window.innerWidth > 1024);
 
@@ -37,6 +39,8 @@ export default function Home() {
       };
     }
   }, []);
+
+  if (!isClient) return null;
 
   return (
     <div className="flex w-full h-full items-center justify-between px-8 lg:px-16 font-league text-foreground">

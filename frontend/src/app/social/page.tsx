@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Input } from "@/components/ui/input";

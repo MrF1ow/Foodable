@@ -1,10 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { getQueryClient } from "@/app/get-query-client";
 import { Toast } from "primereact/toast";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
@@ -29,18 +25,7 @@ export function ReactQueryProvider({ children }: React.PropsWithChildren) {
     };
   }, []);
 
-  const queryClient = new QueryClient({
-    queryCache: new QueryCache({
-      onError: (error: any) => {
-        console.error(JSON.stringify(error));
-      },
-    }),
-    mutationCache: new MutationCache({
-      onError: (error: any) => {
-        console.error(JSON.stringify(error));
-      },
-    }),
-  });
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>

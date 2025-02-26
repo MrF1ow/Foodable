@@ -6,31 +6,28 @@ import { ERROR_FETCHING_RECIPES } from "@/lib/constants/messages";
 import { RECIPES } from "@/lib/constants/process";
 import { Recipe } from "@/types/recipe";
 
-export const useAllRecipes = ({ enabled = true }: useQueryProps) => {
+export const useAllRecipes = (metadata: boolean = true) => {
   const errorMessage = ERROR_FETCHING_RECIPES;
 
   const {
     data: recipes,
     isLoading: isLoadingRecipes,
-    refetch: refetchRecipes,
     error: errorRecipes,
     isError: isErrorRecipes,
   } = useQuery({
-    queryKey: [RECIPES, "all"],
-    queryFn: RecipeApi.fetchAllRecipes,
-    retry: 0,
-    enabled,
+    queryKey: [RECIPES],
+    queryFn: () => RecipeApi.fetchAllRecipes(metadata),
   });
 
-  // call useDataFetching hook to handle loading and error states
-  useDataFetching({
-    isLoading: isLoadingRecipes,
-    isError: isErrorRecipes,
-    error: errorRecipes,
-    errorMessage,
-  });
+  // // call useDataFetching hook to handle loading and error states
+  // useDataFetching({
+  //   isLoading: isLoadingRecipes,
+  //   isError: isErrorRecipes,
+  //   error: errorRecipes,
+  //   errorMessage,
+  // });
 
-  return { recipes, isLoadingRecipes, refetchRecipes, errorRecipes };
+  return { recipes, isLoadingRecipes, errorRecipes, isErrorRecipes };
 };
 
 // Custom hook for fetching a recipe by ID
@@ -50,17 +47,16 @@ export const useRecipeById = (
     queryFn: () => RecipeApi.fetchRecipeById(id),
     retry: 0,
     enabled,
-    refetchInterval: 30000,
   });
 
-  useDataFetching({
-    isLoading: isLoadingRecipe,
-    isError: isErrorRecipe,
-    error: errorRecipe,
-    errorMessage,
-  });
+  // useDataFetching({
+  //   isLoading: isLoadingRecipe,
+  //   isError: isErrorRecipe,
+  //   error: errorRecipe,
+  //   errorMessage,
+  // });
 
-  return { recipe, isLoadingRecipe, errorRecipe };
+  return { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe };
 };
 
 // Custom hook for creating a recipe
