@@ -6,37 +6,36 @@ import { useQueryProps } from "@/types";
 import { ERROR_FETCHING_GROCERY_LIST } from "@/lib/constants/messages";
 import { GROCERY_LISTS } from "@/lib/constants/process";
 
-export const useFetchAllGroceryLists = ({ enabled = true }: useQueryProps) => {
+export const useAllGroceryLists = ({
+  metadata = true,
+  enabled = true,
+}: useQueryProps & { metadata: boolean }) => {
   const errorMessage = ERROR_FETCHING_GROCERY_LIST;
 
   const {
     data: groceryLists,
     isLoading: isLoadingGroceryLists,
-    refetch: refetchGroceryLists,
     error: errorGroceryLists,
     isError: isErrorGroceryLists,
   } = useQuery({
     queryKey: [GROCERY_LISTS],
-    queryFn: GroceryApi.fetchAllGroceryLists,
+    queryFn: () => GroceryApi.fetchAllGroceryLists(metadata),
     retry: 0,
     enabled,
-    refetchOnWindowFocus: false, // Don't refetch on window focus
-    refetchOnReconnect: true, // Refetch on reconnect
-    staleTime: 1000 * 60 * 5, // Data is considered stale after 5 minutes
   });
 
-  useDataFetching({
-    isLoading: isLoadingGroceryLists,
-    isError: isErrorGroceryLists,
-    error: errorGroceryLists,
-    errorMessage,
-  });
+  // useDataFetching({
+  //   isLoading: isLoadingGroceryLists,
+  //   isError: isErrorGroceryLists,
+  //   error: errorGroceryLists,
+  //   errorMessage,
+  // });
 
   return {
     groceryLists,
     isLoadingGroceryLists,
-    refetchGroceryLists,
     errorGroceryLists,
+    isErrorGroceryLists,
   };
 };
 

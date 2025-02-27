@@ -9,21 +9,13 @@ import {
   GrocerySectionOptions,
   NewGroceryList,
 } from "@/types/grocery";
-import {
-  GroceryMetaData,
-  SavedGroceryMetaData,
-  UnsavedGroceryMetaData,
-} from "@/types/saved";
+import { GroceryMetaData, UnsavedGroceryMetaData } from "@/types/saved";
 import { convertAmount } from "@/utils/listItems";
 import { GroceryApi } from "@/server/api/groceryListApi";
 
 export type GroceryState = {
-  currentList: {
-    data: GroceryList | NewGroceryList;
-    metadata: GroceryMetaData | SavedGroceryMetaData | null;
-  };
-  currentLists: GroceryMetaData[];
-  fullGroceryLists: Record<string, GroceryList>;
+  currentList: GroceryList | NewGroceryList | null;
+
   currentCategories: GrocerySectionOptions[];
   currentSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
@@ -32,10 +24,7 @@ export type GroceryState = {
 };
 
 export type GroceryActions = {
-  getCurrentMetadata: (
-    id?: string
-  ) => GroceryMetaData | SavedGroceryMetaData | undefined;
-  getCurrentData: (id?: string) => GroceryList | NewGroceryList | null;
+  setCurrentList: (list: GroceryList | NewGroceryList) => void;
 
   setCurrentGroceryListId: (id?: string) => void;
   setCurrentLists: (lists?: GroceryMetaData[]) => void;
@@ -66,19 +55,14 @@ export type GroceryActions = {
 };
 
 export const createGroceryActions = (set: any, get: any): GroceryActions => ({
-  getCurrentMetadata: (
-    id?: string
-  ): GroceryMetaData | SavedGroceryMetaData | undefined => {
-    if (!id) return get().currentList.metadata;
-    return get().currentLists.find(
-      (list: GroceryMetaData) => list._id?.toString() === id
-    );
-  },
+  setCurrentList: (list: GroceryList | NewGroceryList) =>
+    set((state: GroceryState) => {
+      return {
+        ...state,
+        currentList: list,
+      };
+    }),
 
-  getCurrentData: (id?: string): GroceryList | NewGroceryList | null => {
-    if (!id) return get().currentList.data;
-    return get().fullGroceryLists[id] as GroceryList;
-  },
   setItems: (items: GroceryItem[], id?: string) =>
     set((state: GroceryState) => {
       const newMap = new Map<string, GroceryItem>();

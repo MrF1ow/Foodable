@@ -38,9 +38,14 @@ export const GroceryApi = {
       throw error;
     }
   },
-  fetchAllGroceryLists: async () => {
+  fetchAllGroceryLists: async (includeMetadata = true) => {
     try {
-      const response = await axios.get(`/grocery?metadata=true`);
+      const baseUrl =
+        typeof window === "undefined"
+          ? process.env.NEXT_PUBLIC_API_BASE_URL
+          : "";
+      const queryParam = includeMetadata ? "?metadata=true" : "";
+      const response = await axios.get(`${baseUrl}/grocery${queryParam}`);
       return response.data;
     } catch (error) {
       console.error("Error getting grocery lists: ", error);
