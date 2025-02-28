@@ -1,8 +1,8 @@
 "use client";
 
 // Local Imports
-import { MainLayout } from "@/layouts/common/main";
-import { ContentLayout } from "@/layouts/common/content";
+import MainLayout from "@/layouts/common/main";
+import ContentLayout from "@/layouts/common/content";
 import { AddItem } from "@/components/common/grocery/add-item";
 import { FindPrice as FindPrice } from "@/components/common/grocery/find-price";
 import { HelperCard } from "@/components/common/grocery/list-helper";
@@ -100,7 +100,7 @@ export default function GroceryList() {
     );
   };
 
-  const Content = () => {
+  // const Content = () => {
     return (
       <>
         {currentList && <List groceryList={currentList} />}
@@ -119,7 +119,7 @@ export default function GroceryList() {
         )}
       </>
     );
-  };
+  // };
 
   const renderRightSideCard = () => {
     switch (currentCard) {
@@ -134,51 +134,51 @@ export default function GroceryList() {
     }
   };
 
-  const MainPage = () => {
-    return (
-      <MainLayout
-        headerComponent={
-          <GroceryHeaderWithChildren
-            width="25%"
-            children={
-              <div className="flex items-center justify-center">
-                <Button
-                  onClick={handleItemDeletion}
-                  className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                  data-testid="remove-items-button"
-                >
-                  <Icons.delete className="!h-6 !w-6" />
-                </Button>
-                <Button
-                  onClick={() =>
-                    setCurrentForm("findPrice", isMobile, setSplitLayout)
-                  }
-                  className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                  data-testid="find-price-button"
-                >
-                  {"Find Price"}
-                </Button>
-              </div>
-            }
-          />
-        }
-      >
-        <ContentLayout
-          split={splitLayout}
-          mainContent={<Content />}
-          subContent={renderRightSideCard()}
-        />
-      </MainLayout>
-    );
-  };
+  // const MainPage = () => {
+  //   return (
+  //     <MainLayout
+  //       headerComponent={
+  //         <GroceryHeaderWithChildren
+  //           width="25%"
+  //           children={
+  //             <div className="flex items-center justify-center">
+  //               <Button
+  //                 onClick={handleItemDeletion}
+  //                 className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+  //                 data-testid="remove-items-button"
+  //               >
+  //                 <Icons.delete className="!h-6 !w-6" />
+  //               </Button>
+  //               <Button
+  //                 onClick={() =>
+  //                   setCurrentForm("findPrice", isMobile, setSplitLayout)
+  //                 }
+  //                 className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+  //                 data-testid="find-price-button"
+  //               >
+  //                 {"Find Price"}
+  //               </Button>
+  //             </div>
+  //           }
+  //         />
+  //       }
+  //     >
+  //       <ContentLayout
+  //         split={splitLayout}
+  //         mainContent={<Content />}
+  //         subContent={renderRightSideCard()}
+  //       />
+  //     </MainLayout>
+  //   );
+  // };
 
-  return isMobile ? (
-    currentCard !== "" ? (
-      <MainLayout children={renderRightSideCard()} />
-    ) : (
-      <MainPage />
-    )
-  ) : (
-    <MainPage />
-  );
+  // return isMobile ? (
+  //   currentCard !== "" ? (
+  //     <MainLayout children={renderRightSideCard()} />
+  //   ) : (
+  //     <MainPage />
+  //   )
+  // ) : (
+  //   <MainPage />
+  // );
 }

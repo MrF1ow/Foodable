@@ -1,3 +1,5 @@
+'use client';
+
 // Package Imports
 import React from "react";
 

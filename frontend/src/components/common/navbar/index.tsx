@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
@@ -25,8 +27,6 @@ export const Navbar = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const activeItem = useGeneralStore((state) => state.currentPage);
 
-  const { user } = useUser();
-
   if (!isMobile) {
     {
       /* Sidebar */
@@ -44,27 +44,16 @@ export const Navbar = () => {
         </CardHeader>
 
         <CardContent className="flex flex-col items-center flex-grow gap-y-6">
-          {user && user.publicMetadata.role === "user"
-            ? userNavOptions.map(({ name, url, Icon }) => (
-                <NavbarItem
-                  key={name}
-                  Icon={Icon}
-                  text={name}
-                  url={url}
-                  active={activeItem}
-                  isMobile={isMobile}
-                />
-              ))
-            : guestNavOptions.map(({ name, url, Icon }) => (
-                <NavbarItem
-                  key={name}
-                  Icon={Icon}
-                  text={name}
-                  url={url}
-                  active={activeItem}
-                  isMobile={isMobile}
-                />
-              ))}
+          {userNavOptions.map(({ name, url, Icon }) => (
+            <NavbarItem
+              key={name}
+              Icon={Icon}
+              text={name}
+              url={url}
+              active={activeItem}
+              isMobile={isMobile}
+            />
+          ))}
         </CardContent>
 
         <CardFooter className="flex flex-col items-center justify-center gap-y-6">
@@ -82,27 +71,16 @@ export const Navbar = () => {
     return (
       <Card className="w-full h-full bg-card-background text-foreground flex items-center justify-center rounded-xl">
         <CardContent className="grid grid-cols-5 w-full h-full p-0 gap-0">
-          {user && user.publicMetadata.role === "user" || user && user.publicMetadata.role === "admin"
-            ? userNavOptionsMobile.map(({ name, url, Icon }) => (
-                <NavbarItem
-                  key={name}
-                  Icon={Icon}
-                  text={name}
-                  url={url}
-                  active={activeItem}
-                  isMobile={isMobile}
-                />
-              ))
-            : guestNavOptions.map(({ name, url, Icon }) => (
-                <NavbarItem
-                  key={name}
-                  Icon={Icon}
-                  text={name}
-                  url={url}
-                  active={activeItem}
-                  isMobile={isMobile}
-                />
-              ))}
+          {userNavOptionsMobile.map(({ name, url, Icon }) => (
+            <NavbarItem
+              key={name}
+              Icon={Icon}
+              text={name}
+              url={url}
+              active={activeItem}
+              isMobile={isMobile}
+            />
+          ))}
         </CardContent>
       </Card>
     );

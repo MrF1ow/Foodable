@@ -1,3 +1,5 @@
+'use client';
+
 import { GroceryHeader, GroceryHeaderProps } from "./grocery-header";
 import { useGeneralStore } from "@/stores/general/store";
 

@@ -9,9 +9,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  //   const queryClient = getQueryClient();
   return (
-    // <QueryClientProvider client={queryClient}>
     <ReactQueryProvider>
       <GeneralStoreProvider>
         <SavedItemsStoreProvider>
@@ -33,6 +31,5 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         </SavedItemsStoreProvider>
       </GeneralStoreProvider>
     </ReactQueryProvider>
-    // </QueryClientProvider>
   );
 }

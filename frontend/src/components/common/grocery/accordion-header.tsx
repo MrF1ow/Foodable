@@ -1,3 +1,5 @@
+'use client';
+
 import { GrocerySection } from "@/types/grocery";
 
 export const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {

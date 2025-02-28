@@ -100,7 +100,7 @@ export const initState: GroceryState = {
 
 export const defaultInitState: GroceryState = {
   currentList: null,
-  currentCategories: [],
+  currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Frozen"],
   currentSections: [],
   selectedCategory: "Bakery",
   map: new Map(),

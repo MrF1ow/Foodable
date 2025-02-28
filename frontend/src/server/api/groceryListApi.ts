@@ -1,10 +1,10 @@
 import { GroceryList, NewGroceryList } from "@/types/grocery";
-import axios from "../axiosInstance";
+import  axios from "@/server/axiosInstance";
 
 export const GroceryApi = {
   fetchGroceryListById: async (id: string) => {
     try {
-      const response = await axios.get(`/grocery?id=${id}`);
+      const response = await axios.get(`user/grocery?id=${id}`);
       return response.data;
     } catch (error) {
       console.error("Error getting grocery list: ", error);
@@ -13,7 +13,7 @@ export const GroceryApi = {
   },
   createGroceryList: async (groceryList: NewGroceryList) => {
     try {
-      const response = await axios.post("/grocery", groceryList);
+      const response = await axios.post("user/grocery", groceryList);
       return response.data;
     } catch (error) {
       console.error("Error creating grocery list: ", error);
@@ -22,7 +22,7 @@ export const GroceryApi = {
   },
   updateGroceryList: async (groceryList: GroceryList) => {
     try {
-      const response = await axios.put("/grocery", groceryList);
+      const response = await axios.put("user/grocery", groceryList);
       return response.data;
     } catch (error) {
       console.error("Error updating grocery list: ", error);
@@ -31,7 +31,7 @@ export const GroceryApi = {
   },
   deleteGroceryList: async (id: string) => {
     try {
-      const response = await axios.delete("/grocery", { data: { id } });
+      const response = await axios.delete("user/grocery", { data: { id } });
       return response.data;
     } catch (error) {
       console.error("Error deleting grocery list: ", error);
