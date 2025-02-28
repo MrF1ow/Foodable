@@ -17,8 +17,6 @@ export const MainLayout = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
 
-  const [isClient, setIsClient] = React.useState(false);
-
   const pathName = usePathname();
 
   const checkScreenWidth = () => {
@@ -26,12 +24,11 @@ export const MainLayout = ({
   };
 
   useEffect(() => {
-    setIsClient(true);
-    checkScreenWidth(); // Initial check
-    window.addEventListener("resize", checkScreenWidth); // Listen to screen resizes
+    checkScreenWidth();
+    window.addEventListener("resize", checkScreenWidth);
 
     return () => {
-      window.removeEventListener("resize", checkScreenWidth); // Cleanup on unmount
+      window.removeEventListener("resize", checkScreenWidth);
     };
   }, [setIsMobile]);
 
@@ -40,8 +37,6 @@ export const MainLayout = ({
     const pageName = pathName || "/home";
     setCurrentPage(pageName);
   }, [pathName, setCurrentPage]);
-
-  if (!isClient) return null;
 
   return (
     <div className="flex h-screen w-screen bg-background overflow-hidden">

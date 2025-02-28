@@ -10,40 +10,37 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { EditButton } from "@/components/common/grocery/edit-button";
-import { GroceryMetaData } from "@/types/saved";
+import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
+import { GroceryList } from "@/types/grocery";
 
 export interface GroceryHeaderProps {
   width: string;
 }
 
 export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
-  const setCurrentListById = useGroceryStore(
-    (state) => state.setCurrentGroceryListId
-  );
-  const fetchFullGroceryList = useGroceryStore(
-    (state) => state.fetchFullGroceryList
-  );
-  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
-  const currentLists = useGroceryStore((state) => state.currentLists);
   const currentList = useGroceryStore((state) => state.currentList);
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const setList = async (item: GroceryMetaData) => {
+  const { groceryLists = [] } = useAllGroceryLists({
+    metadata: true,
+    enabled: true,
+  });
+
+  const setList = async (item: GroceryList) => {
     setOpenAccordion([]);
-    if (item._id) {
-      setCurrentListById(item._id.toString());
-      await fetchFullGroceryList(item._id.toString());
-    } else if (!item._id) {
-      setCurrentListById();
-    }
+    setCurrentList(item);
   };
 
   if (!currentList) return null;
 
-  console.log("currentLists", currentLists);
+  console.log("groceryLists", groceryLists);
 
-  const filteredLists = currentList.metadata?._id
-    ? currentLists.filter((list) => list._id !== currentList.metadata?._id)
-    : currentLists;
+  const filteredLists = currentList._id
+    ? groceryLists.filter((list: GroceryList) => list._id !== currentList._id)
+    : groceryLists;
+
+  console.log("filteredLists", filteredLists);
 
   return (
     <div
@@ -55,12 +52,12 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
           className="text-foreground text-4xl cursor-pointer outline-none bg-transparent"
           data-testid="grocery-header"
         >
-          {currentList.metadata?.title || "New List"}
+          {currentList.title || "New List"}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {filteredLists.length > 0 ? (
-            filteredLists.map((list, index) => (
-              <DropdownMenuItem key={index} onClick={() => setList(list)}>
+            filteredLists.map((list: GroceryList) => (
+              <DropdownMenuItem key={list._id} onClick={() => setList(list)}>
                 {list.title}
               </DropdownMenuItem>
             ))

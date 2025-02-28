@@ -19,42 +19,47 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { showToast } from "@/providers/react-query-provider";
 
 export const GroceryAccordion = ({
   title,
   Icon,
   color,
 }: GrocerySection & { groceryList: GroceryList | NewGroceryList }) => {
-  const setItems = useGroceryStore((state) => state.setItems);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
-  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
-  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const currentList = useGroceryStore((state) => state.currentList);
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
   const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
   const [accordionItems, setAccordionItems] = useState<
     GroceryItem[] | undefined
   >([]);
 
+  const {
+    updateGroceryList,
+    updatedGroceryList,
+    isUpdatingGroceryList,
+    updateError,
+  } = useUpdateGroceryList();
+
   useEffect(() => {
     if (!currentList) return;
-    setGroceryItems(currentList.data.items as GroceryItem[]);
+    setGroceryItems(currentList.items as GroceryItem[]);
     const items = getGroceryAccordingItems(
       title,
-      currentList?.data.items as GroceryItem[]
+      currentList.items as GroceryItem[]
     );
     setAccordionItems(items);
   }, [currentList]);
-
-  const { updateGroceryList } = useUpdateGroceryList();
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -77,22 +82,60 @@ export const GroceryAccordion = ({
       return item;
     });
 
-    const list = currentList.data as GroceryList | NewGroceryList;
+    const list = currentList;
     console.log("List", list);
 
     if (!list) return;
 
-    if ("_id" in list && list._id) {
-      setItems(updatedItems, list._id);
-      const newList = getCurrentList(list._id.toString()) as GroceryList;
-
-      // update the grocery list with the new items
+    if (list._id) {
+      const newList = { ...list, items: updatedItems };
       updateGroceryList(newList as GroceryList);
-
-      // after updating the grocery list, fetch the updated list
-      await fetchAndStore(newList._id.toString());
+      if (isUpdatingGroceryList) {
+        showToast(
+          TOAST_SEVERITY.INFO,
+          "Updating List",
+          "Updating grocery list...",
+          3000
+        );
+      }
+      if (updateError) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          updateError.message || "Error updating list",
+          3000
+        );
+      }
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Updated",
+        "Grocery list updated successfully",
+        3000
+      );
+      if (updatedGroceryList) {
+        setCurrentList(updatedGroceryList);
+      }
     } else {
-      setItems(updatedItems);
+      const newList = { ...list, items: updatedItems };
+      setCurrentList(newList);
+    }
+
+    // find the updated item and show a toast
+    const updatedItem = updatedItems.find(
+      (item) =>
+        item.category === section &&
+        item.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (updatedItem) {
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "Item Updated",
+        `${updatedItem.quantity} ${updatedItem.unit} of ${updatedItem.name} ${
+          checked ? "added" : "removed"
+        }`,
+        3000
+      );
     }
   };
 

@@ -27,6 +27,10 @@ export default function GroceryList() {
 
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const currentList = useGroceryStore((state) => state.currentList);
+
+  // use tanstack to fetch all grocery lists in metadata mode
+  // this will only fetch the metadata of the grocery lists
   const {
     groceryLists,
     isErrorGroceryLists,
@@ -37,6 +41,8 @@ export default function GroceryList() {
     enabled: true,
   });
 
+  // onsuccess and onerror handlers for the grocery lists query
+  // do not exist anymore in tanstack
   useEffect(() => {
     if (isErrorGroceryLists) {
       showToast(
@@ -51,7 +57,9 @@ export default function GroceryList() {
       showToast(TOAST_SEVERITY.INFO, "Loading", "Fetching Grocery Lists", 3000);
     }
 
+    // if there are no grocery lists, create a new list
     if (groceryLists && groceryLists.length === 0) {
+      // do not
       const list = {
         _id: null,
         creatorId: null,
@@ -60,6 +68,7 @@ export default function GroceryList() {
       } as NewGroceryList;
       setCurrentList(list);
     } else if (groceryLists && groceryLists.length > 0) {
+      // if there are grocery lists, set the first list as the current list
       setCurrentList(groceryLists[0]);
     }
   }, [groceryLists, isErrorGroceryLists, isLoadingGroceryLists]);
@@ -69,13 +78,14 @@ export default function GroceryList() {
   const { updateGroceryList } = useUpdateGroceryList();
 
   const handleItemDeletion = () => {
-    const groceryList = currentList.data;
+    const groceryList = currentList;
     const groceryItems = groceryList?.items;
     if (!groceryItems) return;
 
     const uncheckedItems = groceryItems.filter((item) => !item.checked);
     groceryList.items = uncheckedItems;
-    setItems(uncheckedItems);
+    const newList = { ...groceryList, items: uncheckedItems } as GroceryList;
+    setCurrentList(newList);
 
     // only make the API call if the list is saved and has an id in the database
     if ("_id" in groceryList && groceryList._id) {
@@ -93,7 +103,7 @@ export default function GroceryList() {
   const Content = () => {
     return (
       <>
-        {currentList.data && <List groceryList={currentList.data} />}
+        {currentList && <List groceryList={currentList} />}
         {!splitLayout && (
           <Button
             className={`btn-primary rounded-full w-12 h-12 hover:bg-primary flex items-center justify-center fixed bottom-4 right-4 z-50 ${

@@ -103,6 +103,7 @@ export const useUpdateGroceryList = () => {
   });
 
   return {
+    updatedGroceryList: mutation.data,
     updateGroceryList: mutation.mutate,
     isUpdatingGroceryList: mutation.isPending,
     updateError: mutation.error,
@@ -115,6 +116,7 @@ export const useDeleteGroceryList = () => {
   });
 
   return {
+    deleteGroceryListData: mutation.data,
     deleteGroceryList: mutation.mutate,
     isDeletingGroceryList: mutation.isPending,
     deleteError: mutation.error,

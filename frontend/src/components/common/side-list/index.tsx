@@ -24,16 +24,16 @@ export const SideList = () => {
           <CardTitle className="text-2xl">Your List</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 bg-background overflow-y-auto">
-          <ScrollArea>
+          {/* <ScrollArea>
             {currentForm === "addItem" ? (
               <AddItem />
             ) : (
               <List
                 className="mt-4 bg-card-background"
-                groceryList={currentList.data}
+                groceryList={currentList}
               />
             )}
-          </ScrollArea>
+          </ScrollArea> */}
         </CardContent>
         <CardFooter className="flex justify-end p-4">
           <AddButton />

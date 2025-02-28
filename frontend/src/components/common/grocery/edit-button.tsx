@@ -20,75 +20,105 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGroceryStore } from "@/stores/grocery/store";
 import {
+  useAllGroceryLists,
   useCreateGroceryList,
   useDeleteGroceryList,
   useUpdateGroceryList,
 } from "@/server/hooks/groceryListHooks";
-import { GroceryMetaData, SavedGroceryMetaData } from "@/types/saved";
 import { GroceryList } from "@/types/grocery";
 import { GROCERY_LISTS } from "@/lib/constants/process";
+import { showToast } from "@/providers/react-query-provider";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { getQueryClient } from "@/app/get-query-client";
 
 export const EditButton = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
 
-  const getCurrentMetadata = useGroceryStore(
-    (state) => state.getCurrentMetadata
-  );
-  const [metadata, setMetadata] = useState<
-    GroceryMetaData | SavedGroceryMetaData
-  >(getCurrentMetadata() as GroceryMetaData | SavedGroceryMetaData);
+  const currentList = useGroceryStore((state) => state.currentList);
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
-  const [newTitle, setNewTitle] = useState(metadata.title);
+  const [newTitle, setNewTitle] = useState(currentList?.title || "");
   const [isOpen, setIsOpen] = useState(false);
 
-  const { updateGroceryList } = useUpdateGroceryList();
-  const { createGroceryList } = useCreateGroceryList();
+  const {
+    updateGroceryList,
+    updatedGroceryList,
+    isUpdatingGroceryList,
+    updateError,
+  } = useUpdateGroceryList();
+  const { createGroceryList, isCreatingGroceryList, createError, createData } =
+    useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
-
-  const updateCurrentListItem = useGroceryStore(
-    (state) => state.updateCurrentListItem
-  );
-
-  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
-  const addList = useGroceryStore((state) => state.addList);
-  const removeList = useGroceryStore((state) => state.removeList);
-  const currentList = useGroceryStore((state) => state.currentList);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const currentGroceryList = currentList.data;
+    const currentGroceryList = currentList;
 
     if (!currentGroceryList) return;
 
-    if (metadata.title !== newTitle && metadata._id) {
-      console.log("Updating List");
-      updateCurrentListItem(metadata._id.toString(), newTitle);
-      const newList = {
-        ...currentGroceryList,
-        title: newTitle,
-      };
-      console.log("New", newList);
+    const newList = {
+      ...currentGroceryList,
+      title: newTitle,
+    };
+
+    if (currentList.title !== newTitle && currentList._id) {
       updateGroceryList(newList as GroceryList);
+      if (isUpdatingGroceryList) {
+        showToast(
+          TOAST_SEVERITY.INFO,
+          "Updating List",
+          "Updating grocery list...",
+          3000
+        );
+      }
+      if (updateError) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          updateError.message || "Error updating list",
+          3000
+        );
+      }
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Updated",
+        "Grocery list updated successfully",
+        3000
+      );
+      if (updatedGroceryList) {
+        setCurrentList(updatedGroceryList);
+      }
     } else {
-      console.log("Creating List");
-      try {
-        const currentItems = currentGroceryList?.items;
-        const response = await createGroceryList({
-          creatorId: "000000000000000000000000", // Will need to change this
-          title: newTitle,
-          items: currentItems || [],
-        });
-        await fetchAndStore(response._id.toString());
-        const listMetadata = {
-          type: "grocery",
-          _id: response._id,
-          title: newTitle,
-        } as GroceryMetaData;
-        setMetadata(listMetadata);
-        addList(listMetadata);
-      } catch (error) {
-        console.error("Error creating grocery list:", error);
+      const newCreateList = {
+        ...newList,
+        creatorId: "000000000000000000000000", // Placeholder for now
+      };
+      createGroceryList(newCreateList as GroceryList);
+      if (isCreatingGroceryList) {
+        showToast(
+          TOAST_SEVERITY.INFO,
+          "Creating List",
+          "Creating grocery list...",
+          3000
+        );
+      }
+      if (createError) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          createError.message || "Error creating list",
+          3000
+        );
+      }
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Created",
+        "Grocery list created successfully",
+        3000
+      );
+      if (createData) {
+        setCurrentList(newCreateList);
       }
     }
 
@@ -97,22 +127,43 @@ export const EditButton = () => {
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
-    if (!metadata._id) return;
+    if (!currentList) return;
 
-    deleteGroceryList(metadata._id.toString(), {
+    deleteGroceryList(currentList._id.toString(), {
       onSuccess: () => {
-        if (metadata._id) {
-          removeList(metadata._id.toString());
-          setIsOpen(false);
-          console.log("Successfully deleted grocery list");
-          queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
-        }
-      },
-      onSettled: () => {
+        showToast(
+          TOAST_SEVERITY.INFO,
+          "Deleting List",
+          "Deleting grocery list...",
+          3000
+        );
+
+        // After deletion, invalidate and refetch the grocery lists
         queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
+
+        showToast(
+          TOAST_SEVERITY.SUCCESS,
+          "List Deleted",
+          "Grocery list deleted successfully",
+          3000
+        );
+
+        const newList = {
+          _id: null,
+          creatorId: null,
+          title: "New List",
+          items: [],
+        };
+        setCurrentList(newList); // Clear the current list
+        setIsOpen(false); // Close the dialog
       },
       onError: (error) => {
-        console.error("Failed to delete grocery list:", error);
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          error.message || "Error deleting list",
+          3000
+        );
       },
     });
   };
@@ -155,7 +206,7 @@ export const EditButton = () => {
           {/* For some reason the DialogFooter is not taking up the full width */}
           <DialogFooter className="w-full flex items-center justify-between mt-4">
             {/* Left side: Delete button */}
-            {metadata._id ? (
+            {currentList?._id ? (
               <DialogClose asChild>
                 <Button
                   type="button"

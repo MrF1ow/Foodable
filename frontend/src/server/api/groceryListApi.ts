@@ -45,7 +45,7 @@ export const GroceryApi = {
           ? process.env.NEXT_PUBLIC_API_BASE_URL
           : "";
       const queryParam = includeMetadata ? "?metadata=true" : "";
-      const response = await axios.get(`${baseUrl}/grocery${queryParam}`);
+      const response = await axios.get(`${baseUrl}/user/grocery${queryParam}`);
       return response.data;
     } catch (error) {
       console.error("Error getting grocery lists: ", error);

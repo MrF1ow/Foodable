@@ -1,10 +1,8 @@
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
 import {
   FormField,
   FormItem,
   FormControl,
-  FormDescription,
   FormLabel,
   FormMessage,
   Form,
@@ -33,18 +31,24 @@ import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
 export const AddItem = ({ className }: { className?: string }) => {
-  const categories = grocerySections;
+  const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const getCurrentList = useGroceryStore((state) => state.getCurrentData);
-  const fetchAndStore = useGroceryStore((state) => state.fetchFullGroceryList);
-  const { addItem } = useGroceryStore((state) => state);
+  const categories = grocerySections;
+
+  const currentList = useGroceryStore((state) => state.currentList);
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const isMobile = useGeneralStore((state) => state.isMobile);
-  const { updateGroceryList } = useUpdateGroceryList();
+  const {
+    updateGroceryList,
+    updatedGroceryList,
+    isUpdatingGroceryList,
+    updateError,
+  } = useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -63,17 +67,41 @@ export const AddItem = ({ className }: { className?: string }) => {
       checked: false,
     };
 
-    const list = getCurrentList();
+    const list = currentList as GroceryList;
 
     if (!list) return;
 
-    if ("_id" in list && list._id) {
-      addItem(newItem, list._id);
-      const newList = getCurrentList() as GroceryList;
+    const newList = { ...list, items: [...list.items, newItem] };
+
+    if (list._id) {
       updateGroceryList(newList as GroceryList);
-      await fetchAndStore(newList._id.toString());
+      if (isUpdatingGroceryList) {
+        showToast(
+          TOAST_SEVERITY.INFO,
+          "Updating List",
+          "Updating grocery list...",
+          3000
+        );
+      }
+      if (updateError) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          updateError.message || "Error updating list",
+          3000
+        );
+      }
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Updated",
+        "Grocery list updated successfully",
+        3000
+      );
+      if (updatedGroceryList) {
+        setCurrentList(updatedGroceryList);
+      }
     } else {
-      addItem(newItem);
+      setCurrentList(newList);
     }
 
     showToast(
