@@ -15,17 +15,20 @@ type ContentLayoutProps =
     };
 
 export function ClientSideContentLayout({
+  split,
   mainContent,
   subContent,
 }: ContentLayoutProps) {
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const split = useGeneralStore((state) => state.splitLayout);
+  const isSplit = useGeneralStore((state) => state.splitLayout);
+
+  const splitPage = split ? split : isSplit;
 
   return (
     <div className="w-full h-full bg-background overflow-hidden">
       {isMobile ? (
         <div className="h-full overflow-auto pb-[8%]">{mainContent}</div>
-      ) : split ? (
+      ) : splitPage ? (
         <div className="flex flex-row h-full bg-background">
           <div className="relative w-[67%] h-auto bg-background overflow-auto">
             {mainContent}

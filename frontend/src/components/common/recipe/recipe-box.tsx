@@ -18,10 +18,16 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipe);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
 
+  console.log("data", data);
+
   const { data: response, isLoading, error } = useFetchImageById(data.imageId);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (error) {
-    console.error("Error fetching image:", error);
+    return <div>Error loading image</div>;
   }
 
   const handleRecipeClick = async () => {
@@ -37,12 +43,14 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
         className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
         onClick={handleRecipeClick}
       >
-        {isLoading ? (
+        {isLoading && !response && (
           <div className="flex items-center justify-center w-full h-full">
             {/* Add a loading indicator */}
             <span className="text-gray-500">Loading...</span>
           </div>
-        ) : (
+        )}
+
+        {response && response.base64Image && (
           <Image
             src={response.base64Image}
             alt={data.title}

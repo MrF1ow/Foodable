@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Accordion,
@@ -11,7 +11,6 @@ import {
   GrocerySection,
   GrocerySectionOptions,
   GroceryList,
-  NewGroceryList,
   GroceryItem,
 } from "@/types/grocery";
 import { AccordionHeader } from "./accordion-header";
@@ -24,11 +23,8 @@ import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
 
-export const GroceryAccordion = ({
-  title,
-  Icon,
-  color,
-}: GrocerySection & { groceryList: GroceryList | NewGroceryList }) => {
+export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
+  const { updateGroceryList } = useUpdateGroceryList();
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
 
@@ -37,25 +33,18 @@ export const GroceryAccordion = ({
   );
   const openAccordion = useGroceryStore((state) => state.currentSections);
   const currentList = useGroceryStore((state) => state.currentList);
+
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const [groceryItems, setGroceryItems] = useState<GroceryItem[]>([]);
   const [accordionItems, setAccordionItems] = useState<
     GroceryItem[] | undefined
   >([]);
 
-  const {
-    updateGroceryList,
-    updatedGroceryList,
-    isUpdatingGroceryList,
-    updateError,
-  } = useUpdateGroceryList();
-
   useEffect(() => {
     if (!currentList) return;
-    setGroceryItems(currentList.items as GroceryItem[]);
+
     const items = getGroceryAccordingItems(
       title,
       currentList.items as GroceryItem[]
@@ -74,7 +63,7 @@ export const GroceryAccordion = ({
     name: string,
     checked: boolean
   ) => {
-    const updatedItems = groceryItems.map((item) => {
+    const updatedItems = currentList?.items.map((item) => {
       if (
         item.category === section &&
         item.name.toLowerCase() === name.toLowerCase()
@@ -84,46 +73,18 @@ export const GroceryAccordion = ({
       return item;
     });
 
-    const list = currentList;
-    console.log("List", list);
+    if (!currentList) return;
 
-    if (!list) return;
+    const newList = { ...currentList, items: updatedItems };
 
-    if (list._id) {
-      const newList = { ...list, items: updatedItems };
+    if (currentList._id) {
       updateGroceryList(newList as GroceryList);
-      if (isUpdatingGroceryList) {
-        showToast(
-          TOAST_SEVERITY.INFO,
-          "Updating List",
-          "Updating grocery list...",
-          3000
-        );
-      }
-      if (updateError) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "Error",
-          updateError.message || "Error updating list",
-          3000
-        );
-      }
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Updated",
-        "Grocery list updated successfully",
-        3000
-      );
-      if (updatedGroceryList) {
-        setCurrentList(updatedGroceryList);
-      }
-    } else {
-      const newList = { ...list, items: updatedItems };
-      setCurrentList(newList);
     }
 
+    setCurrentList(newList as GroceryList);
+
     // find the updated item and show a toast
-    const updatedItem = updatedItems.find(
+    const updatedItem = currentList.items.find(
       (item) =>
         item.category === section &&
         item.name.toLowerCase() === name.toLowerCase()

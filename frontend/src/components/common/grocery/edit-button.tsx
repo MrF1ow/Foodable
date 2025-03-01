@@ -86,9 +86,7 @@ export const EditButton = () => {
         "Grocery list updated successfully",
         3000
       );
-      if (updatedGroceryList) {
-        setCurrentList(updatedGroceryList);
-      }
+      setCurrentList(newList);
     } else {
       const newCreateList = {
         ...newList,
@@ -117,9 +115,8 @@ export const EditButton = () => {
         "Grocery list created successfully",
         3000
       );
-      if (createData) {
-        setCurrentList(newCreateList);
-      }
+
+      setCurrentList(newCreateList);
     }
 
     setIsOpen(false);

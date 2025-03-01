@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import axios from "../axiosInstance";
+import axios from "../fetchInstance";
 
 export const UserApi = {
   fetchUserById: async (id: string) => {

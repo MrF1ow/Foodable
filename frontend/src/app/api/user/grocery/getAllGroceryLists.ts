@@ -12,6 +12,8 @@ export async function GET(req: Request) {
   try {
     const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
 
+    console.log("fetchMetadata: ", fetchMetadata);
+
     const db = await getDB();
 
     const projection = fetchMetadata

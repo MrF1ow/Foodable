@@ -22,7 +22,6 @@ export default function GroceryListHeader() {
   const currentList = useGroceryStore((state) => state.currentList);
 
   const { updateGroceryList } = useUpdateGroceryList();
-  
 
   const handleItemDeletion = () => {
     const groceryList = currentList;

@@ -4,18 +4,16 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GroceryAccordion } from "@/components/common/grocery/grocery-accordion";
 import { useGeneralStore } from "@/stores/general/store";
+import { useGroceryStore } from "@/stores/grocery/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
-import { GroceryList, NewGroceryList } from "@/types/grocery";
 
-export const List = ({
-  className,
-  groceryList,
-}: {
-  className?: string;
-  groceryList: GroceryList | NewGroceryList;
-}) => {
+export const List = ({ className }: { className?: string }) => {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
+
+  const currentList = useGroceryStore((state) => state.currentList);
+
+  if (!currentList) return null;
 
   const currentCategories = getCurrentGrocerySections();
 
@@ -44,32 +42,20 @@ export const List = ({
         >
           <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
             {column1.map((item) => (
-              <GroceryAccordion
-                key={item.title}
-                {...item}
-                groceryList={groceryList}
-              />
+              <GroceryAccordion key={item.title} {...item} />
             ))}
           </div>
           {column2 && (
             <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
               {column2.map((item) => (
-                <GroceryAccordion
-                  key={item.title}
-                  {...item}
-                  groceryList={groceryList}
-                />
+                <GroceryAccordion key={item.title} {...item} />
               ))}
             </div>
           )}
           {column3 && (
             <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
               {column3.map((item) => (
-                <GroceryAccordion
-                  key={item.title}
-                  {...item}
-                  groceryList={groceryList}
-                />
+                <GroceryAccordion key={item.title} {...item} />
               ))}
             </div>
           )}

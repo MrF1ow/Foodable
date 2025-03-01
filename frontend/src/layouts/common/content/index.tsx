@@ -1,22 +1,20 @@
 import { ReactNode } from "react";
 import { ClientSideContentLayout } from "./client-side-content";
 
-type ContentLayoutProps =
-  | {
-      mainContent: ReactNode;
-      subContent: ReactNode;
-    }
-  | {
-      mainContent: ReactNode;
-      subContent?: ReactNode;
-    };
+interface ContentLayoutProps {
+  split?: boolean;
+  mainContent: ReactNode;
+  subContent?: ReactNode;
+}
 
 export default function ContentLayout({
+  split = false,
   mainContent,
   subContent,
 }: ContentLayoutProps) {
   return (
     <ClientSideContentLayout
+      split={split}
       mainContent={mainContent}
       subContent={subContent}
     />

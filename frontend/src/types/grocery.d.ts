@@ -33,7 +33,7 @@ export type GroceryList = NewGroceryList & { _id: ObjectId };
 
 export type NewGroceryList = {
   _id: null;
-  creatorId: ObjectId | null; // The user ID of the creator
+  creatorId: ObjectId; // The user ID of the creator
   title: string; // The title of the grocery list
   items: GroceryItem[]; // The items of the grocery list
   timestamp?: Date; // The timestamp of the grocery list

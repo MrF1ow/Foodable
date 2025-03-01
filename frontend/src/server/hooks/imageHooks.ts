@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { ImageApi } from "../api/imageApi";
+import { ImageApi } from "@/server/api/imageApi";
+import { IMAGES } from "@/lib/constants/process";
 
 export const useUploadImage = () => {
   return useMutation({ mutationFn: ImageApi.uploadImage });
@@ -7,7 +8,7 @@ export const useUploadImage = () => {
 
 export const useFetchImageById = (imageId: string) => {
   return useQuery({
-    queryKey: ["image", imageId],
+    queryKey: [IMAGES, imageId],
     queryFn: () => ImageApi.fetchImageById(imageId),
   });
 };

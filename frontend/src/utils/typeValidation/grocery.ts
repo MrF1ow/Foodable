@@ -16,7 +16,6 @@ export function validateGroceryItem(item: any): item is GroceryItem {
   );
 }
 
-
 export const validateGroceryListWithoutId = (
   groceryList: any,
   validateIdFn: (id: any) => boolean
@@ -39,10 +38,7 @@ export const validateGroceryList = (
 ): groceryList is GroceryList => {
   if (!groceryList) return false;
 
-  // Ensure either `id` (string) or `_id` (ObjectId) is present, but not both
-  if (groceryList.id && typeof groceryList.id !== "string") return false;
   if (groceryList._id && !validateIdFn(groceryList._id)) return false;
-  if (groceryList.id && groceryList._id) return false; // Ensures mutual exclusivity
 
   const groceryListCopy = {
     ...groceryList,

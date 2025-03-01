@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     const groceryList: NewGroceryList = await req.json();
 
-    const groceryListToInsert: NewGroceryList = {
+    const { _id, ...groceryListToInsert } = {
       ...groceryList,
       title: groceryList.title,
       items: groceryList.items || [],

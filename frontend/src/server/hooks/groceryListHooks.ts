@@ -7,7 +7,7 @@ import { ERROR_FETCHING_GROCERY_LIST } from "@/lib/constants/messages";
 import { GROCERY_LISTS } from "@/lib/constants/process";
 
 export const useAllGroceryLists = ({
-  metadata = true,
+  metadata,
   enabled = true,
 }: useQueryProps & { metadata: boolean }) => {
   const errorMessage = ERROR_FETCHING_GROCERY_LIST;
@@ -20,7 +20,7 @@ export const useAllGroceryLists = ({
   } = useQuery({
     queryKey: [GROCERY_LISTS],
     queryFn: () => GroceryApi.fetchAllGroceryLists(metadata),
-    retry: 0,
+    retry: 2,
     enabled,
   });
 

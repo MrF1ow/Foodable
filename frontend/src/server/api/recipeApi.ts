@@ -1,11 +1,14 @@
 import { Recipe } from "@/types/recipe";
-import axios from "../axiosInstance";
+import fetchWithAuth from "../fetchInstance";
 
 export const RecipeApi = {
   createRecipe: async (recipe: Recipe) => {
     try {
-      const response = await axios.post("/recipes", recipe);
-      return response.data;
+      const response = await fetchWithAuth("/user/recipes", {
+        method: "POST",
+        body: JSON.stringify(recipe),
+      });
+      return response;
     } catch (error) {
       console.error("Error creating recipe:", error);
       throw error;
@@ -14,8 +17,8 @@ export const RecipeApi = {
 
   fetchRecipeById: async (id: string) => {
     try {
-      const response = await axios.get(`/recipes?id=${id}`);
-      return response.data;
+      const response = await fetchWithAuth(`/recipes?id=${id}`);
+      return response;
     } catch (error) {
       console.error("Error getting recipe:", error);
       throw error;
@@ -24,8 +27,11 @@ export const RecipeApi = {
 
   updateRecipe: async (recipe: Recipe) => {
     try {
-      const response = await axios.put("/recipes", recipe);
-      return response.data;
+      const response = await fetchWithAuth("/user/recipes", {
+        method: "PUT",
+        body: JSON.stringify(recipe),
+      });
+      return response;
     } catch (error) {
       console.error("Error updating recipe:", error);
       throw error;
@@ -34,8 +40,11 @@ export const RecipeApi = {
 
   deleteRecipe: async (id: string) => {
     try {
-      const response = await axios.delete("/recipes", { data: { id } });
-      return response.data;
+      const response = await fetchWithAuth("/user/recipes", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+      return response;
     } catch (error) {
       console.error("Error deleting recipe:", error);
       throw error;
@@ -44,8 +53,8 @@ export const RecipeApi = {
 
   fetchRecipesByCreatorId: async (creatorId: string) => {
     try {
-      const response = await axios.get(`/recipes?creatorId=${creatorId}`);
-      return response.data;
+      const response = await fetchWithAuth(`/recipes?creatorId=${creatorId}`);
+      return response;
     } catch (error) {
       console.error("Error getting recipe:", error);
       throw error;
@@ -54,13 +63,10 @@ export const RecipeApi = {
 
   fetchAllRecipes: async (includeMetadata = true) => {
     try {
-      const baseUrl =
-        typeof window === "undefined"
-          ? process.env.NEXT_PUBLIC_API_BASE_URL
-          : "";
       const queryParam = includeMetadata ? "?metadata=true" : "";
-      const response = await axios.get(`${baseUrl}/recipes${queryParam}`);
-      return response.data;
+      const url = `/recipes${queryParam}`;
+      const response = await fetchWithAuth(url);
+      return response;
     } catch (error) {
       console.error("Error getting recipes:", error);
       throw error;
@@ -69,8 +75,8 @@ export const RecipeApi = {
 
   fetchRecipesByTitle: async (title: string) => {
     try {
-      const response = await axios.get(`/recipes?title=${title}`);
-      return response.data;
+      const response = await fetchWithAuth(`/recipes?title=${title}`);
+      return response;
     } catch (error) {
       console.error("Error getting recipe:", error);
       throw error;

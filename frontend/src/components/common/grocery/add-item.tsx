@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { cn } from "@/lib/utils";
 import {
@@ -47,7 +47,6 @@ export const AddItem = ({ className }: { className?: string }) => {
   );
   const {
     updateGroceryList,
-    updatedGroceryList,
     isUpdatingGroceryList,
     updateError,
   } = useUpdateGroceryList();
@@ -69,13 +68,16 @@ export const AddItem = ({ className }: { className?: string }) => {
       checked: false,
     };
 
-    const list = currentList as GroceryList;
+    if (!currentList) return;
 
-    if (!list) return;
+    const newList = {
+      ...currentList,
+      items: [...currentList.items, newItem],
+    };
 
-    const newList = { ...list, items: [...list.items, newItem] };
+    console.log("newList", newList);
 
-    if (list._id) {
+    if (currentList._id) {
       updateGroceryList(newList as GroceryList);
       if (isUpdatingGroceryList) {
         showToast(
@@ -93,18 +95,8 @@ export const AddItem = ({ className }: { className?: string }) => {
           3000
         );
       }
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Updated",
-        "Grocery list updated successfully",
-        3000
-      );
-      if (updatedGroceryList) {
-        setCurrentList(updatedGroceryList);
-      }
-    } else {
-      setCurrentList(newList);
     }
+    setCurrentList(newList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,

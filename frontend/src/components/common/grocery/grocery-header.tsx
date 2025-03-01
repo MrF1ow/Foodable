@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 // Package Imports
 import React from "react";
@@ -24,8 +24,12 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const { groceryLists = [] } = useAllGroceryLists({
-    metadata: true,
+  const {
+    groceryLists = [],
+    isErrorGroceryLists,
+    isLoadingGroceryLists,
+  } = useAllGroceryLists({
+    metadata: false,
     enabled: true,
   });
 
@@ -37,6 +41,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   if (!currentList) return null;
 
   console.log("groceryLists", groceryLists);
+  console.log("currentList", currentList);
 
   const filteredLists = currentList._id
     ? groceryLists.filter((list: GroceryList) => list._id !== currentList._id)

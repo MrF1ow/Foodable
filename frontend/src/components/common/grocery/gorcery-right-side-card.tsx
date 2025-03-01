@@ -5,7 +5,7 @@ import { AddItem } from "@/components/common/grocery/add-item";
 import { FindPrice as FindPrice } from "@/components/common/grocery/find-price";
 import { HelperCard } from "@/components/common/grocery/list-helper";
 
-export default function RightSideCard() {
+export default function GroceryRightSideCard() {
   const currentCard = useGroceryStore((state) => state.currentForm);
   switch (currentCard) {
     case "addItem":

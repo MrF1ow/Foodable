@@ -13,6 +13,8 @@ export async function PUT(req: Request) {
   try {
     const groceryList: GroceryList = await req.json();
 
+    console.log("groceryList: ", groceryList);
+
     const preValidationResponse = validateObject(
       groceryList,
       validateGroceryList,
@@ -26,12 +28,12 @@ export async function PUT(req: Request) {
 
     const db = await getDB();
 
-    const { id, _id, ...groceryListWithoutId } = groceryList;
+    const { _id, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: ObjectId.createFromHexString(id || _id) },
+        { _id: ObjectId.createFromHexString(_id) },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
