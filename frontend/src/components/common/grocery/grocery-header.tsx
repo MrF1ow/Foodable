@@ -30,26 +30,6 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     enabled: true,
   });
 
-  // fetch the grocery list
-  const { groceryList, isLoadingGroceryList, errorGroceryList } =
-    useFetchGroceryListById({
-      id: currentList?._id || "",
-      enabled: !!currentList?._id, // Only enable if there's a current list with a valid ID
-    });
-
-  useEffect(() => {
-    if (isLoadingGroceryList) {
-      console.log("Loading grocery list...");
-    }
-    if (errorGroceryList) {
-      console.log("Error fetching grocery list");
-    }
-
-    if (groceryList) {
-      setCurrentList(groceryList);
-    }
-  }, [isLoadingGroceryList, errorGroceryList, currentList, setCurrentList]);
-
   const setList = async (item: GroceryList) => {
     setOpenAccordion([]);
     setCurrentList(item);

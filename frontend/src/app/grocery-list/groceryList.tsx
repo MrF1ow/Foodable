@@ -35,10 +35,11 @@ export default function GroceryList() {
     enabled: true,
   });
 
-  const { refetchGroceryList, groceryList } = useFetchGroceryListById({
-    id: currentList?._id || "",
-    enabled: true,
-  });
+  const { refetchGroceryList, groceryList, isLoadingGroceryList } =
+    useFetchGroceryListById({
+      id: currentList?._id || "",
+      enabled: true,
+    });
 
   // onsuccess and onerror handlers for the grocery lists query
   // do not exist anymore in tanstack
@@ -56,29 +57,51 @@ export default function GroceryList() {
       showToast(TOAST_SEVERITY.INFO, "Loading", "Fetching Grocery Lists", 3000);
     }
 
-    // if there are no grocery lists, create a new list
-    if (groceryLists && groceryLists.length === 0) {
-      const list = {
-        _id: null, // make sure to set the _id to null (it does not exist yet on the server)
-        creatorId: null, // make sure to set the creatorId to null
+    // Only update current list if it's different
+    if (groceryLists?.length > 0) {
+      if (!currentList || currentList._id !== groceryLists[0]._id) {
+        setCurrentList(groceryLists[0]);
+      }
+    } else if (groceryLists?.length === 0 && !currentList) {
+      const newList: NewGroceryList = {
+        _id: null,
+        creatorId: null,
         title: "New List",
-        items: [] as GroceryItem[],
-      } as NewGroceryList;
-      setCurrentList(list);
-    } else if (groceryLists && groceryLists.length > 0) {
-      // if there are grocery lists, set the first list as the current list
-      // this is done to avoid the current list being null
-      setCurrentList(groceryLists[0]);
+        items: [],
+      };
+      setCurrentList(newList);
     }
-  }, [groceryLists, isErrorGroceryLists, isLoadingGroceryLists]);
+  }, [groceryLists]);
 
   // refetch the grocery list when the current list changes
   useEffect(() => {
-    if (currentList?._id) {
-      refetchGroceryList();
+    async function fetchGroceryList() {
+      if (currentList?._id) {
+        // refetch the grocery list
+        // must await the refetchGroceryList function
+        await refetchGroceryList();
+        if (isLoadingGroceryList) {
+          showToast(
+            TOAST_SEVERITY.INFO,
+            "Loading",
+            "Fetching Grocery List",
+            3000
+          );
+        }
+      }
+    }
+    fetchGroceryList();
+  }, [currentList]);
+
+  useEffect(() => {
+    if (
+      groceryList &&
+      (groceryList._id === currentList?._id ||
+        groceryList.items?.length !== currentList?.items?.length)
+    ) {
       setCurrentList(groceryList);
     }
-  }, [currentList, refetchGroceryList, setCurrentList, groceryList]);
+  }, [groceryList]);
 
   return (
     <>

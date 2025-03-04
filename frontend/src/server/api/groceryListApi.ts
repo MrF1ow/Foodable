@@ -39,6 +39,7 @@ export const GroceryApi = {
   },
   updateGroceryList: async (groceryList: GroceryList) => {
     try {
+      console.log("Updating groceryList: ", groceryList);
       const response = await fetchWithAuth("/user/grocery", {
         method: "PUT",
         body: JSON.stringify(groceryList),

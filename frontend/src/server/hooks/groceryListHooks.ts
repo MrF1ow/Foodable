@@ -10,8 +10,6 @@ export const useAllGroceryLists = ({
   metadata,
   enabled = true,
 }: useQueryProps & { metadata: boolean }) => {
-  const errorMessage = ERROR_FETCHING_GROCERY_LIST;
-
   const {
     data: groceryLists,
     isLoading: isLoadingGroceryLists,
@@ -41,8 +39,6 @@ export const useFetchGroceryListById = ({
   id: string;
   enabled?: boolean;
 }) => {
-  const errorMessage = ERROR_FETCHING_GROCERY_LIST;
-
   const {
     data: groceryList,
     isLoading: isLoadingGroceryList,
@@ -68,9 +64,6 @@ export const useCreateGroceryList = () => {
   const mutation = useMutation<GroceryList, Error, NewGroceryList>({
     mutationFn: (newList: NewGroceryList) =>
       GroceryApi.createGroceryList(newList),
-    onSuccess: (data) => {
-      console.log("Successfully created grocery list:", data);
-    },
   });
 
   if (mutation.error) {
@@ -92,7 +85,7 @@ export const useUpdateGroceryList = () => {
 
   return {
     updatedGroceryList: mutation.data,
-    updateGroceryList: mutation.mutate,
+    updateGroceryList: mutation.mutateAsync,
     isUpdatingGroceryList: mutation.isPending,
     updateError: mutation.error,
   };

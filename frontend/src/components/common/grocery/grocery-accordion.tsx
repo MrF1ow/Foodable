@@ -52,7 +52,6 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
-    console.log("Adding item to", currentList);
     setCurrentCategory(title);
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
@@ -77,7 +76,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     const newList = { ...currentList, items: updatedItems };
 
     if (currentList._id) {
-      updateGroceryList(newList as GroceryList);
+      await updateGroceryList(newList as GroceryList);
     }
 
     setCurrentList(newList as GroceryList);

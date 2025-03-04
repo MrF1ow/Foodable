@@ -46,8 +46,7 @@ export const AddItem = ({ className }: { className?: string }) => {
     (state) => state.setSelectedCategory
   );
 
-  const { updateGroceryList, isUpdatingGroceryList, updateError } =
-    useUpdateGroceryList();
+  const { updateGroceryList } = useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -78,24 +77,9 @@ export const AddItem = ({ className }: { className?: string }) => {
     };
 
     if (currentList._id) {
-      updateGroceryList(newList as GroceryList);
-      if (isUpdatingGroceryList) {
-        showToast(
-          TOAST_SEVERITY.INFO,
-          "Updating List",
-          "Updating grocery list...",
-          3000
-        );
-      }
-      if (updateError) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "Error",
-          updateError.message || "Error updating list",
-          3000
-        );
-      }
+      await updateGroceryList(newList as GroceryList);
     }
+
     setCurrentList(newList);
 
     showToast(

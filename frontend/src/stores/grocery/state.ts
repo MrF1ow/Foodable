@@ -37,7 +37,12 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
     set((state: GroceryState) => {
       // update the map with the items in the currentList
       const updatedMap = new Map(state.map);
-      const items = Array.isArray(list.items) ? list.items : [];
+
+      // if the items array is not present, set it to an empty array
+      const items =
+        list.items && list.items !== undefined && Array.isArray(list.items)
+          ? list.items
+          : [];
 
       items.forEach((item) => {
         updatedMap.set(item.name, item);

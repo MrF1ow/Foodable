@@ -26,28 +26,22 @@ import {
   useUpdateGroceryList,
 } from "@/server/hooks/groceryListHooks";
 import { GroceryList } from "@/types/grocery";
-import { GROCERY_LISTS } from "@/lib/constants/process";
 import { showToast } from "@/providers/react-query-provider";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { getQueryClient } from "@/app/get-query-client";
 
 export const EditButton = () => {
-  const queryClient = getQueryClient();
-
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
   const [newTitle, setNewTitle] = useState(currentList?.title || "");
   const [isOpen, setIsOpen] = useState(false);
 
-  const {
-    updateGroceryList,
-    updatedGroceryList,
-    isUpdatingGroceryList,
-    updateError,
-  } = useUpdateGroceryList();
-  const { createGroceryList, isCreatingGroceryList, createError, createData } =
-    useCreateGroceryList();
+  const { refetchGroceryLists } = useAllGroceryLists({
+    metadata: true,
+    enabled: true,
+  });
+  const { updateGroceryList } = useUpdateGroceryList();
+  const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,68 +56,36 @@ export const EditButton = () => {
       title: newTitle,
     };
 
-    console.log("Edit Button Current List", currentList);
+    if (currentList.title !== newTitle) {
+      if (currentList._id) {
+        await updateGroceryList(newList as GroceryList);
+        showToast(
+          TOAST_SEVERITY.SUCCESS,
+          "List Updated",
+          "Grocery list updated successfully",
+          3000
+        );
+        setCurrentList(newList);
+      } else {
+        const newCreateList = {
+          ...newList,
+          creatorId: "000000000000000000000000", // Placeholder for now
+        };
 
-    if (currentList.title !== newTitle && currentList._id) {
-      updateGroceryList(newList as GroceryList);
-      if (isUpdatingGroceryList) {
-        showToast(
-          TOAST_SEVERITY.INFO,
-          "Updating List",
-          "Updating grocery list...",
-          3000
+        const createData = await createGroceryList(
+          newCreateList as GroceryList
         );
-      }
-      if (updateError) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "Error",
-          updateError.message || "Error updating list",
-          3000
-        );
-      }
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Updated",
-        "Grocery list updated successfully",
-        3000
-      );
-      setCurrentList(newList);
-    } else {
-      const newCreateList = {
-        ...newList,
-        creatorId: "000000000000000000000000", // Placeholder for now
-      };
-      createGroceryList(newCreateList as GroceryList);
-      if (isCreatingGroceryList) {
-        showToast(
-          TOAST_SEVERITY.INFO,
-          "Creating List",
-          "Creating grocery list...",
-          3000
-        );
-      }
-      if (createError) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "Error",
-          createError.message || "Error creating list",
-          3000
-        );
-      }
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Created",
-        "Grocery list created successfully",
-        3000
-      );
+        setCurrentList(createData);
 
-      console.log(createData);
-      setCurrentList(newCreateList);
-      console.log("New List", newCreateList);
+        showToast(
+          TOAST_SEVERITY.SUCCESS,
+          "List Created",
+          "Grocery list created successfully",
+          3000
+        );
+      }
+      setIsOpen(false);
     }
-
-    setIsOpen(false);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
@@ -131,7 +93,7 @@ export const EditButton = () => {
     if (!currentList) return;
 
     deleteGroceryList(currentList._id.toString(), {
-      onSuccess: () => {
+      onSuccess: async () => {
         showToast(
           TOAST_SEVERITY.INFO,
           "Deleting List",
@@ -139,8 +101,8 @@ export const EditButton = () => {
           3000
         );
 
-        // After deletion, invalidate and refetch the grocery lists
-        queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
+        // After deletion, force refetch of the grocery lists
+        await refetchGroceryLists();
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
@@ -198,7 +160,7 @@ export const EditButton = () => {
             <Input
               id="name"
               name="name"
-              placeholder="High Protein .."
+              placeholder="Enter list title..."
               data-testid="list-title"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}

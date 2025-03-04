@@ -22,6 +22,8 @@ export async function PUT(req: Request) {
       400
     );
 
+    console.log("preValidationResponse: ", preValidationResponse);
+
     if (preValidationResponse) {
       return preValidationResponse;
     }
@@ -51,6 +53,8 @@ export async function PUT(req: Request) {
       HTTP_RESPONSES.BAD_REQUEST,
       404
     );
+
+    console.log("validationResponse: ", validationResponse);
 
     if (validationResponse) {
       return validationResponse;
