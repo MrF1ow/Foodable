@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import React from "react";
+import React, { useEffect } from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -14,6 +14,7 @@ import {
 import { EditButton } from "@/components/common/grocery/edit-button";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { GroceryList } from "@/types/grocery";
+import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -24,14 +25,30 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const {
-    groceryLists = [],
-    isErrorGroceryLists,
-    isLoadingGroceryLists,
-  } = useAllGroceryLists({
-    metadata: false,
+  const { groceryLists = [] } = useAllGroceryLists({
+    metadata: true,
     enabled: true,
   });
+
+  // fetch the grocery list
+  const { groceryList, isLoadingGroceryList, errorGroceryList } =
+    useFetchGroceryListById({
+      id: currentList?._id || "",
+      enabled: !!currentList?._id, // Only enable if there's a current list with a valid ID
+    });
+
+  useEffect(() => {
+    if (isLoadingGroceryList) {
+      console.log("Loading grocery list...");
+    }
+    if (errorGroceryList) {
+      console.log("Error fetching grocery list");
+    }
+
+    if (groceryList) {
+      setCurrentList(groceryList);
+    }
+  }, [isLoadingGroceryList, errorGroceryList, currentList, setCurrentList]);
 
   const setList = async (item: GroceryList) => {
     setOpenAccordion([]);
@@ -40,14 +57,9 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
 
   if (!currentList) return null;
 
-  console.log("groceryLists", groceryLists);
-  console.log("currentList", currentList);
-
   const filteredLists = currentList._id
     ? groceryLists.filter((list: GroceryList) => list._id !== currentList._id)
     : groceryLists;
-
-  console.log("filteredLists", filteredLists);
 
   return (
     <div

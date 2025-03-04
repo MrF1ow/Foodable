@@ -20,8 +20,6 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
-import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { showToast } from "@/providers/react-query-provider";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const { updateGroceryList } = useUpdateGroceryList();
@@ -54,6 +52,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
 
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
+    console.log("Adding item to", currentList);
     setCurrentCategory(title);
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
@@ -82,24 +81,6 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     }
 
     setCurrentList(newList as GroceryList);
-
-    // find the updated item and show a toast
-    const updatedItem = currentList.items.find(
-      (item) =>
-        item.category === section &&
-        item.name.toLowerCase() === name.toLowerCase()
-    );
-
-    if (updatedItem) {
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "Item Updated",
-        `${updatedItem.quantity} ${updatedItem.unit} of ${updatedItem.name} ${
-          checked ? "added" : "removed"
-        }`,
-        3000
-      );
-    }
   };
 
   return (

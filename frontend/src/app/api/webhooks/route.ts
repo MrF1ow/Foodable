@@ -48,6 +48,7 @@ export async function POST(req: Request) {
   }
 
   if (evt.type === "user.created") {
+    // make the user in mongoDB to be used in the app
     console.log("userId:", evt.data.id);
   }
 

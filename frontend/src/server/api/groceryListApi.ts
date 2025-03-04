@@ -5,7 +5,6 @@ import fetchWithAuth from "../fetchInstance";
 export const GroceryApi = {
   fetchAllGroceryLists: async (includeMetadata: boolean) => {
     try {
-      console.log("includeMetadata: ", includeMetadata);
       const queryParam = includeMetadata ? "?metadata=true" : "";
       const url = `/user/grocery${queryParam}`;
       const response = await fetchWithAuth(url, {

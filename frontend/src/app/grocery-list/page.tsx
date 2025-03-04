@@ -11,7 +11,7 @@ export default async function RecipePage() {
   // Prefetch recipes data
   await queryClient.prefetchQuery({
     queryKey: [GROCERY_LISTS],
-    queryFn: () => GroceryApi.fetchAllGroceryLists(false),
+    queryFn: () => GroceryApi.fetchAllGroceryLists(true),
   });
 
   return (

@@ -62,6 +62,8 @@ export const EditButton = () => {
       title: newTitle,
     };
 
+    console.log("Edit Button Current List", currentList);
+
     if (currentList.title !== newTitle && currentList._id) {
       updateGroceryList(newList as GroceryList);
       if (isUpdatingGroceryList) {
@@ -116,7 +118,9 @@ export const EditButton = () => {
         3000
       );
 
+      console.log(createData);
       setCurrentList(newCreateList);
+      console.log("New List", newCreateList);
     }
 
     setIsOpen(false);

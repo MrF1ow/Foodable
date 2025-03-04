@@ -16,6 +16,7 @@ export const useAllGroceryLists = ({
     data: groceryLists,
     isLoading: isLoadingGroceryLists,
     error: errorGroceryLists,
+    refetch: refetchGroceryLists,
     isError: isErrorGroceryLists,
   } = useQuery({
     queryKey: [GROCERY_LISTS],
@@ -24,16 +25,10 @@ export const useAllGroceryLists = ({
     enabled,
   });
 
-  // useDataFetching({
-  //   isLoading: isLoadingGroceryLists,
-  //   isError: isErrorGroceryLists,
-  //   error: errorGroceryLists,
-  //   errorMessage,
-  // });
-
   return {
     groceryLists,
     isLoadingGroceryLists,
+    refetchGroceryLists,
     errorGroceryLists,
     isErrorGroceryLists,
   };
@@ -55,17 +50,10 @@ export const useFetchGroceryListById = ({
     error: errorGroceryList,
     isError: isErrorGroceryList,
   } = useQuery({
-    queryKey: ["groceryList", id],
+    queryKey: [GROCERY_LISTS, id],
     queryFn: () => GroceryApi.fetchGroceryListById(id),
     enabled: !!id && enabled, // Only fetch if ID is valid
     retry: 0,
-  });
-
-  useDataFetching({
-    isLoading: isLoadingGroceryList,
-    isError: isErrorGroceryList,
-    error: errorGroceryList,
-    errorMessage,
   });
 
   return {

@@ -10,8 +10,9 @@ import { useGeneralStore } from "@/stores/general/store";
 import { List } from "@/components/common/grocery/list";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
-import type { GroceryList, NewGroceryList } from "@/types/grocery";
+import type { GroceryItem, GroceryList, NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
+import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
 export default function GroceryList() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
@@ -30,7 +31,12 @@ export default function GroceryList() {
     isLoadingGroceryLists,
     errorGroceryLists,
   } = useAllGroceryLists({
-    metadata: false,
+    metadata: true,
+    enabled: true,
+  });
+
+  const { refetchGroceryList, groceryList } = useFetchGroceryListById({
+    id: currentList?._id || "",
     enabled: true,
   });
 
@@ -52,19 +58,27 @@ export default function GroceryList() {
 
     // if there are no grocery lists, create a new list
     if (groceryLists && groceryLists.length === 0) {
-      // do not
       const list = {
-        _id: null,
-        creatorId: null,
+        _id: null, // make sure to set the _id to null (it does not exist yet on the server)
+        creatorId: null, // make sure to set the creatorId to null
         title: "New List",
-        items: [],
+        items: [] as GroceryItem[],
       } as NewGroceryList;
       setCurrentList(list);
     } else if (groceryLists && groceryLists.length > 0) {
       // if there are grocery lists, set the first list as the current list
+      // this is done to avoid the current list being null
       setCurrentList(groceryLists[0]);
     }
   }, [groceryLists, isErrorGroceryLists, isLoadingGroceryLists]);
+
+  // refetch the grocery list when the current list changes
+  useEffect(() => {
+    if (currentList?._id) {
+      refetchGroceryList();
+      setCurrentList(groceryList);
+    }
+  }, [currentList, refetchGroceryList, setCurrentList, groceryList]);
 
   return (
     <>

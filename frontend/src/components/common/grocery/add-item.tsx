@@ -45,11 +45,9 @@ export const AddItem = ({ className }: { className?: string }) => {
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const {
-    updateGroceryList,
-    isUpdatingGroceryList,
-    updateError,
-  } = useUpdateGroceryList();
+
+  const { updateGroceryList, isUpdatingGroceryList, updateError } =
+    useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -60,6 +58,7 @@ export const AddItem = ({ className }: { className?: string }) => {
   });
 
   async function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
+    console.log("Add Item Current List", currentList);
     const newItem: GroceryItem = {
       name: data.itemName,
       quantity: data.quantity,
@@ -72,10 +71,11 @@ export const AddItem = ({ className }: { className?: string }) => {
 
     const newList = {
       ...currentList,
-      items: [...currentList.items, newItem],
+      items:
+        Array.isArray(currentList.items) && currentList.items.length === 0
+          ? [newItem]
+          : [...currentList.items, newItem],
     };
-
-    console.log("newList", newList);
 
     if (currentList._id) {
       updateGroceryList(newList as GroceryList);

@@ -32,7 +32,12 @@ export async function POST(req: Request) {
       .collection("groceryLists")
       .insertOne(groceryListToInsert);
 
-    return NextResponse.json({ _id: result.insertedId }, { status: 201 });
+    const insertedGroceryList = await db
+      .collection("groceryLists")
+      .findOne({ _id: result.insertedId });
+
+    // return the entire grocery list
+    return NextResponse.json(insertedGroceryList, { status: 201 });
   } catch (error) {
     console.error("Error creating grocery list: ", error);
 

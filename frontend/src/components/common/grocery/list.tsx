@@ -4,16 +4,11 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { GroceryAccordion } from "@/components/common/grocery/grocery-accordion";
 import { useGeneralStore } from "@/stores/general/store";
-import { useGroceryStore } from "@/stores/grocery/store";
 import { getCurrentGrocerySections } from "@/utils/listItems";
 
 export const List = ({ className }: { className?: string }) => {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
-
-  const currentList = useGroceryStore((state) => state.currentList);
-
-  if (!currentList) return null;
 
   const currentCategories = getCurrentGrocerySections();
 
