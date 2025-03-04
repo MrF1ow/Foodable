@@ -8,6 +8,12 @@ export type UserRating = {
   rating: number; // User rating
 };
 
+export type UserIdentifiers = {
+  clerkId: string; // Clerk ID
+  username: string; // Username of the user
+  email: string; // Email of the user
+};
+
 export type User = NewUser & {
   id: ObjectId; // User ID
 };
@@ -18,10 +24,7 @@ export type FollowMetadata = {
   avatarImageId: ObjectId; // Avatar image ID
 };
 
-export type NewUser = {
-  username: string; // Username of the user
-  email: string; // Email of the user
-
+export type NewUser = UserIdentifiers & {
   // User profile settings (will add more later)
   settings: {
     theme: "light" | "dark"; // The theme of the user (default is light)
@@ -38,7 +41,7 @@ export type NewUser = {
     groceryLists: MainMetaData[];
   };
 
-  currentGroceryList: GroceryList; // The current grocery list the user is working on
+  currentGroceryList: GroceryList | null; // The current grocery list the user is working on
   createdRecipes: ObjectId[]; // The recipes the user created (they are the creator)
   following: FollowMetadata[]; // The users the user is following
   followers: FollowMetadata[]; // The users that are following the user

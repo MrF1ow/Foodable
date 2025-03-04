@@ -3,6 +3,17 @@ export const isValidObjectId = (id: any): boolean => {
   return typeof id.toString() === "string" && objectIdPattern.test(id);
 };
 
+export function isValidUserId(id: string): boolean {
+  if (!id) {
+    return false;
+  }
+  if (typeof id !== "string") {
+    return false;
+  }
+  const userIdPattern = /^user_[A-Za-z0-9]{27}$/;
+  return userIdPattern.test(id);
+}
+
 export const isValidStringArray = (arr: any): boolean =>
   Array.isArray(arr) &&
   (arr.length === 0 || arr.every((item) => typeof item === "string"));

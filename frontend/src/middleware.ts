@@ -1,6 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
 const isUserRoute = createRouteMatcher(["/user(.*)", "/api/user(.*)"]);
 
@@ -13,26 +14,40 @@ const isPublicRoute = createRouteMatcher([
   "/api/images(.*)",
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
+export default clerkMiddleware(async (auth, req) => {
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
+
   const userRole = (await auth()).sessionClaims?.metadata?.role;
 
-  if (isPublicRoute(request)) {
+  if (userId && isOnboardingRoute(req)) {
+    return NextResponse.next();
+  }
+
+  if (!userId && !isPublicRoute(req))
+    return redirectToSignIn({ returnBackUrl: req.url });
+
+  if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+    const onboardingUrl = new URL("/onboarding", req.url);
+    return NextResponse.redirect(onboardingUrl);
+  }
+
+  if (isPublicRoute(req)) {
     return NextResponse.next();
   }
 
   // Protect all routes starting with `/admin`
-  if (isAdminRoute(request) && !(userRole === "admin")) {
-    const url = new URL("/", request.url);
+  if (isAdminRoute(req) && !(userRole === "admin")) {
+    const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }
 
   // Allow registered users to access the user route
-  if (isUserRoute(request) && !(userRole === "admin" || userRole === "user")) {
-    const url = new URL("/sign-in", request.url);
+  if (isUserRoute(req) && !(userRole === "admin" || userRole === "user")) {
+    const url = new URL("/sign-in", req.url);
     return NextResponse.redirect(url);
   }
 
-  if (!isPublicRoute(request)) {
+  if (!isPublicRoute(req)) {
     await auth.protect();
   }
 });

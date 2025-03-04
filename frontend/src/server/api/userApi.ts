@@ -1,20 +1,23 @@
-import { User } from "@/types/user";
-import axios from "../fetchInstance";
+import { NewUser, User } from "@/types/user";
+import fetchWithAuth from "../fetchInstance";
 
 export const UserApi = {
   fetchUserById: async (id: string) => {
     try {
-      const response = await axios.get(`/user?id=${id}`);
-      return response.data;
+      const response = await fetchWithAuth(`/user?id=${id}`);
+      return response;
     } catch (error) {
       console.error("Error getting user:", error);
       throw error;
     }
   },
-  createUser: async (user: User) => {
+  createUser: async (user: NewUser) => {
     try {
-      const response = await axios.post("/user", user);
-      return response.data;
+      const response = await fetchWithAuth("/user", {
+        method: "POST",
+        body: JSON.stringify(user),
+      });
+      return response;
     } catch (error) {
       console.error("Error creating user:", error);
       throw error;
@@ -22,8 +25,11 @@ export const UserApi = {
   },
   updateUser: async (user: User) => {
     try {
-      const response = await axios.put("/user", user);
-      return response.data;
+      const response = await fetchWithAuth("/user", {
+        method: "PUT",
+        body: JSON.stringify(user),
+      });
+      return response;
     } catch (error) {
       console.error("Error updating user:", error);
       throw error;
@@ -31,8 +37,11 @@ export const UserApi = {
   },
   deleteUser: async (id: string) => {
     try {
-      const response = await axios.delete("/user", { data: { id } });
-      return response.data;
+      const response = await fetchWithAuth("/user", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+      return response;
     } catch (error) {
       console.error("Error deleting user:", error);
       throw error;

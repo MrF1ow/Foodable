@@ -1,6 +1,8 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { UserApi } from "@/server/api/userApi";
+import { NewUser } from "@/types/user";
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
@@ -50,6 +52,30 @@ export async function POST(req: Request) {
   if (evt.type === "user.created") {
     // make the user in mongoDB to be used in the app
     console.log("userId:", evt.data.id);
+    const user: NewUser = {
+      clerkId: evt.data.id,
+      username: evt.data.username || evt.data.email_addresses[0].email_address,
+      email: evt.data.email_addresses[0].email_address,
+      settings: {
+        theme: "light",
+      },
+      preferences: {
+        dietaryRestrictions: [],
+        allergies: [],
+      },
+      savedItems: {
+        recipes: [],
+        groceryLists: [],
+      },
+      currentGroceryList: null,
+      createdRecipes: [],
+      following: [],
+      followers: [],
+      lastLogin: new Date(),
+      dateJoined: new Date(),
+    };
+    const response = await UserApi.createUser(user);
+    console.log("User created:", response);
   }
 
   return new Response("Webhook received", { status: 200 });

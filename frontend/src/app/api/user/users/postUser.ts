@@ -2,14 +2,16 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateUserWithoutID } from "@/utils/typeValidation/user";
-import { isValidObjectId } from "@/utils/validation";
-import { NewUser } from "@/types/user";
+import { isValidUserId } from "@/utils/typeValidation/general";
+import { User, NewUser, UserIdentifiers } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { isValidObjectId } from "@/utils/validation";
 
 export async function POST(req: Request) {
   try {
+    // get the id from the request body
     const user: NewUser = await req.json();
 
     const userToInsert: NewUser = {
@@ -22,6 +24,7 @@ export async function POST(req: Request) {
         recipes: user.savedItems.recipes || [], // Ensure recipes is an array
         groceryLists: user.savedItems.groceryLists || [], // Ensure groceryLists is an array
       },
+      currentGroceryList: user.currentGroceryList || null,
       createdRecipes: user.createdRecipes || [],
       following: user.following || [],
       followers: user.followers || [],

@@ -1,11 +1,11 @@
 export {};
 
-export type Roles = 'admin' | 'user' | 'guest';
+export type Roles = 'admin' | 'user';
 
 declare global {
   interface CustomJwtSessionClaims {
     metadata: {
-      onboardingCompelete?: boolean;
+      onboardingComplete?: boolean;
       role?: Roles;
     };
   }
