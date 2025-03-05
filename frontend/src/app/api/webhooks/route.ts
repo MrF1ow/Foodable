@@ -1,7 +1,12 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
+
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { UserApi } from "@/server/api/userApi";
+import { getDB } from "@/lib/mongodb";
+import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
+import { validateUserWithoutID } from "@/utils/typeValidation/user";
+import { isValidObjectId } from "@/utils/validation";
 import { NewUser } from "@/types/user";
 
 export async function POST(req: Request) {
@@ -52,30 +57,61 @@ export async function POST(req: Request) {
   if (evt.type === "user.created") {
     // make the user in mongoDB to be used in the app
     console.log("userId:", evt.data.id);
-    const user: NewUser = {
-      clerkId: evt.data.id,
-      username: evt.data.username || evt.data.email_addresses[0].email_address,
-      email: evt.data.email_addresses[0].email_address,
-      settings: {
-        theme: "light",
-      },
-      preferences: {
-        dietaryRestrictions: [],
-        allergies: [],
-      },
-      savedItems: {
-        recipes: [],
-        groceryLists: [],
-      },
-      currentGroceryList: null,
-      createdRecipes: [],
-      following: [],
-      followers: [],
-      lastLogin: new Date(),
-      dateJoined: new Date(),
-    };
-    const response = await UserApi.createUser(user);
-    console.log("User created:", response);
+    try {
+      const user: NewUser = {
+        clerkId: evt.data.id,
+        username:
+          evt.data.username || evt.data.email_addresses[0].email_address,
+        email: evt.data.email_addresses[0].email_address,
+        settings: {
+          theme: "light",
+        },
+        preferences: {
+          dietaryRestrictions: [],
+          allergies: [],
+        },
+        savedItems: {
+          recipes: [],
+          groceryLists: [],
+        },
+        currentGroceryList: null,
+        createdRecipes: [],
+        following: [],
+        followers: [],
+        lastLogin: new Date(),
+        dateJoined: new Date(),
+      };
+
+      if (!validateUserWithoutID(user, isValidObjectId)) {
+        return NextResponse.json(
+          { message: HTTP_RESPONSES.BAD_REQUEST },
+          { status: 400 }
+        );
+      }
+
+      const db = await getDB();
+
+      const userRecord = await db
+        .collection("users")
+        .findOne({ email: user.email }); // email is unique
+      if (userRecord) {
+        return NextResponse.json(
+          { message: HTTP_RESPONSES.CONFLICT },
+          { status: 409 }
+        );
+      }
+
+      const result = await db.collection("users").insertOne(user);
+
+      return NextResponse.json({ _id: result.insertedId }, { status: 201 });
+    } catch (error) {
+      console.error("Error creating user:", error);
+
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },
+        { status: 500 }
+      );
+    }
   }
 
   return new Response("Webhook received", { status: 200 });
