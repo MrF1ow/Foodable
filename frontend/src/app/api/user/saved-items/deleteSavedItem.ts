@@ -1,24 +1,25 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/utils/typeValidation/general";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
-export async function DELETE(req: Request, type: "recipe" | "groceryList") {
+export async function DELETE(req: Request) {
   try {
-    const { userId, itemId, itemCategory } = await req.json();
+    const clerkUser = await currentUser();
 
-    if (!userId || !itemId || !itemCategory) {
+    if (!clerkUser || !clerkUser.id) {
       return NextResponse.json(
-        { message: "userId and itemId are required" },
-        { status: 400 }
+        { message: "User ID Not Provided" },
+        { status: 404 }
       );
     }
 
-    if (!isValidObjectId(userId) || !isValidObjectId(itemId)) {
+    const { _id, category, type } = await req.json();
+
+    if (!_id || !category || !type) {
       return NextResponse.json(
-        { message: "Invalid userId or itemId" },
+        { message: "itemId is required" },
         { status: 400 }
       );
     }
@@ -27,7 +28,7 @@ export async function DELETE(req: Request, type: "recipe" | "groceryList") {
     const usersCollection = db.collection("users");
 
     const user = await usersCollection.findOne(
-      { _id: ObjectId.createFromHexString(userId) },
+      { clerkId: clerkUser.id },
       { projection: { savedItems: 1 } }
     );
 
@@ -45,8 +46,7 @@ export async function DELETE(req: Request, type: "recipe" | "groceryList") {
     }
 
     const updatedArr = arr.filter(
-      (item: any) =>
-        item._id.toString() !== itemId || item.category !== itemCategory
+      (item: any) => item._id.toString() !== _id || item.category !== category
     );
 
     if (updatedArr.length === arr.length) {
@@ -56,7 +56,7 @@ export async function DELETE(req: Request, type: "recipe" | "groceryList") {
     let result;
     if (type === "recipe") {
       result = await usersCollection.updateOne(
-        { _id: new ObjectId(userId) },
+        { clerkId: clerkUser.id },
         {
           $set: {
             "savedItems.recipes": updatedArr,
@@ -65,7 +65,7 @@ export async function DELETE(req: Request, type: "recipe" | "groceryList") {
       );
     } else if (type === "groceryList") {
       result = await usersCollection.updateOne(
-        { _id: new ObjectId(userId) },
+        { clerkId: clerkUser.id },
         {
           $set: {
             "savedItems.groceryLists": updatedArr,

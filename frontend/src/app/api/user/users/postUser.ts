@@ -2,8 +2,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateUserWithoutID } from "@/utils/typeValidation/user";
-import { isValidUserId } from "@/utils/typeValidation/general";
-import { User, NewUser, UserIdentifiers } from "@/types/user";
+import { NewUser } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";

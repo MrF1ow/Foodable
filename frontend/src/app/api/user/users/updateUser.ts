@@ -13,8 +13,6 @@ export async function PUT(req: Request) {
   try {
     const user: User = await req.json();
 
-    console.log("Line 19");
-
     const preValidationResponse = validateObject(
       user,
       validateUser,

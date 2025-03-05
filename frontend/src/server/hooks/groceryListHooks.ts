@@ -1,9 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { GroceryList, NewGroceryList } from "@/types/grocery";
-import { useDataFetching } from "@/hooks/useDataFetching";
 import { GroceryApi } from "../api/groceryListApi";
 import { useQueryProps } from "@/types";
-import { ERROR_FETCHING_GROCERY_LIST } from "@/lib/constants/messages";
 import { GROCERY_LISTS } from "@/lib/constants/process";
 
 export const useAllGroceryLists = ({

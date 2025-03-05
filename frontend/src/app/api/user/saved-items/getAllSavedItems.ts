@@ -1,30 +1,22 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/utils/typeValidation/general";
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const userId = getValueFromSearchParams(req, "id");
+    const clerkUser = await currentUser();
 
-    if (!userId) {
-      return NextResponse.json(
-        { message: "userId is required" },
-        { status: 400 }
-      );
-    }
-    if (!isValidObjectId(userId)) {
-      return NextResponse.json({ message: "Invalid userId" }, { status: 400 });
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     const db = await getDB();
     const usersCollection = db.collection("users");
 
     const user = await usersCollection.findOne(
-      { _id: ObjectId.createFromHexString(userId) },
+      { clerkId: clerkUser.id },
       { projection: { savedItems: 1 } }
     );
 

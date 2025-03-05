@@ -1,33 +1,38 @@
-import { Recipe } from "@/types/recipe";
-import { GroceryList } from "@/types/grocery";
+import { SavedItem } from "@/types/saved";
+import fetchWithAuth from "../fetchInstance";
 
 export const SavedItemsApi = {
-  // saveItem: async (item: Recipe | GroceryList) => {
-  //   try {
-  //     const req = {
-  //       itemId: item.id,
-  //       // @ts-ignore (need to get userId from clerk and stuff later)
-  //       userId: item.userId,
-  //     };
-  //     const response = await axios.post("/saved-items", req);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error saving item:", error);
-  //     throw error;
-  //   }
-  // },
-  // removeSavedItem: async (item: Recipe | GroceryList) => {
-  //   try {
-  //     const req = {
-  //       itemId: item.id,
-  //       // @ts-ignore (need to get userId from clerk and stuff later)
-  //       userId: item.userId,
-  //     };
-  //     const response = await axios.delete("/saved-items", { data: req });
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Error removing item:", error);
-  //     throw error;
-  //   }
-  // },
+  getAllSavedItems: async () => {
+    try {
+      const data = await fetchWithAuth("/saved-items");
+      return data;
+    } catch (error) {
+      console.error("Error getting all saved items:", error);
+      return null;
+    }
+  },
+
+  saveItem: async (data: SavedItem) => {
+    try {
+      const response = await fetchWithAuth("/savedItems", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+    }
+  },
+
+  deleteItem: async (data: SavedItem) => {
+    try {
+      const response = await fetchWithAuth("/savedItems", {
+        method: "DELETE",
+        body: JSON.stringify(data),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    }
+  },
 };

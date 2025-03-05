@@ -1,12 +1,10 @@
 import { ObjectId } from "mongodb";
 import { GroceryList, Recipe } from ".";
 
-export interface SavedCategory {
-  title: string;
-  items: MainMetaData[];
-}
+export type SavedTypes = "recipe" | "groceryList";
 
-export interface UnsavedRecipeMetaData {
+export interface RecipeMetaData {
+  _id: ObjectId;
   type: "recipe";
   title: string;
   imageId: string; // Required for recipes
@@ -18,18 +16,15 @@ export interface UnsavedRecipeMetaData {
 }
 
 export interface UnsavedGroceryMetaData {
+  _id: null;
   type: "grocery";
   title: string;
 }
 
-export type RecipeMetaData = UnsavedRecipeMetaData & { _id: ObjectId };
-
-export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId | null };
+export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId };
 
 export type SavedRecipeMetaData = RecipeMetaData & { category: string };
 
 export type SavedGroceryMetaData = GroceryMetaData & { category: string };
 
-export type MainMetaData = SavedRecipeMetaData | SavedGroceryMetaData;
-
-export type Metadata = RecipeMetaData | GroceryMetaData | MainMetaData;
+export type SavedItem = SavedRecipeMetaData | SavedGroceryMetaData;

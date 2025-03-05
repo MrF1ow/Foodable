@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { GroceryList } from "./grocery";
-import { MainMetaData } from "./saved";
+import { MainMetaData, RecipeMetaData, SavedGroceryMetaData } from "./saved";
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -37,8 +37,8 @@ export type NewUser = UserIdentifiers & {
   };
 
   savedItems: {
-    recipes: MainMetaData[];
-    groceryLists: MainMetaData[];
+    recipes: SavedRecipeMetaData[];
+    groceryLists: SavedGroceryMetaData[];
   };
 
   currentGroceryList: GroceryList | null; // The current grocery list the user is working on
