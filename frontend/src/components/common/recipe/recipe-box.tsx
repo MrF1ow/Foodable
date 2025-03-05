@@ -18,8 +18,6 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipe);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
 
-  console.log("data", data);
-
   const { data: response, isLoading, error } = useFetchImageById(data.imageId);
 
   if (isLoading) {

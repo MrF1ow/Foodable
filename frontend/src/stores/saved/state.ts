@@ -1,19 +1,23 @@
 import { create } from "zustand";
 
-import { Recipe } from "@/types/recipe";
-import { GroceryList } from "@/types/grocery";
+import { SavedItem } from "@/types/saved";
 
 export type SavedItemsState = {
-  currentItem: Recipe | GroceryList | null;
+  currentItem: SavedItem | null;
+  currentCategories: string[];
 };
 
 export type SavedItemsActions = {
-  setCurrentItem: (item: Recipe | GroceryList) => void;
+  setCurrentItem: (item: SavedItem) => void;
+  setCurrentCategories: (categories: string[]) => void;
 };
 
 export const createSavedItemsActions = (set: any): SavedItemsActions => ({
-  setCurrentItem: (item: Recipe | GroceryList) => {
+  setCurrentItem: (item: SavedItem) => {
     set({ currentItem: item });
+  },
+  setCurrentCategories: (categories: string[]) => {
+    set({ currentCategories: categories });
   },
 });
 
@@ -21,6 +25,7 @@ export type SavedItemsStore = SavedItemsState & SavedItemsActions;
 
 export const defaultInitState: SavedItemsState = {
   currentItem: null,
+  currentCategories: [],
 };
 
 export const createSavedItemsStore = (

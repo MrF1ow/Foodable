@@ -23,7 +23,7 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        {/* <SaveBookmark recipe={recipe} setOpen={setOpen} /> */}
+        <SaveBookmark data={recipe} setOpen={setOpen} />
       </div>
     </div>
   );

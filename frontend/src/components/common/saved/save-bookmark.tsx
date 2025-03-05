@@ -24,24 +24,23 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  GroceryMetaData,
-  RecipeMetaData,
-  SavedRecipeMetaData,
-} from "@/types/saved";
+import { SavedItem, UnsavedItem } from "@/types/saved";
 import { capitalizeTitle } from "@/utils/other";
+import { GroceryList } from "@/types/grocery";
+import { Recipe } from "@/types/recipe";
 
 interface SaveBookmarkProps {
-  data: RecipeMetaData | GroceryMetaData | SavedRecipeMetaData | any;
+  data: Recipe | GroceryList | SavedItem | UnsavedItem;
   setOpen?: (arg0: boolean) => void;
 }
 
 export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
-  const lists = useSavedItemsStore((state) => state.sortedSavedItems);
-  const addSavedList = useSavedItemsStore((state) => state.addSavedCategory);
-  const replaceRecipe = useRecipeStore((state) => state.replaceRecipe);
-  const addSavedItem = useSavedItemsStore((state) => state.addSavedItem);
-  const removeSavedItem = useSavedItemsStore((state) => state.removeSavedItem);
+  const categories = useSavedItemsStore((state) => state.currentCategories);
+
+  const setCurrentCategories = useSavedItemsStore(
+    (state) => state.setCurrentCategories
+  );
+
   const [newListTitle, setNewListTitle] = useState("");
   const [selectedList, setSelectedList] = useState("");
 
@@ -49,41 +48,27 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
     e.preventDefault();
 
     if (newListTitle.trim()) {
-      addSavedList(newListTitle.trim());
       setSelectedList(newListTitle.trim());
       setNewListTitle("");
     }
 
-    // this is now a saved recipe
+    // this is now a saved item
     const toInsert = {
       ...data,
       category: selectedList,
     };
 
     if (selectedList) {
-      addSavedItem(toInsert);
-      replaceRecipe(toInsert);
     }
   };
 
   const handleRemoveSave = () => {
-    console.log("Removing save from category:", data.category);
-    removeSavedItem(data);
-    if (data.type === "recipe") {
-      // this is now an unsaved recipe
-      const toInsert = {
-        ...data,
-        category: null,
-      };
-
-      replaceRecipe(toInsert);
-      if (setOpen) {
-        setOpen(false);
-      }
+    if (setOpen) {
+      setOpen(false);
     }
   };
 
-  if (data.category) {
+  if ("category" in data) {
     return (
       <div className="absolute bottom-0 right-0 pr-4 pb-4">
         <IoBookmark
@@ -95,7 +80,7 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
     );
   }
 
-  if (!data.category) {
+  if (!("category" in data)) {
     return (
       <Dialog>
         <DialogTrigger className="absolute bottom-0 right-0 pr-4 pb-4" asChild>
@@ -116,9 +101,9 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {lists.map((list) => (
-                    <SelectItem key={list.title} value={list.title}>
-                      {capitalizeTitle(list.title)}
+                  {categories.map((list) => (
+                    <SelectItem key={list} value={list}>
+                      {capitalizeTitle(list)}
                     </SelectItem>
                   ))}
                 </SelectContent>

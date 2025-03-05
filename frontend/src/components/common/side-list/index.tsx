@@ -16,7 +16,7 @@ import { AddItem } from "../grocery/add-item";
 
 export const SideList = () => {
   const currentForm = useGroceryStore((state) => state.currentForm);
-  const currentList = useGroceryStore((state) => state.currentList);
+
   return (
     <div className="w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6">
       <Card className="h-full flex flex-col bg-card-background rounded-lg">
@@ -24,16 +24,13 @@ export const SideList = () => {
           <CardTitle className="text-2xl">Your List</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 bg-background overflow-y-auto">
-          {/* <ScrollArea>
+          <ScrollArea>
             {currentForm === "addItem" ? (
               <AddItem />
             ) : (
-              <List
-                className="mt-4 bg-card-background"
-                groceryList={currentList}
-              />
+              <List className="mt-4 bg-card-background" />
             )}
-          </ScrollArea> */}
+          </ScrollArea>
         </CardContent>
         <CardFooter className="flex justify-end p-4">
           <AddButton />

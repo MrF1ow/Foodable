@@ -28,3 +28,5 @@ export type SavedRecipeMetaData = RecipeMetaData & { category: string };
 export type SavedGroceryMetaData = GroceryMetaData & { category: string };
 
 export type SavedItem = SavedRecipeMetaData | SavedGroceryMetaData;
+
+export type UnsavedItem = RecipeMetaData | UnsavedGroceryMetaData;

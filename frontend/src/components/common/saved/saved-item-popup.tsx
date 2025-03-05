@@ -10,35 +10,37 @@ import { RecipeContent } from "../recipe/recipe-content";
 import { RecipePopupHeader } from "../recipe/recipe-popup-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { Metadata, RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
+import { useGeneralStore } from "@/stores/general/store";
+import { useSavedItemsStore } from "@/stores/saved/store";
+import { useGroceryStore } from "@/stores/grocery/store";
 
-interface SavedItemPopupProps {
-  toggleDialog: () => void;
-  typeOfData: "recipe" | "grocery";
-  data: Recipe | GroceryList;
-  metadata: Metadata;
-}
+export const SavedItemPopup = () => {
+  const splitLayout = useGeneralStore((state) => state.splitLayout);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
 
-export const SavedItemPopup = ({
-  toggleDialog,
-  typeOfData,
-  data,
-  metadata,
-}: SavedItemPopupProps) => {
+  const currentItem = useSavedItemsStore((state) => state.currentItem);
   const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
 
+  const currentRecipe = useRecipeStore((state) => state.currentRecipe);
+  const currentGroceryList = useGroceryStore((state) => state.currentList);
+
+  const toggleDialog = () => {
+    setSplitLayout(!splitLayout);
+  };
+
+  if (!currentItem) return null;
+
   const MainCardContent = () => {
-    if (typeOfData === "recipe") {
+    if ("ingredients" in currentItem) {
       return (
         <CardContent className="p-0 h-full flex flex-col">
           <RecipePopupHeader
             imageUrl={currentImageUrl}
-            recipe={data as Recipe}
-            metadata={metadata as RecipeMetaData | SavedRecipeMetaData}
+            recipe={currentRecipe as Recipe}
             setOpen={toggleDialog}
           />
           <div className="flex-1 overflow-y-auto p-4">
-            <RecipeContent recipe={data as Recipe} />
+            <RecipeContent recipe={currentRecipe as Recipe} />
           </div>
         </CardContent>
       );
@@ -46,7 +48,7 @@ export const SavedItemPopup = ({
       return (
         <div>
           <h1>Grocery List</h1>
-          <p>{data.title}</p>
+          <p>{currentItem.title}</p>
         </div>
       );
     }

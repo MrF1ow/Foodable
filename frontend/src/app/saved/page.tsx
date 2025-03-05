@@ -1,9 +1,9 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { getQueryClient } from "@/app/get-query-client";
-import Recipes from "@/app/recipe/recipes";
 import { SAVED_ITEMS } from "@/lib/constants/process";
-import { RecipeApi } from "@/server/api/recipeApi";
+import { SavedItemsApi } from "@/server/api/savedItemsApi";
+import Saved from "@/app/saved/saved";
 
 export default async function RecipePage() {
   const queryClient = getQueryClient();
@@ -11,12 +11,12 @@ export default async function RecipePage() {
   // Prefetch recipes data
   await queryClient.prefetchQuery({
     queryKey: [SAVED_ITEMS],
-    queryFn: () => RecipeApi.fetchAllRecipes(true),
+    queryFn: () => SavedItemsApi.getAllSavedItems(),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Recipes />
+      <Saved />
     </HydrationBoundary>
   );
 }
