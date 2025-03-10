@@ -1,22 +1,19 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
-import { getQueryClient } from "@/app/get-query-client";
-import { SAVED_ITEMS } from "@/lib/constants/process";
-import { SavedItemsApi } from "@/server/api/savedItemsApi";
+import { checkRole } from "@/utils/roles";
 import Saved from "@/app/saved/saved";
+import AuthOptions from "@/components/auth-options";
+import FetchUserData from "../_fetchData";
 
 export default async function RecipePage() {
-  const queryClient = getQueryClient();
+  const queryClient = await FetchUserData();
 
-  // Prefetch recipes data
-  await queryClient.prefetchQuery({
-    queryKey: [SAVED_ITEMS],
-    queryFn: () => SavedItemsApi.getAllSavedItems(),
-  });
+  // Check if user has the role
+  const isUser = await checkRole("user");
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Saved />
+      {isUser && <Saved />}
+      {!isUser && <AuthOptions />}
     </HydrationBoundary>
   );
 }

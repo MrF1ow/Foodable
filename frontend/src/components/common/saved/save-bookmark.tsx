@@ -30,21 +30,23 @@ import { Recipe } from "@/types/recipe";
 import {
   useCreateSavedItem,
   useDeleteSavedItem,
+  useAllSavedItems,
 } from "@/server/hooks/savedItemsHooks";
-import { e } from "node_modules/@clerk/elements/dist/step-z-Bm-lcH.mjs";
 
 interface SaveBookmarkProps {
+  isSaved: boolean;
   data: Recipe | GroceryList | SavedItem | UnsavedItem;
   setOpen?: (arg0: boolean) => void;
 }
 
-export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
+export const SaveBookmark = ({ isSaved, data, setOpen }: SaveBookmarkProps) => {
   const categories = useSavedItemsStore((state) => state.currentCategories);
 
   const setCurrentCategories = useSavedItemsStore(
     (state) => state.setCurrentCategories
   );
 
+  const { refetchSavedItems } = useAllSavedItems({ enabled: true });
   const { createSavedItem } = useCreateSavedItem();
   const { deleteSavedItem } = useDeleteSavedItem();
 
@@ -88,22 +90,27 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
     console.log("Saving:", toInsert);
 
     await createSavedItem(toInsert);
+    await refetchSavedItems();
 
     if (setOpen) {
       setOpen(false);
     }
   };
 
-  const handleRemoveSave = (data: any) => {
+  const handleRemoveSave = async () => {
     const toDelete = createToMutate(data, selectedList);
 
+    console.log("Deleting:", toDelete);
+
     deleteSavedItem(toDelete);
+    await refetchSavedItems();
+
     if (setOpen) {
       setOpen(false);
     }
   };
 
-  if ("category" in data) {
+  if (isSaved) {
     return (
       <div className="absolute bottom-0 right-0 pr-4 pb-4">
         <IoBookmark
@@ -115,7 +122,7 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
     );
   }
 
-  if (!("category" in data)) {
+  if (!isSaved) {
     return (
       <Dialog>
         <DialogTrigger className="absolute bottom-0 right-0 pr-4 pb-4" asChild>

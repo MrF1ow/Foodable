@@ -1,5 +1,6 @@
 "use client";
 import { List } from "../grocery/list";
+import { BiArrowBack } from "react-icons/bi";
 
 // Local Imports
 import {
@@ -35,6 +36,11 @@ export const SideList = ({ toggleDialog }: SideListProps) => {
               <List className="mt-4 bg-card-background" />
             )}
           </ScrollArea>
+          {toggleDialog && (
+            <div className="absolute top-0 left-0 text-foreground p-4 z-50">
+              <BiArrowBack onClick={toggleDialog} size={40} />
+            </div>
+          )}
         </CardContent>
         <CardFooter className="flex justify-end p-4">
           <AddButton />

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSavedItemsStore } from "@/stores/saved/store";
-import { getIndexOfItemInArray } from "@/utils/listItems";
+import { getIndexOfItemInArray } from "@/utils/other";
 
 interface EditButtonProps {
   category: string;

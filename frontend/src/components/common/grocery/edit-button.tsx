@@ -3,7 +3,7 @@
 // Package Imports
 import { MdEdit } from "react-icons/md";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@clerk/nextjs";
 
 import {
   Dialog,
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGroceryStore } from "@/stores/grocery/store";
+import { useSavedItemsStore } from "@/stores/saved/store";
 import {
   useAllGroceryLists,
   useCreateGroceryList,
@@ -44,6 +45,8 @@ export const EditButton = () => {
   const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
 
+  const { user } = useUser();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -67,9 +70,18 @@ export const EditButton = () => {
         );
         setCurrentList(newList);
       } else {
+        if (!user) {
+          showToast(
+            TOAST_SEVERITY.ERROR,
+            "Error",
+            "You must be logged in to create a grocery list",
+            3000
+          );
+          return;
+        }
         const newCreateList = {
           ...newList,
-          creatorId: "000000000000000000000000", // Placeholder for now
+          creatorId: user.id,
         };
 
         const createData = await createGroceryList(

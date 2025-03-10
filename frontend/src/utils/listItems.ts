@@ -1,9 +1,14 @@
 import { unitConversions } from "@/config/unit-conversions";
 import { Units } from "@/types";
-import { RecipeIngredient } from "@/types/recipe";
-import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
+import { Recipe, RecipeIngredient } from "@/types/recipe";
+import {
+  GroceryItem,
+  GroceryList,
+  GrocerySectionOptions,
+} from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
+import { SavedItem } from "@/types/saved";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -85,13 +90,6 @@ export const getGroceryAccordingItems = (
     : items.filter((item) => item.category === accordionCategory);
 };
 
-export const getIndexOfItemInArray = (
-  itemName: string,
-  items: any[]
-) => {
-  return items.findIndex((item) => item === itemName);
-};
-
 export const recipeIngredientsToGroceryItems = (
   recipeIngredients: RecipeIngredient[]
 ): GroceryItem[] => {
@@ -102,4 +100,11 @@ export const recipeIngredientsToGroceryItems = (
     category: ingredient.category,
     checked: false,
   }));
+};
+
+export const getIsItemSaved = (
+  item: Recipe | GroceryList,
+  savedItems: SavedItem[]
+) => {
+  return savedItems.some((savedItem) => savedItem._id === item._id);
 };

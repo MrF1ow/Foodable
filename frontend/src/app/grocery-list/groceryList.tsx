@@ -10,7 +10,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { List } from "@/components/common/grocery/list";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
-import type { GroceryItem, GroceryList, NewGroceryList } from "@/types/grocery";
+import type { GroceryList, NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
@@ -80,14 +80,6 @@ export default function GroceryList() {
         // refetch the grocery list
         // must await the refetchGroceryList function
         await refetchGroceryList();
-        if (isLoadingGroceryList) {
-          showToast(
-            TOAST_SEVERITY.INFO,
-            "Loading",
-            "Fetching Grocery List",
-            3000
-          );
-        }
       }
     }
     fetchGroceryList();

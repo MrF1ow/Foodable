@@ -17,9 +17,9 @@ export async function DELETE(req: Request) {
 
     const requestBody = await req.json();
 
-    const { _id, category, type } = requestBody;
+    const { _id,  type } = requestBody;
 
-    if (!_id || !category || !type) {
+    if (!_id || !type) {
       return NextResponse.json(
         { message: "itemId is required" },
         { status: 400 }
@@ -48,7 +48,7 @@ export async function DELETE(req: Request) {
     }
 
     const updatedArr = arr.filter(
-      (item: any) => item._id.toString() !== _id || item.category !== category
+      (item: any) => item._id.toString() !== _id
     );
 
     if (updatedArr.length === arr.length) {
