@@ -5,16 +5,39 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useRecipeStore } from "@/stores/recipe/store";
+import { GroceryItem } from "@/types/grocery";
+import { isItemInMap } from "@/utils/other";
 import { Icons } from "@/components/ui/icons";
+import { convertAmount } from "@/utils/listItems";
 
 export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
-  const addIngredient = useGroceryStore((state) => state.addItem);
+  const groceryMap = useGroceryStore((state) => state.map);
+
   const additionalIngredients = useRecipeStore(
     (state) => state.additionalIngredients
   );
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
+
+  const addIngredient = (ingredient: GroceryItem) => {
+    const newMap = groceryMap;
+    const item = groceryMap.get(ingredient.name.toLowerCase());
+    if (item) {
+      const convertedQuantity = convertAmount(
+        item.quantity,
+        item.unit,
+        ingredient.unit
+      );
+      item.quantity += convertedQuantity;
+      newMap.set(ingredient.name.toLowerCase(), item);
+    } else {
+      newMap.set(ingredient.name.toLowerCase(), {
+        ...ingredient,
+        checked: false,
+      });
+    }
+  };
 
   const AddButtonForAdditional = () => {
     const handleIngredientTransfer = () => {

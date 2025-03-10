@@ -32,7 +32,7 @@ export default function Saved() {
     (state) => state.setCurrentItemType
   );
 
-  const { savedItems } = useAllSavedItems({
+  const { savedItems, refetchSavedItems } = useAllSavedItems({
     enabled: true,
   });
   const { categories } = useGetCategories({ enabled: true });
@@ -52,7 +52,7 @@ export default function Saved() {
       }
       setCurrentCategories(combinedCategories);
     }
-  }, [savedItems]);
+  }, [savedItems, refetchSavedItems]);
 
   const sortedSavedItems = currentCategories.map((category) => {
     const recipeItems = savedItems.recipes.filter(

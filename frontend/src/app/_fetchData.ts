@@ -1,5 +1,3 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-
 import { getQueryClient } from "@/app/get-query-client";
 import {
   GROCERY_LISTS,

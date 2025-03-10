@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-
 export type SavedItemsState = {
   currentItemType: "recipe" | "groceryList" | null;
   currentCategories: string[];
@@ -24,7 +23,7 @@ export type SavedItemsStore = SavedItemsState & SavedItemsActions;
 
 export const defaultInitState: SavedItemsState = {
   currentItemType: null,
-  currentCategories: [],
+  currentCategories: ["New Collection"],
 };
 
 export const createSavedItemsStore = (

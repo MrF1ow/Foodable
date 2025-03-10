@@ -8,3 +8,7 @@ export const capitalizeTitle = (str: string) => {
 export const getIndexOfItemInArray = (itemToFind: any, items: any[]) => {
   return items.findIndex((item) => item === itemToFind);
 };
+
+export const isItemInMap = (item: any, map: Map<string, any>) => {
+  return map.has(item);
+};

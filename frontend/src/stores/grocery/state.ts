@@ -30,6 +30,7 @@ export type GroceryActions = {
   setCurrentSections: (sections: GrocerySectionOptions[]) => void;
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
+  setMap: (map: Map<string, GroceryItem>) => void;
 };
 
 export const createGroceryActions = (set: any, get: any): GroceryActions => ({
@@ -89,6 +90,8 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
     set((state: GroceryState) => ({ ...state, currentCategories: categories })),
   setSelectedCategory: (category: GrocerySectionOptions) =>
     set((state: GroceryState) => ({ ...state, selectedCategory: category })),
+  setMap: (map: Map<string, GroceryItem>) =>
+    set((state: GroceryState) => ({ ...state, map })),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
