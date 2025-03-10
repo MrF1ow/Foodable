@@ -14,7 +14,7 @@ import { getAdditionalIngredients } from "@/utils/listItems";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
 
 interface RecipePopUpProps {
-  toggleDialog: () => void;
+  toggleDialog: (arg0: boolean) => void;
 }
 
 export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
@@ -62,7 +62,11 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
         {recipe && !isLoadingRecipe && (
           <>
             {/* Recipe Header */}
-            <RecipePopupHeader imageUrl={imageUrl} recipe={recipe} />
+            <RecipePopupHeader
+              imageUrl={imageUrl}
+              recipe={recipe}
+              setOpen={toggleDialog}
+            />
 
             {/* Recipe Content */}
             <div className="flex-1 overflow-y-auto p-4">
@@ -71,7 +75,7 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
 
             {/* Back Button */}
             <div className="absolute top-0 left-0 text-foreground p-4 z-50">
-              <BiArrowBack onClick={toggleDialog} size={40} />
+              <BiArrowBack onClick={() => toggleDialog(false)} size={40} />
             </div>
 
             {/* Profile Picture */}

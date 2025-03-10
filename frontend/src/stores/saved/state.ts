@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-import { SavedItem } from "@/types/saved";
 
 export type SavedItemsState = {
   currentItemType: "recipe" | "groceryList" | null;

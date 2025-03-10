@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { GroceryList } from "./grocery";
+import { SavedRecipeMetaData } from "./saved";
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -21,6 +22,17 @@ export type FollowMetadata = {
   userId: ObjectId; // User ID
   username: string; // Username of the user
   avatarImageId: ObjectId; // Avatar image ID
+};
+
+// User profile settings (will add more later)
+export type SavedRecipeItems = {
+  title: string;
+  items: SavedRecipeMetaData[];
+};
+
+export type SavedGroceryItems = {
+  title: string;
+  items: SavedGroceryMetaData[];
 };
 
 export type NewUser = UserIdentifiers & {

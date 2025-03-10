@@ -1,7 +1,12 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { getQueryClient } from "@/app/get-query-client";
-import { GROCERY_LISTS, RECIPES, SAVED_ITEMS } from "@/lib/constants/process";
+import {
+  GROCERY_LISTS,
+  RECIPES,
+  SAVED_CATEGORIES,
+  SAVED_ITEMS,
+} from "@/lib/constants/process";
 import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
 import { SavedItemsApi } from "@/server/api/savedItemsApi";
@@ -24,6 +29,11 @@ export default async function FetchUserData() {
     await queryClient.prefetchQuery({
       queryKey: [SAVED_ITEMS],
       queryFn: () => SavedItemsApi.getAllSavedItems(),
+    });
+
+    await queryClient.prefetchQuery({
+      queryKey: [SAVED_CATEGORIES],
+      queryFn: () => SavedItemsApi.getAllSavedCategories(),
     });
   }
 

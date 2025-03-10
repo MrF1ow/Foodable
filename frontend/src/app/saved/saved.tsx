@@ -5,7 +5,10 @@ import { GeneralAccordion } from "@/components/general-accordion";
 import { AddButton } from "@/components/common/saved/add-button";
 import { EditButton } from "@/components/common/saved/edit-button";
 import { useGeneralStore } from "@/stores/general/store";
-import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
+import {
+  useAllSavedItems,
+  useGetCategories,
+} from "@/server/hooks/savedItemsHooks";
 
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
@@ -32,42 +35,22 @@ export default function Saved() {
   const { savedItems } = useAllSavedItems({
     enabled: true,
   });
+  const { categories } = useGetCategories({ enabled: true });
 
   useEffect(() => {
-    console.log(savedItems);
+    console.log("Saved Items", savedItems);
+    console.log("Categories", categories);
     if (savedItems) {
-      let categories: string[] = [];
+      let combinedCategories: string[] = [];
 
-      // Process recipes if not empty
-      if (savedItems.recipes.length !== 0) {
-        const recipeCategories = savedItems.recipes.reduce(
-          (acc: string[], item: SavedItem) => {
-            if (item.category && !acc.includes(item.category)) {
-              acc.push(item.category);
-            }
-            return acc;
-          },
-          []
-        );
-        categories = [...categories, ...recipeCategories];
+      if (categories.length !== 0) {
+        combinedCategories = [...currentCategories, ...categories];
+      } else if (currentCategories.length !== 0) {
+        combinedCategories = currentCategories;
+      } else {
+        combinedCategories = [];
       }
-
-      // Process groceryLists if not empty
-      if (savedItems.groceryLists.length !== 0) {
-        const groceryCategories = savedItems.groceryLists.reduce(
-          (acc: string[], item: SavedItem) => {
-            if (item.category && !acc.includes(item.category)) {
-              acc.push(item.category);
-            }
-            return acc;
-          },
-          []
-        );
-        categories = [...categories, ...groceryCategories];
-      }
-
-      // Remove duplicates and update state
-      setCurrentCategories([...new Set(categories)]);
+      setCurrentCategories(combinedCategories);
     }
   }, [savedItems]);
 
@@ -82,8 +65,6 @@ export default function Saved() {
 
     return { title: category, items: [...recipeItems, ...groceryItems] };
   });
-
-  console.log(sortedSavedItems);
 
   return (
     <>

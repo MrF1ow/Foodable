@@ -14,19 +14,15 @@ import { RecipeMetaData } from "@/types/saved";
 export default function Recipes() {
   const { recipes } = useAllRecipes(true);
 
-  const currentImageUrl = useRecipeStore((state) => state.currentImageUrl);
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const togglePopUp = () => {
-    setIsOpen(!isOpen);
+  const togglePopUp = (isOpen: boolean) => {
+    setIsOpen(isOpen);
   };
 
   return (
     <>
-      {isOpen && (
-        <RecipePopUp toggleDialog={togglePopUp} imageUrl={currentImageUrl} />
-      )}
+      {isOpen && <RecipePopUp toggleDialog={togglePopUp} />}
       <div className="h-full overflow-auto">
         <div className="flex flex-wrap justify-start gap-4 z-10">
           {recipes.length === 0 ? (

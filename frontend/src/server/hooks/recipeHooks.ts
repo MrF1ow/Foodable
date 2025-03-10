@@ -7,8 +7,6 @@ import { RECIPES } from "@/lib/constants/process";
 import { Recipe } from "@/types/recipe";
 
 export const useAllRecipes = (metadata: boolean = true) => {
-  const errorMessage = ERROR_FETCHING_RECIPES;
-
   const {
     data: recipes,
     isLoading: isLoadingRecipes,
@@ -19,14 +17,6 @@ export const useAllRecipes = (metadata: boolean = true) => {
     queryFn: () => RecipeApi.fetchAllRecipes(metadata),
   });
 
-  // // call useDataFetching hook to handle loading and error states
-  // useDataFetching({
-  //   isLoading: isLoadingRecipes,
-  //   isError: isErrorRecipes,
-  //   error: errorRecipes,
-  //   errorMessage,
-  // });
-
   return { recipes, isLoadingRecipes, errorRecipes, isErrorRecipes };
 };
 
@@ -35,8 +25,6 @@ export const useRecipeById = (
   id: string,
   { enabled = true }: useQueryProps
 ) => {
-  const errorMessage = ERROR_FETCHING_RECIPES;
-
   const {
     data: recipe,
     isLoading: isLoadingRecipe,
@@ -48,13 +36,6 @@ export const useRecipeById = (
     retry: 0,
     enabled,
   });
-
-  // useDataFetching({
-  //   isLoading: isLoadingRecipe,
-  //   isError: isErrorRecipe,
-  //   error: errorRecipe,
-  //   errorMessage,
-  // });
 
   return { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe };
 };

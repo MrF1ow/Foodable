@@ -17,6 +17,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  useAllSavedItems,
+  useDeleteCategory,
+  useUpdateCategory,
+  useGetCategories,
+} from "@/server/hooks/savedItemsHooks";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { getIndexOfItemInArray } from "@/utils/other";
 
@@ -34,26 +40,51 @@ export const EditButton = ({ category }: EditButtonProps) => {
     (state) => state.setCurrentCategories
   );
 
-  if (!currentCategories) return null;
-  const indexOfCategory = getIndexOfItemInArray(category, currentCategories);
+  const { categories } = useGetCategories({ enabled: true });
+  const { refetchSavedItems } = useAllSavedItems({ enabled: true });
+  const { deleteCategory } = useDeleteCategory();
+  const { updateCategory } = useUpdateCategory();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  if (!currentCategories) return null;
+
+  const indexOfCategoryInState = getIndexOfItemInArray(
+    category,
+    currentCategories
+  );
+
+  const indexOfCategoryInDB = getIndexOfItemInArray(category, categories);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (indexOfCategory === -1) return; // Ensure category exists before updating
+    if (indexOfCategoryInState === -1) return; // Ensure category exists before updating
 
-    const newCategories = [...currentCategories];
-    newCategories[indexOfCategory] = newTitle;
-    setCurrentCategories(newCategories);
+    if (indexOfCategoryInDB !== -1) {
+      const newCategories = [...currentCategories];
+      newCategories[indexOfCategoryInState] = newTitle;
+      setCurrentCategories(newCategories);
+    }
+
+    if (indexOfCategoryInDB !== -1) {
+      await updateCategory({ oldCategory: category, newCategory: newTitle });
+
+      await refetchSavedItems();
+    }
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
 
-    if (indexOfCategory === -1) return; // Ensure category exists before deleting
+    if (indexOfCategoryInState !== -1) {
+      const newCategories = currentCategories.filter(
+        (item) => item !== category
+      );
+      setCurrentCategories(newCategories);
+    }
 
-    const newCategories = currentCategories.filter((item) => item !== category);
-    setCurrentCategories(newCategories);
+    if (indexOfCategoryInDB !== -1) {
+      deleteCategory(category);
+    }
   };
 
   return (
