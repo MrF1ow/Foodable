@@ -13,6 +13,8 @@ export async function POST(req: Request) {
     // get the id from the request body
     const user: NewUser = await req.json();
 
+    console.log("User:", user);
+
     const userToInsert: NewUser = {
       ...user,
       preferences: {
@@ -30,6 +32,8 @@ export async function POST(req: Request) {
       lastLogin: user.lastLogin || new Date(),
       dateJoined: user.dateJoined || new Date(),
     };
+
+    console.log("User to insert:", userToInsert);
 
     if (!validateUserWithoutID(userToInsert, isValidObjectId)) {
       return NextResponse.json(

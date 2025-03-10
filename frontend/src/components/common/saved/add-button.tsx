@@ -21,12 +21,19 @@ import { useSavedItemsStore } from "@/stores/saved/store";
 
 export const AddButton = () => {
   const [newListTitle, setNewListTitle] = useState("");
-  const addSavedList = useSavedItemsStore((state) => state.addSavedCategory);
+  const currentCategories = useSavedItemsStore(
+    (state) => state.currentCategories
+  );
+  const setCurrentCategories = useSavedItemsStore(
+    (state) => state.setCurrentCategories
+  );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addSavedList(newListTitle);
+    if (!newListTitle) return;
+    const newCategories = [...currentCategories, newListTitle];
+    setCurrentCategories(newCategories);
     setNewListTitle("");
   };
 

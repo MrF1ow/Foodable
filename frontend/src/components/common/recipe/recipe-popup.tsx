@@ -15,15 +15,15 @@ import { useRecipeById } from "@/server/hooks/recipeHooks";
 
 interface RecipePopUpProps {
   toggleDialog: () => void;
-  imageUrl: string;
 }
 
-export const RecipePopUp = ({ toggleDialog, imageUrl }: RecipePopUpProps) => {
+export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
   const setAdditionalIngredients = useRecipeStore(
     (state) => state.setAdditionalIngredients
   );
   const groceryMap = useGroceryStore((state) => state.map);
   const currentData = useRecipeStore((state) => state.currentRecipe);
+  const imageUrl = useRecipeStore((state) => state.currentImageUrl);
   const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
 
   if (!currentData) return null;

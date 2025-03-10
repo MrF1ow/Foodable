@@ -4,7 +4,6 @@ import { RecipeIngredient } from "@/types/recipe";
 import { GroceryItem, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { MainMetaData } from "@/types/saved";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -88,7 +87,7 @@ export const getGroceryAccordingItems = (
 
 export const getIndexOfItemInArray = (
   itemName: string,
-  items: (GroceryItem | RecipeIngredient | MainMetaData | string)[]
+  items: any[]
 ) => {
   return items.findIndex((item) => item === itemName);
 };

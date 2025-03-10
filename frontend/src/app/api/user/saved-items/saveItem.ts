@@ -14,9 +14,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const { _id, title, category, type } = await req.json(); // Parse request body metadata
+    const requestBody = await req.json(); // Parse request body
 
-    if (!_id || !title || !category) {
+    const { _id, title, category, type } = requestBody; // Parse request body metadata
+
+    if (!_id || !title || !category || !type) {
       return NextResponse.json(
         { message: "Item Metadata is required" },
         { status: 400 }
@@ -45,7 +47,7 @@ export async function POST(req: Request) {
     let result; // Placeholder for the result of the update operation
 
     if (type === "recipe") {
-      const { imageId, tags } = await req.json(); // parse the rest of the request body
+      const { imageId, tags } = requestBody; // parse the rest of the request body
 
       if (!imageId || !tags) {
         return NextResponse.json(
@@ -76,6 +78,7 @@ export async function POST(req: Request) {
               title: title,
               imageId: ObjectId.createFromHexString(imageId),
               category: category,
+              type: type,
             },
           },
         }
@@ -102,6 +105,7 @@ export async function POST(req: Request) {
               _id: ObjectId.createFromHexString(_id),
               title: title,
               category: category,
+              type: type,
             },
           },
         }

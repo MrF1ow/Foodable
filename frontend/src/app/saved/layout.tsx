@@ -13,7 +13,6 @@ export default function SavedItemsLayout({
       headerComponent={<GeneralHeader title={"Saved Items"} width="25%" />}
     >
       <ContentLayout
-        split
         mainContent={children}
         subContent={<SavedItemsRightSide />}
       />

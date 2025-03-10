@@ -4,7 +4,7 @@ import fetchWithAuth from "../fetchInstance";
 export const SavedItemsApi = {
   getAllSavedItems: async () => {
     try {
-      const data = await fetchWithAuth("/saved-items");
+      const data = await fetchWithAuth("/user/saved-items");
       return data;
     } catch (error) {
       console.error("Error getting all saved items:", error);
@@ -14,7 +14,7 @@ export const SavedItemsApi = {
 
   saveItem: async (data: SavedItem) => {
     try {
-      const response = await fetchWithAuth("/savedItems", {
+      const response = await fetchWithAuth("/user/saved-items", {
         method: "POST",
         body: JSON.stringify(data),
       });
@@ -26,7 +26,7 @@ export const SavedItemsApi = {
 
   deleteItem: async (data: SavedItem) => {
     try {
-      const response = await fetchWithAuth("/savedItems", {
+      const response = await fetchWithAuth("/user/saved-items", {
         method: "DELETE",
         body: JSON.stringify(data),
       });

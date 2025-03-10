@@ -15,7 +15,9 @@ export async function DELETE(req: Request) {
       );
     }
 
-    const { _id, category, type } = await req.json();
+    const requestBody = await req.json();
+
+    const { _id, category, type } = requestBody;
 
     if (!_id || !category || !type) {
       return NextResponse.json(

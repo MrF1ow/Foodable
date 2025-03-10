@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import AuthOptions from "@/components/auth-options";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -50,20 +51,7 @@ export default function Home() {
         <h2 className="text-2xl md:text-4xl lg:text-6xl">
           Making Food More Doable.
         </h2>
-        <div className="w-full flex flex-row items-center justify-evenly md:justify-between text-foreground">
-          <Button
-            asChild
-            className="w-[40%] md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
-          >
-            <Link href="/sign-in">Login</Link>
-          </Button>
-          <Button
-            asChild
-            className="w-[40%] md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
-          >
-            <Link href="/sign-up">Sign Up</Link>
-          </Button>
-        </div>
+        <AuthOptions />
         <Button variant="link" asChild>
           <Link href="/recipe">Continue As Guest</Link>
         </Button>

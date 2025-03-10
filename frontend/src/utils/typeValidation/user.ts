@@ -45,16 +45,18 @@ export const validateUserWithoutID = (
       Array.isArray(user.createdRecipes) &&
       Array.isArray(user.following) &&
       Array.isArray(user.followers) &&
-      user.savedItems.recipes.every((item) =>
-        item && typeof item === "object" && item._id
-          ? validateIdFn(item._id)
-          : false
-      ) &&
-      user.savedItems.groceryLists.every((item) =>
-        item && typeof item === "object" && item._id
-          ? validateIdFn(item._id)
-          : false
-      ) &&
+      (user.savedItems.recipes.length === 0 ||
+        user.savedItems.recipes.every((item) =>
+          item && typeof item === "object" && item._id
+            ? validateIdFn(item._id)
+            : false
+        )) &&
+      (user.savedItems.groceryLists.length === 0 ||
+        user.savedItems.groceryLists.every((item) =>
+          item && typeof item === "object" && item._id
+            ? validateIdFn(item._id)
+            : false
+        )) &&
       user.currentGroceryList === null) ||
     ((user.currentGroceryList &&
     typeof user.currentGroceryList === "object" &&
@@ -83,14 +85,19 @@ export const validateUser = (
   }
   // Validate '_id' field if it exists
   if (user._id && !validateIdFn(user._id)) {
+    console.log("Failed _id validation");
     return false;
   }
+
+  console.log("Passed _id validation");
 
   if (user.clerkId && !isValidUserId(user.clerkId)) {
     return false;
   }
 
-  const { _id, ...userWithoutId } = user;
+  console.log("Passed clerkId validation");
+
+  const { _id, clerkId, ...userWithoutId } = user;
 
   return validateUserWithoutID(userWithoutId, validateIdFn);
 };

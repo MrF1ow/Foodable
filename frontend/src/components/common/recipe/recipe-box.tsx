@@ -10,7 +10,7 @@ import { useRecipeStore } from "@/stores/recipe/store";
 import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 interface RecipeBoxProps {
-  setOpen: (isOpen: boolean) => void;
+  setOpen: ((isOpen: boolean) => void) | ((isOpen: boolean) => void | any);
   data: RecipeMetaData | SavedRecipeMetaData;
 }
 

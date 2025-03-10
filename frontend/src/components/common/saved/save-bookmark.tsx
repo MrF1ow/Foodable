@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
 import { useSavedItemsStore } from "@/stores/saved/store";
-import { useRecipeStore } from "@/stores/recipe/store";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +27,11 @@ import { SavedItem, UnsavedItem } from "@/types/saved";
 import { capitalizeTitle } from "@/utils/other";
 import { GroceryList } from "@/types/grocery";
 import { Recipe } from "@/types/recipe";
+import {
+  useCreateSavedItem,
+  useDeleteSavedItem,
+} from "@/server/hooks/savedItemsHooks";
+import { e } from "node_modules/@clerk/elements/dist/step-z-Bm-lcH.mjs";
 
 interface SaveBookmarkProps {
   data: Recipe | GroceryList | SavedItem | UnsavedItem;
@@ -41,28 +45,59 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
     (state) => state.setCurrentCategories
   );
 
+  const { createSavedItem } = useCreateSavedItem();
+  const { deleteSavedItem } = useDeleteSavedItem();
+
   const [newListTitle, setNewListTitle] = useState("");
   const [selectedList, setSelectedList] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAddCategory = () => {
+    const category = newListTitle.trim();
+    setNewListTitle("");
+    setCurrentCategories([...categories, category]);
+  };
+
+  const createToMutate = (data: any, listName: string) => {
+    let newData;
+    if ("instructions" in data) {
+      newData = {
+        ...data,
+        type: "recipe",
+        category: listName,
+      } as SavedItem;
+    } else if ("items" in data) {
+      newData = {
+        ...data,
+        type: "groceryList",
+        category: listName,
+      } as SavedItem;
+    } else {
+      newData = {
+        ...data,
+        category: listName,
+      } as SavedItem;
+    }
+    return newData;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (newListTitle.trim()) {
-      setSelectedList(newListTitle.trim());
-      setNewListTitle("");
-    }
+    const toInsert = createToMutate(data, selectedList);
 
-    // this is now a saved item
-    const toInsert = {
-      ...data,
-      category: selectedList,
-    };
+    console.log("Saving:", toInsert);
 
-    if (selectedList) {
+    await createSavedItem(toInsert);
+
+    if (setOpen) {
+      setOpen(false);
     }
   };
 
-  const handleRemoveSave = () => {
+  const handleRemoveSave = (data: any) => {
+    const toDelete = createToMutate(data, selectedList);
+
+    deleteSavedItem(toDelete);
     if (setOpen) {
       setOpen(false);
     }
@@ -120,17 +155,16 @@ export const SaveBookmark = ({ data, setOpen }: SaveBookmarkProps) => {
                   value={newListTitle}
                   onChange={(e) => setNewListTitle(e.target.value)}
                 />
-                <Button type="submit">Add</Button>
+                <Button type="button" onClick={handleAddCategory}>
+                  Add
+                </Button>
               </div>
             </div>
             <DialogFooter className="mt-4">
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button
-                onClick={() => console.log("Saving to:", selectedList)}
-                disabled={!selectedList}
-              >
+              <Button type="submit" disabled={!selectedList}>
                 Save
               </Button>
             </DialogFooter>

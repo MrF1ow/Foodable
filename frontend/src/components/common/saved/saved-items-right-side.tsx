@@ -7,8 +7,7 @@ import Loader from "@/components/loader";
 
 export default function SavedItemsRightSide() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
+  const currentItemType = useSavedItemsStore((state) => state.currentItemType);
 
-  const currentItem = useSavedItemsStore((state) => state.currentItem);
-
-  return <>{splitLayout && currentItem ? <SavedItemPopup /> : <Loader />}</>;
+  return <>{splitLayout && currentItemType ? <SavedItemPopup /> : <Loader />}</>;
 }

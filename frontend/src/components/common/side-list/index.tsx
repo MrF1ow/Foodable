@@ -14,7 +14,11 @@ import { AddButton } from "./add-button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { AddItem } from "../grocery/add-item";
 
-export const SideList = () => {
+interface SideListProps {
+  toggleDialog?: () => void;
+}
+
+export const SideList = ({ toggleDialog }: SideListProps) => {
   const currentForm = useGroceryStore((state) => state.currentForm);
 
   return (

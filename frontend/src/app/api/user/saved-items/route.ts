@@ -9,7 +9,7 @@ export async function GET() {
 
 // Handling POST request
 export async function POST(request: NextRequest) {
-  saveItem(request);
+  return saveItem(request);
 }
 
 // Handling DELETE request

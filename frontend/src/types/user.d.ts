@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 import { GroceryList } from "./grocery";
-import { MainMetaData, RecipeMetaData, SavedGroceryMetaData } from "./saved";
 
 export type UserRating = {
   userId: ObjectId; // User ID

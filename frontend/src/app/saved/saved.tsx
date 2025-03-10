@@ -25,6 +25,9 @@ export default function Saved() {
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
   );
+  const setCurrentItemType = useSavedItemsStore(
+    (state) => state.setCurrentItemType
+  );
 
   const { savedItems } = useAllSavedItems({
     enabled: true,
@@ -33,22 +36,54 @@ export default function Saved() {
   useEffect(() => {
     console.log(savedItems);
     if (savedItems) {
-      const categories = savedItems.reduce((acc: string[], item: SavedItem) => {
-        if (item.category && !acc.includes(item.category)) {
-          acc.push(item.category);
-        }
-        return acc;
-      }, []);
-      setCurrentCategories(categories);
+      let categories: string[] = [];
+
+      // Process recipes if not empty
+      if (savedItems.recipes.length !== 0) {
+        const recipeCategories = savedItems.recipes.reduce(
+          (acc: string[], item: SavedItem) => {
+            if (item.category && !acc.includes(item.category)) {
+              acc.push(item.category);
+            }
+            return acc;
+          },
+          []
+        );
+        categories = [...categories, ...recipeCategories];
+      }
+
+      // Process groceryLists if not empty
+      if (savedItems.groceryLists.length !== 0) {
+        const groceryCategories = savedItems.groceryLists.reduce(
+          (acc: string[], item: SavedItem) => {
+            if (item.category && !acc.includes(item.category)) {
+              acc.push(item.category);
+            }
+            return acc;
+          },
+          []
+        );
+        categories = [...categories, ...groceryCategories];
+      }
+
+      // Remove duplicates and update state
+      setCurrentCategories([...new Set(categories)]);
     }
-  }, [savedItems, setCurrentCategories]);
+  }, [savedItems]);
 
   const sortedSavedItems = currentCategories.map((category) => {
-    const items = savedItems.filter(
+    const recipeItems = savedItems.recipes.filter(
       (item: SavedItem) => item.category === category
     );
-    return { title: category, items };
+
+    const groceryItems = savedItems.groceryLists.filter(
+      (item: SavedItem) => item.category === category
+    );
+
+    return { title: category, items: [...recipeItems, ...groceryItems] };
   });
+
+  console.log(sortedSavedItems);
 
   return (
     <>
@@ -68,7 +103,10 @@ export default function Saved() {
                       return (
                         <RecipeBox
                           key={item._id.toString()}
-                          setOpen={setSplitLayout}
+                          setOpen={(split: boolean) => {
+                            setSplitLayout(split);
+                            setCurrentItemType("recipe");
+                          }}
                           data={item}
                         />
                       );
