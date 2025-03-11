@@ -10,6 +10,8 @@ import { showToast } from "@/providers/react-query-provider";
 import type { NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
+import { useFetchUserLocation } from "@/server/hooks/googleHooks";
+import { useUserStore } from "@/stores/user/store";
 
 export default function GroceryListDataFetcher() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
@@ -19,6 +21,8 @@ export default function GroceryListDataFetcher() {
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const currentList = useGroceryStore((state) => state.currentList);
+  const { userLocation, refetchUserLocation } = useFetchUserLocation();
+  const setLocation = useUserStore((state) => state.setLocation);
 
   // use tanstack to fetch all grocery lists in metadata mode
   // this will only fetch the metadata of the grocery lists
@@ -36,6 +40,16 @@ export default function GroceryListDataFetcher() {
     id: currentList?._id || "",
     enabled: true,
   });
+
+  async function fetchUserLocation() {
+    const result = await refetchUserLocation();
+    const location = result.data;
+    if (location) {
+      setLocation(location);
+      console.log("User Location From Google:", location);
+    }
+  }
+  fetchUserLocation();
 
   // onsuccess and onerror handlers for the grocery lists query
   // do not exist anymore in tanstack

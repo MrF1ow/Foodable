@@ -10,7 +10,10 @@ export const useFetchUserLocation = () => {
     isError: isErrorUserLocation,
   } = useQuery({
     queryKey: ["userLocation"],
-    queryFn: () => GoogleApi.fetchUserLocation(),
+    queryFn: async () => {
+      const response = await GoogleApi.fetchUserLocation();
+      return response.json();
+    },
     retry: 0,
   });
 
