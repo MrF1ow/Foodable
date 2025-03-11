@@ -49,7 +49,6 @@ export const KrogerApi = {
         { status: 500 }
       );
     }
-    console.log("accessToken:", accessToken);
 
     const locationUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/locations?filter.zipCode.near=${zipCode}`;
 

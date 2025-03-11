@@ -16,12 +16,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { useFetchUserLocationFromZip } from "@/server/hooks/googleHooks";
+import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
+import { showToast } from "@/providers/react-query-provider";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
 export const FindPrice = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setZipCode = useGeneralStore((state) => state.setZipCode);
+  const zipCode = useGeneralStore((state) => state.zipCode);
+
+  const { krogerLocations, refetchKrogerLocations } =
+    useFetchKrogerLocations(zipCode);
 
   const form = useForm({
     defaultValues: {
@@ -31,7 +38,45 @@ export const FindPrice = () => {
     },
   });
 
-  function onSubmit(data: any) {
+  async function onSubmit(data: any) {
+    let locationId = "";
+    try {
+      setZipCode(data.zipCode);
+      const { data: updatedKrogerLocations } = await refetchKrogerLocations();
+      if (
+        !updatedKrogerLocations ||
+        !updatedKrogerLocations.data ||
+        updatedKrogerLocations.data.length === 0
+      ) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "No Kroger locations found",
+          "Try another ZIP code",
+          3000
+        );
+        return;
+      }
+      const firstLocationId = updatedKrogerLocations.data[0]?.locationId;
+
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "Location Found",
+        `Kroger stores located`,
+        3000
+      );
+
+      console.log("krogerLocations: ", updatedKrogerLocations);
+      console.log("LocationId: ", firstLocationId);
+      locationId = firstLocationId;
+    } catch (error) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "Failed to fetch Kroger locations",
+        3000
+      );
+      return;
+    }
     console.log(data);
   }
 

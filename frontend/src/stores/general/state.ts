@@ -4,12 +4,14 @@ export type GeneralState = {
   currentPage: string;
   isMobile: boolean;
   splitLayout: boolean;
+  zipCode: string;
 };
 
 export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
+  setZipCode: (zipCode: string) => void;
 };
 
 export type GeneralStore = GeneralState & GeneralActions;
@@ -19,6 +21,7 @@ export const initGeneralStore = (): GeneralState => {
     currentPage: "Recipes",
     isMobile: false,
     splitLayout: false,
+    zipCode: "97330",
   };
 };
 
@@ -26,6 +29,7 @@ export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
   isMobile: false,
   splitLayout: false,
+  zipCode: "97330",
 };
 
 export const createGeneralStore = (
@@ -50,5 +54,7 @@ export const createGeneralStore = (
         ...state,
         splitLayout: state.isMobile ? false : splitLayout, // Prevent enabling splitLayout if isMobile is true
       })),
+
+    setZipCode: (zipCode: string) => set((state) => ({ ...state, zipCode })),
   }));
 };
