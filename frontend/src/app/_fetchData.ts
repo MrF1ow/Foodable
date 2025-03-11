@@ -7,6 +7,8 @@ import {
   USERS,
   FOLLOWERS,
   FOLLOWING,
+  SETTINGS,
+  PREFERENCES,
 } from "@/lib/constants/process";
 import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
@@ -46,6 +48,16 @@ export default async function FetchUserData() {
     await queryClient.prefetchQuery({
       queryKey: [USERS, FOLLOWING],
       queryFn: () => UserApi.fetchAllFollowingOfUser(),
+    });
+
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, SETTINGS],
+      queryFn: () => UserApi.fetchUserSettings(),
+    });
+
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, PREFERENCES],
+      queryFn: () => UserApi.fetchUserPreferences(),
     });
   }
 

@@ -35,10 +35,7 @@ export async function PUT(req: Request) {
     );
 
     if (result.modifiedCount === 0) {
-      return NextResponse.json(
-        { message: "User update failed" },
-        { status: 400 }
-      );
+      console.warn("User Settings Already Updated");
     }
 
     return NextResponse.json(

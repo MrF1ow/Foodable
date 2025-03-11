@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const TermsAndConditions: React.FC = () => {
+export default function TermsAndConditions() {
   const [accepted, setAccepted] = useState(false);
 
   const handleAccept = () => {
@@ -73,6 +73,4 @@ const TermsAndConditions: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default TermsAndConditions;
+}

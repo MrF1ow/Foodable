@@ -4,10 +4,19 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { FaMoon } from "react-icons/fa";
+import { useUpdateUserSettings } from "@/server/hooks/userHooks";
 
 export default function ThemeSwitch() {
   const [mounted, setMounted] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
+
+  const { updateUserSettings } = useUpdateUserSettings();
+
+  const handleThemeChange = async (newTheme: "light" | "dark") => {
+    console.log("newTheme: ", newTheme);
+    setTheme(newTheme);
+    await updateUserSettings({ theme: newTheme });
+  };
 
   useEffect(() => setMounted(true), []);
 
@@ -16,7 +25,7 @@ export default function ThemeSwitch() {
   if (resolvedTheme === "dark") {
     return (
       <button
-        onClick={() => setTheme("light")}
+        onClick={() => handleThemeChange("light")}
         className="p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
         aria-label="Toggle Theme"
       >
@@ -28,7 +37,7 @@ export default function ThemeSwitch() {
   if (resolvedTheme === "light") {
     return (
       <button
-        onClick={() => setTheme("dark")}
+        onClick={() => handleThemeChange("dark")}
         className="p-2 rounded-lg bg-card-background hover:bg-secondary text-foreground transition"
         aria-label="Toggle Theme"
       >
