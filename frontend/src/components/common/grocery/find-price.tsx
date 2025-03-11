@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
+import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { showToast } from "@/providers/react-query-provider";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { useState } from "react";
@@ -28,9 +29,18 @@ export const FindPrice = () => {
   //   const setZipCode = useGeneralStore((state) => state.setZipCode);
   //   const zipCode = useGeneralStore((state) => state.zipCode);
   const [zipCode, setZipCodeState] = useState("97330");
+  const [term, setTerm] = useState("milk");
+  const [locationId, setLocationId] = useState("70100070");
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
+
+  const {
+    krogerProducts,
+    isLoadingKrogerProducts,
+    refetchKrogerProducts,
+    errorKrogerProducts,
+  } = useFetchKrogerProducts(term, locationId);
 
   const form = useForm({
     defaultValues: {
@@ -42,47 +52,33 @@ export const FindPrice = () => {
 
   async function onSubmit(data: any) {
     let locationId = "";
-    console.error("Submitting find price form...");
     try {
       //   setZipCode(data.zipCode);
       setZipCodeState(data.zipCode);
-      console.log("Setting zip code:", data.zipCode);
       const { data: updatedKrogerLocations } = await refetchKrogerLocations();
       if (
         !updatedKrogerLocations ||
         !updatedKrogerLocations.data ||
         updatedKrogerLocations.data.length === 0
       ) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "No Kroger locations found",
-          "Try another ZIP code",
-          3000
-        );
         return;
       }
       const firstLocationId = updatedKrogerLocations.data[0]?.locationId;
 
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "Location Found",
-        `Kroger stores located`,
-        3000
-      );
-
-      console.log("krogerLocations: ", updatedKrogerLocations);
-      console.log("LocationId: ", firstLocationId);
       locationId = firstLocationId;
+      console.log("Locations from Kroger:", updatedKrogerLocations);
     } catch (error) {
-      showToast(
-        TOAST_SEVERITY.ERROR,
-        "Error",
-        "Failed to fetch Kroger locations",
-        3000
-      );
       return;
     }
-    console.log(data);
+
+    if (locationId !== "") {
+      setLocationId(locationId);
+      setTerm("milk");
+      try {
+        const products = await refetchKrogerProducts();
+        console.log("Products from Kroger:", products);
+      } catch (error) {}
+    }
   }
 
   const handleInputClose = () => {
