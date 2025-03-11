@@ -1,6 +1,5 @@
 import { getAccessToken } from "@/utils/getAccessToken";
-import { NextResponse } from "next/server";
-
+import fetchWithAuth from "../fetchInstance";
 interface ProductResponse {
   data: Array<{
     productId: string;
@@ -15,63 +14,21 @@ interface ProductResponse {
   }>;
 }
 
-interface LocationResponse {
-  data: Array<{
-    locationId: string;
-    chain: string;
-    name: string;
-    address: {
-      addressLine1: string;
-      city: string;
-      state: string;
-      zipCode: string;
-    };
-    geolocation: {
-      latitude: number;
-      longitude: number;
-    };
-  }>;
-}
-
 export const KrogerApi = {
   fetchKrogerLocations: async (zipCode: string) => {
-    console.log("Getting Kroger locations...");
-
-    if (!zipCode) {
-      return NextResponse.json({ error: "Missing zipCode" }, { status: 400 });
-    }
-    console.log("Zipcode:", zipCode);
-
-    const accessToken = await getAccessToken();
-    if (!accessToken) {
-      return NextResponse.json(
-        { error: "Failed to retrieve access token" },
-        { status: 500 }
-      );
-    }
-
-    const locationUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/locations?filter.zipCode.near=${zipCode}`;
-
+    console.log("fetchKrogerLocations starting...");
     try {
-      const response = await fetch(locationUrl, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=utf-8",
-        },
-      });
-
+      const response = await fetch(`/api/kroger?zipCode=${zipCode}`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(
+          `Error getting Kroger locations: ${response.statusText}`
+        );
       }
-
-      const data: LocationResponse = await response.json();
-      console.log("Locations response:", data);
-      return NextResponse.json(data, { status: 200 });
-    } catch (error: any) {
-      return NextResponse.json(
-        { error: "Failed to fetch locations" },
-        { status: error.response?.status || 500 }
-      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error getting Kroger locations: ", error);
+      throw error;
     }
   },
   fetchKrogerProducts: async (term: string, locationId?: string) => {

@@ -19,13 +19,15 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { showToast } from "@/providers/react-query-provider";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { useState } from "react";
 
 export const FindPrice = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const setZipCode = useGeneralStore((state) => state.setZipCode);
-  const zipCode = useGeneralStore((state) => state.zipCode);
+  //   const setZipCode = useGeneralStore((state) => state.setZipCode);
+  //   const zipCode = useGeneralStore((state) => state.zipCode);
+  const [zipCode, setZipCodeState] = useState("97330");
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
@@ -40,8 +42,11 @@ export const FindPrice = () => {
 
   async function onSubmit(data: any) {
     let locationId = "";
+    console.error("Submitting find price form...");
     try {
-      setZipCode(data.zipCode);
+      //   setZipCode(data.zipCode);
+      setZipCodeState(data.zipCode);
+      console.log("Setting zip code:", data.zipCode);
       const { data: updatedKrogerLocations } = await refetchKrogerLocations();
       if (
         !updatedKrogerLocations ||
