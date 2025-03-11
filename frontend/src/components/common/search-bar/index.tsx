@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 interface SearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  FilterButton: React.ComponentType;
+  FilterButton?: React.ComponentType;
 }
 
 export const SearchBar = ({
@@ -26,7 +26,7 @@ export const SearchBar = ({
         />
         <IoIosSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 bg-card-background text-foreground" />
       </div>
-      <FilterButton />
+      {FilterButton && <FilterButton />}
     </div>
   );
 };

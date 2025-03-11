@@ -19,7 +19,7 @@ export type User = NewUser & {
 };
 
 export type FollowMetadata = {
-  userId: ObjectId; // User ID
+  userId: string; // clerk Id of user
   username: string; // Username of the user
   avatarImageId: ObjectId; // Avatar image ID
 };
