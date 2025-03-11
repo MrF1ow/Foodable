@@ -117,3 +117,16 @@ export const useFetchAllFollowingOfUser = ({
     isErrorFollowing,
   };
 };
+
+export const useDeleteFollowing = (id: string) => {
+  const mutation = useMutation<void, Error, string>({
+    mutationFn: () => UserApi.removeFollowing(id),
+  });
+
+  return {
+    deleteFollowing: mutation.mutate,
+    isLoadingDeleteFollowing: mutation.isPending,
+    errorDeleteFollowing: mutation.error,
+    isErrorDeleteFollowing: mutation.isError,
+  };
+};

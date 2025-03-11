@@ -14,9 +14,9 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const { followerId } = await req.json();
+    const { followingId } = await req.json();
 
-    if (!followerId) {
+    if (!followingId) {
       return NextResponse.json(
         { message: "Follower ID is required" },
         { status: 400 }
@@ -30,7 +30,7 @@ export async function DELETE(req: Request) {
       .collection("users")
       .updateOne(
         { clerkId: clerkUser.id },
-        { $pull: { followers: { userId: followerId } as any } }
+        { $pull: { following: { userId: followingId } as any } }
       );
 
     if (result.modifiedCount === 0) {

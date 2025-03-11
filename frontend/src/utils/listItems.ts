@@ -10,6 +10,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { RecipeMetaData, SavedItem } from "@/types/saved";
 import { compareTag } from "./filterHelpers";
+import { FollowMetadata } from "@/types/user";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -179,4 +180,10 @@ export const filterRecipes = (
   });
 
   return filteredRecipes;
+};
+
+export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
+  return users.filter((user) =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 };

@@ -51,9 +51,9 @@ export const UserApi = {
 
   fetchAllFollowingOfUser: async () => {
     try {
-      const response = await fetchWithAuth("/user/following");
+      const response = await fetchWithAuth("/user/users/following");
       return response;
-    } catch (error){
+    } catch (error) {
       console.error("Error getting following:", error);
       throw error;
     }
@@ -61,7 +61,7 @@ export const UserApi = {
 
   fetchAllFollowersOfUser: async () => {
     try {
-      const response = await fetchWithAuth("/user/followers");
+      const response = await fetchWithAuth("/user/users/followers");
       return response;
     } catch (error) {
       console.error("Error getting followers:", error);
@@ -69,11 +69,11 @@ export const UserApi = {
     }
   },
 
-  removeFollower: async (followerId: string) => {
+  removeFollowing: async (followingId: string) => {
     try {
-      const response = await fetchWithAuth("/user/followers", {
+      const response = await fetchWithAuth("/user/users/following", {
         method: "DELETE",
-        body: JSON.stringify({ followerId }),
+        body: JSON.stringify({ followingId }),
       });
       return response;
     } catch (error) {

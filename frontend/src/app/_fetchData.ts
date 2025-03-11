@@ -4,9 +4,13 @@ import {
   RECIPES,
   SAVED_CATEGORIES,
   SAVED_ITEMS,
+  USERS,
+  FOLLOWERS,
+  FOLLOWING,
 } from "@/lib/constants/process";
 import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
+import { UserApi } from "@/server/api/userApi";
 import { SavedItemsApi } from "@/server/api/savedItemsApi";
 import { checkRole } from "@/utils/roles";
 
@@ -32,6 +36,16 @@ export default async function FetchUserData() {
     await queryClient.prefetchQuery({
       queryKey: [SAVED_CATEGORIES],
       queryFn: () => SavedItemsApi.getAllSavedCategories(),
+    });
+
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, FOLLOWERS],
+      queryFn: () => UserApi.fetchAllFollowersOfUser(),
+    });
+
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, FOLLOWING],
+      queryFn: () => UserApi.fetchAllFollowingOfUser(),
     });
   }
 

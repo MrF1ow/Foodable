@@ -42,3 +42,5 @@ export interface FilterTag {
   price: Tag;
   ingredient: Tag;
 }
+
+export type UserSections = "following" | "followers";

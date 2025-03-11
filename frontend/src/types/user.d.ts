@@ -1,6 +1,10 @@
 import { ObjectId } from "mongodb";
 import { GroceryList } from "./grocery";
 import { SavedRecipeMetaData } from "./saved";
+export type UserPreferences = {
+  dietaryRestrictions: string[];
+  budget: number;
+};
 
 export type UserRating = {
   userId: ObjectId; // User ID
@@ -42,10 +46,7 @@ export type NewUser = UserIdentifiers & {
   };
 
   // User profile preferences (will add more later)
-  preferences: {
-    dietaryRestrictions: string[];
-    allergies: string[];
-  };
+  preferences: UserPreferences;
 
   savedItems: {
     recipes: SavedRecipeMetaData[];
