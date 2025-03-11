@@ -1,31 +1,58 @@
+import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { NextResponse } from "next/server";
+
 export const GoogleApi = {
   fetchUserLocationFromZip: async (zipCode: string) => {
-    console.log("fetchLocationFromZip starting...");
+    if (!zipCode) {
+      return new Response("Missing zipCode", { status: 400 });
+    }
+    console.log("Zipcode from getLocationFromZip:", zipCode);
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+    if (!apiKey) {
+      throw new Error("Google API key is not defined");
+    }
     try {
-      const response = await fetch(`/google?zipCode=${zipCode}`);
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${apiKey}`
+      );
       if (!response.ok) {
-        throw new Error(
-          `Error getting location from zip: ${response.statusText}`
-        );
+        const errorData = await response.json();
+        throw new Error(errorData.error.message);
       }
       const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error getting location from zip: ", error);
-      throw error;
+      const { lat, lng } = data.results[0].geometry.location;
+      return NextResponse.json(
+        { latitude: lat, longitude: lng },
+        { status: 200 }
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   },
   fetchUserLocation: async () => {
-    console.log("fetchUserLocation starting...");
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+    if (!apiKey) {
+      throw new Error("Google API key is not defined");
+    }
     try {
-      const response = await fetch(`/google`);
+      const response = await fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`,
+        {
+          method: "POST",
+        }
+      );
       if (!response.ok) {
-        throw new Error(`Error getting user location: ${response.statusText}`);
+        throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error getting user location: ", error);
+      console.log("fetchUserLocation response", data);
+      const { lat, lng } = data.location;
+      return NextResponse.json(
+        { latitude: lat, longitude: lng },
+        { status: 200 }
+      );
+    } catch (error: any) {
+      console.error("Error getting user location: ", error.message);
       throw error;
     }
   },
