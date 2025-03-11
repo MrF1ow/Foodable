@@ -29,11 +29,26 @@ import {
 import { GroceryList } from "@/types/grocery";
 import { showToast } from "@/providers/react-query-provider";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { capitalizeTitle } from "@/utils/other";
+import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
+import { SavedItem } from "@/types/saved";
 
 export const EditButton = () => {
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
+  const currentCategories = useSavedItemsStore(
+    (state) => state.currentCategories
+  );
+
+  const [selectedList, setSelectedList] = useState("");
   const [newTitle, setNewTitle] = useState(currentList?.title || "");
   const [isOpen, setIsOpen] = useState(false);
 
@@ -44,6 +59,7 @@ export const EditButton = () => {
   const { updateGroceryList } = useUpdateGroceryList();
   const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
+  const { createSavedItem } = useCreateSavedItem();
 
   const { user } = useUser();
 
@@ -62,13 +78,30 @@ export const EditButton = () => {
     if (currentList.title !== newTitle) {
       if (currentList._id) {
         await updateGroceryList(newList as GroceryList);
+
         showToast(
           TOAST_SEVERITY.SUCCESS,
           "List Updated",
           "Grocery list updated successfully",
           3000
         );
+
         setCurrentList(newList);
+
+        const savedItem = {
+          ...newList,
+          type: "groceryList",
+          category: selectedList,
+        } as unknown as SavedItem;
+
+        await createSavedItem(savedItem);
+
+        showToast(
+          TOAST_SEVERITY.SUCCESS,
+          "Saved",
+          "Grocery list saved successfully",
+          3000
+        );
       } else {
         if (!user) {
           showToast(
@@ -179,8 +212,21 @@ export const EditButton = () => {
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
             />
+
+            <Select onValueChange={setSelectedList} value={selectedList}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {currentCategories.map((list) => (
+                  <SelectItem key={list} value={list}>
+                    {capitalizeTitle(list)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          {/* For some reason the DialogFooter is not taking up the full width */}
+
           <DialogFooter className="w-full flex items-center justify-between mt-4">
             {/* Left side: Delete button */}
             {currentList?._id ? (

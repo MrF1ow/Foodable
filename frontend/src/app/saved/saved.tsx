@@ -14,6 +14,7 @@ import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
 import { SavedItem } from "@/types/saved";
 import { useEffect } from "react";
+import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
 
 export default function Saved() {
@@ -22,37 +23,15 @@ export default function Saved() {
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
 
-  const setCurrentCategories = useSavedItemsStore(
-    (state) => state.setCurrentCategories
-  );
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
   );
   const setCurrentItemType = useSavedItemsStore(
     (state) => state.setCurrentItemType
   );
-
-  const { savedItems, refetchSavedItems } = useAllSavedItems({
+  const { savedItems } = useAllSavedItems({
     enabled: true,
   });
-  const { categories } = useGetCategories({ enabled: true });
-
-  useEffect(() => {
-    console.log("Saved Items", savedItems);
-    console.log("Categories", categories);
-    if (savedItems) {
-      let combinedCategories: string[] = [];
-
-      if (categories.length !== 0) {
-        combinedCategories = [...currentCategories, ...categories];
-      } else if (currentCategories.length !== 0) {
-        combinedCategories = currentCategories;
-      } else {
-        combinedCategories = [];
-      }
-      setCurrentCategories(combinedCategories);
-    }
-  }, [savedItems, refetchSavedItems]);
 
   const sortedSavedItems = currentCategories.map((category) => {
     const recipeItems = savedItems.recipes.filter(
@@ -68,6 +47,7 @@ export default function Saved() {
 
   return (
     <>
+      <SavedDataFetcher />
       {/* Accordion Components */}
       <div className="flex flex-wrap justify-start gap-4">
         {sortedSavedItems.map(({ title, items }) => (

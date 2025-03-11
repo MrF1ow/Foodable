@@ -87,8 +87,6 @@ export const SaveBookmark = ({ isSaved, data, setOpen }: SaveBookmarkProps) => {
 
     const toInsert = createToMutate(data, selectedList);
 
-    console.log("Saving:", toInsert);
-
     await createSavedItem(toInsert);
     await refetchSavedItems();
 
@@ -99,8 +97,6 @@ export const SaveBookmark = ({ isSaved, data, setOpen }: SaveBookmarkProps) => {
 
   const handleRemoveSave = async () => {
     const toDelete = createToMutate(data, selectedList);
-
-    console.log("Deleting:", toDelete);
 
     deleteSavedItem(toDelete);
     await refetchSavedItems();
