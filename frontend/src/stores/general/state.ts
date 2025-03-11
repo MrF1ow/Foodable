@@ -5,6 +5,7 @@ export type GeneralState = {
   isMobile: boolean;
   splitLayout: boolean;
   clerkVariables: any;
+  zipCode: string;
 };
 
 export type GeneralActions = {
@@ -12,6 +13,7 @@ export type GeneralActions = {
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
   setClerkVariables: (clerkVariables: any) => void;
+  setZipCode: (zipCode: string) => void;
 };
 
 export type GeneralStore = GeneralState & GeneralActions;
@@ -21,6 +23,7 @@ export const defaultInitState: GeneralState = {
   isMobile: false,
   splitLayout: false,
   clerkVariables: {},
+  zipCode: "97330",
 };
 
 export const createGeneralStore = (
@@ -48,5 +51,6 @@ export const createGeneralStore = (
 
     setClerkVariables: (clerkVariables: any) =>
       set((state) => ({ ...state, clerkVariables })),
+    setZipCode: (zipCode: string) => set((state) => ({ ...state, zipCode })),
   }));
 };

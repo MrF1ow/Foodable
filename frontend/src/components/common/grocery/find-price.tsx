@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   FormField,
@@ -16,11 +16,31 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
+import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
+import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
+import { showToast } from "@/providers/react-query-provider";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { useState } from "react";
 
 export const FindPrice = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  //   const setZipCode = useGeneralStore((state) => state.setZipCode);
+  //   const zipCode = useGeneralStore((state) => state.zipCode);
+  const [zipCode, setZipCodeState] = useState("97330");
+  const [term, setTerm] = useState("milk");
+  const [locationId, setLocationId] = useState("70100070");
+
+  const { krogerLocations, refetchKrogerLocations } =
+    useFetchKrogerLocations(zipCode);
+
+  const {
+    krogerProducts,
+    isLoadingKrogerProducts,
+    refetchKrogerProducts,
+    errorKrogerProducts,
+  } = useFetchKrogerProducts(term, locationId);
 
   const form = useForm({
     defaultValues: {
@@ -30,8 +50,35 @@ export const FindPrice = () => {
     },
   });
 
-  function onSubmit(data: any) {
-    console.log(data);
+  async function onSubmit(data: any) {
+    let locationId = "";
+    try {
+      //   setZipCode(data.zipCode);
+      setZipCodeState(data.zipCode);
+      const { data: updatedKrogerLocations } = await refetchKrogerLocations();
+      if (
+        !updatedKrogerLocations ||
+        !updatedKrogerLocations.data ||
+        updatedKrogerLocations.data.length === 0
+      ) {
+        return;
+      }
+      const firstLocationId = updatedKrogerLocations.data[0]?.locationId;
+
+      locationId = firstLocationId;
+      console.log("Locations from Kroger:", updatedKrogerLocations);
+    } catch (error) {
+      return;
+    }
+
+    if (locationId !== "") {
+      setLocationId(locationId);
+      setTerm("milk");
+      try {
+        const products = await refetchKrogerProducts();
+        console.log("Products from Kroger:", products);
+      } catch (error) {}
+    }
   }
 
   const handleInputClose = () => {
