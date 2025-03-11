@@ -13,9 +13,10 @@ import {
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { capitalizeTitle } from "@/utils/other";
 import { SavedItem } from "@/types/saved";
-import { useEffect } from "react";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
+import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
+import { Box } from "@/components/common/box";
 
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -47,6 +48,7 @@ export default function Saved() {
 
   return (
     <>
+      <GroceryListDataFetcher />
       <SavedDataFetcher />
       {/* Accordion Components */}
       <div className="flex flex-wrap justify-start gap-4">
@@ -71,14 +73,19 @@ export default function Saved() {
                           data={item}
                         />
                       );
-                    } else if (typeOfData === "grocery") {
+                    } else if (typeOfData === "groceryList") {
                       return (
-                        <div
-                          key={item._id.toString()}
-                          className="p-2 border rounded-lg"
+                        <Box
+                          keyValue={item._id.toString()}
+                          onClick={() => {
+                            setCurrentItemType("groceryList");
+                            setSplitLayout(true);
+                          }}
                         >
-                          {item.title}
-                        </div>
+                          <div className="flex items-center justify-center text-3xl font-bold text-center p-2 w-full h-32">
+                            {item.title}
+                          </div>
+                        </Box>
                       );
                     }
                   })

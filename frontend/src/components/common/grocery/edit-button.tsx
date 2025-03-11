@@ -75,19 +75,8 @@ export const EditButton = () => {
       title: newTitle,
     };
 
-    if (currentList.title !== newTitle) {
-      if (currentList._id) {
-        await updateGroceryList(newList as GroceryList);
-
-        showToast(
-          TOAST_SEVERITY.SUCCESS,
-          "List Updated",
-          "Grocery list updated successfully",
-          3000
-        );
-
-        setCurrentList(newList);
-
+    if (currentList._id) {
+      if (selectedList !== "") {
         const savedItem = {
           ...newList,
           type: "groceryList",
@@ -102,37 +91,48 @@ export const EditButton = () => {
           "Grocery list saved successfully",
           3000
         );
-      } else {
-        if (!user) {
-          showToast(
-            TOAST_SEVERITY.ERROR,
-            "Error",
-            "You must be logged in to create a grocery list",
-            3000
-          );
-          return;
-        }
+      }
 
-        console.log(user.id);
-        const newCreateList = {
-          ...newList,
-          creatorId: user.id,
-        };
-
-        const createData = await createGroceryList(
-          newCreateList as GroceryList
-        );
-        setCurrentList(createData);
+      if (currentList.title !== newTitle) {
+        await updateGroceryList(newList as GroceryList);
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
-          "List Created",
-          "Grocery list created successfully",
+          "List Updated",
+          "Grocery list updated successfully",
           3000
         );
+
+        setCurrentList(newList);
       }
-      setIsOpen(false);
+    } else {
+      if (!user) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          "You must be logged in to create a grocery list",
+          3000
+        );
+        return;
+      }
+
+      console.log(user.id);
+      const newCreateList = {
+        ...newList,
+        creatorId: user.id,
+      };
+
+      const createData = await createGroceryList(newCreateList as GroceryList);
+      setCurrentList(createData);
+
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Created",
+        "Grocery list created successfully",
+        3000
+      );
     }
+    setIsOpen(false);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
@@ -200,19 +200,20 @@ export const EditButton = () => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="name" className="sr-only">
-              Name
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              placeholder="Enter list title..."
-              data-testid="list-title"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-            />
-
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="name" className="sr-only">
+                Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                placeholder="Enter list title..."
+                data-testid="list-title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+              />
+            </div>
             <Select onValueChange={setSelectedList} value={selectedList}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />

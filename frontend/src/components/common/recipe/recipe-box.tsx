@@ -8,6 +8,7 @@ import React from "react";
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
+import { Box } from "@/components/common/box";
 
 interface RecipeBoxProps {
   setOpen: ((isOpen: boolean) => void) | ((isOpen: boolean) => void | any);
@@ -36,11 +37,7 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
 
   return (
     <>
-      <div
-        key={data._id.toString()}
-        className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
-        onClick={handleRecipeClick}
-      >
+      <Box keyValue={data._id.toString()} onClick={handleRecipeClick}>
         {isLoading && !response && (
           <div className="flex items-center justify-center w-full h-full">
             {/* Add a loading indicator */}
@@ -60,7 +57,7 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <h3 className="text-lg font-semibold truncate">{data.title}</h3>
         </div>
-      </div>
+      </Box>
     </>
   );
 };

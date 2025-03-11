@@ -1,5 +1,5 @@
 "use client";
-import { BiArrowBack } from "react-icons/bi";
+import { MdClose } from "react-icons/md";
 
 // Local Imports
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,8 +35,8 @@ export const SideList = ({ toggleDialog }: SideListProps) => {
               )}
             </ScrollArea>
             {toggleDialog && (
-              <div className="absolute top-0 left-0 text-foreground p-4 z-50">
-                <BiArrowBack onClick={toggleDialog} size={40} />
+              <div className="absolute top-0 right-0 text-foreground p-4 z-50">
+                <MdClose onClick={toggleDialog} size={40} />
               </div>
             )}
           </CardContent>

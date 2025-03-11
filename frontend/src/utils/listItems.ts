@@ -1,5 +1,5 @@
 import { unitConversions } from "@/config/unit-conversions";
-import { Units } from "@/types";
+import { FilterOptions, Units } from "@/types";
 import { Recipe, RecipeIngredient } from "@/types/recipe";
 import {
   GroceryItem,
@@ -8,7 +8,8 @@ import {
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { SavedItem } from "@/types/saved";
+import { RecipeMetaData, SavedItem } from "@/types/saved";
+import { compareTag } from "./filterHelpers";
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);
@@ -141,4 +142,41 @@ export const insertItemIntoGroceryMap = (
     });
   }
   return newMap;
+};
+
+export const filterRecipes = (
+  recipes: RecipeMetaData[],
+  filter: FilterOptions
+): RecipeMetaData[] => {
+  let filteredRecipes = [...recipes];
+
+  // Filter by search query
+  if (filter.searchQuery) {
+    filteredRecipes = filteredRecipes.filter((recipe) =>
+      recipe.title.toLowerCase().includes(filter.searchQuery.toLowerCase())
+    );
+  }
+
+  // Sorting function
+  filteredRecipes.sort((a, b) => {
+    let result = 0;
+
+    if (filter.timeApprox !== 0) {
+      result = compareTag(a.tags.time, b.tags.time, filter.timeApprox);
+    }
+    if (result === 0 && filter.price !== 0) {
+      result = compareTag(a.tags.price, b.tags.price, filter.price);
+    }
+    if (result === 0 && filter.ingredientAmount !== 0) {
+      result = compareTag(
+        a.tags.ingredient,
+        b.tags.ingredient,
+        filter.ingredientAmount
+      );
+    }
+
+    return result;
+  });
+
+  return filteredRecipes;
 };
