@@ -1,7 +1,13 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { UserApi } from "../api/userApi";
-import { User } from "@/types/user";
-import { USERS, FOLLOWERS, FOLLOWING } from "@/lib/constants/process";
+import { User, UserPreferences, UserSettings } from "@/types/user";
+import {
+  USERS,
+  FOLLOWERS,
+  FOLLOWING,
+  SETTINGS,
+  PREFERENCES,
+} from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
 export const useFetchUserById = ({
@@ -128,5 +134,77 @@ export const useDeleteFollowing = (id: string) => {
     isLoadingDeleteFollowing: mutation.isPending,
     errorDeleteFollowing: mutation.error,
     isErrorDeleteFollowing: mutation.isError,
+  };
+};
+
+export const useFetchUserSettings = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: settings,
+    isLoading: isLoadingSettings,
+    refetch: refetchSettings,
+    error: errorSettings,
+    isError: isErrorSettings,
+  } = useQuery({
+    queryKey: [USERS, SETTINGS],
+    queryFn: UserApi.fetchUserSettings,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    settings,
+    isLoadingSettings,
+    refetchSettings,
+    errorSettings,
+    isErrorSettings,
+  };
+};
+
+export const useUpdateUserSettings = () => {
+  const mutation = useMutation<UserSettings, Error, UserSettings>({
+    mutationFn: UserApi.updateUserSettings,
+  });
+
+  return {
+    updateUserSettings: mutation.mutateAsync,
+    isLoadingUpdateSettings: mutation.isPending,
+    errorUpdateSettings: mutation.error,
+    isErrorUpdateSettings: mutation.isError,
+  };
+};
+
+export const useFetchUserPreferences = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: preferences,
+    isLoading: isLoadingPreferences,
+    refetch: refetchPreferences,
+    error: errorPreferences,
+    isError: isErrorPreferences,
+  } = useQuery({
+    queryKey: [USERS, PREFERENCES],
+    queryFn: UserApi.fetchUserPreferences,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    preferences,
+    isLoadingPreferences,
+    refetchPreferences,
+    errorPreferences,
+    isErrorPreferences,
+  };
+};
+
+export const useUpdateUserPreferences = () => {
+  const mutation = useMutation<UserPreferences, Error, UserPreferences>({
+    mutationFn: UserApi.updateUserPreferences,
+  });
+
+  return {
+    updateUserPreferences: mutation.mutateAsync,
+    isLoadingUpdatePreferences: mutation.isPending,
+    errorUpdatePreferences: mutation.error,
+    isErrorUpdatePreferences: mutation.isError,
   };
 };

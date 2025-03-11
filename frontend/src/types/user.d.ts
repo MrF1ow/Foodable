@@ -1,6 +1,11 @@
 import { ObjectId } from "mongodb";
 import { GroceryList } from "./grocery";
 import { SavedRecipeMetaData } from "./saved";
+
+export type UserSettings = {
+  theme: "light" | "dark";
+};
+
 export type UserPreferences = {
   dietaryRestrictions: string[];
   budget: number;
@@ -41,9 +46,7 @@ export type SavedGroceryItems = {
 
 export type NewUser = UserIdentifiers & {
   // User profile settings (will add more later)
-  settings: {
-    theme: "light" | "dark"; // The theme of the user (default is light)
-  };
+  settings: UserSettings;
 
   // User profile preferences (will add more later)
   preferences: UserPreferences;

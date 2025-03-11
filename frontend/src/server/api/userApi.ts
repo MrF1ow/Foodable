@@ -1,6 +1,5 @@
-import { NewUser, User } from "@/types/user";
+import { NewUser, User, UserPreferences, UserSettings } from "@/types/user";
 import fetchWithAuth from "../fetchInstance";
-import { remove } from "node_modules/cypress/types/lodash";
 
 export const UserApi = {
   fetchUserById: async (id: string) => {
@@ -78,6 +77,52 @@ export const UserApi = {
       return response;
     } catch (error) {
       console.error("Error removing follower:", error);
+      throw error;
+    }
+  },
+
+  fetchUserSettings: async () => {
+    try {
+      const response = await fetchWithAuth("/user/settings");
+      return response;
+    } catch (error) {
+      console.error("Error getting user settings:", error);
+      throw error;
+    }
+  },
+
+  updateUserSettings: async (settings: UserSettings) => {
+    try {
+      const response = await fetchWithAuth("/user/settings", {
+        method: "PUT",
+        body: JSON.stringify({ settings }),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error updating user settings:", error);
+      throw error;
+    }
+  },
+
+  fetchUserPreferences: async () => {
+    try {
+      const response = await fetchWithAuth("/user/preferences");
+      return response;
+    } catch (error) {
+      console.error("Error getting user preferences:", error);
+      throw error;
+    }
+  },
+
+  updateUserPreferences: async (preferences: UserPreferences) => {
+    try {
+      const response = await fetchWithAuth("/user/preferences", {
+        method: "PUT",
+        body: JSON.stringify({ preferences }),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error updating user preferences:", error);
       throw error;
     }
   },
