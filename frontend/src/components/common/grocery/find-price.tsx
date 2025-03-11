@@ -16,13 +16,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { useFetchUserLocation } from "@/server/hooks/googleHooks";
+import { useFetchUserLocationFromZip } from "@/server/hooks/googleHooks";
 
 export const FindPrice = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const { userLocation, refetchUserLocation } = useFetchUserLocation();
 
   const form = useForm({
     defaultValues: {

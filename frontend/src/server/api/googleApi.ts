@@ -3,8 +3,8 @@ import { NextResponse } from "next/server";
 
 export const GoogleApi = {
   fetchUserLocationFromZip: async (zipCode: string) => {
-    if (!zipCode) {
-      return new Response("Missing zipCode", { status: 400 });
+    if (!zipCode || zipCode.length !== 5) {
+      return new Response("Invalid zipCode", { status: 400 });
     }
     console.log("Zipcode from getLocationFromZip:", zipCode);
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;

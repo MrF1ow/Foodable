@@ -12,6 +12,7 @@ import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
 import { useUserStore } from "@/stores/user/store";
+import { getBrowserLocation } from "@/utils/getBrowserLocation";
 
 export default function GroceryListDataFetcher() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
@@ -41,19 +42,25 @@ export default function GroceryListDataFetcher() {
     enabled: true,
   });
 
-  async function fetchUserLocation() {
-    const result = await refetchUserLocation();
-    const location = result.data;
-    if (location) {
-      setLocation(location);
-      console.log("User Location From Google:", location);
-    }
-  }
-  fetchUserLocation();
-
   // onsuccess and onerror handlers for the grocery lists query
   // do not exist anymore in tanstack
   useEffect(() => {
+    async function fetchUserLocation() {
+      const browserLocation = await getBrowserLocation();
+      if (browserLocation) {
+        setLocation(browserLocation);
+        console.log("User Location From Browser:", browserLocation);
+      } else {
+        const result = await refetchUserLocation();
+        const location = result.data;
+        if (location) {
+          setLocation(location);
+          console.log("User Location From Google:", location);
+        }
+      }
+    }
+    fetchUserLocation();
+
     if (isErrorGroceryLists) {
       showToast(
         TOAST_SEVERITY.ERROR,
