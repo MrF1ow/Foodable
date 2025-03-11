@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useGeneralStore } from "@/stores/general/store";
 import { Navbar } from "@/components/common/navbar";
+import { useTheme } from "next-themes";
+import { clerkThemeVariables } from "@/config/clerk-theme-variables";
 
 export default function ClientSideMainLayout({
   children,
@@ -14,7 +16,10 @@ export default function ClientSideMainLayout({
 }) {
   const setIsMobile = useGeneralStore((state) => state.setIsMobile);
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const setClerkVariables = useGeneralStore((state) => state.setClerkVariables);
   const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
+
+  const { theme } = useTheme();
 
   const pathName = usePathname();
 
@@ -31,6 +36,14 @@ export default function ClientSideMainLayout({
     window.addEventListener("resize", checkScreenWidth);
     return () => window.removeEventListener("resize", checkScreenWidth);
   }, [setIsMobile]);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      setClerkVariables(clerkThemeVariables.dark);
+    } else {
+      setClerkVariables(clerkThemeVariables.light);
+    }
+  }, [theme]);
 
   return (
     <>

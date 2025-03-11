@@ -2,7 +2,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { checkRole } from "@/utils/roles";
 import Settings from "./settingsPage";
 import AuthOptions from "@/components/auth-options";
-import FetchUserData from "../_fetchData";
+import FetchUserData from "../../_fetchData";
 
 export default async function SettingsPage() {
   const queryClient = await FetchUserData();

@@ -4,28 +4,23 @@ export type GeneralState = {
   currentPage: string;
   isMobile: boolean;
   splitLayout: boolean;
+  clerkVariables: any;
 };
 
 export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
+  setClerkVariables: (clerkVariables: any) => void;
 };
 
 export type GeneralStore = GeneralState & GeneralActions;
-
-export const initGeneralStore = (): GeneralState => {
-  return {
-    currentPage: "Recipes",
-    isMobile: false,
-    splitLayout: false,
-  };
-};
 
 export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
   isMobile: false,
   splitLayout: false,
+  clerkVariables: {},
 };
 
 export const createGeneralStore = (
@@ -50,5 +45,8 @@ export const createGeneralStore = (
         ...state,
         splitLayout: state.isMobile ? false : splitLayout, // Prevent enabling splitLayout if isMobile is true
       })),
+
+    setClerkVariables: (clerkVariables: any) =>
+      set((state) => ({ ...state, clerkVariables })),
   }));
 };
