@@ -14,7 +14,14 @@ import type { GroceryList, NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
-export default function GroceryList() {
+interface GroceryListProps {
+  renderContent: boolean;
+  className?: string;
+}
+export default function GroceryList({
+  renderContent,
+  className,
+}: GroceryListProps) {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -35,11 +42,10 @@ export default function GroceryList() {
     enabled: true,
   });
 
-  const { refetchGroceryList, groceryList, isLoadingGroceryList } =
-    useFetchGroceryListById({
-      id: currentList?._id || "",
-      enabled: true,
-    });
+  const { refetchGroceryList, groceryList } = useFetchGroceryListById({
+    id: currentList?._id || "",
+    enabled: true,
+  });
 
   // onsuccess and onerror handlers for the grocery lists query
   // do not exist anymore in tanstack
@@ -60,6 +66,7 @@ export default function GroceryList() {
     // Only update current list if it's different
     if (groceryLists?.length > 0) {
       if (!currentList || currentList._id !== groceryLists[0]._id) {
+        console.log("Setting Current List 69");
         setCurrentList(groceryLists[0]);
       }
     } else if (groceryLists?.length === 0 && !currentList) {
@@ -77,6 +84,7 @@ export default function GroceryList() {
   useEffect(() => {
     async function fetchGroceryList() {
       if (currentList?._id) {
+        console.log("Refetching Grocery List");
         // refetch the grocery list
         // must await the refetchGroceryList function
         await refetchGroceryList();
@@ -91,14 +99,16 @@ export default function GroceryList() {
       (groceryList._id === currentList?._id ||
         groceryList.items?.length !== currentList?.items?.length)
     ) {
+      console.log("Setting Current List 102");
+      console.log("Grocery List 102", groceryList);
       setCurrentList(groceryList);
     }
   }, [groceryList]);
 
   return (
     <>
-      {currentList && <List />}
-      {!splitLayout && (
+      {currentList && <List className={className} />}
+      {renderContent && !splitLayout && (
         <Button
           className={`btn-primary rounded-full w-12 h-12 hover:bg-primary flex items-center justify-center fixed bottom-4 right-4 z-50 ${
             isMobile ? "mb-16" : ""

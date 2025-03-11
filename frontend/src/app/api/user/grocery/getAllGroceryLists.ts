@@ -4,15 +4,20 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { validateObject } from "@/utils/validation";
 import { validateGroceryList } from "@/utils/typeValidation/grocery";
 import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
+    const clerkUser = await currentUser();
 
-    console.log("fetchMetadata: ", fetchMetadata);
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
 
     const db = await getDB();
 
@@ -27,7 +32,7 @@ export async function GET(req: Request) {
 
     const groceryLists = await db
       .collection("groceryLists")
-      .find({}, { projection })
+      .find({ creatorId: clerkUser.id }, { projection })
       .toArray();
 
     if (!fetchMetadata) {

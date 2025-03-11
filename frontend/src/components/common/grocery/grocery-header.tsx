@@ -14,7 +14,6 @@ import {
 import { EditButton } from "@/components/common/grocery/edit-button";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { GroceryList } from "@/types/grocery";
-import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -25,7 +24,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const { groceryLists = [] } = useAllGroceryLists({
+  const { groceryLists } = useAllGroceryLists({
     metadata: true,
     enabled: true,
   });

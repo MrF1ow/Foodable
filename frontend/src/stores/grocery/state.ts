@@ -12,7 +12,10 @@ import {
 export type GroceryState = {
   currentList: GroceryList | NewGroceryList | null;
 
+  // tracks the current categories in the grocery list
   currentCategories: GrocerySectionOptions[];
+
+  // tracks which sections are open in the grocery list
   currentSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
@@ -46,7 +49,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
           : [];
 
       items.forEach((item) => {
-        updatedMap.set(item.name, item);
+        updatedMap.set(item.name.toLowerCase(), item);
       });
 
       return {
@@ -91,7 +94,25 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
   setSelectedCategory: (category: GrocerySectionOptions) =>
     set((state: GroceryState) => ({ ...state, selectedCategory: category })),
   setMap: (map: Map<string, GroceryItem>) =>
-    set((state: GroceryState) => ({ ...state, map })),
+    set((state: GroceryState) => {
+      // convert map values to an array to update currentList.items
+      const updatedItems = Array.from(map.values());
+
+      const newSections = Array.from(
+        new Set(updatedItems.map((item) => item.category))
+      );
+
+      const categories = [...state.currentCategories, ...newSections];
+
+      return {
+        ...state,
+        currentCategories: categories,
+        map,
+        currentList: state.currentList
+          ? { ...state.currentList, items: updatedItems }
+          : null,
+      };
+    }),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;

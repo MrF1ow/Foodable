@@ -18,6 +18,13 @@ export const getCurrentGrocerySections = () => {
   );
 };
 
+export function isConvertable(fromUnit: Units, toUnit: Units): boolean {
+  return (
+    unitConversions[fromUnit] !== undefined &&
+    unitConversions[fromUnit][toUnit] !== undefined
+  );
+}
+
 export function convertAmount(
   amount: number,
   fromUnit: Units,
@@ -26,7 +33,6 @@ export function convertAmount(
   if (fromUnit === toUnit) return amount;
 
   if (!unitConversions[fromUnit] || !unitConversions[fromUnit][toUnit]) {
-    console.error(`No conversion available from ${fromUnit} to ${toUnit}`);
     return amount;
   }
 
@@ -46,6 +52,11 @@ export function getMissingIngredients(
       // If the grocery item does not exist, add it to the missing ingredients
       missingIngredients.push(recipeItem);
     } else {
+      if (!isConvertable(groceryItem.unit, recipeItem.unit)) {
+        // If the units are not convertable, add it to the missing ingredients
+        missingIngredients.push(recipeItem);
+        return;
+      }
       const convertedQuantity = convertAmount(
         groceryItem.quantity,
         groceryItem.unit,
@@ -107,4 +118,27 @@ export const getIsItemSaved = (
   savedItems: SavedItem[]
 ) => {
   return savedItems.some((savedItem) => savedItem._id === item._id);
+};
+
+export const insertItemIntoGroceryMap = (
+  item: GroceryItem,
+  groceryMap: Map<string, GroceryItem>
+) => {
+  const newMap = groceryMap;
+  const existingItem = groceryMap.get(item.name.toLowerCase());
+  if (existingItem) {
+    const convertedQuantity = convertAmount(
+      item.quantity,
+      item.unit,
+      existingItem.unit
+    );
+    existingItem.quantity += convertedQuantity;
+    newMap.set(item.name.toLowerCase(), existingItem);
+  } else {
+    newMap.set(item.name.toLowerCase(), {
+      ...item,
+      checked: false,
+    });
+  }
+  return newMap;
 };

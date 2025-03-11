@@ -2,6 +2,7 @@ import { GroceryItem, GroceryList } from "@/types/grocery";
 import { isValidDate } from "./general";
 import { unitOptions } from "@/config/unit-conversions";
 import { grocerySectionOptions } from "@/config/grocery-sections";
+import { isValidUserId } from "./general";
 
 export function validateGroceryItem(item: any): item is GroceryItem {
   return (
@@ -22,7 +23,7 @@ export const validateGroceryListWithoutId = (
 ): groceryList is GroceryList => {
   return (
     groceryList &&
-    validateIdFn(groceryList.creatorId) &&
+    isValidUserId(groceryList.creatorId) &&
     typeof groceryList.title === "string" &&
     Array.isArray(groceryList.items) &&
     (groceryList.items.length === 0 ||

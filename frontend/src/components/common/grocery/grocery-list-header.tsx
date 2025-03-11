@@ -11,7 +11,7 @@ import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
 
-import type { GroceryList, NewGroceryList } from "@/types/grocery";
+import type { GroceryList } from "@/types/grocery";
 
 export default function GroceryListHeader() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);

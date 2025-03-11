@@ -26,6 +26,7 @@ import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/providers/react-query-provider";
 
 import { getAddItemFormValidation } from "@/utils/formValidation";
+import { insertItemIntoGroceryMap } from "@/utils/listItems";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
@@ -38,9 +39,10 @@ export const AddItem = ({ className }: { className?: string }) => {
   const categories = grocerySections;
 
   const currentList = useGroceryStore((state) => state.currentList);
+  const groceryMap = useGroceryStore((state) => state.map);
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
-  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setMap = useGroceryStore((state) => state.setMap);
 
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
@@ -57,7 +59,6 @@ export const AddItem = ({ className }: { className?: string }) => {
   });
 
   async function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
-    console.log("Add Item Current List", currentList);
     const newItem: GroceryItem = {
       name: data.itemName,
       quantity: data.quantity,
@@ -68,19 +69,19 @@ export const AddItem = ({ className }: { className?: string }) => {
 
     if (!currentList) return;
 
+    const newMap = insertItemIntoGroceryMap(newItem, groceryMap);
+    setMap(newMap);
+
+    const updatedItems = Array.from(newMap.values());
+
     const newList = {
       ...currentList,
-      items:
-        Array.isArray(currentList.items) && currentList.items.length === 0
-          ? [newItem]
-          : [...currentList.items, newItem],
+      items: updatedItems,
     };
 
     if (currentList._id) {
       await updateGroceryList(newList as GroceryList);
     }
-
-    setCurrentList(newList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,
@@ -88,6 +89,8 @@ export const AddItem = ({ className }: { className?: string }) => {
       `${newItem.quantity} ${newItem.unit} of ${newItem.name} added`,
       3000
     );
+
+    console.log("Current List After Adding Item", currentList);
   }
 
   const handleInputClose = () => {

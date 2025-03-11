@@ -79,6 +79,8 @@ export const EditButton = () => {
           );
           return;
         }
+
+        console.log(user.id);
         const newCreateList = {
           ...newList,
           creatorId: user.id,

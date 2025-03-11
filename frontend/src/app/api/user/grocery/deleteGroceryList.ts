@@ -5,9 +5,16 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "@/utils/typeValidation/general";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function DELETE(req: Request) {
   try {
+    const clerkUser = await currentUser();
+
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     const { id } = await req.json();
     if (!isValidObjectId(id)) {
       return NextResponse.json(
@@ -19,7 +26,10 @@ export async function DELETE(req: Request) {
 
     const deletedGroceryList = await db
       .collection("groceryLists")
-      .findOneAndDelete({ _id: ObjectId.createFromHexString(id) });
+      .findOneAndDelete({
+        _id: ObjectId.createFromHexString(id),
+        creatorId: clerkUser.id,
+      });
 
     if (!deletedGroceryList) {
       return NextResponse.json(

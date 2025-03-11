@@ -8,7 +8,7 @@ export default async function RecipePage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <GroceryList />
+      <GroceryList renderContent={true} />
     </HydrationBoundary>
   );
 }

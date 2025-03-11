@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { CiLogout } from "react-icons/ci";
 import Link from "next/link";
-import { SignOutButton, useUser, Protect } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 
 import {
   userNavOptions,
