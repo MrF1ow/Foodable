@@ -37,7 +37,7 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
 
   return (
     <>
-      <Box keyValue={data._id.toString()} onClick={handleRecipeClick}>
+      <Box key={data._id.toString()} onClick={handleRecipeClick}>
         {isLoading && !response && (
           <div className="flex items-center justify-center w-full h-full">
             {/* Add a loading indicator */}

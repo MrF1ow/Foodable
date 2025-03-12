@@ -17,19 +17,22 @@ db.createCollection('groceryLists');
 db.createCollection('vectors');
 
 db.users.insertOne({
-    username: 'jimmy bill bob',
-    email: 'dummy@gmail.com',
+    clerkId: 'user_2tP71k5KYi1BwdxYvL629CWowjG',
+    username: 'mrfoodie',
+    email: 'foodable_user@gmail.com',
     settings: {
         theme: "light",
     },
     preferences: {
-        dietaryRestrictions: ["vegetarian"],
-        allergies: ["peanuts"],
+        dietaryRestrictions: ["carnivore"],
+        budget: 100,
     },
-
-    favoriteRecipes: [],
+    savedItems: {
+        recipes: [],
+        groceryLists: [],
+    },
+    currentGroceryList: null,
     createdRecipes: [],
-    groceryLists: [],
     following: [],
     followers: [],
     lastLogin: new Date(),

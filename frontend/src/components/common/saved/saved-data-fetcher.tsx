@@ -15,7 +15,7 @@ export default function SavedDataFetcher() {
     (state) => state.setCurrentCategories
   );
 
-  const { savedItems, refetchSavedItems } = useAllSavedItems({
+  const { savedItems } = useAllSavedItems({
     enabled: true,
   });
   const { categories } = useGetCategories({ enabled: true });
@@ -32,6 +32,6 @@ export default function SavedDataFetcher() {
       }
       setCurrentCategories(combinedCategories);
     }
-  }, [savedItems, refetchSavedItems]);
+  }, [savedItems, categories]);
   return <></>;
 }

@@ -2,11 +2,14 @@ import React from "react";
 import { Recipe } from "@/types/recipe";
 import { RecipeSection } from "./recipe-section";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GrocerySectionOptions } from "@/types/grocery";
+import { GroceryList, GrocerySectionOptions } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { GroceryItem } from "@/types/grocery";
-import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import {
+  useUpdateGroceryList,
+  useAllGroceryLists,
+} from "@/server/hooks/groceryListHooks";
 import { Icons } from "@/components/ui/icons";
 import { insertItemIntoGroceryMap } from "@/utils/listItems";
 
@@ -15,6 +18,10 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
   const setMap = useGroceryStore((state) => state.setMap);
   const currentList = useGroceryStore((state) => state.currentList);
 
+  const { refetchGroceryLists } = useAllGroceryLists({
+    metadata: true,
+    enabled: true,
+  });
   const { updateGroceryList } = useUpdateGroceryList();
 
   const additionalIngredients = useRecipeStore(
@@ -28,9 +35,18 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
     const newMap = insertItemIntoGroceryMap(ingredient, groceryMap);
     setMap(newMap);
 
+    const updatedItems = Array.from(newMap.values());
+
+    const newList = {
+      ...currentList,
+      items: updatedItems,
+    };
+
     if (currentList?._id) {
-      await updateGroceryList(currentList);
+      await updateGroceryList(newList as GroceryList);
     }
+
+    await refetchGroceryLists();
   };
 
   const AddButtonForAdditional = () => {

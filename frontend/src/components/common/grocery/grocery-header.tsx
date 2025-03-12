@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditButton } from "@/components/common/grocery/edit-button";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
-import { GroceryList } from "@/types/grocery";
+import { GroceryList, NewGroceryList } from "@/types/grocery";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -24,10 +24,24 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
 
-  const { groceryLists } = useAllGroceryLists({
+  const [allLists, setAllLists] = useState<GroceryList[]>([]);
+
+  const { groceryLists = [] } = useAllGroceryLists({
     metadata: true,
     enabled: true,
   });
+
+  useEffect(() => {
+    const newList: NewGroceryList = {
+      _id: null,
+      creatorId: null,
+      title: "New List",
+      items: [],
+    };
+
+    const allLists = [newList, ...groceryLists];
+    setAllLists(allLists);
+  }, [groceryLists]);
 
   const setList = async (item: GroceryList) => {
     setOpenAccordion([]);
@@ -37,8 +51,11 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   if (!currentList) return null;
 
   const filteredLists = currentList._id
-    ? groceryLists.filter((list: GroceryList) => list._id !== currentList._id)
-    : groceryLists;
+    ? allLists.filter(
+        (list: GroceryList) =>
+          list._id !== currentList._id || currentList._id === null
+      )
+    : allLists;
 
   return (
     <div

@@ -76,7 +76,7 @@ export default function Saved() {
                     } else if (typeOfData === "groceryList") {
                       return (
                         <Box
-                          keyValue={item._id.toString()}
+                          key={item._id.toString()}
                           onClick={() => {
                             setCurrentItemType("groceryList");
                             setSplitLayout(true);

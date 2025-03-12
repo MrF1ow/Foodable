@@ -30,7 +30,7 @@ export const SocialPageHeader = ({ bannerUrl }: SocialPageHeaderProps) => {
             <div className="flex flex-row items-center ">
               <Avatar className="w-32 h-32 rounded-full mr-20">
                 <AvatarImage
-                  src={pfp.src}
+                  src={user?.imageUrl || pfp.src}
                   alt="User Avatar"
                   className="object-cover w-full h-full rounded-full"
                 />

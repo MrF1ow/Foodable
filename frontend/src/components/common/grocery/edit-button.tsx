@@ -75,8 +75,21 @@ export const EditButton = () => {
       title: newTitle,
     };
 
-    if (currentList._id) {
-      if (selectedList !== "") {
+    if (selectedList !== "") {
+      if (currentList._id) {
+        if (currentList.title !== newTitle) {
+          await updateGroceryList(newList as GroceryList);
+
+          showToast(
+            TOAST_SEVERITY.SUCCESS,
+            "List Updated",
+            "Grocery list updated successfully",
+            3000
+          );
+
+          setCurrentList(newList);
+        }
+
         const savedItem = {
           ...newList,
           type: "groceryList",
@@ -91,44 +104,47 @@ export const EditButton = () => {
           "Grocery list saved successfully",
           3000
         );
-      }
+      } else {
+        if (!user) {
+          showToast(
+            TOAST_SEVERITY.ERROR,
+            "Error",
+            "You must be logged in to create a grocery list",
+            3000
+          );
+          return;
+        }
+        const newCreateList = {
+          ...newList,
+          creatorId: user?.id,
+        };
 
-      if (currentList.title !== newTitle) {
-        await updateGroceryList(newList as GroceryList);
+        const newSavedList = {
+          ...newList,
+          type: "groceryList",
+          category: selectedList,
+        };
+
+        const createData = await createGroceryList(
+          newCreateList as GroceryList
+        );
+        setCurrentList(createData);
+
+        await createSavedItem(newSavedList as unknown as SavedItem);
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
-          "List Updated",
-          "Grocery list updated successfully",
+          "List Created",
+          "Grocery list created successfully",
           3000
         );
-
-        setCurrentList(newList);
       }
+      await refetchGroceryLists();
     } else {
-      if (!user) {
-        showToast(
-          TOAST_SEVERITY.ERROR,
-          "Error",
-          "You must be logged in to create a grocery list",
-          3000
-        );
-        return;
-      }
-
-      console.log(user.id);
-      const newCreateList = {
-        ...newList,
-        creatorId: user.id,
-      };
-
-      const createData = await createGroceryList(newCreateList as GroceryList);
-      setCurrentList(createData);
-
       showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Created",
-        "Grocery list created successfully",
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "You must select a category to save the list",
         3000
       );
     }

@@ -15,14 +15,9 @@ import { useUserStore } from "@/stores/user/store";
 import { getBrowserLocation } from "@/utils/getBrowserLocation";
 
 export default function GroceryListDataFetcher() {
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const splitLayout = useGeneralStore((state) => state.splitLayout);
-  const isMobile = useGeneralStore((state) => state.isMobile);
-
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const currentList = useGroceryStore((state) => state.currentList);
-  const { userLocation, refetchUserLocation } = useFetchUserLocation();
+  const { refetchUserLocation } = useFetchUserLocation();
   const setLocation = useUserStore((state) => state.setLocation);
 
   // use tanstack to fetch all grocery lists in metadata mode

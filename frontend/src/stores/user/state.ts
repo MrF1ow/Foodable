@@ -12,6 +12,10 @@ export type UserState = {
     dietaryRestrictions: string[] | null;
     budget: number | null;
   };
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
 };
 
 export type UserActions = {
@@ -20,6 +24,7 @@ export type UserActions = {
   setSearchQuery: (searchQuery: string) => void;
   setLanguage: (language: string) => void;
   setPreferences: (preferences: UserPreferences) => void;
+  setLocation: (location: UserState["location"]) => void;
 };
 
 export const createUserActions = (set: any): UserActions => ({
@@ -31,9 +36,10 @@ export const createUserActions = (set: any): UserActions => ({
     set((state: UserState) => ({ ...state, searchQuery })),
   setLanguage: (language: string) =>
     set((state: UserState) => ({ ...state, language })),
-
   setPreferences: (preferences: UserPreferences) =>
     set((state: UserState) => ({ ...state, preferences })),
+  setLocation: (location: UserState["location"]) =>
+    set((state: UserState) => ({ ...state, location })),
 });
 
 export type UserStore = UserState & UserActions;

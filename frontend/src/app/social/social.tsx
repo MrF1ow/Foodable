@@ -23,9 +23,7 @@ import { filterUsers, filterRecipes } from "@/utils/listItems";
 import { RecipeMetaData } from "@/types/saved";
 
 // **Component Imports**
-import SocialLayout from "@/layouts/common/social/social-layout";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
-import { SocialPageHeader } from "@/components/common/social/social-page-headers";
 import {
   UserFollowSection,
   UserRecipesSection,
