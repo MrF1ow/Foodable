@@ -19,9 +19,12 @@ Foodable is an AI-powered web application designed to help users discover health
 ## Project Structure
 ```plaintext
 /project-root
-├── /frontend                # Frontend code
-├── /backend                 # Backend code with API and MongoDB models
-├── /infra                   # AWS CDK infrastructure setup
+├── /.github
+├── /aws-infra               # AWS CDK infrastructure setup
+├── /database                # Docker Initilization
+├── /frontend                # NextJS Front End Code
+   ├── .env.local
+├── .env
 ├── docker-compose.yml       # Docker Compose for local testing
 └── README.md                # Project documentation
 ```
@@ -33,7 +36,7 @@ Foodable is an AI-powered web application designed to help users discover health
    - Docker
    - AWS CLI
    - AWS CDK
-   - MongoDB Atlas account
+   - MongoDB Atlas Account
 2. Clone the repository:
    ```bash
    git clone git@github.com:MrF1ow/foodable.git
@@ -41,7 +44,7 @@ Foodable is an AI-powered web application designed to help users discover health
    ```
 3. Run Docker Composer:
    ```bash
-   docker-compose up
+   docker compose up --build -d
    ```
 4. Access the App:
     - Frontend: http://localhost:8000
