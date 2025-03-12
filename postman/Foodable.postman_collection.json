@@ -33,11 +33,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"jane_smithy\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"dark\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"vegan\",\r\n            \"gluten-free\"\r\n        ],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"currentGroceryList\": {},\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+							"raw": "{\r\n    \"clerkId\": \"user_2u807fvhXIwJeXtPRefV7EtIxef\",\r\n    \"username\": \"jane_smithy\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"dark\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"vegan\",\r\n            \"gluten-free\"\r\n        ],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -45,12 +55,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/users/",
+							"raw": "{{app_url}}{{user_url}}/users/",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"users",
 								""
 							]
@@ -76,15 +85,24 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/users?id={{userID}}",
+							"raw": "{{app_url}}{{user_url}}/users?id={{userID}}",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"users"
 							],
 							"query": [
@@ -237,6 +255,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -249,12 +277,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes/",
+							"raw": "{{app_url}}{{user_url}}/recipes/",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"recipes",
 								""
 							]
@@ -300,6 +327,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -338,6 +368,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -397,6 +430,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -409,12 +452,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes",
+							"raw": "{{app_url}}{{user_url}}/recipes",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"recipes"
 							]
 						}
@@ -438,6 +480,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -456,6 +501,9 @@
 				{
 					"name": "Get All Recipe Metadata",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -535,6 +583,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
@@ -547,12 +605,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes",
+							"raw": "{{app_url}}{{user_url}}/recipes",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"recipes"
 							]
 						}
@@ -601,6 +658,9 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -664,6 +724,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {
@@ -676,12 +746,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/recipes",
+							"raw": "{{app_url}}{{user_url}}/recipes",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"recipes"
 							]
 						}
@@ -711,6 +780,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -729,12 +808,11 @@
 							]
 						},
 						"url": {
-							"raw": "{{app_url}}/api/images",
+							"raw": "{{app_url}}{{user_url}}/images",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"images"
 							]
 						}
@@ -759,6 +837,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -777,12 +865,11 @@
 							]
 						},
 						"url": {
-							"raw": "{{app_url}}/api/images",
+							"raw": "{{app_url}}{{user_url}}/images",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"images"
 							]
 						}
@@ -792,15 +879,17 @@
 				{
 					"name": "Retrieve Image by Source",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/images?id={{imageID}}",
+							"raw": "{{app_url}}{{guest_url}}/images?id={{imageID}}",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{guest_url}}"
 							],
 							"path": [
-								"api",
 								"images"
 							],
 							"query": [
@@ -816,15 +905,24 @@
 				{
 					"name": "Delete Image by Source",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/images?id={{imageID}}",
+							"raw": "{{app_url}}{{user_url}}/images?id={{imageID}}",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"images"
 							],
 							"query": [
@@ -864,11 +962,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein\"\r\n}",
+							"raw": "{\r\n    \"creatorId\": \"{{user_clerk_id}}\",\r\n    \"title\": \"High Protein\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -876,12 +984,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/grocery",
+							"raw": "{{app_url}}{{user_url}}/grocery",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							]
 						}
@@ -922,15 +1029,24 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/grocery?id={{groceryListID}}",
+							"raw": "{{app_url}}{{user_url}}/grocery?id={{groceryListID}}",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							],
 							"query": [
@@ -975,11 +1091,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"_id\": \"{{groceryListID}}\",\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein - Hybrid\",\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Chicken Breast\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 12,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"name\": \"Tofu\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"_id\": \"{{groceryListID}}\",\r\n    \"creatorId\": \"{{user_clerk_id}}\",\r\n    \"title\": \"High Protein - Hybrid\",\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Chicken Breast\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 12,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"name\": \"Tofu\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -987,12 +1113,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/grocery",
+							"raw": "{{app_url}}{{user_url}}/grocery",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							]
 						}
@@ -1002,15 +1127,24 @@
 				{
 					"name": "Get All Lists Metadata",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/grocery?metadata=true",
+							"raw": "{{app_url}}{{user_url}}/grocery?metadata=true",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							],
 							"query": [
@@ -1026,15 +1160,24 @@
 				{
 					"name": "Get All Complete Lists",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_url}}/api/grocery",
+							"raw": "{{app_url}}{{user_url}}/grocery",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							]
 						}
@@ -1063,6 +1206,16 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_clerk_token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"body": {
@@ -1075,12 +1228,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}/api/grocery",
+							"raw": "{{app_url}}{{user_url}}/grocery",
 							"host": [
-								"{{app_url}}"
+								"{{app_url}}{{user_url}}"
 							],
 							"path": [
-								"api",
 								"grocery"
 							]
 						}
@@ -1092,6 +1244,116 @@
 		{
 			"name": "Location",
 			"item": []
+		},
+		{
+			"name": "Kroger",
+			"item": [
+				{
+					"name": "Access Token Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const accessToken = pm.response.json().access_token;\r",
+									"if (accessToken !== null) {\r",
+									"    pm.environment.set(\"kroger-access-token\", accessToken)\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic Zm9vZGFibGUtMjQzMjYxMjQzMDM0MjQ1MDJlNjU2YTYyNGM2Njc2NmM0MjcyNmQ0NjQzNjI0ODRkNWE2Mzc4NDY0Zjc4NzU2MTdhMzk2NDZkNTE1YTRhMzczMTYzNTM2MjY0Mzg3NzMwNmU3MzU1Njk0ZDU4NzM2ZjYzNzYzNTY5MTk4NDI0NjIxOTI0MjM2MDc2MTpHRG1BWDRHZmhad0locUx5TlFiTkxmZXRUQmJ0MlZ4MGhTQmRPcHc4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api-ce.kroger.com/v1/connect/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api-ce",
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"connect",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Location Test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-ce.kroger.com/v1/locations?filter.zipCode.near=97339\n",
+							"protocol": "https",
+							"host": [
+								"api-ce",
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "filter.zipCode.near",
+									"value": "97339\n"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Test",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
