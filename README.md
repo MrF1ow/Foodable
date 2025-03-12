@@ -23,7 +23,27 @@ Foodable is an AI-powered web application designed to help users discover health
 ├── /aws-infra               # AWS CDK infrastructure setup
 ├── /database                # Docker Initilization
 ├── /frontend                # NextJS Front End Code
-   ├── .env.local
+   ├── /__tests__            # Jest Tests
+   ├── /cypress              # Cypress Tests
+   ├── /public               # Public Data and Assets
+   ├── /src                  # Source Code
+      ├── /app               # Page Routes and API Routes
+         ├── /api            # API Rotues
+      ├── /assets            # Assets (fonts, images)
+      ├── /components        # UI Components
+      ├── /config            # Configurations of Data
+      ├── /hooks             # Client Side Custom Hooks
+      ├── /layouts           # Client and Server Side Layouts
+      ├── /lib               # 
+      ├── /providers         # Providers for Application
+      ├── /server            # Methods to Communicate with Server
+         ├── /api            # Fetch Methods to Communicate with API
+         ├── /hooks          # TanStack Hooks to Communicate with API
+      ├── /stores            # Zustand Stores
+      ├── /types             # Types for Data throughout Application
+      ├── /utils             # Utility Functions for Various Things
+   ├── .env.local            
+├── /postman                 # Location of Export Postman Tests and Environment
 ├── .env
 ├── docker-compose.yml       # Docker Compose for local testing
 └── README.md                # Project documentation
