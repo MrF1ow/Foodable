@@ -5,11 +5,14 @@ import {
   defaultShouldDehydrateQuery,
 } from "@tanstack/react-query";
 
+let browserQueryClient: QueryClient | undefined = undefined;
+
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000,
+        staleTime: 60 * 1000, // 1 minute
+        gcTime: 60 * 1000 * 5, // 5 minutes
       },
       dehydrate: {
         shouldDehydrateQuery: (query) =>
@@ -20,9 +23,8 @@ function makeQueryClient() {
   });
 }
 
-let browserQueryClient: QueryClient | undefined = undefined;
-
 export function getQueryClient() {
+  // If we're on the server, create a new query client
   if (isServer) {
     return makeQueryClient();
   } else {
