@@ -5,8 +5,6 @@ import AuthOptions from "@/components/auth-options";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
-import logoWithShadow from "../../public/images/logo_current.png";
-import logoNoShadow from "../../public/images/logo_current_no_shadow.png";
 
 interface LandingPageProps {
   logo: StaticImageData;

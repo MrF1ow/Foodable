@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 
 // Local Imports
-import Loader from "@/components/loader";
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { RecipePopUp } from "@/components/common/recipe/recipe-popup";
 import { useRecipeStore } from "@/stores/recipe/store";
@@ -34,7 +33,7 @@ export default function Recipes() {
       <div className="h-full overflow-auto">
         <div className="flex flex-wrap justify-start gap-4 z-10">
           {filteredRecipes.length === 0 ? (
-            <Loader /> // show loader if filteredRecipes are still loading
+            <></>
           ) : filteredRecipes.length > 0 ? (
             filteredRecipes.map((data: RecipeMetaData) => (
               <RecipeBox

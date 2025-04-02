@@ -208,3 +208,39 @@ export const useUpdateUserPreferences = () => {
     isErrorUpdatePreferences: mutation.isError,
   };
 };
+
+export const useFetchUserCurrentList = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: currentGroceryListId,
+    isLoading: isLoadingCurrentListId,
+    refetch: refetchCurrentListId,
+    error: errorCurrentListId,
+    isError: isErrorCurrentListId,
+  } = useQuery({
+    queryKey: [USERS, "currentList"],
+    queryFn: UserApi.fetchUserCurrentList,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    currentGroceryListId,
+    isLoadingCurrentListId,
+    refetchCurrentListId,
+    errorCurrentListId,
+    isErrorCurrentListId,
+  };
+};
+
+export const useUpdateUserCurrentList = () => {
+  const mutation = useMutation<User, Error, string>({
+    mutationFn: UserApi.updateUserCurrentList,
+  });
+
+  return {
+    updateUserCurrentList: mutation.mutateAsync,
+    isLoadingUpdateCurrentList: mutation.isPending,
+    errorUpdateCurrentList: mutation.error,
+    isErrorUpdateCurrentList: mutation.isError,
+  };
+};

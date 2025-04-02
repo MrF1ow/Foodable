@@ -16,7 +16,7 @@ export interface RecipeMetaData {
 }
 
 export interface UnsavedGroceryMetaData {
-  _id: null;
+  _id: ObjectId | null;
   type: "grocery";
   title: string;
 }

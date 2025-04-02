@@ -56,7 +56,7 @@ export type NewUser = UserIdentifiers & {
     groceryLists: SavedGroceryMetaData[];
   };
 
-  currentGroceryList: GroceryList | null; // The current grocery list the user is working on
+  currentGroceryList: ObjectId | null; // The current grocery list the user is working on
   createdRecipes: ObjectId[]; // The recipes the user created (they are the creator)
   following: FollowMetadata[]; // The users the user is following
   followers: FollowMetadata[]; // The users that are following the user

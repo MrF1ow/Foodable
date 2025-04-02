@@ -126,4 +126,27 @@ export const UserApi = {
       throw error;
     }
   },
+
+  fetchUserCurrentList: async () => {
+    try {
+      const response = await fetchWithAuth("/user/grocery/current");
+      return response;
+    } catch (error) {
+      console.error("Error getting current list:", error);
+      throw error;
+    }
+  },
+
+  updateUserCurrentList: async (id: string) => {
+    try {
+      const response = await fetchWithAuth("/user/grocery/current", {
+        method: "POST",
+        body: JSON.stringify({ _id: id }),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error updating current list:", error);
+      throw error;
+    }
+  },
 };

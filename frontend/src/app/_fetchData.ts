@@ -9,6 +9,7 @@ import {
   FOLLOWING,
   SETTINGS,
   PREFERENCES,
+  CURRENT_LIST,
 } from "@/lib/constants/process";
 import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
@@ -35,9 +36,16 @@ export default async function FetchUserData() {
       queryFn: () => SavedItemsApi.getAllSavedItems(),
     });
 
+    // Prefetch saved categories data
     await queryClient.prefetchQuery({
       queryKey: [SAVED_CATEGORIES],
       queryFn: () => SavedItemsApi.getAllSavedCategories(),
+    });
+
+    // Prefetch user data
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, CURRENT_LIST],
+      queryFn: () => UserApi.fetchUserCurrentList(),
     });
 
     await queryClient.prefetchQuery({

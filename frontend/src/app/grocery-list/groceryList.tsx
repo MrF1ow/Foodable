@@ -13,10 +13,12 @@ import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-dat
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
 
 interface GroceryListProps {
+  isUser?: boolean;
   renderContent: boolean;
   className?: string;
 }
 export default function GroceryList({
+  isUser,
   renderContent,
   className,
 }: GroceryListProps) {
@@ -28,7 +30,7 @@ export default function GroceryList({
 
   return (
     <>
-      <GroceryListDataFetcher />
+      {isUser && <GroceryListDataFetcher />}
       <SavedDataFetcher />
       {currentList && <List className={className} />}
       {renderContent && !splitLayout && (

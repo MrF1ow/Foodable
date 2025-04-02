@@ -6,11 +6,13 @@ import {
   GroceryItem,
   GroceryList,
   GrocerySectionOptions,
+  GroceryListIdentifier,
   NewGroceryList,
 } from "@/types/grocery";
 
 export type GroceryState = {
   currentList: GroceryList | NewGroceryList | null;
+  availableLists: GroceryListIdentifier[];
 
   // tracks the current categories in the grocery list
   currentCategories: GrocerySectionOptions[];
@@ -24,6 +26,7 @@ export type GroceryState = {
 
 export type GroceryActions = {
   setCurrentList: (list: GroceryList | NewGroceryList) => void;
+  setAvailableLists: (lists: GroceryListIdentifier[]) => void;
   setCurrentForm: (
     card: string,
     isMobile: boolean,
@@ -56,6 +59,14 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
         ...state,
         currentList: { ...list, items },
         map: updatedMap,
+      };
+    }),
+
+  setAvailableLists: (lists: GroceryListIdentifier[]) =>
+    set((state: GroceryState) => {
+      return {
+        ...state,
+        availableLists: lists,
       };
     }),
 
@@ -119,6 +130,7 @@ export type GroceryStore = GroceryState & GroceryActions;
 
 export const initState: GroceryState = {
   currentList: null,
+  availableLists: [],
   currentCategories: [],
   currentSections: [],
   selectedCategory: "Bakery",
@@ -128,6 +140,7 @@ export const initState: GroceryState = {
 
 export const defaultInitState: GroceryState = {
   currentList: null,
+  availableLists: [],
   currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Frozen"],
   currentSections: [],
   selectedCategory: "Bakery",

@@ -21,6 +21,11 @@ export interface GrocerySection {
   color: string;
 }
 
+export interface GroceryListIdentifier {
+  title: string;
+  id: string;
+}
+
 export interface GroceryItem {
   name: string;
   quantity: number;
