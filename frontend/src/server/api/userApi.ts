@@ -138,6 +138,7 @@ export const UserApi = {
   },
 
   updateUserCurrentList: async (id: string) => {
+    console.log("Updating current list with ID:", id);
     try {
       const response = await fetchWithAuth("/user/grocery/current", {
         method: "POST",

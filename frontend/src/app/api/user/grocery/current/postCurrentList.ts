@@ -2,6 +2,7 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { getDB } from "@/lib/mongodb";
 import { isValidObjectId } from "@/utils/validation";
 import { currentUser } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -14,6 +15,8 @@ export async function POST(req: Request) {
 
     const { _id } = await req.json();
 
+    console.log("Received _id: ", _id);
+
     if (!isValidObjectId(_id)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
@@ -21,13 +24,15 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log("Valid _id: ", _id);
+
     const db = await getDB();
 
     const result = await db
       .collection("users")
       .updateOne(
         { clerkId: clerkUser.id },
-        { $set: { currentGroceryList: _id } }
+        { $set: { currentGroceryList: ObjectId.createFromHexString(_id) } }
       );
 
     if (result.modifiedCount === 0) {

@@ -24,10 +24,7 @@ export async function GET() {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(
-      { currentGroceryList: user.currentGroceryList || null },
-      { status: 200 }
-    );
+    return NextResponse.json(user.currentGroceryList || null, { status: 200 });
   } catch (error) {
     console.error("Error fetching current grocery list: ", error);
     return NextResponse.json(

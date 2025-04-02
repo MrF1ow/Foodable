@@ -3,6 +3,7 @@ import { UserApi } from "../api/userApi";
 import { User, UserPreferences, UserSettings } from "@/types/user";
 import {
   USERS,
+  CURRENT_LIST,
   FOLLOWERS,
   FOLLOWING,
   SETTINGS,
@@ -217,7 +218,7 @@ export const useFetchUserCurrentList = ({ enabled = true }: useQueryProps) => {
     error: errorCurrentListId,
     isError: isErrorCurrentListId,
   } = useQuery({
-    queryKey: [USERS, "currentList"],
+    queryKey: [USERS, CURRENT_LIST],
     queryFn: UserApi.fetchUserCurrentList,
     retry: 2,
     enabled,

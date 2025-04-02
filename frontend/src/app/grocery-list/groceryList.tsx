@@ -13,7 +13,7 @@ import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-dat
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
 
 interface GroceryListProps {
-  isUser?: boolean;
+  isUser: boolean;
   renderContent: boolean;
   className?: string;
 }

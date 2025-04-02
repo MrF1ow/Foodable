@@ -9,13 +9,14 @@ import { showToast } from "@/providers/react-query-provider";
 import type { NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
-import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
+import {
+  useFetchUserCurrentList
+} from "@/server/hooks/userHooks";
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
 import { useUserStore } from "@/stores/user/store";
 import { getBrowserLocation } from "@/utils/getBrowserLocation";
 import { isValidObjectId } from "@/utils/typeValidation/general";
 import { getAvailableGroceryLists } from "@/utils/listItems";
-import { isValid } from "zod";
 
 export default function GroceryListDataFetcher() {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
@@ -48,21 +49,16 @@ export default function GroceryListDataFetcher() {
   });
 
   // fetch the grocery list by id that is stored in the currentList state of the user data
-  const { refetchGroceryList, groceryList } = useFetchGroceryListById({
-    id: currentGroceryListId.toString(),
+  const { refetchGroceryList } = useFetchGroceryListById({
+    id: currentGroceryListId,
     enabled: true,
   });
 
-  async function refetchCurrentGroceryListId() {
-    if (currentGroceryListId && isValidObjectId(currentGroceryListId)) {
-      await refetchCurrentListId();
-    }
+  async function refetchUserCurrentListId(): Promise<{ data?: string | null }> {
+      return await refetchCurrentListId();
   }
 
-  async function refetchGroceryLists() {
-    await refetchGroceryList();
-  }
-
+  // get the user location from the browser
   useEffect(() => {
     async function fetchUserLocation() {
       const browserLocation = await getBrowserLocation();
@@ -123,11 +119,12 @@ export default function GroceryListDataFetcher() {
     // if the current grocery list is not null, refetch the grocery list
     // if the current grocery list is null, create a new grocery list
     if (currentGroceryListId && isValidObjectId(currentGroceryListId)) {
-      refetchCurrentGroceryListId();
-      console.log("CurrentList", groceryList);
-
       // if the grocery list is not null, set the current list to the grocery list
-      setCurrentList(groceryList);
+      refetchGroceryList().then((result) => {
+        if (result?.data) {
+          setCurrentList(result.data);
+        }
+      });
     } else if (currentGroceryListId && !isValidObjectId(currentGroceryListId)) {
       showToast(TOAST_SEVERITY.ERROR, "Error", "Invalid Grocery List ID", 3000);
       const newList: NewGroceryList = {
@@ -151,13 +148,8 @@ export default function GroceryListDataFetcher() {
   // refetch the grocery list when the current list changes
   useEffect(() => {
     if (currentList?._id) {
-      if (
-        isValidObjectId(currentList._id) &&
-        currentList._id.toString() !== currentList.toString()
-      ) {
-        refetchCurrentListId();
-        refetchGroceryLists();
-        console.log("Refetching Grocery List", currentList._id);
+      if (isValidObjectId(currentList._id)) {
+        refetchUserCurrentListId()
       }
     }
   }, [currentList]);

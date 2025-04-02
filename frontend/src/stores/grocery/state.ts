@@ -39,13 +39,25 @@ export type GroceryActions = {
   setMap: (map: Map<string, GroceryItem>) => void;
 };
 
-export const createGroceryActions = (set: any, get: any): GroceryActions => ({
-  setCurrentList: (list: GroceryList | NewGroceryList) =>
+export const createGroceryActions = (set: any): GroceryActions => ({
+  setCurrentList: (list: GroceryList | NewGroceryList | undefined | null) =>
     set((state: GroceryState) => {
       // update the map with the items in the currentList
-      const updatedMap = new Map(state.map);
+      const updatedMap = new Map<string, GroceryItem>();
 
-      // if the items array is not present, set it to an empty array
+      if (!list || list === undefined) {
+        return {
+          ...state,
+          currentList: {
+            _id: null,
+            creatorId: null,
+            title: "",
+            items: [],
+          } as GroceryList,
+          map: updatedMap,
+        };
+      }
+
       const items =
         list.items && list.items !== undefined && Array.isArray(list.items)
           ? list.items
@@ -151,7 +163,7 @@ export const defaultInitState: GroceryState = {
 export const createGroceryStore = (
   initState: GroceryState = defaultInitState
 ) =>
-  create<GroceryStore>()((set, get) => ({
+  create<GroceryStore>()((set) => ({
     ...initState,
-    ...createGroceryActions(set, get),
+    ...createGroceryActions(set),
   }));
