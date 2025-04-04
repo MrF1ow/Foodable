@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/common/search-bar";
 import { useRecipeStore } from "@/stores/recipe/store";
 import RecipeFilterButton from "./recipe-filter-button";
@@ -11,11 +12,20 @@ export default function RecipeSearchBar() {
     setFilter({ ...filter, searchQuery });
   };
 
+  const setCreateForm = useRecipeStore((state) => state.setCreateForm);
+
+  const handleCreateRecipe = () => {
+    setCreateForm(true);
+  };
+
   return (
-    <SearchBar
-      searchQuery={filter.searchQuery}
-      setSearchQuery={setSearchQuery}
-      FilterButton={RecipeFilterButton}
-    />
+    <div className="flex justify-between">
+      <SearchBar
+        searchQuery={filter.searchQuery}
+        setSearchQuery={setSearchQuery}
+        FilterButton={RecipeFilterButton}
+      />
+      <Button onClick={handleCreateRecipe}>Create Recipe</Button>
+    </div>
   );
 }
