@@ -32,7 +32,6 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import {
   useUpdateGroceryList,
-  useAllGroceryLists,
 } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
@@ -51,10 +50,6 @@ export const AddItem = ({ className }: { className?: string }) => {
     (state) => state.setSelectedCategory
   );
 
-  const { refetchGroceryLists } = useAllGroceryLists({
-    metadata: true,
-    enabled: true,
-  });
   const { updateGroceryList } = useUpdateGroceryList();
 
   const { AddItemFormSchema, defaultValues, resolver } =
@@ -77,7 +72,6 @@ export const AddItem = ({ className }: { className?: string }) => {
     if (!currentList) return;
 
     const newMap = insertItemIntoGroceryMap(newItem, groceryMap);
-    setMap(newMap);
 
     const updatedItems = Array.from(newMap.values());
 
@@ -90,14 +84,14 @@ export const AddItem = ({ className }: { className?: string }) => {
       await updateGroceryList(newList as GroceryList);
     }
 
+    setMap(newMap);
+
     showToast(
       TOAST_SEVERITY.SUCCESS,
       "Item Added",
       `${newItem.quantity} ${newItem.unit} of ${newItem.name} added`,
       3000
     );
-
-    await refetchGroceryLists();
   }
 
   const handleInputClose = () => {

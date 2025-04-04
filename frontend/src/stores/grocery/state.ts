@@ -18,7 +18,7 @@ export type GroceryState = {
   currentCategories: GrocerySectionOptions[];
 
   // tracks which sections are open in the grocery list
-  currentSections: GrocerySectionOptions[];
+  openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
   currentForm: string;
@@ -33,7 +33,7 @@ export type GroceryActions = {
     updateSplitLayout?: (split: boolean) => void
   ) => void;
   resetForm: () => void;
-  setCurrentSections: (sections: GrocerySectionOptions[]) => void;
+  setOpenSections: (sections: GrocerySectionOptions[]) => void;
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   setMap: (map: Map<string, GroceryItem>) => void;
@@ -44,6 +44,7 @@ export const createGroceryActions = (set: any): GroceryActions => ({
     set((state: GroceryState) => {
       // update the map with the items in the currentList
       const updatedMap = new Map<string, GroceryItem>();
+      const newCategories = new Set<GrocerySectionOptions>();
 
       if (!list || list === undefined) {
         return {
@@ -55,6 +56,7 @@ export const createGroceryActions = (set: any): GroceryActions => ({
             items: [],
           } as GroceryList,
           map: updatedMap,
+          openSections: [],
         };
       }
 
@@ -65,12 +67,14 @@ export const createGroceryActions = (set: any): GroceryActions => ({
 
       items.forEach((item) => {
         updatedMap.set(item.name.toLowerCase(), item);
+        if (item.category) newCategories.add(item.category);
       });
 
       return {
         ...state,
         currentList: { ...list, items },
         map: updatedMap,
+        openSections: Array.from(newCategories),
       };
     }),
 
@@ -90,8 +94,8 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       };
     }),
 
-  setCurrentSections: (sections: GrocerySectionOptions[]) =>
-    set((state: GroceryState) => ({ ...state, currentSections: sections })),
+  setOpenSections: (sections: GrocerySectionOptions[]) =>
+    set((state: GroceryState) => ({ ...state, openSections: sections })),
 
   setCurrentForm: (
     card: string,
@@ -129,6 +133,7 @@ export const createGroceryActions = (set: any): GroceryActions => ({
 
       return {
         ...state,
+        openSections: newSections,
         currentCategories: categories,
         map,
         currentList: state.currentList
@@ -144,7 +149,7 @@ export const initState: GroceryState = {
   currentList: null,
   availableLists: [],
   currentCategories: [],
-  currentSections: [],
+  openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
   currentForm: "",
@@ -154,7 +159,7 @@ export const defaultInitState: GroceryState = {
   currentList: null,
   availableLists: [],
   currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Frozen"],
-  currentSections: [],
+  openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
   currentForm: "",

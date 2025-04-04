@@ -51,7 +51,7 @@ export default function GroceryListDataFetcher() {
   // fetch the grocery list by id that is stored in the currentList state of the user data
   const { refetchGroceryList } = useFetchGroceryListById({
     id: currentGroceryListId,
-    enabled: true,
+    enabled: !!currentGroceryListId && isValidObjectId(currentGroceryListId),
   });
 
   async function refetchUserCurrentListId(): Promise<{ data?: string | null }> {

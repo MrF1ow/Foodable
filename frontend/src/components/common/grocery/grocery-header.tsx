@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -12,13 +12,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { EditButton } from "@/components/common/grocery/edit-button";
-import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
-import {
-  GroceryList,
-  GroceryListIdentifier,
-  NewGroceryList,
-} from "@/types/grocery";
+import { GroceryListIdentifier } from "@/types/grocery";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -28,7 +23,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const currentList = useGroceryStore((state) => state.currentList);
   const availableLists = useGroceryStore((state) => state.availableLists);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
+  const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -38,6 +33,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     await updateUserCurrentList(item.id);
     const newList = {
       ...currentList,
+      items: [],
       _id: item.id,
       title: item.title,
     };

@@ -35,7 +35,6 @@ export default function GroceryListHeader() {
 
     // only make the API call if the list is saved and has an id in the database
     if ("_id" in groceryList && groceryList._id) {
-      console.log("Updating Grocery List");
       updateGroceryList(groceryList);
     }
     showToast(
@@ -48,7 +47,7 @@ export default function GroceryListHeader() {
 
   return (
     <GroceryHeaderWithChildren
-      width="25%"
+      width="40%"
       children={
         <div className="flex items-center justify-center">
           <Button
