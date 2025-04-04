@@ -14,7 +14,6 @@ import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
 import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
-import { Box } from "@/components/common/box";
 
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -28,6 +27,7 @@ export default function Saved() {
   const setCurrentItemType = useSavedItemsStore(
     (state) => state.setCurrentItemType
   );
+
   const { savedItems } = useAllSavedItems({
     enabled: true,
   });
@@ -81,7 +81,6 @@ export default function Saved() {
                           }}
                           data={item}
                         />
-
                       );
                     }
                   })
