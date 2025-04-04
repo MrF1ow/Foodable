@@ -5,6 +5,7 @@ export type SavedTypes = "recipe" | "groceryList";
 
 export interface RecipeMetaData {
   _id: ObjectId;
+  creatorId: ObjectId;
   type: "recipe";
   title: string;
   imageId: string; // Required for recipes
@@ -15,13 +16,12 @@ export interface RecipeMetaData {
   };
 }
 
-export interface UnsavedGroceryMetaData {
-  _id: ObjectId | null;
-  type: "grocery";
+export interface GroceryMetaData {
+  _id: ObjectId;
+  type: "groceryList";
   title: string;
+  timestamp?: Date;
 }
-
-export type GroceryMetaData = UnsavedGroceryMetaData & { _id: ObjectId };
 
 export type SavedRecipeMetaData = RecipeMetaData & { category: string };
 

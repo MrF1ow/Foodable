@@ -22,14 +22,14 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { id, ...recipeWithoutID } = recipe;
+    const { _id, ...recipeWithoutID } = recipe;
 
     const db = await getDB();
 
     const updatedRecipe = await db
       .collection("recipes")
       .findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(_id) },
         { $set: recipeWithoutID },
         { returnDocument: "after" }
       );

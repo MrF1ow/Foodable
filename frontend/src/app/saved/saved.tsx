@@ -5,12 +5,10 @@ import { GeneralAccordion } from "@/components/general-accordion";
 import { AddButton } from "@/components/common/saved/add-button";
 import { EditButton } from "@/components/common/saved/edit-button";
 import { useGeneralStore } from "@/stores/general/store";
-import {
-  useAllSavedItems,
-  useGetCategories,
-} from "@/server/hooks/savedItemsHooks";
+import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
+import { GroceryBox } from "@/components/common/grocery/grocery-box";
 import { capitalizeTitle } from "@/utils/other";
 import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
@@ -75,17 +73,15 @@ export default function Saved() {
                       );
                     } else if (typeOfData === "groceryList") {
                       return (
-                        <Box
+                        <GroceryBox
                           key={item._id.toString()}
-                          onClick={() => {
+                          setOpen={(split: boolean) => {
+                            setSplitLayout(split);
                             setCurrentItemType("groceryList");
-                            setSplitLayout(true);
                           }}
-                        >
-                          <div className="flex items-center justify-center text-3xl font-bold text-center p-2 w-full h-32">
-                            {item.title}
-                          </div>
-                        </Box>
+                          data={item}
+                        />
+
                       );
                     }
                   })
