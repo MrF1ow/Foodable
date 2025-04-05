@@ -211,8 +211,8 @@ export const EditButton = () => {
         <DialogHeader>
           <DialogTitle>Edit Grocery List Title</DialogTitle>
           <DialogDescription>
-            Make changes to your grocery list title. Click submit when you're
-            done.
+            Make changes to your grocery list title. Click submit when
+            you`&apos;`re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

@@ -68,7 +68,7 @@ export async function POST(req: Request) {
         },
         preferences: {
           dietaryRestrictions: [],
-          allergies: [],
+	  budget: 0,
         },
         savedItems: {
           recipes: [],

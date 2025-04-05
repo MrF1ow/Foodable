@@ -1,16 +1,16 @@
 interface RecipeSectionTitleProps {
   title: string;
-  additional?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const RecipeSectionTitle = ({
   title,
-  additional,
+  children,
 }: RecipeSectionTitleProps) => {
-  return additional ? (
+  return children ? (
     <div className="flex items-start w-[40%] text-3xl font-semibold text-foreground tracking-wide justify-between">
       <h2>{title}</h2>
-      {additional}
+      {children}
     </div>
   ) : (
     <div className="flex items-start w-full text-3xl font-semibold text-foreground tracking-wide">
@@ -39,11 +39,11 @@ export const RecipeSection = ({
   return (
     <div className="flex flex-col item-center w-full mt-8">
       {additional ? (
-        <RecipeSectionTitle title={title} additional={additional} />
+        <RecipeSectionTitle title={title}>{additional}</RecipeSectionTitle>
       ) : (
         <RecipeSectionTitle title={title} />
       )}
-      <RecipeSectionBody children={children} />
+      <RecipeSectionBody>{children}</RecipeSectionBody>
     </div>
   );
 };

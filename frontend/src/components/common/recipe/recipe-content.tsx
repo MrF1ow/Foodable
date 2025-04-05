@@ -154,12 +154,19 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
     <>
       <RecipeSection
         title="Additional Ingredients"
-        children={<AdditionalIngredients />}
         additional={<AddButtonForAdditional />}
-      />
-      <RecipeSection title="Description" children={<Decription />} />
-      <RecipeSection title="Ingredients" children={<Ingredients />} />
-      <RecipeSection title="Instructions" children={<Instructions />} />
+      >
+        <AdditionalIngredients />
+      </RecipeSection>
+      <RecipeSection title="Description">
+        <Decription />
+      </RecipeSection>
+      <RecipeSection title="Ingredients">
+        <Ingredients />
+      </RecipeSection>
+      <RecipeSection title="Instructions">
+        <Instructions />
+      </RecipeSection>
     </>
   );
 };
