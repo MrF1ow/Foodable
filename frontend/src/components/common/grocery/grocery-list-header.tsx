@@ -10,6 +10,13 @@ import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/providers/react-query-provider";
+import { MoreVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import type { GroceryList } from "@/types/grocery";
 
@@ -47,25 +54,49 @@ export default function GroceryListHeader() {
 
   return (
     <GroceryHeaderWithChildren
-      width="40%"
+      width={isMobile ? "60%" : "40%"}
       children={
-        <div className="flex items-center justify-center">
+        <div>
           <Button
             onClick={handleItemDeletion}
-            className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+            className="mr-2 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
             data-testid="remove-items-button"
           >
             <Icons.delete className="!h-6 !w-6" />
           </Button>
-          <Button
-            onClick={() =>
-              setCurrentForm("findPrice", isMobile, setSplitLayout)
-            }
-            className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-            data-testid="find-price-button"
-          >
-            {"Find Price"}
-          </Button>
+          {isMobile ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="!h-10 !w-12 bg-card-background"
+                >
+                  <MoreVertical />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() =>
+                    setCurrentForm("findPrice", isMobile, setSplitLayout)
+                  }
+                  data-testid="dropdown-find-price"
+                >
+                  Find Price
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              onClick={() =>
+                setCurrentForm("findPrice", isMobile, setSplitLayout)
+              }
+              className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+              data-testid="find-price-button"
+            >
+              {"Find Price"}
+            </Button>
+          )}
         </div>
       }
     />

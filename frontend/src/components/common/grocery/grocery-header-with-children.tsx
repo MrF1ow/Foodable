@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
 import { GroceryHeader, GroceryHeaderProps } from "./grocery-header";
 import { useGeneralStore } from "@/stores/general/store";
-
 
 export const GroceryHeaderWithChildren = ({
   width,
@@ -12,12 +11,8 @@ export const GroceryHeaderWithChildren = ({
 }) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
-    <div
-      className={`h-full flex ${
-        isMobile ? "justify-center" : "justify-between"
-      } items-center`}
-    >
-      {!isMobile && <GroceryHeader width={width} />}
+    <div className="h-full flex justify-between items-center">
+      <GroceryHeader width={width} />
       <div>{children}</div>
     </div>
   );
