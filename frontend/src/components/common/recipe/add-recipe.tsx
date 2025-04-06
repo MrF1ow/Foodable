@@ -33,6 +33,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
   const categories = grocerySections;
 
   const setCreateForm = useRecipeStore((state) => state.setCreateForm);
+  const setOnForm = useRecipeStore((state) => state.setOnForm);
 
   type RecipeFormValues = {
     title: string;
@@ -65,6 +66,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
   };
 
   const handleInputClose = () => {
+    setOnForm(false);
     setCreateForm(false);
   };
 
@@ -120,7 +122,11 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                     key={field.id}
                     className="relative border p-3 pr-12 rounded flex flex-col gap-2"
                   >
-                    <div className="flex flex-row gap-4">
+                    <div
+                      className={`flex ${
+                        isMobile ? "flex-col" : "flex-row"
+                      } gap-4`}
+                    >
                       <FormField
                         control={form.control}
                         name={`ingredients.${index}.name`}

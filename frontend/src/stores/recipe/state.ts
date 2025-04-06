@@ -11,6 +11,8 @@ export type RecipeState = {
   additionalIngredients: GroceryItem[];
   currentImageUrl: string;
   createForm: boolean;
+  onForm: boolean;
+  currentSideContent: string;
 };
 
 export type RecipeActions = {
@@ -22,6 +24,8 @@ export type RecipeActions = {
   setAdditionalIngredients: (items: GroceryItem[]) => void;
   setCurrentImageUrl: (url: string) => void;
   setCreateForm: (createForm: boolean) => void;
+  setOnForm: (onForm: boolean) => void;
+  setCurrentSideContent: (currentSideContent: string) => void;
 };
 
 export const createRecipeActions = (set: any, get: any): RecipeActions => ({
@@ -44,6 +48,9 @@ export const createRecipeActions = (set: any, get: any): RecipeActions => ({
     set((state: RecipeState) => ({ currentImageUrl: url })),
   setCreateForm: (createForm: boolean) =>
     set((state: RecipeState) => ({ createForm })),
+  setOnForm: (onForm: boolean) => set((state: RecipeState) => ({ onForm })),
+  setCurrentSideContent: (sideContent: string) =>
+    set((state: RecipeState) => ({ currentSideContent: sideContent })),
 });
 
 export type RecipeStore = RecipeState & RecipeActions;
@@ -60,6 +67,8 @@ export const defaultInitState: RecipeState = {
   additionalIngredients: [],
   currentImageUrl: "",
   createForm: false,
+  onForm: false,
+  currentSideContent: "list",
 };
 
 export const createRecipeStore = (initState: RecipeState = defaultInitState) =>
