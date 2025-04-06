@@ -23,16 +23,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { unitOptions } from "@/config/unit-conversions";
 import { useFieldArray } from "react-hook-form";
-
-import { showToast } from "@/providers/react-query-provider";
 import { grocerySections } from "@/config/grocery-sections";
 
-import { getAddItemFormValidation } from "@/utils/formValidation";
-
-// import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
-import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { NewRecipe } from "@/types/recipe";
 import { useRecipeStore } from "@/stores/recipe/store";
 
 export const AddRecipe = ({ className }: { className?: string }) => {
@@ -41,7 +34,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
 
   const setCreateForm = useRecipeStore((state) => state.setCreateForm);
 
-  const form = useForm<{
+  type RecipeFormValues = {
     title: string;
     description: string;
     ingredients: {
@@ -51,7 +44,9 @@ export const AddRecipe = ({ className }: { className?: string }) => {
       category: string;
     }[];
     instructions: string;
-  }>({
+  };
+
+  const form = useForm<RecipeFormValues>({
     defaultValues: {
       title: "",
       description: "",
@@ -65,8 +60,8 @@ export const AddRecipe = ({ className }: { className?: string }) => {
     name: "ingredients",
   });
 
-  const onSubmit = () => {
-    console.log("Recipe submitted");
+  const onSubmit = (data: RecipeFormValues) => {
+    console.log("Form submitted:", data);
   };
 
   const handleInputClose = () => {
@@ -80,7 +75,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
           title="Add Recipe"
           onClick={handleInputClose}
           content={
-            <div className="flex flex-col gap-6 max-h-[570px] overflow-y-auto">
+            <div className="flex flex-col gap-6 max-h-[570px] overflow-y-auto p-2">
               <FormField
                 control={form.control}
                 name="title"
@@ -103,7 +98,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                 control={form.control}
                 name="description"
                 render={({ field }) => (
-                  <FormItem className="mr-8">
+                  <FormItem>
                     <FormLabel className="text-2xl">Description</FormLabel>
                     <FormControl>
                       <Textarea
@@ -123,18 +118,18 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                 {fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="border p-3 rounded flex flex-col gap-2"
+                    className="relative border p-3 pr-12 rounded flex flex-col gap-2"
                   >
-                    <div className="flex flex-row">
+                    <div className="flex flex-row gap-4">
                       <FormField
                         control={form.control}
                         name={`ingredients.${index}.name`}
                         render={({ field }) => (
-                          <FormItem className="flex-1 w-10">
+                          <FormItem>
                             <FormLabel className="text-xl">Name</FormLabel>
                             <FormControl>
                               <Input
-                                className="!text-lg h-10"
+                                className="!text-lg h-[2.875rem]"
                                 placeholder="Name"
                                 {...field}
                                 data-testid={`ingredient-${index}-name`}
@@ -181,11 +176,16 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                           </FormItem>
                         )}
                       />
-                      <button type="button" onClick={() => remove(index)}>
-                        <Icons.delete />
-                      </button>
                     </div>
-
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2"
+                      data-testid={`remove-ingredient-${index}`}
+                      aria-label="Remove ingredient"
+                    >
+                      <Icons.delete />
+                    </button>
                     <div className="flex flex-row gap-4">
                       <FormField
                         control={form.control}
@@ -196,7 +196,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                             <FormControl>
                               <Input
                                 type="text"
-                                className="!text-lg h-10 w-full"
+                                className="!text-lg h-[2.875rem] w-full"
                                 placeholder="0"
                                 {...field}
                                 data-testid={`ingredient-${index}-quantity`}
@@ -249,14 +249,16 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                     </div>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  onClick={() =>
-                    append({ name: "", quantity: 1, unit: "", category: "" })
-                  }
-                >
-                  <Icons.plus />
-                </button>
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      append({ name: "", quantity: 1, unit: "", category: "" })
+                    }
+                  >
+                    <Icons.plus />
+                  </button>
+                </div>
               </div>
               <FormField
                 control={form.control}
