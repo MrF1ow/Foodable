@@ -30,6 +30,7 @@ export const FindPrice = () => {
   const [zipCode, setZipCodeState] = useState("97330");
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
@@ -82,6 +83,7 @@ export const FindPrice = () => {
 
   const handleInputClose = () => {
     setCurrentForm("", isMobile, setSplitLayout);
+    setOnGroceryForm(false);
   };
 
   return (

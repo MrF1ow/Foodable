@@ -30,9 +30,7 @@ import { insertItemIntoGroceryMap } from "@/utils/listItems";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
-import {
-  useUpdateGroceryList,
-} from "@/server/hooks/groceryListHooks";
+import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
 export const AddItem = ({ className }: { className?: string }) => {
@@ -45,6 +43,7 @@ export const AddItem = ({ className }: { className?: string }) => {
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setMap = useGroceryStore((state) => state.setMap);
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
@@ -96,6 +95,7 @@ export const AddItem = ({ className }: { className?: string }) => {
 
   const handleInputClose = () => {
     setCurrentForm("", isMobile, setSplitLayout);
+    setOnGroceryForm(false);
   };
 
   return (

@@ -27,6 +27,7 @@ export default function GroceryListHeader() {
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const currentList = useGroceryStore((state) => state.currentList);
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const { updateGroceryList } = useUpdateGroceryList();
 
@@ -77,12 +78,31 @@ export default function GroceryListHeader() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                  onClick={() =>
-                    setCurrentForm("findPrice", isMobile, setSplitLayout)
-                  }
+                  onClick={() => {
+                    setCurrentForm("addItem", isMobile, setSplitLayout);
+                    setOnGroceryForm(true);
+                  }}
+                  data-testid="dropdown-add-item"
+                >
+                  Add Item
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setCurrentForm("findPrice", isMobile, setSplitLayout);
+                    setOnGroceryForm(true);
+                  }}
                   data-testid="dropdown-find-price"
                 >
                   Find Price
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setCurrentForm("groceryHelper", isMobile, setSplitLayout);
+                    setOnGroceryForm(true);
+                  }}
+                  data-testid="dropdown-grocery-helper"
+                >
+                  AI Helper
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

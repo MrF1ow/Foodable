@@ -11,6 +11,7 @@ import { List } from "@/components/common/grocery/list";
 import type { GroceryList } from "@/types/grocery";
 import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
+import RightSideCard from "@/components/common/grocery/gorcery-right-side-card";
 
 interface GroceryListProps {
   isUser: boolean;
@@ -27,13 +28,19 @@ export default function GroceryList({
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
+  const onGroceryForm = useGroceryStore((state) => state.onGroceryForm);
+
+  if (isMobile && onGroceryForm) {
+    return <RightSideCard />;
+  }
 
   return (
     <>
       {isUser && <GroceryListDataFetcher />}
       <SavedDataFetcher />
       {currentList && <List className={className} />}
-      {renderContent && !splitLayout && (
+      {renderContent && !splitLayout && !isMobile && (
         <Button
           className={`btn-primary rounded-full w-12 h-12 hover:bg-primary flex items-center justify-center fixed bottom-4 right-4 z-50 ${
             isMobile ? "mb-16" : ""

@@ -22,6 +22,7 @@ export const HelperCard = () => {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const form = useForm();
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   function onSubmit(data: any) {
     console.log(data);
@@ -29,6 +30,7 @@ export const HelperCard = () => {
 
   const handleInputClose = () => {
     setCurrentForm("", isMobile, setSplitLayout);
+    setOnGroceryForm(false);
   };
 
   return (

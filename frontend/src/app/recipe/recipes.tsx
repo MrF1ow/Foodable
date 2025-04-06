@@ -18,7 +18,7 @@ export default function Recipes() {
   const { recipes } = useAllRecipes(true);
 
   const filter = useRecipeStore((state) => state.filter);
-  const onForm = useRecipeStore((state) => state.onForm);
+  const onRecipeForm = useRecipeStore((state) => state.onForm);
   const setOnForm = useRecipeStore((state) => state.setOnForm);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentSideContent = useRecipeStore(
@@ -36,7 +36,7 @@ export default function Recipes() {
     setFilteredRecipes(filterRecipes(recipes, filter));
   }, [recipes, filter]);
 
-  if (isMobile && onForm) {
+  if (isMobile && onRecipeForm) {
     return <SideList isUser={true} />;
   }
 
