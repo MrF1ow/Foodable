@@ -63,7 +63,7 @@ export default function ClientSideMainLayout({
           <div className="flex-1 h-full">{children}</div>
         </div>
       ) : (
-        <div className={`w-full h-full bg-background p-6`}>{children}</div>
+        <div className={`overflow-y-auto w-full h-full bg-background p-6`}>{children}</div>
       )}
     </>
   );

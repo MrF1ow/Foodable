@@ -17,7 +17,7 @@ export const SocialPageHeader = ({ bannerUrl }: SocialPageHeaderProps) => {
   const { user } = useUser();
 
   return (
-    <Card className="relative w-full h-full rounded-md overflow-hidden">
+    <Card className="relative w-full md:w-full lg:w-full h-full rounded-md overflow-hidden">
       <CardContent>
         <Image
           src={bannerUrl}
@@ -28,7 +28,7 @@ export const SocialPageHeader = ({ bannerUrl }: SocialPageHeaderProps) => {
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <div className="flex flex-row items-center justify-between w-full">
             <div className="flex flex-row items-center ">
-              <Avatar className="w-32 h-32 rounded-full mr-20">
+              <Avatar className="w-20 md:w-25 lg:w-32 h-20 md:h-25 lg:h-32 rounded-full mr-20">
                 <AvatarImage
                   src={user?.imageUrl || pfp.src}
                   alt="User Avatar"
@@ -36,7 +36,7 @@ export const SocialPageHeader = ({ bannerUrl }: SocialPageHeaderProps) => {
                 />
                 <AvatarFallback>PFP</AvatarFallback>
               </Avatar>
-              <h1 className="text-8xl font-semibold text-green truncate">
+              <h1 className="text-3xl md:text-7xl lg:text-8xl font-semibold text-green">
                 {user?.username}
               </h1>
             </div>
@@ -55,29 +55,29 @@ export const SocialPageFollowingHeader = () => {
   );
 
   return (
-    <div className="flex justify-start space-x-6 mb-4">
-      <Button
-        variant={selectedSection === "followers" ? "default" : "outline"}
-        className={`text-2xl font-semibold ${
-          selectedSection === "followers"
-            ? "bg-primary text-foreground"
-            : "text-primary border-2 border-primary"
-        } px-6 py-2 rounded-md`}
-        onClick={() => setSelectedSection("followers")}
-      >
-        Followers
-      </Button>
-      <Button
-        variant={selectedSection === "following" ? "default" : "outline"}
-        className={`text-2xl font-semibold ${
-          selectedSection === "following"
-            ? "bg-primary text-foreground"
-            : "text-primary border-2 border-primary"
-        } px-6 py-2 rounded-md`}
-        onClick={() => setSelectedSection("following")}
-      >
-        Following
-      </Button>
+    <div className="w-full">
+      <div className="flex justify-start space-x-6 mb-4">
+        <Button
+          variant={selectedSection === "followers" ? "default" : "outline"}
+          className={`text-1xl md:text-2xl lg:text-2xl font-semibold ${selectedSection === "followers"
+              ? "bg-primary text-foreground"
+              : "text-primary border-2 border-primary"
+            } px-6 py-2 rounded-md`}
+          onClick={() => setSelectedSection("followers")}
+        >
+          Followers
+        </Button>
+        <Button
+          variant={selectedSection === "following" ? "default" : "outline"}
+          className={`text-1xl md:text-2xl lg:text-2xl font-semibold ${selectedSection === "following"
+              ? "bg-primary text-foreground"
+              : "text-primary border-2 border-primary"
+            } px-6 py-2 rounded-md`}
+          onClick={() => setSelectedSection("following")}
+        >
+          Following
+        </Button>
+      </div>
     </div>
   );
 };
