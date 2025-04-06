@@ -9,7 +9,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 
 import type { GroceryList } from "@/types/grocery";
 

@@ -27,6 +27,28 @@ export async function POST(req: Request) {
     console.log("Valid _id: ", _id);
 
     const db = await getDB();
+    const usersCollection = db.collection("users");
+    const newGroceryListId = ObjectId.createFromHexString(_id);
+
+    const userDoc = await usersCollection.findOne({ clerkId: clerkUser.id });
+
+    if (!userDoc) {
+      return NextResponse.json(
+        { message: "User document not found" },
+        { status: 404 }
+      );
+    }
+
+    // If already set to the same ID, just return 200
+    if (
+      userDoc.currentGroceryList &&
+      userDoc.currentGroceryList.toString() === newGroceryListId.toString()
+    ) {
+      return NextResponse.json(
+        { message: "Grocery list already set" },
+        { status: 200 }
+      );
+    }
 
     const result = await db
       .collection("users")

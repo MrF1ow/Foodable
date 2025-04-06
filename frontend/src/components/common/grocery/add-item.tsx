@@ -23,7 +23,7 @@ import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 
 import { getAddItemFormValidation } from "@/utils/formValidation";
 import { insertItemIntoGroceryMap } from "@/utils/listItems";

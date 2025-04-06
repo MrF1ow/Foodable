@@ -1,8 +1,7 @@
-import { isServer, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
-let browserQueryClient: QueryClient | null = null;
-
-function makeQueryClient() {
+// server-only
+export function createServerQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
@@ -13,13 +12,19 @@ function makeQueryClient() {
   });
 }
 
-export function getQueryClient() {
-  // If we're on the server, create a new query client
-  if (isServer) {
-    browserQueryClient = makeQueryClient();
-    return browserQueryClient;
-  } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
-    return browserQueryClient;
+let clientQueryClient: QueryClient | null = null;
+
+export function getClientQueryClient() {
+  if (!clientQueryClient) {
+    clientQueryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 60 * 1000,
+          gcTime: 60 * 1000 * 5,
+        },
+      },
+    });
   }
+
+  return clientQueryClient;
 }

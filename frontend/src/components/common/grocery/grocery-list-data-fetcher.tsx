@@ -5,7 +5,7 @@ import { useEffect } from "react";
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 import type { NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
@@ -51,11 +51,11 @@ export default function GroceryListDataFetcher() {
   // fetch the grocery list by id that is stored in the currentList state of the user data
   const { refetchGroceryList } = useFetchGroceryListById({
     id: currentGroceryListId,
-    enabled: !!currentGroceryListId && isValidObjectId(currentGroceryListId),
+    enabled: !!currentGroceryListId && isValidObjectId(currentGroceryListId) && currentGroceryListId !== currentList?._id,
   });
 
   async function refetchUserCurrentListId(): Promise<{ data?: string | null }> {
-      return await refetchCurrentListId();
+    return await refetchCurrentListId();
   }
 
   // get the user location from the browser

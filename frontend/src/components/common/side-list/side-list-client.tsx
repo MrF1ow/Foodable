@@ -10,7 +10,7 @@ import { GroceryHeader } from "../grocery/grocery-header";
 import { GroceryHeaderMin } from "../grocery/grocery-header-min";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGroceryStore } from "@/stores/grocery/store";
-import GroceryList from "@/app/grocery-list/groceryList";
+import GroceryList from "@/app/(data-hydrate)/grocery-list/groceryList";
 import { AddItem } from "../grocery/add-item";
 
 interface SideListProps {

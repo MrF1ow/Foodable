@@ -1,4 +1,4 @@
-import { getQueryClient } from "@/app/get-query-client";
+import { createServerQueryClient } from "@/app/get-query-client";
 import {
   GROCERY_LISTS,
   RECIPES,
@@ -16,9 +16,10 @@ import { RecipeApi } from "@/server/api/recipeApi";
 import { UserApi } from "@/server/api/userApi";
 import { SavedItemsApi } from "@/server/api/savedItemsApi";
 import { checkRole } from "@/utils/roles";
+import { dehydrate } from "@tanstack/react-query";
 
 export default async function FetchUserData() {
-  const queryClient = getQueryClient();
+  const queryClient = createServerQueryClient();
 
   const isUser = await checkRole("user");
 
@@ -75,5 +76,5 @@ export default async function FetchUserData() {
     queryFn: () => RecipeApi.fetchAllRecipes(true),
   });
 
-  return queryClient;
+  return dehydrate(queryClient);
 }

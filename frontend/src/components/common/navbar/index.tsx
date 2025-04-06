@@ -2,14 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
-import { CiLogout } from "react-icons/ci";
+import { IoIosLogOut } from "react-icons/io";
 import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 
 import {
   userNavOptions,
   userNavOptionsMobile,
-  guestNavOptions,
 } from "@/config/nav-options";
 
 import {
@@ -26,6 +25,15 @@ import { useGeneralStore } from "@/stores/general/store";
 export const Navbar = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const activeItem = useGeneralStore((state) => state.currentPage);
+
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; // or a loading skeleton
+
 
   if (!isMobile) {
     {
@@ -59,7 +67,7 @@ export const Navbar = () => {
         <CardFooter className="flex flex-col items-center justify-center gap-y-6">
           <ThemeSwitch />
           <SignOutButton>
-            <CiLogout size={25} className="font-bold" />
+            <IoIosLogOut size={25} />
           </SignOutButton>
         </CardFooter>
       </Card>
