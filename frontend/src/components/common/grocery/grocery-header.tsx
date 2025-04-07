@@ -14,6 +14,7 @@ import {
 import { EditButton } from "@/components/common/grocery/edit-button";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
 import { GroceryListIdentifier } from "@/types/grocery";
+import { useGeneralStore } from "@/stores/general/store";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -24,6 +25,7 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const availableLists = useGroceryStore((state) => state.availableLists);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
+  const isMobile = useGeneralStore((state) => state.isMobile);
 
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -55,7 +57,9 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     >
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="text-foreground text-4xl cursor-pointer outline-none bg-transparent"
+          className={`text-foreground ${
+            isMobile ? "text-xl max-w-[10rem]" : "text-4xl"
+          } overflow-hidden whitespace-nowrap truncate cursor-pointer outline-none bg-transparent`}
           data-testid="grocery-header"
         >
           {currentList.title || "New List"}
