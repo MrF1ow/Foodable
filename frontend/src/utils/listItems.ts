@@ -4,13 +4,32 @@ import { Recipe, RecipeIngredient } from "@/types/recipe";
 import {
   GroceryItem,
   GroceryList,
+  GroceryListIdentifier,
   GrocerySectionOptions,
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { RecipeMetaData, SavedItem } from "@/types/saved";
+import { RecipeMetaData, SavedGroceryMetaData, SavedItem } from "@/types/saved";
 import { compareTag } from "./filterHelpers";
 import { FollowMetadata } from "@/types/user";
+
+export const getAvailableGroceryLists = (
+  groceryLists: SavedGroceryMetaData[]
+): GroceryListIdentifier[] => {
+  if (!groceryLists || groceryLists.length === 0) return [];
+  const availableLists: GroceryListIdentifier[] = [];
+
+  groceryLists.forEach((list) => {
+    if (list._id !== null) {
+      availableLists.push({
+        id: list._id.toString(),
+        title: list.title,
+      });
+    }
+  });
+
+  return availableLists;
+};
 
 export const getCurrentGrocerySections = () => {
   const currentCategories = useGroceryStore((state) => state.currentCategories);

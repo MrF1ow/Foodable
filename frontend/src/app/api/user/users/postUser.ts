@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       ...user,
       preferences: {
         dietaryRestrictions: user.preferences.dietaryRestrictions || [],
-        allergies: user.preferences.allergies || [],
+        budget: user.preferences.budget || 0,
       },
       savedItems: {
         recipes: user.savedItems.recipes || [], // Ensure recipes is an array

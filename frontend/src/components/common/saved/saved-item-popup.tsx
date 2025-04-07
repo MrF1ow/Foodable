@@ -3,7 +3,7 @@
 // Local Imports
 import { useGeneralStore } from "@/stores/general/store";
 import { RecipePopUp } from "../recipe/recipe-popup";
-import { SideList } from "../side-list";
+import { SideList } from "../side-list/side-list-client";
 import { useSavedItemsStore } from "@/stores/saved/store";
 
 export const SavedItemPopup = () => {
@@ -19,6 +19,6 @@ export const SavedItemPopup = () => {
   return currentItemType === "recipe" ? (
     <RecipePopUp toggleDialog={toggleDialog} />
   ) : (
-    <SideList toggleDialog={toggleDialog} />
+    <SideList isUser={true} toggleDialog={toggleDialog} />
   );
 };

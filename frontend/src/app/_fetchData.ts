@@ -1,4 +1,4 @@
-import { getQueryClient } from "@/app/get-query-client";
+import { createServerQueryClient } from "@/app/get-query-client";
 import {
   GROCERY_LISTS,
   RECIPES,
@@ -9,15 +9,17 @@ import {
   FOLLOWING,
   SETTINGS,
   PREFERENCES,
+  CURRENT_LIST,
 } from "@/lib/constants/process";
 import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
 import { UserApi } from "@/server/api/userApi";
 import { SavedItemsApi } from "@/server/api/savedItemsApi";
 import { checkRole } from "@/utils/roles";
+import { dehydrate } from "@tanstack/react-query";
 
 export default async function FetchUserData() {
-  const queryClient = getQueryClient();
+  const queryClient = createServerQueryClient();
 
   const isUser = await checkRole("user");
 
@@ -35,9 +37,16 @@ export default async function FetchUserData() {
       queryFn: () => SavedItemsApi.getAllSavedItems(),
     });
 
+    // Prefetch saved categories data
     await queryClient.prefetchQuery({
       queryKey: [SAVED_CATEGORIES],
       queryFn: () => SavedItemsApi.getAllSavedCategories(),
+    });
+
+    // Prefetch user data
+    await queryClient.prefetchQuery({
+      queryKey: [USERS, CURRENT_LIST],
+      queryFn: () => UserApi.fetchUserCurrentList(),
     });
 
     await queryClient.prefetchQuery({
@@ -67,5 +76,5 @@ export default async function FetchUserData() {
     queryFn: () => RecipeApi.fetchAllRecipes(true),
   });
 
-  return queryClient;
+  return dehydrate(queryClient);
 }

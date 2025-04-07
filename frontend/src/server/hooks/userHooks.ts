@@ -3,6 +3,7 @@ import { UserApi } from "../api/userApi";
 import { User, UserPreferences, UserSettings } from "@/types/user";
 import {
   USERS,
+  CURRENT_LIST,
   FOLLOWERS,
   FOLLOWING,
   SETTINGS,
@@ -206,5 +207,41 @@ export const useUpdateUserPreferences = () => {
     isLoadingUpdatePreferences: mutation.isPending,
     errorUpdatePreferences: mutation.error,
     isErrorUpdatePreferences: mutation.isError,
+  };
+};
+
+export const useFetchUserCurrentList = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: currentGroceryListId,
+    isLoading: isLoadingCurrentListId,
+    refetch: refetchCurrentListId,
+    error: errorCurrentListId,
+    isError: isErrorCurrentListId,
+  } = useQuery({
+    queryKey: [USERS, CURRENT_LIST],
+    queryFn: UserApi.fetchUserCurrentList,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    currentGroceryListId,
+    isLoadingCurrentListId,
+    refetchCurrentListId,
+    errorCurrentListId,
+    isErrorCurrentListId,
+  };
+};
+
+export const useUpdateUserCurrentList = () => {
+  const mutation = useMutation<User, Error, string>({
+    mutationFn: UserApi.updateUserCurrentList,
+  });
+
+  return {
+    updateUserCurrentList: mutation.mutateAsync,
+    isLoadingUpdateCurrentList: mutation.isPending,
+    errorUpdateCurrentList: mutation.error,
+    isErrorUpdateCurrentList: mutation.isError,
   };
 };

@@ -1,5 +1,5 @@
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 import { CustomError } from "@/types/error";
 
 export const errorNotification = (

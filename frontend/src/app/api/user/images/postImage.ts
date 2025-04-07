@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     });
 
     if (sourceId) {
-      let recipeId = new ObjectId(sourceId.toString());
+      const recipeId = new ObjectId(sourceId.toString());
       recipeCollection.updateOne(
         { _id: recipeId },
         { $set: { imageId: uploadStream.id } }

@@ -9,7 +9,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 
 import type { GroceryList } from "@/types/grocery";
 
@@ -35,7 +35,6 @@ export default function GroceryListHeader() {
 
     // only make the API call if the list is saved and has an id in the database
     if ("_id" in groceryList && groceryList._id) {
-      console.log("Updating Grocery List");
       updateGroceryList(groceryList);
     }
     showToast(
@@ -47,28 +46,23 @@ export default function GroceryListHeader() {
   };
 
   return (
-    <GroceryHeaderWithChildren
-      width="25%"
-      children={
-        <div className="flex items-center justify-center">
-          <Button
-            onClick={handleItemDeletion}
-            className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
-            data-testid="remove-items-button"
-          >
-            <Icons.delete className="!h-6 !w-6" />
-          </Button>
-          <Button
-            onClick={() =>
-              setCurrentForm("findPrice", isMobile, setSplitLayout)
-            }
-            className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-            data-testid="find-price-button"
-          >
-            {"Find Price"}
-          </Button>
-        </div>
-      }
-    />
+    <GroceryHeaderWithChildren width="40%">
+      <div className="flex items-center justify-center">
+        <Button
+          onClick={handleItemDeletion}
+          className="mx-6 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+          data-testid="remove-items-button"
+        >
+          <Icons.delete className="!h-6 !w-6" />
+        </Button>
+        <Button
+          onClick={() => setCurrentForm("findPrice", isMobile, setSplitLayout)}
+          className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+          data-testid="find-price-button"
+        >
+          {"Find Price"}
+        </Button>
+      </div>
+    </GroceryHeaderWithChildren>
   );
 }

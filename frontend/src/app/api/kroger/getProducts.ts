@@ -27,7 +27,7 @@ export async function GET(req: Request) {
 
   const locationId = getValueFromSearchParams(req, "locationId") || "";
   console.log("Location ID:", locationId);
-  let searchByLocation = locationId ? `&filter.locationId=${locationId}` : "";
+  const searchByLocation = locationId ? `&filter.locationId=${locationId}` : "";
 
   const accessToken = await getAccessToken();
   if (!accessToken) {

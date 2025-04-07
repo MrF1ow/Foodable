@@ -27,7 +27,7 @@ import {
   useUpdateGroceryList,
 } from "@/server/hooks/groceryListHooks";
 import { GroceryList } from "@/types/grocery";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import {
   Select,
@@ -94,7 +94,7 @@ export const EditButton = () => {
           ...newList,
           type: "groceryList",
           category: selectedList,
-        } as unknown as SavedItem;
+        } as SavedItem;
 
         await createSavedItem(savedItem);
 
@@ -211,8 +211,8 @@ export const EditButton = () => {
         <DialogHeader>
           <DialogTitle>Edit Grocery List Title</DialogTitle>
           <DialogDescription>
-            Make changes to your grocery list title. Click submit when you're
-            done.
+            Make changes to your grocery list title. Click submit when
+            you`&apos;`re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

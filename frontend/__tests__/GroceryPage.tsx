@@ -7,7 +7,7 @@ import {
   within,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import GroceryPage from "../src/app/grocery-list/page";
+import GroceryPage from "../src/app/(data-hydrate)/grocery-list/page";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
 import { GeneralStoreProvider } from "@/stores/general/store";
 import { RecipeStoreProvider } from "@/stores/recipe/store";

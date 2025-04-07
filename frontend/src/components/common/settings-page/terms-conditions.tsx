@@ -19,7 +19,7 @@ export default function TermsAndConditions() {
         </p>
         <p>
           Welcome to Foodable! These Terms and Conditions govern your use of the
-          Foodable platform (the "Service"), which helps users discover healthy
+          Foodable platform (the `&quot;`Service`&quot;`), which helps users discover healthy
           and affordable food options tailored to their dietary and financial
           needs. By accessing or using the Service, you agree to comply with and
           be bound by these Terms and Conditions.
@@ -33,7 +33,7 @@ export default function TermsAndConditions() {
           <h3 className="text-xl font-semibold">1. Introduction</h3>
           <p>
             Welcome to Foodable! These Terms and Conditions govern your use of
-            the Foodable platform (the "Service"), which helps users discover
+            the Foodable platform (the `&quot;`Service`&quot;`), which helps users discover
             healthy and affordable food options tailored to their dietary and
             financial needs. By accessing or using the Service, you agree to
             comply with and be bound by these Terms and Conditions.

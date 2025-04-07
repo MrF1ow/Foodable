@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -12,8 +12,8 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { EditButton } from "@/components/common/grocery/edit-button";
-import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
-import { GroceryList, NewGroceryList } from "@/types/grocery";
+import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
+import { GroceryListIdentifier } from "@/types/grocery";
 
 export interface GroceryHeaderProps {
   width: string;
@@ -21,41 +21,32 @@ export interface GroceryHeaderProps {
 
 export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
   const currentList = useGroceryStore((state) => state.currentList);
+  const availableLists = useGroceryStore((state) => state.availableLists);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
+  const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
-  const [allLists, setAllLists] = useState<GroceryList[]>([]);
-
-  const { groceryLists = [] } = useAllGroceryLists({
-    metadata: true,
-    enabled: true,
-  });
-
-  useEffect(() => {
-    const newList: NewGroceryList = {
-      _id: null,
-      creatorId: null,
-      title: "New List",
-      items: [],
-    };
-
-    const allLists = [newList, ...groceryLists];
-    setAllLists(allLists);
-  }, [groceryLists]);
-
-  const setList = async (item: GroceryList) => {
-    setOpenAccordion([]);
-    setCurrentList(item);
-  };
+  const { updateUserCurrentList } = useUpdateUserCurrentList();
 
   if (!currentList) return null;
 
+  const handleListChange = async (item: GroceryListIdentifier) => {
+    await updateUserCurrentList(item.id);
+    const newList = {
+      ...currentList,
+      items: [],
+      _id: item.id,
+      title: item.title,
+    };
+    setCurrentList(newList);
+    setOpenAccordion([]);
+  };
+
   const filteredLists = currentList._id
-    ? allLists.filter(
-        (list: GroceryList) =>
-          list._id !== currentList._id || currentList._id === null
+    ? availableLists.filter(
+        (list: GroceryListIdentifier) =>
+          list.id !== currentList._id || currentList._id === null
       )
-    : allLists;
+    : availableLists;
 
   return (
     <div
@@ -71,8 +62,11 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {filteredLists.length > 0 ? (
-            filteredLists.map((list: GroceryList) => (
-              <DropdownMenuItem key={list._id} onClick={() => setList(list)}>
+            filteredLists.map((list: GroceryListIdentifier) => (
+              <DropdownMenuItem
+                key={list.id}
+                onClick={() => handleListChange(list)}
+              >
                 {list.title}
               </DropdownMenuItem>
             ))

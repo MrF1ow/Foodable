@@ -29,12 +29,12 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
   );
-  const openAccordion = useGroceryStore((state) => state.currentSections);
+  const openAccordion = useGroceryStore((state) => state.openSections);
   const currentList = useGroceryStore((state) => state.currentList);
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const setOpenAccordion = useGroceryStore((state) => state.setCurrentSections);
+  const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
   const [accordionItems, setAccordionItems] = useState<
     GroceryItem[] | undefined

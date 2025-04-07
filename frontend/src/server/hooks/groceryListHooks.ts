@@ -46,8 +46,8 @@ export const useFetchGroceryListById = ({
   } = useQuery({
     queryKey: [GROCERY_LISTS, id],
     queryFn: () => GroceryApi.fetchGroceryListById(id),
-    enabled: !!id && enabled, // Only fetch if ID is valid
-    retry: 0,
+    enabled,
+    retry: 2,
   });
 
   return {
@@ -55,6 +55,7 @@ export const useFetchGroceryListById = ({
     isLoadingGroceryList,
     refetchGroceryList,
     errorGroceryList,
+    isErrorGroceryList,
   };
 };
 

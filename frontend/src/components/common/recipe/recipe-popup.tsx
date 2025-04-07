@@ -25,12 +25,13 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
   const currentData = useRecipeStore((state) => state.currentRecipe);
   const imageUrl = useRecipeStore((state) => state.currentImageUrl);
   const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
+  const currentList = useGroceryStore((state) => state.currentList);
 
   if (!currentData) return null;
 
   const { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe } = useRecipeById(
     currentData._id.toString(),
-    { enabled: true }
+    { enabled: !!currentData._id }
   );
 
   useEffect(() => {
@@ -49,9 +50,10 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
         recipe.ingredients,
         groceryMap
       );
+      console.log("Additional Ingredients:", additionalIngredients);
       setAdditionalIngredients(additionalIngredients);
     }
-  }, [recipe]);
+  }, [recipe, currentList]);
 
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">

@@ -57,12 +57,9 @@ export const validateUserWithoutID = (
             ? validateIdFn(item._id)
             : false
         )) &&
-      user.currentGroceryList === null) ||
-    ((user.currentGroceryList &&
-    typeof user.currentGroceryList === "object" &&
-    user.currentGroceryList._id
-      ? validateIdFn(user.currentGroceryList._id)
-      : false) &&
+      (user.currentGroceryList === null ||
+        (user.currentGroceryList !== null &&
+          validateIdFn(user.currentGroceryList))) &&
       user.createdRecipes.every((item) => validateIdFn(item)) &&
       user.following.every((item) => validateIdFn(item)) &&
       user.followers.every((item) => validateIdFn(item)) &&
@@ -71,7 +68,8 @@ export const validateUserWithoutID = (
         (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&
       // Optional dateJoined validation
       (user.dateJoined === undefined ||
-        (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime()))))
+        (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime())))
+    )
   );
 };
 

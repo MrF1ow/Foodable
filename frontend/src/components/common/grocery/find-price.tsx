@@ -17,7 +17,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
-import { showToast } from "@/providers/react-query-provider";
+import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { useState } from "react";
 

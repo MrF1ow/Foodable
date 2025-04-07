@@ -6,17 +6,19 @@ import {
   GroceryItem,
   GroceryList,
   GrocerySectionOptions,
+  GroceryListIdentifier,
   NewGroceryList,
 } from "@/types/grocery";
 
 export type GroceryState = {
   currentList: GroceryList | NewGroceryList | null;
+  availableLists: GroceryListIdentifier[];
 
   // tracks the current categories in the grocery list
   currentCategories: GrocerySectionOptions[];
 
   // tracks which sections are open in the grocery list
-  currentSections: GrocerySectionOptions[];
+  openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
   currentForm: string;
@@ -24,25 +26,40 @@ export type GroceryState = {
 
 export type GroceryActions = {
   setCurrentList: (list: GroceryList | NewGroceryList) => void;
+  setAvailableLists: (lists: GroceryListIdentifier[]) => void;
   setCurrentForm: (
     card: string,
     isMobile: boolean,
     updateSplitLayout?: (split: boolean) => void
   ) => void;
   resetForm: () => void;
-  setCurrentSections: (sections: GrocerySectionOptions[]) => void;
+  setOpenSections: (sections: GrocerySectionOptions[]) => void;
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   setMap: (map: Map<string, GroceryItem>) => void;
 };
 
-export const createGroceryActions = (set: any, get: any): GroceryActions => ({
-  setCurrentList: (list: GroceryList | NewGroceryList) =>
+export const createGroceryActions = (set: any): GroceryActions => ({
+  setCurrentList: (list: GroceryList | NewGroceryList | undefined | null) =>
     set((state: GroceryState) => {
       // update the map with the items in the currentList
-      const updatedMap = new Map(state.map);
+      const updatedMap = new Map<string, GroceryItem>();
+      const newCategories = new Set<GrocerySectionOptions>();
 
-      // if the items array is not present, set it to an empty array
+      if (!list || list === undefined) {
+        return {
+          ...state,
+          currentList: {
+            _id: null,
+            creatorId: null,
+            title: "",
+            items: [],
+          } as GroceryList,
+          map: updatedMap,
+          openSections: [],
+        };
+      }
+
       const items =
         list.items && list.items !== undefined && Array.isArray(list.items)
           ? list.items
@@ -50,12 +67,22 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
 
       items.forEach((item) => {
         updatedMap.set(item.name.toLowerCase(), item);
+        if (item.category) newCategories.add(item.category);
       });
 
       return {
         ...state,
         currentList: { ...list, items },
         map: updatedMap,
+        openSections: Array.from(newCategories),
+      };
+    }),
+
+  setAvailableLists: (lists: GroceryListIdentifier[]) =>
+    set((state: GroceryState) => {
+      return {
+        ...state,
+        availableLists: lists,
       };
     }),
 
@@ -67,8 +94,8 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
       };
     }),
 
-  setCurrentSections: (sections: GrocerySectionOptions[]) =>
-    set((state: GroceryState) => ({ ...state, currentSections: sections })),
+  setOpenSections: (sections: GrocerySectionOptions[]) =>
+    set((state: GroceryState) => ({ ...state, openSections: sections })),
 
   setCurrentForm: (
     card: string,
@@ -106,6 +133,7 @@ export const createGroceryActions = (set: any, get: any): GroceryActions => ({
 
       return {
         ...state,
+        openSections: newSections,
         currentCategories: categories,
         map,
         currentList: state.currentList
@@ -119,8 +147,9 @@ export type GroceryStore = GroceryState & GroceryActions;
 
 export const initState: GroceryState = {
   currentList: null,
+  availableLists: [],
   currentCategories: [],
-  currentSections: [],
+  openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
   currentForm: "",
@@ -128,8 +157,9 @@ export const initState: GroceryState = {
 
 export const defaultInitState: GroceryState = {
   currentList: null,
+  availableLists: [],
   currentCategories: ["Bakery", "Dairy", "Produce", "Meat", "Frozen"],
-  currentSections: [],
+  openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
   currentForm: "",
@@ -138,7 +168,7 @@ export const defaultInitState: GroceryState = {
 export const createGroceryStore = (
   initState: GroceryState = defaultInitState
 ) =>
-  create<GroceryStore>()((set, get) => ({
+  create<GroceryStore>()((set) => ({
     ...initState,
-    ...createGroceryActions(set, get),
+    ...createGroceryActions(set),
   }));
