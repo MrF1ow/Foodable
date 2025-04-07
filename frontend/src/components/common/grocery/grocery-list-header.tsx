@@ -57,10 +57,10 @@ export default function GroceryListHeader() {
     <GroceryHeaderWithChildren
       width={isMobile ? "60%" : "40%"}
       children={
-        <div>
+        <div className="flex flex-row items-center">
           <Button
             onClick={handleItemDeletion}
-            className="mr-2 p-6 bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+            className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
             data-testid="remove-items-button"
           >
             <Icons.delete className="!h-6 !w-6" />
@@ -70,10 +70,10 @@ export default function GroceryListHeader() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  size="icon"
-                  className="!h-10 !w-12 bg-card-background"
+                  className="mr-2 p-6 px-4 flex items-center justify-center bg-card-background rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                  data-testid="mobile-vertical-button"
                 >
-                  <MoreVertical />
+                  <MoreVertical className="!h-6 !w-6" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
