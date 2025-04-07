@@ -56,69 +56,69 @@ export default function GroceryListHeader() {
   return (
     <GroceryHeaderWithChildren
       width={isMobile ? "60%" : "40%"}
-      children={
-        <div className="flex flex-row items-center">
+
+    >
+      <div className="flex flex-row items-center">
+        <Button
+          onClick={handleItemDeletion}
+          className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+          data-testid="remove-items-button"
+        >
+          <Icons.delete className="!h-6 !w-6" />
+        </Button>
+        {isMobile ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="mr-2 p-6 px-4 flex items-center justify-center bg-card-background rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                data-testid="mobile-vertical-button"
+              >
+                <MoreVertical className="!h-6 !w-6" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => {
+                  setCurrentForm("addItem", isMobile, setSplitLayout);
+                  setOnGroceryForm(true);
+                }}
+                data-testid="dropdown-add-item"
+              >
+                Add Item
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setCurrentForm("findPrice", isMobile, setSplitLayout);
+                  setOnGroceryForm(true);
+                }}
+                data-testid="dropdown-find-price"
+              >
+                Find Price
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setCurrentForm("groceryHelper", isMobile, setSplitLayout);
+                  setOnGroceryForm(true);
+                }}
+                data-testid="dropdown-grocery-helper"
+              >
+                AI Helper
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
           <Button
-            onClick={handleItemDeletion}
-            className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
-            data-testid="remove-items-button"
+            onClick={() =>
+              setCurrentForm("findPrice", isMobile, setSplitLayout)
+            }
+            className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+            data-testid="find-price-button"
           >
-            <Icons.delete className="!h-6 !w-6" />
+            {"Find Price"}
           </Button>
-          {isMobile ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="mr-2 p-6 px-4 flex items-center justify-center bg-card-background rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                  data-testid="mobile-vertical-button"
-                >
-                  <MoreVertical className="!h-6 !w-6" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrentForm("addItem", isMobile, setSplitLayout);
-                    setOnGroceryForm(true);
-                  }}
-                  data-testid="dropdown-add-item"
-                >
-                  Add Item
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrentForm("findPrice", isMobile, setSplitLayout);
-                    setOnGroceryForm(true);
-                  }}
-                  data-testid="dropdown-find-price"
-                >
-                  Find Price
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setCurrentForm("groceryHelper", isMobile, setSplitLayout);
-                    setOnGroceryForm(true);
-                  }}
-                  data-testid="dropdown-grocery-helper"
-                >
-                  AI Helper
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button
-              onClick={() =>
-                setCurrentForm("findPrice", isMobile, setSplitLayout)
-              }
-              className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-              data-testid="find-price-button"
-            >
-              {"Find Price"}
-            </Button>
-          )}
-        </div>
-      }
-    />
+        )}
+      </div>
+    </GroceryHeaderWithChildren>
   );
 }
