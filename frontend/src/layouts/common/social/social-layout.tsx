@@ -7,8 +7,8 @@ export default function SocialLayout({
   children,
 }: SocialLayoutProps) {
   return (
-    <div className="grid grid-rows-[45%_55%] w-full h-full bg-background p-6 gap-y-6">
-      <div className="h-full">{profileBanner}</div>
+    <div className="flex flex-col lg:grid lg:grid-rows-[45%_55%] w-full h-full bg-background gap-y-6">
+      <div className="h-full w-full">{profileBanner}</div>
       <div className="flex-1 h-full">{children}</div>
     </div>
   );

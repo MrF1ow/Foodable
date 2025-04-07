@@ -35,6 +35,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
+  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const [accordionItems, setAccordionItems] = useState<
     GroceryItem[] | undefined
@@ -53,6 +54,7 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const handleAccordionAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
     setCurrentCategory(title);
+    setOnGroceryForm(true);
     setCurrentForm("addItem", isMobile, setSplitLayout);
   };
 

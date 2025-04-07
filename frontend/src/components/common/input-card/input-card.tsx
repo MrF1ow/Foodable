@@ -23,8 +23,8 @@ export const InputCard = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
     <Card
-      className={`${isMobile ? "items-center" : ""} ${
-        isMobile ? "h-[91%]" : "h-full"
+      className={`${
+        isMobile ? "items-center h-[91%]" : "h-full"
       } w-full flex flex-col bg-card-background`}
     >
       <InputHeader title={title} onClick={onClick} />

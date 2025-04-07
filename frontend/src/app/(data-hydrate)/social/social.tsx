@@ -1,7 +1,5 @@
 "use client";
 
-import userBanner from "../../../public/images/user_banner.jpg";
-
 // **Package Imports**
 import { useEffect, useState } from "react";
 
@@ -60,7 +58,7 @@ export default function Social() {
   return (
     <>
       <SavedDataFetcher />
-      <div className="grid grid-cols-2 gap-6 h-full">
+      <div className="grid grid-rows-2 lg:grid-cols-2 gap-6 h-full">
         <UserFollowSection
           followers={filteredFollowers}
           following={filteredFollowing}

@@ -199,7 +199,7 @@ export const EditButton = () => {
       <DialogTrigger className="ml-4" asChild>
         <MdEdit
           size={40}
-          className="text-foreground"
+          className="text-foreground "
           data-testid="list-edit"
           onClick={(event) => {
             event.stopPropagation();
