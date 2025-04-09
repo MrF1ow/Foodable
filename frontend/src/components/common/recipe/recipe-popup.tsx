@@ -1,6 +1,7 @@
 // Package Imports
 import { useEffect, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
+import { useParams } from "next/navigation";
 
 // Local Imports
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,48 +13,33 @@ import { useRecipeStore } from "@/stores/recipe/store";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { getAdditionalIngredients } from "@/utils/listItems";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
+import { getRouteParam } from "@/utils/routeHelpers";
 
 interface RecipePopUpProps {
-  toggleDialog: (arg0: boolean) => void;
+  toggleDialog?: () => void;
 }
 
+
 export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
-  const setAdditionalIngredients = useRecipeStore(
-    (state) => state.setAdditionalIngredients
-  );
-  const groceryMap = useGroceryStore((state) => state.map);
+  const { id } = useParams();
+
+  const recipeId = getRouteParam(id);
+  if (!recipeId || recipeId === "undefined") {
+    console.error("ID is undefined or null");
+    return null;
+  }
+
   const currentData = useRecipeStore((state) => state.currentRecipe);
   const imageUrl = useRecipeStore((state) => state.currentImageUrl);
-  const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
-  const currentList = useGroceryStore((state) => state.currentList);
 
   if (!currentData) return null;
 
-  const { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe } = useRecipeById(
-    currentData._id.toString(),
-    { enabled: !!currentData._id }
+  const { recipe, isLoadingRecipe } = useRecipeById(
+    recipeId,
+    { enabled: !!recipeId }
   );
 
-  useEffect(() => {
-    if (isErrorRecipe) {
-      console.error("Error fetching recipe:", errorRecipe);
-    }
-    if (recipe && recipe._id) {
-      console.log("Recipe fetched successfully:", recipe);
-      setCurrentData(recipe);
-    }
-  }, [isErrorRecipe, recipe]);
 
-  useEffect(() => {
-    if (recipe) {
-      const additionalIngredients = getAdditionalIngredients(
-        recipe.ingredients,
-        groceryMap
-      );
-      console.log("Additional Ingredients:", additionalIngredients);
-      setAdditionalIngredients(additionalIngredients);
-    }
-  }, [recipe, currentList]);
 
   return (
     <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
@@ -67,7 +53,6 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
             <RecipePopupHeader
               imageUrl={imageUrl}
               recipe={recipe}
-              setOpen={toggleDialog}
             />
 
             {/* Recipe Content */}
@@ -77,7 +62,7 @@ export const RecipePopUp = ({ toggleDialog }: RecipePopUpProps) => {
 
             {/* Back Button */}
             <div className="absolute top-0 left-0 text-foreground p-4 z-50">
-              <BiArrowBack onClick={() => toggleDialog(false)} size={40} />
+              <BiArrowBack size={40} />
             </div>
 
             {/* Profile Picture */}

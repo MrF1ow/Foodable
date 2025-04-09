@@ -28,7 +28,7 @@ export type RecipeActions = {
   setCurrentSideContent: (currentSideContent: string) => void;
 };
 
-export const createRecipeActions = (set: any, get: any): RecipeActions => ({
+export const createRecipeActions = (set: any): RecipeActions => ({
   setCurrentRecipe: (recipe) =>
     set((state: RecipeState) => ({
       ...state,
@@ -72,7 +72,7 @@ export const defaultInitState: RecipeState = {
 };
 
 export const createRecipeStore = (initState: RecipeState = defaultInitState) =>
-  create<RecipeStore>()((set, get) => ({
+  create<RecipeStore>()((set) => ({
     ...initState,
-    ...createRecipeActions(set, get),
+    ...createRecipeActions(set),
   }));

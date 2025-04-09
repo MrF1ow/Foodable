@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 
 // Local Imports
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
-import { RecipePopUp } from "@/components/common/recipe/recipe-popup";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
 import { SideList } from "@/components/common/side-list/side-list-client";
 import { filterRecipes } from "@/utils/listItems";
+import RecipeFetcher from "@/components/common/recipe/RecipeFetcher";
 
 export default function Recipes() {
   const { recipes } = useAllRecipes(true);
@@ -24,12 +24,7 @@ export default function Recipes() {
     (state) => state.currentSideContent
   );
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeMetaData[]>([]);
-
-  const togglePopUp = (isOpen: boolean) => {
-    setIsOpen(isOpen);
-  };
 
   useEffect(() => {
     setFilteredRecipes(filterRecipes(recipes, filter));
@@ -41,7 +36,7 @@ export default function Recipes() {
 
   return (
     <>
-      {isOpen && <RecipePopUp toggleDialog={togglePopUp} />}
+      <RecipeFetcher />
       <div className="h-full overflow-auto">
         <div className="flex flex-wrap justify-start gap-4 z-10">
           {filteredRecipes.length === 0 ? (
@@ -50,7 +45,6 @@ export default function Recipes() {
             filteredRecipes.map((data: RecipeMetaData) => (
               <RecipeBox
                 key={data._id.toString()}
-                setOpen={setIsOpen}
                 data={data}
               />
             ))

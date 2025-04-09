@@ -3,6 +3,7 @@
 // Package Imports
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 // Local Imports
 import { useFetchImageById } from "@/server/hooks/imageHooks";
@@ -11,13 +12,15 @@ import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 import { Box } from "@/components/common/box";
 
 interface RecipeBoxProps {
-  setOpen: ((isOpen: boolean) => void) | ((isOpen: boolean) => void | any);
   data: RecipeMetaData | SavedRecipeMetaData;
+  setOpen?: (arg0: boolean) => void;
 }
 
-export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
+export const RecipeBox = ({ data, setOpen }: RecipeBoxProps) => {
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipe);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
+
+  const router = useRouter();
 
   const { data: response, isLoading, error } = useFetchImageById(data.imageId);
 
@@ -32,7 +35,8 @@ export const RecipeBox = ({ setOpen, data }: RecipeBoxProps) => {
   const handleRecipeClick = async () => {
     setCurrentRecipe(data);
     setImageUrl(response.base64Image);
-    setOpen(true);
+
+    router.push(`/recipe/${data._id}`);
   };
 
   return (

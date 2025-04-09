@@ -10,3 +10,10 @@ export function getValueFromSearchParams(req: Request, paramName: string) {
 
   return value;
 }
+
+export const getRouteParam = (param: string | string[] | undefined): string | null => {
+  if (Array.isArray(param)) {
+    return param[0]; // If param is an array, return the first element
+  }
+  return param || null; // Otherwise, return the param itself, or null if undefined
+};
