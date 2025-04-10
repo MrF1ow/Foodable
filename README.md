@@ -11,8 +11,7 @@ Foodable is an AI-powered web application designed to help users discover health
 ## Tech Stack
 - **Frontend**: Built with Next.js and styled using Tailwind CSS for a responsive UI.
 - **Backend**: Node.js API with MongoDB Atlas as the database, which includes vector search capabilities.
-- **AI & Embedding**: Utilizes AWS Bedrock and Lambda for processing and embedding.
-- **Infrastructure**: Provisioned and managed with AWS CDK.
+- **AI & Embedding**: Uses LangChain and OpenAI.
 - **Deployment**: Hosted on Vercel with CI/CD integration.
 - **Containerization**: Docker is used for local development and testing, allowing easy multi-container setup.
 
@@ -53,9 +52,6 @@ Foodable is an AI-powered web application designed to help users discover health
 
 1. Prerequisites:
    - Node.js
-   - Docker
-   - AWS CLI
-   - AWS CDK
    - MongoDB Atlas Account
 2. Clone the repository:
    ```bash
