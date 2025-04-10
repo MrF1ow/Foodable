@@ -1,8 +1,8 @@
 # Foodable
 
-Foodable is an AI-powered web application designed to help users discover healthy and affordable food options tailored to their dietary needs and budget. The app offers personalized recommendations, recipe sharing, and automated grocery lists with nutritional insights.
+Foodable will be an AI-powered web application designed to help users discover healthy and affordable food options tailored to their dietary needs and budget. The app offers personalized recommendations, recipe sharing, and automated grocery lists with nutritional insights.
 
-## Features
+## Upcoming Features
 - **Personalized Recipe Suggestions**: Discover recipes that meet your dietary preferences and budget.
 - **Custom Grocery Lists**: Generate shopping lists from your recipes and dietary needs.
 - **Nutritional Insights**: Get AI-assisted insights into nutritional content to make healthier choices.
