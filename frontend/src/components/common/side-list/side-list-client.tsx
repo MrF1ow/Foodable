@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 
 // Local Imports
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -17,10 +18,10 @@ import { AddRecipe } from "../recipe/add-recipe";
 
 interface SideListProps {
   isUser: boolean;
-  toggleDialog?: () => void;
+  additionalBackButtonClick?: () => void;
 }
 
-export const SideList = ({ isUser, toggleDialog }: SideListProps) => {
+export const SideList = ({ isUser, additionalBackButtonClick }: SideListProps) => {
   const currentForm = useGroceryStore((state) => state.currentForm);
   const createForm = useRecipeStore((state) => state.createForm);
 
@@ -34,6 +35,10 @@ export const SideList = ({ isUser, toggleDialog }: SideListProps) => {
       setSavedPage(false);
     }
   }, [pathname]);
+
+  const handleBackButtonClick = () => {
+    additionalBackButtonClick?.();
+  }
 
   if (createForm) {
     return <AddRecipe />;
@@ -61,9 +66,9 @@ export const SideList = ({ isUser, toggleDialog }: SideListProps) => {
                   />
                 )}
               </ScrollArea>
-              {toggleDialog && (
+              {additionalBackButtonClick && (
                 <div className="absolute top-0 right-0 text-foreground p-4 z-50">
-                  <MdClose onClick={toggleDialog} size={40} />
+                  <MdClose onClick={handleBackButtonClick} size={40} />
                 </div>
               )}
             </CardContent>

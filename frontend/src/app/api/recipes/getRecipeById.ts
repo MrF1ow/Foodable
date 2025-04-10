@@ -10,7 +10,6 @@ import { ObjectId } from "mongodb";
 export async function GET(req: Request) {
   try {
     const id = getValueFromSearchParams(req, "id");
-    console.log("Request", req);
 
     if (!id) {
       return NextResponse.json(

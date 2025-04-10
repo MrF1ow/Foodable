@@ -19,20 +19,22 @@ export default function SocialItem({
   icon,
   handleRemove,
 }: SocialItemProps) {
-  const { data: response, isLoading, error } = useFetchImageById(imageId);
+  const { image, isLoadingImage, errorImage } = useFetchImageById(imageId, {
+    enabled: !!imageId,
+  });
 
-  if (isLoading) {
+  if (isLoadingImage) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
+  if (errorImage) {
     return <div>Error loading image</div>;
   }
   return (
     <div className="flex items-center bg-background p-4 rounded-md shadow-md mb-4 text-foreground">
       <Avatar className="w-10 h-10 mr-4">
         <AvatarImage
-          src={response.base64Image}
+          src={image.base64Image}
           alt={`${title} Avatar`}
           className="object-cover w-full h-full rounded-full"
         />

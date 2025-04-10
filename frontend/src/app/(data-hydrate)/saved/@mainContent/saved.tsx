@@ -6,6 +6,7 @@ import { AddButton } from "@/components/common/saved/add-button";
 import { EditButton } from "@/components/common/saved/edit-button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
+import { useRouter } from "next/navigation";
 
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { GroceryBox } from "@/components/common/grocery/grocery-box";
@@ -44,6 +45,18 @@ export default function Saved() {
     return { title: category, items: [...recipeItems, ...groceryItems] };
   });
 
+  const router = useRouter();
+
+  const handleBoxClick = (data: SavedItem) => {
+    setSplitLayout(true);
+    setCurrentItemType(data.type);
+    if (data.type === "recipe") {
+      router.push(`/saved/recipe/${data._id}`);
+    } else if (data.type === "groceryList") {
+      router.push(`/saved/grocery/${data._id}`);
+    }
+  };
+
   return (
     <>
       <GroceryListDataFetcher />
@@ -64,10 +77,7 @@ export default function Saved() {
                       return (
                         <RecipeBox
                           key={item._id.toString()}
-                          setOpen={(split: boolean) => {
-                            setSplitLayout(split);
-                            setCurrentItemType("recipe");
-                          }}
+                          handleBoxClick={() => handleBoxClick(item)}
                           data={item}
                         />
                       );
@@ -75,10 +85,7 @@ export default function Saved() {
                       return (
                         <GroceryBox
                           key={item._id.toString()}
-                          setOpen={(split: boolean) => {
-                            setSplitLayout(split);
-                            setCurrentItemType("groceryList");
-                          }}
+                          handleBoxClick={() => handleBoxClick(item)}
                           data={item}
                         />
                       );

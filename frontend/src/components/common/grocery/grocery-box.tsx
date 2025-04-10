@@ -9,13 +9,15 @@ import { SavedGroceryMetaData } from "@/types/saved";
 import { Box } from "@/components/common/box";
 import { GroceryList, GroceryItem } from "@/types/grocery";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
+import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
+import { isValidObjectId } from "@/utils/typeValidation/general";
 
 interface GroceryBoxProps {
-  setOpen: ((isOpen: boolean) => void) | ((isOpen: boolean) => void | any);
+  handleBoxClick: () => void;
   data: SavedGroceryMetaData;
 }
 
-export const GroceryBox = ({ setOpen, data }: GroceryBoxProps) => {
+export const GroceryBox = ({ handleBoxClick, data }: GroceryBoxProps) => {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -29,7 +31,7 @@ export const GroceryBox = ({ setOpen, data }: GroceryBoxProps) => {
     };
     await updateUserCurrentList(newList._id.toString());
     setCurrentList(newList as GroceryList);
-    setOpen(true);
+    handleBoxClick();
   };
 
   return (

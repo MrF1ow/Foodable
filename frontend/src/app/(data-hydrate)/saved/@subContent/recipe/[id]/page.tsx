@@ -1,22 +1,22 @@
 'use client'
 
-import { useEffect } from "react"
-import { useParams } from "next/navigation"
-
-import { useRecipeById } from "@/server/hooks/recipeHooks"
-import { getRouteParam } from "@/utils/routeHelpers"
-import { useRecipeStore } from "@/stores/recipe/store"
-import { useGroceryStore } from "@/stores/grocery/store"
-import { getAdditionalIngredients } from "@/utils/listItems"
+import { RecipePopUp } from "@/components/common/recipe/recipe-popup";
+import { useFetchImageById } from "@/server/hooks/imageHooks";
+import { useRecipeById } from "@/server/hooks/recipeHooks";
+import { useGeneralStore } from "@/stores/general/store";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { useRecipeStore } from "@/stores/recipe/store";
+import { getAdditionalIngredients } from "@/utils/listItems";
+import { getRouteParam } from "@/utils/routeHelpers";
 import { isValidObjectId } from "@/utils/typeValidation/general";
-import { useFetchImageById } from "@/server/hooks/imageHooks"
+import { useParams } from "next/navigation";
+import { set } from "node_modules/cypress/types/lodash";
+import { useEffect } from "react";
 
-export default function RecipeFetcher() {
+export default function Page() {
     const params = useParams<{ id: string }>();
     const id = params.id;
     const recipeId = getRouteParam(id);
-
-    console.log("RecipeFetcher - recipeId:", recipeId);
 
     const setAdditionalIngredients = useRecipeStore(
         (state) => state.setAdditionalIngredients
@@ -24,6 +24,7 @@ export default function RecipeFetcher() {
     const groceryMap = useGroceryStore((state) => state.map);
     const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
     const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
+    const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
     const currentData = useRecipeStore((state) => state.currentRecipe);
     const currentList = useGroceryStore((state) => state.currentList);
 
@@ -47,11 +48,12 @@ export default function RecipeFetcher() {
             if (response.data) {
                 console.log("Recipe fetched successfully:", response.data);
                 setCurrentData(response.data);
+                setSplitLayout(true);
             } else {
                 console.error("Error fetching recipe:", response.error);
             }
         });
-    }, []);
+    });
 
     useEffect(() => {
         if (isErrorRecipe) {
@@ -82,5 +84,11 @@ export default function RecipeFetcher() {
 
     }, [recipe, currentList]);
 
-    return null;
+    const additionalBackButtonClick = () => {
+        setSplitLayout(false);
+    }
+
+    if (!currentData) return null;
+
+    return (<><RecipePopUp additionalBackButtonClick={additionalBackButtonClick} /></>);
 }

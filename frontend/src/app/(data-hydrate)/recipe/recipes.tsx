@@ -2,6 +2,7 @@
 
 // Package Imports
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Local Imports
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
@@ -15,6 +16,8 @@ import RecipeFetcher from "@/components/common/recipe/RecipeFetcher";
 
 export default function Recipes() {
   const { recipes } = useAllRecipes(true);
+
+  const router = useRouter();
 
   const filter = useRecipeStore((state) => state.filter);
   const onRecipeForm = useRecipeStore((state) => state.onForm);
@@ -34,9 +37,12 @@ export default function Recipes() {
     return <SideList isUser={true} />;
   }
 
+  const handleBoxClick = (data: RecipeMetaData) => {
+    router.push(`/recipe/${data._id}`);
+  };
+
   return (
     <>
-      <RecipeFetcher />
       <div className="h-full overflow-auto">
         <div className="flex flex-wrap justify-start gap-4 z-10">
           {filteredRecipes.length === 0 ? (
@@ -46,6 +52,7 @@ export default function Recipes() {
               <RecipeBox
                 key={data._id.toString()}
                 data={data}
+                handleBoxClick={() => handleBoxClick(data)}
               />
             ))
           ) : (

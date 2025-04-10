@@ -16,9 +16,11 @@ export const SavedItemPopup = () => {
     setSplitLayout(!splitLayout);
   };
 
-  return currentItemType === "recipe" ? (
-    <RecipePopUp toggleDialog={toggleDialog} />
-  ) : (
-    <SideList isUser={true} toggleDialog={toggleDialog} />
-  );
+  // return currentItemType === "recipe" ? (
+  //   <RecipePopUp toggleDialog={toggleDialog} />
+  // ) : (
+  //   <SideList isUser={true} toggleDialog={toggleDialog} />
+  // );
+
+  return null;
 };
