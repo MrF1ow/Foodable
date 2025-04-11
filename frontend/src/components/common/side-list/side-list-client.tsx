@@ -12,9 +12,7 @@ import { GroceryHeaderMin } from "../grocery/grocery-header-min";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGroceryStore } from "@/stores/grocery/store";
 import GroceryList from "@/app/(data-hydrate)/grocery-list/groceryList";
-import { useRecipeStore } from "@/stores/recipe/store";
 import { AddItem } from "../grocery/add-item";
-import { AddRecipe } from "../recipe/add-recipe";
 
 interface SideListProps {
   isUser: boolean;
@@ -23,7 +21,6 @@ interface SideListProps {
 
 export const SideList = ({ isUser, additionalBackButtonClick }: SideListProps) => {
   const currentForm = useGroceryStore((state) => state.currentForm);
-  const createForm = useRecipeStore((state) => state.createForm);
 
   const pathname = usePathname();
   const [savedPage, setSavedPage] = useState(false);
@@ -40,9 +37,6 @@ export const SideList = ({ isUser, additionalBackButtonClick }: SideListProps) =
     additionalBackButtonClick?.();
   }
 
-  if (createForm) {
-    return <AddRecipe />;
-  } else {
     return (
       <>
         <div className="w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6">
@@ -76,5 +70,4 @@ export const SideList = ({ isUser, additionalBackButtonClick }: SideListProps) =
         </div>
       </>
     );
-  }
 };

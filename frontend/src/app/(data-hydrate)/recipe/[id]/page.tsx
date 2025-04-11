@@ -10,6 +10,7 @@ import { getRouteParam } from "@/utils/routeHelpers";
 import { isValidObjectId } from "@/utils/typeValidation/general";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
@@ -82,5 +83,5 @@ export default function Page() {
 
     if (!currentData) return null;
 
-    return (<><RecipePopUp /></>);
+    return (<><RecipePopUp /><RecipePageInjections /></>);
 }

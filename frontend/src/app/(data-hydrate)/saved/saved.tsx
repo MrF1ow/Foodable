@@ -15,12 +15,16 @@ import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
 import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
+import SavePageInjections from "@/components/portal-injections/SavePageInjections";
+import { FORM_NAMES } from "@/lib/constants/forms";
 
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
@@ -49,10 +53,13 @@ export default function Saved() {
 
   const handleBoxClick = (data: SavedItem) => {
     setSplitLayout(true);
+    setShowPortal(true);
     setCurrentItemType(data.type);
     if (data.type === "recipe") {
+      setCurrentForm(FORM_NAMES.RECIPE);
       router.push(`/saved/recipe/${data._id}`);
     } else if (data.type === "groceryList") {
+      setCurrentForm(FORM_NAMES.GROCERY_LIST);
       router.push(`/saved/grocery/${data._id}`);
     }
   };

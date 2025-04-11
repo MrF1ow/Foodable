@@ -12,27 +12,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
+import { FORM_NAMES } from "@/lib/constants/forms";
 
 export default function RecipeSearchBar() {
   const setFilter = useRecipeStore((state) => state.setFilter);
   const filter = useRecipeStore((state) => state.filter);
   const isMobile = useGeneralStore((state) => state.isMobile);
+  const currentForm = useGeneralStore((state) => state.currentForm);
+  const setCurrentForm = useGeneralStore(
+    (state) => state.setCurrentForm
+  );
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSearchQuery = (searchQuery: string) => {
     setFilter({ ...filter, searchQuery });
   };
 
-  const setCreateForm = useRecipeStore((state) => state.setCreateForm);
-  const createForm = useRecipeStore((state) => state.createForm);
-  const onForm = useRecipeStore((state) => state.onForm);
-  const setOnForm = useRecipeStore((state) => state.setOnForm);
-
   const handleCreateRecipe = () => {
-    setOnForm(true);
-    setCreateForm(true);
+    setCurrentForm(FORM_NAMES.CREATE_RECIPE);
+    setShowPortal(true);
   };
   const handleGroceryList = () => {
-    setOnForm(true);
-    setCreateForm(false);
+    setCurrentForm(FORM_NAMES.GROCERY_LIST);
+    setShowPortal(true);
+  };
+
+  const handleGroceryListClose = () => {
+    setCurrentForm(null);
+    setShowPortal(false);
   };
 
   return (
@@ -41,16 +47,16 @@ export default function RecipeSearchBar() {
         searchQuery={filter.searchQuery}
         setSearchQuery={setSearchQuery}
         FilterButton={
-          isMobile && onForm && !createForm
+          isMobile && currentForm === FORM_NAMES.GROCERY_LIST
             ? () => (
-                <Button onClick={() => setOnForm(false)} className="ml-4">
-                  Close List
-                </Button>
-              )
+              <Button onClick={handleGroceryListClose} className="ml-4">
+                Close List
+              </Button>
+            )
             : RecipeFilterButton
         }
       />
-      {isMobile && (createForm || !onForm) ? (
+      {isMobile && currentForm === null ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -76,3 +82,4 @@ export default function RecipeSearchBar() {
     </div>
   );
 }
+

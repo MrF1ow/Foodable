@@ -1,7 +1,10 @@
+import { FormName } from "@/lib/constants/forms";
 import { create } from "zustand";
 
 export type GeneralState = {
   currentPage: string;
+  showPortal: boolean;
+  currentForm: FormName | null;
   isMobile: boolean;
   splitLayout: boolean;
   clerkVariables: any;
@@ -10,16 +13,49 @@ export type GeneralState = {
 
 export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
+  setShowPortal: (showPortal: boolean) => void;
+  setCurrentForm: (currentForm: FormName | null) => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
   setClerkVariables: (clerkVariables: any) => void;
   setZipCode: (zipCode: string) => void;
 };
 
+export const createGeneralActions = (set: any): GeneralActions => ({
+  // Define actions as part of the store
+  setCurrentPage: (currentPage: string) =>
+    set((state: GeneralState) => ({ ...state, currentPage })),
+
+  setShowPortal: (showPortal: boolean) =>
+    set((state: GeneralState) => ({ ...state, showPortal })),
+
+  setCurrentForm: (currentForm: FormName | null) =>
+    set((state: GeneralState) => ({ ...state, currentForm })),
+
+  setIsMobile: (isMobile: boolean) =>
+    set((state: GeneralState) => ({
+      ...state,
+      isMobile,
+      splitLayout: isMobile ? false : state.splitLayout, // Ensure splitLayout is false when isMobile is true
+    })),
+
+  setSplitLayout: (splitLayout: boolean) =>
+    set((state: GeneralState) => ({
+      ...state,
+      splitLayout: state.isMobile ? false : splitLayout, // Prevent enabling splitLayout if isMobile is true
+    })),
+
+  setClerkVariables: (clerkVariables: any) =>
+    set((state: GeneralState) => ({ ...state, clerkVariables })),
+  setZipCode: (zipCode: string) => set((state: GeneralState) => ({ ...state, zipCode })),
+});
+
 export type GeneralStore = GeneralState & GeneralActions;
 
 export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
+  showPortal: false,
+  currentForm: null,
   isMobile: false,
   splitLayout: false,
   clerkVariables: {},
@@ -31,26 +67,6 @@ export const createGeneralStore = (
 ) => {
   return create<GeneralStore>()((set) => ({
     ...initState,
-
-    // Define actions as part of the store
-    setCurrentPage: (currentPage: string) =>
-      set((state) => ({ ...state, currentPage })),
-
-    setIsMobile: (isMobile: boolean) =>
-      set((state) => ({
-        ...state,
-        isMobile,
-        splitLayout: isMobile ? false : state.splitLayout, // Ensure splitLayout is false when isMobile is true
-      })),
-
-    setSplitLayout: (splitLayout: boolean) =>
-      set((state) => ({
-        ...state,
-        splitLayout: state.isMobile ? false : splitLayout, // Prevent enabling splitLayout if isMobile is true
-      })),
-
-    setClerkVariables: (clerkVariables: any) =>
-      set((state) => ({ ...state, clerkVariables })),
-    setZipCode: (zipCode: string) => set((state) => ({ ...state, zipCode })),
+    ...createGeneralActions(set),
   }));
 };

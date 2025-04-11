@@ -11,8 +11,8 @@ import { useGeneralStore } from "@/stores/general/store";
 
 interface InputSectionProps
   extends InputHeaderProp,
-    InputContentProp,
-    InputFooterProp {}
+  InputContentProp,
+  InputFooterProp { }
 
 export const InputCard = ({
   title,
@@ -23,9 +23,8 @@ export const InputCard = ({
   const isMobile = useGeneralStore((state) => state.isMobile);
   return (
     <Card
-      className={`${
-        isMobile ? "items-center h-[91%]" : "h-full"
-      } w-full flex flex-col bg-card-background`}
+      className={`${isMobile ? "items-center h-[91%]" : "h-full"
+        } w-full flex flex-col bg-card-background`}
     >
       <InputHeader title={title} onClick={onClick} />
       <CardContent className="flex-grow overflow-y-auto">{content}</CardContent>

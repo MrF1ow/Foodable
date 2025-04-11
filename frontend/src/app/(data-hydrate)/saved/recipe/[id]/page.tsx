@@ -10,8 +10,9 @@ import { getAdditionalIngredients } from "@/utils/listItems";
 import { getRouteParam } from "@/utils/routeHelpers";
 import { isValidObjectId } from "@/utils/typeValidation/general";
 import { useParams } from "next/navigation";
-import { set } from "node_modules/cypress/types/lodash";
 import { useEffect } from "react";
+import Saved from "../../saved";
+import SavePageInjections from "@/components/portal-injections/SavePageInjections";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ export default function Page() {
     const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
     const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
     const currentData = useRecipeStore((state) => state.currentRecipe);
     const currentList = useGroceryStore((state) => state.currentList);
 
@@ -38,7 +40,6 @@ export default function Page() {
     });
 
     useEffect(() => {
-        console.log("RecipeFetcher - useEffect - recipeId:", recipeId);
         if (!recipeId || recipeId === "undefined") {
             console.error("Invalid recipeId");
             return;
@@ -46,13 +47,13 @@ export default function Page() {
 
         refetchRecipe().then((response) => {
             if (response.data) {
-                console.log("Recipe fetched successfully:", response.data);
                 setCurrentData(response.data);
-                setSplitLayout(true);
             } else {
                 console.error("Error fetching recipe:", response.error);
             }
         });
+
+        setSplitLayout(true);
     });
 
     useEffect(() => {
@@ -84,11 +85,7 @@ export default function Page() {
 
     }, [recipe, currentList]);
 
-    const additionalBackButtonClick = () => {
-        setSplitLayout(false);
-    }
-
     if (!currentData) return null;
 
-    return (<><RecipePopUp additionalBackButtonClick={additionalBackButtonClick} /></>);
+    return (<><Saved /><SavePageInjections /></>);
 }

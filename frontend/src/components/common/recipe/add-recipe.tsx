@@ -26,14 +26,17 @@ import { useFieldArray } from "react-hook-form";
 import { grocerySections } from "@/config/grocery-sections";
 
 import { useGeneralStore } from "@/stores/general/store";
-import { useRecipeStore } from "@/stores/recipe/store";
 
 export const AddRecipe = ({ className }: { className?: string }) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
 
-  const setCreateForm = useRecipeStore((state) => state.setCreateForm);
-  const setOnForm = useRecipeStore((state) => state.setOnForm);
+  const setCurrentForm = useGeneralStore(
+    (state) => state.setCurrentForm
+  );
+  const setShowPortal = useGeneralStore(
+    (state) => state.setShowPortal
+  );
 
   type RecipeFormValues = {
     title: string;
@@ -66,8 +69,8 @@ export const AddRecipe = ({ className }: { className?: string }) => {
   };
 
   const handleInputClose = () => {
-    setOnForm(false);
-    setCreateForm(false);
+    setCurrentForm(null);
+    setShowPortal(false);
   };
 
   return (
@@ -77,7 +80,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
           title="Add Recipe"
           onClick={handleInputClose}
           content={
-            <div className="flex flex-col gap-6 max-h-[570px] overflow-y-auto p-2">
+            <div className="flex flex-col gap-6 h-full w-full overflow-y-auto">
               <FormField
                 control={form.control}
                 name="title"
@@ -123,9 +126,8 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                     className="relative border p-3 pr-12 rounded flex flex-col gap-2"
                   >
                     <div
-                      className={`flex ${
-                        isMobile ? "flex-col" : "flex-row"
-                      } gap-4`}
+                      className={`flex ${isMobile ? "flex-col" : "flex-row"
+                        } gap-4`}
                     >
                       <FormField
                         control={form.control}

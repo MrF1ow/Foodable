@@ -7,12 +7,10 @@ import { useRouter } from "next/navigation";
 // Local Imports
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { useGeneralStore } from "@/stores/general/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
-import { SideList } from "@/components/common/side-list/side-list-client";
 import { filterRecipes } from "@/utils/listItems";
-import RecipeFetcher from "@/components/common/recipe/RecipeFetcher";
+import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 
 export default function Recipes() {
   const { recipes } = useAllRecipes(true);
@@ -20,22 +18,12 @@ export default function Recipes() {
   const router = useRouter();
 
   const filter = useRecipeStore((state) => state.filter);
-  const onRecipeForm = useRecipeStore((state) => state.onForm);
-  const setOnForm = useRecipeStore((state) => state.setOnForm);
-  const isMobile = useGeneralStore((state) => state.isMobile);
-  const currentSideContent = useRecipeStore(
-    (state) => state.currentSideContent
-  );
 
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeMetaData[]>([]);
 
   useEffect(() => {
     setFilteredRecipes(filterRecipes(recipes, filter));
   }, [recipes, filter]);
-
-  if (isMobile && onRecipeForm) {
-    return <SideList isUser={true} />;
-  }
 
   const handleBoxClick = (data: RecipeMetaData) => {
     router.push(`/recipe/${data._id}`);
@@ -60,6 +48,9 @@ export default function Recipes() {
           )}
         </div>
       </div>
+
+      <RecipePageInjections />
+
     </>
   );
 }
