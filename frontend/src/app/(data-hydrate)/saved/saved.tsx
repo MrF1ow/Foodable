@@ -9,7 +9,7 @@ import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import { useRouter } from "next/navigation";
 
 import { RecipeBox } from "@/components/common/recipe/recipe-box";
-import { GroceryBox } from "@/components/common/grocery/grocery-box";
+import GroceryBox  from "@/components/common/grocery/GroceryBox";
 import { capitalizeTitle } from "@/utils/other";
 import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";

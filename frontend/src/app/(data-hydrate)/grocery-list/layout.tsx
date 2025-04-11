@@ -1,6 +1,6 @@
 import MainLayout from "@/layouts/common/main";
 import ContentLayout from "@/layouts/common/content";
-import GroceryListHeader from "@/components/common/grocery/grocery-list-header";
+import { MainGroceryHeader } from "@/components/common/grocery/GroceryHeaders";
 
 export default function GroceryListLayout({
   children,
@@ -8,7 +8,7 @@ export default function GroceryListLayout({
   children: React.ReactNode;
 }) {
   return (
-    <MainLayout headerComponent={<GroceryListHeader />}>
+    <MainLayout headerComponent={<MainGroceryHeader />}>
       <ContentLayout mainContent={children} />
     </MainLayout>
   );

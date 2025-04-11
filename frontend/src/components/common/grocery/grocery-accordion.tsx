@@ -20,11 +20,10 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import { FORM_NAMES } from "@/lib/constants/forms";
 
 export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const { updateGroceryList } = useUpdateGroceryList();
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const isMobile = useGeneralStore((state) => state.isMobile);
 
   const setCurrentCategory = useGroceryStore(
     (state) => state.setSelectedCategory
@@ -33,7 +32,9 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
   const currentList = useGroceryStore((state) => state.currentList);
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
   const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
@@ -55,7 +56,9 @@ export const GroceryAccordion = ({ title, Icon, color }: GrocerySection) => {
     event.stopPropagation();
     setCurrentCategory(title);
     setOnGroceryForm(true);
-    setCurrentForm("addItem", isMobile, setSplitLayout);
+    setCurrentForm(FORM_NAMES.ADD_ITEM_TO_LIST);
+    setShowPortal(true);
+    setSplitLayout(true);
   };
 
   const handleCheckboxChange = async (

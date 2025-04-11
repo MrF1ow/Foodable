@@ -14,23 +14,21 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
-import { useGroceryStore } from "@/stores/grocery/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
-import { showToast } from "@/app/providers";
-import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { useState } from "react";
+import { JSX } from "react";
 
-export const FindPrice = () => {
-  const isMobile = useGeneralStore((state) => state.isMobile);
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+
+export default function FindPrice(): JSX.Element {
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);  
   //   const setZipCode = useGeneralStore((state) => state.setZipCode);
   //   const zipCode = useGeneralStore((state) => state.zipCode);
   const [zipCode, setZipCodeState] = useState("97330");
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
-  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
@@ -77,13 +75,14 @@ export const FindPrice = () => {
       try {
         const products = await refetchKrogerProducts();
         console.log("Products from Kroger:", products);
-      } catch (error) {}
+      } catch (error) { }
     }
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", isMobile, setSplitLayout);
-    setOnGroceryForm(false);
+    setCurrentForm(null);
+    setShowPortal(false);
+    setSplitPage(false);
   };
 
   return (

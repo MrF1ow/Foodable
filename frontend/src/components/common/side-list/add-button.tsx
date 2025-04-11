@@ -11,10 +11,19 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGroceryStore } from "@/stores/grocery/store";
+import { useGeneralStore } from "@/stores/general/store";
+import { FORM_NAMES } from "@/lib/constants/forms";
 
 export const AddButton = () => {
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+
+  const handleButtonClick = () => {
+    setCurrentForm(FORM_NAMES.ADD_ITEM_TO_LIST);
+    setShowPortal(true);
+    setSplitLayout(true);
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,7 +38,7 @@ export const AddButton = () => {
         >
           <DropdownMenuItem
             className="text-center bg-primary text-foreground rounded-sm"
-            onClick={() => setCurrentForm("addItem", false)}
+            onClick={handleButtonClick}
           >
             Add Item
           </DropdownMenuItem>

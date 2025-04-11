@@ -24,6 +24,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/app/providers";
+import { FORM_NAMES } from "@/lib/constants/forms";
 
 import { getAddItemFormValidation } from "@/utils/formValidation";
 import { insertItemIntoGroceryMap } from "@/utils/listItems";
@@ -32,18 +33,21 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { JSX } from "react";
 
-export const AddItem = ({ className }: { className?: string }) => {
+export default function AddItem({ className }: { className?: string }): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const categories = grocerySections;
 
   const currentList = useGroceryStore((state) => state.currentList);
   const groceryMap = useGroceryStore((state) => state.map);
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore(
+    (state) => state.setShowPortal
+  );
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setMap = useGroceryStore((state) => state.setMap);
-  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   const handleCategoryChange = useGroceryStore(
     (state) => state.setSelectedCategory
@@ -94,8 +98,9 @@ export const AddItem = ({ className }: { className?: string }) => {
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", isMobile, setSplitLayout);
-    setOnGroceryForm(false);
+    setCurrentForm(null);
+    setShowPortal(false);
+    setSplitLayout(false);
   };
 
   return (
@@ -125,9 +130,8 @@ export const AddItem = ({ className }: { className?: string }) => {
                 )}
               />
               <div
-                className={`flex ${
-                  isMobile ? "justify-center" : ""
-                } items-center`}
+                className={`flex ${isMobile ? "justify-center" : ""
+                  } items-center`}
               >
                 <FormField
                   control={form.control}
@@ -249,3 +253,4 @@ export const AddItem = ({ className }: { className?: string }) => {
     </div>
   );
 };
+

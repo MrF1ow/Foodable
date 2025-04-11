@@ -26,7 +26,6 @@ export default function Page() {
     const setCurrentData = useRecipeStore((state) => state.setCurrentRecipe);
     const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
     const currentData = useRecipeStore((state) => state.currentRecipe);
     const currentList = useGroceryStore((state) => state.currentList);
 

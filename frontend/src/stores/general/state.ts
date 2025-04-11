@@ -15,6 +15,7 @@ export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setShowPortal: (showPortal: boolean) => void;
   setCurrentForm: (currentForm: FormName | null) => void;
+  resetCurrentForm: () => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
   setClerkVariables: (clerkVariables: any) => void;
@@ -31,6 +32,9 @@ export const createGeneralActions = (set: any): GeneralActions => ({
 
   setCurrentForm: (currentForm: FormName | null) =>
     set((state: GeneralState) => ({ ...state, currentForm })),
+
+  resetCurrentForm: () =>
+    set((state: GeneralState) => ({ ...state, currentForm: null })),
 
   setIsMobile: (isMobile: boolean) =>
     set((state: GeneralState) => ({

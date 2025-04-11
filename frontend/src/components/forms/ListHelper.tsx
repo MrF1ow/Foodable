@@ -15,22 +15,23 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { useGeneralStore } from "@/stores/general/store";
-import { useGroceryStore } from "@/stores/grocery/store";
+import { JSX } from "react";
 
-export const HelperCard = () => {
+export default function ListHelper(): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
+  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);  
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const form = useForm();
-  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
   function onSubmit(data: any) {
     console.log(data);
   }
 
   const handleInputClose = () => {
-    setCurrentForm("", isMobile, setSplitLayout);
-    setOnGroceryForm(false);
+    setCurrentForm(null);
+    setShowPortal(false);
+    setSplitPage(false);
   };
 
   return (

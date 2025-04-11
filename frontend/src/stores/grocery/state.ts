@@ -21,19 +21,12 @@ export type GroceryState = {
   openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
-  currentForm: string;
   onGroceryForm: boolean;
 };
 
 export type GroceryActions = {
   setCurrentList: (list: GroceryList | NewGroceryList) => void;
   setAvailableLists: (lists: GroceryListIdentifier[]) => void;
-  setCurrentForm: (
-    card: string,
-    isMobile: boolean,
-    updateSplitLayout?: (split: boolean) => void
-  ) => void;
-  resetForm: () => void;
   setOpenSections: (sections: GrocerySectionOptions[]) => void;
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
@@ -88,36 +81,9 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       };
     }),
 
-  resetForm: () =>
-    set((state: GroceryState) => {
-      return {
-        ...state,
-        currentForm: "",
-      };
-    }),
-
   setOpenSections: (sections: GrocerySectionOptions[]) =>
     set((state: GroceryState) => ({ ...state, openSections: sections })),
 
-  setCurrentForm: (
-    card: string,
-    isMobile: boolean,
-    updateSplitLayout?: (split: boolean) => void
-  ) =>
-    set((state: GroceryState) => {
-      if (card === "") {
-        if (updateSplitLayout) {
-          updateSplitLayout(false); // Set splitLayout to false when form is cleared
-        }
-      } else {
-        if (!isMobile) {
-          if (updateSplitLayout) {
-            updateSplitLayout(true); // Set splitLayout to true when form is opened
-          }
-        }
-      }
-      return { ...state, currentForm: card };
-    }),
   setCurrentCategories: (categories: GrocerySectionOptions[]) =>
     set((state: GroceryState) => ({ ...state, currentCategories: categories })),
   setSelectedCategory: (category: GrocerySectionOptions) =>
@@ -156,7 +122,6 @@ export const initState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  currentForm: "",
   onGroceryForm: false,
 };
 
@@ -167,7 +132,6 @@ export const defaultInitState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  currentForm: "",
   onGroceryForm: false,
 };
 

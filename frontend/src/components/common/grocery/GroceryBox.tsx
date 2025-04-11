@@ -1,7 +1,7 @@
 "use client";
 
 // Package Imports
-import React from "react";
+import React, { JSX } from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -9,19 +9,17 @@ import { SavedGroceryMetaData } from "@/types/saved";
 import { Box } from "@/components/common/box";
 import { GroceryList, GroceryItem } from "@/types/grocery";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
-import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
-import { isValidObjectId } from "@/utils/typeValidation/general";
 
 interface GroceryBoxProps {
   handleBoxClick: () => void;
   data: SavedGroceryMetaData;
 }
 
-export const GroceryBox = ({ handleBoxClick, data }: GroceryBoxProps) => {
+export default function GroceryBox({ handleBoxClick, data }: GroceryBoxProps): JSX.Element {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
-  if (!data) return null;
+  if (!data) return <></>;
 
   const handleGroceryClick = async () => {
     const { category, type, ...rest } = data;

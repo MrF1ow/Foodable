@@ -22,18 +22,16 @@ export const NavbarItem = ({
 }) => {
   const setCurrent = useGeneralStore((state) => state.setCurrentPage);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const resetForm = useGroceryStore((state) => state.resetForm);
+  const resetForm = useGeneralStore((state) => state.resetCurrentForm);
   const isActive = active === url;
 
-  const buttonClass = `flex items-center justify-center w-full h-full relative group transition p-2 ${
-    isActive
-      ? "bg-secondary text-primary"
-      : "bg-card-background text-foreground hover:bg-secondary"
-  } ${isMobile ? "" : "rounded-lg"}`;
+  const buttonClass = `flex items-center justify-center w-full h-full relative group transition p-2 ${isActive
+    ? "bg-secondary text-primary"
+    : "bg-card-background text-foreground hover:bg-secondary"
+    } ${isMobile ? "" : "rounded-lg"}`;
 
-  const iconClass = `${
-    isMobile ? "w-[70%] h-[70%]" : "md:w-5 md:h-5 lg:w-6 lg:h-6"
-  }`;
+  const iconClass = `${isMobile ? "w-[70%] h-[70%]" : "md:w-5 md:h-5 lg:w-6 lg:h-6"
+    }`;
 
   const handleNavClick = () => {
     setCurrent(url);
