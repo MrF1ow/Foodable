@@ -1,8 +1,8 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipeWithoutId } from "@/utils/typeValidation/recipes";
-import { isValidObjectId } from "@/utils/validation";
-import { createTagsForRecipe } from "@/utils/filterHelpers";
+import { validateRecipeWithoutId } from "@/lib/utils/typeValidation/recipes";
+import { isValidObjectId } from "@/lib/utils/validation";
+import { createTagsForRecipe } from "@/lib/utils/filterHelpers";
 import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";

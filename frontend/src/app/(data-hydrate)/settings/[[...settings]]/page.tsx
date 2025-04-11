@@ -1,6 +1,6 @@
-import { checkRole } from "@/utils/roles";
+import { checkRole } from "@/lib/utils/roles";
 import Settings from "./settingsPage";
-import AuthOptions from "@/components/auth-options";
+import AuthOptions from "@/components/authentication/AuthOptions";
 
 export default async function SettingsPage() {
   // Check if user has the role

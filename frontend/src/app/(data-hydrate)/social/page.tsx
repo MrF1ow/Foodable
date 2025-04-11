@@ -1,12 +1,9 @@
 
-import { checkRole } from "@/utils/roles";
+import { checkRole } from "@/lib/utils/roles";
 import Social from "./social";
-import AuthOptions from "@/components/auth-options";
-import FetchUserData from "../../_fetchData";
+import AuthOptions from "@/components/authentication/AuthOptions";
 
 export default async function SocialPage() {
-  const queryClient = await FetchUserData();
-
   // Check if user has the role
   const isUser = await checkRole("user");
 

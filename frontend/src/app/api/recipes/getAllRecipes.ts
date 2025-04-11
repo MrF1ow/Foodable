@@ -1,10 +1,10 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/utils/validation";
-import { validateRecipe } from "@/utils/typeValidation/recipes";
+import { validateObject } from "@/lib/utils/validation";
+import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
 
 import { NextResponse } from "next/server";
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
 
 export async function GET(req: Request) {
   try {

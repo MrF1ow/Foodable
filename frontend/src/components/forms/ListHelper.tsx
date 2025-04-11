@@ -10,7 +10,7 @@ import {
   Form,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { InputCard } from "@/components/common/input-card/input-card";
+import InputCard from "@/components/InputCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
@@ -19,7 +19,7 @@ import { JSX } from "react";
 
 export default function ListHelper(): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);  
+  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const form = useForm();

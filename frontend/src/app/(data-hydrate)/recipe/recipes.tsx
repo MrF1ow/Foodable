@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Local Imports
-import { RecipeBox } from "@/components/common/recipe/recipe-box";
+import RecipeBox from "@/components/page-specific/recipe/RecipeBox";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
-import { filterRecipes } from "@/utils/listItems";
+import { filterRecipes } from "@/lib/utils/listItems";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 
 export default function Recipes() {

@@ -9,7 +9,7 @@ import {
   Form,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { InputCard } from "@/components/common/input-card/input-card";
+import InputCard from "@/components/InputCard";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import { JSX } from "react";
 export default function FindPrice(): JSX.Element {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
-  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);  
+  const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   //   const setZipCode = useGeneralStore((state) => state.setZipCode);
   //   const zipCode = useGeneralStore((state) => state.zipCode);
   const [zipCode, setZipCodeState] = useState("97330");

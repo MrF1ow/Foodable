@@ -1,6 +1,6 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
-import { GeneralHeader } from "@/components/general-header";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
+import GeneralHeader from "@/components/GeneralHeader";
 
 export default function SavedItemsLayout({
   children,

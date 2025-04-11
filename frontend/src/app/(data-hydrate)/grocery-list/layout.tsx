@@ -1,6 +1,6 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
-import { MainGroceryHeader } from "@/components/common/grocery/GroceryHeaders";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
+import { MainGroceryHeader } from "@/components/page-specific/grocery/GroceryHeaders";
 
 export default function GroceryListLayout({
   children,

@@ -1,5 +1,5 @@
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
-import { getAccessToken } from "@/utils/getAccessToken";
+import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { getAccessToken } from "@/lib/utils/getAccessToken";
 import { NextResponse } from "next/server";
 
 interface LocationResponse {

@@ -17,17 +17,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { InputCard } from "@/components/common/input-card/input-card";
+import InputCard from "@/components/InputCard";
 import { Button } from "@/components/ui/button";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/app/providers";
-import { FORM_NAMES } from "@/lib/constants/forms";
 
-import { getAddItemFormValidation } from "@/utils/formValidation";
-import { insertItemIntoGroceryMap } from "@/utils/listItems";
+import { getAddItemFormValidation } from "@/lib/utils/formValidation";
+import { insertItemIntoGroceryMap } from "@/lib/utils/listItems";
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";

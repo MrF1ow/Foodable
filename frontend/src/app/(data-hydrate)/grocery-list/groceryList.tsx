@@ -3,10 +3,10 @@
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { List } from "@/components/common/grocery/list";
+import List from "@/components/page-specific/grocery/GroceryList";
 import type { GroceryList } from "@/types/grocery";
-import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
-import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
+import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
+import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import AssistantButton from "@/components/buttons/AssistantButton";
 import GroceryPageInjections from "@/components/portal-injections/GroceryPageInjections";
@@ -16,6 +16,7 @@ interface GroceryListProps {
   renderContent: boolean;
   className?: string;
 }
+
 export default function GroceryList({
   isUser,
   renderContent,
@@ -33,7 +34,6 @@ export default function GroceryList({
     setShowPortal(true);
     setSplitLayout(true);
   }
-
 
   return (
     <>

@@ -1,5 +1,5 @@
 import GroceryList from "@/app/(data-hydrate)/grocery-list/groceryList";
-import { checkRole } from "@/utils/roles";
+import { checkRole } from "@/lib/utils/roles";
 
 export default async function RecipePage() {
 

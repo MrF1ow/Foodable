@@ -1,14 +1,13 @@
 'use client'
 
-import { RecipePopUp } from "@/components/common/recipe/recipe-popup";
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
 import { useGeneralStore } from "@/stores/general/store";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { getAdditionalIngredients } from "@/utils/listItems";
-import { getRouteParam } from "@/utils/routeHelpers";
-import { isValidObjectId } from "@/utils/typeValidation/general";
+import { getAdditionalIngredients } from "@/lib/utils/listItems";
+import { getRouteParam } from "@/lib/utils/routeHelpers";
+import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import Saved from "../../saved";

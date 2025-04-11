@@ -15,7 +15,7 @@ import { GroceryApi } from "@/server/api/groceryListApi";
 import { RecipeApi } from "@/server/api/recipeApi";
 import { UserApi } from "@/server/api/userApi";
 import { SavedItemsApi } from "@/server/api/savedItemsApi";
-import { checkRole } from "@/utils/roles";
+import { checkRole } from "@/lib/utils/roles";
 import { dehydrate } from "@tanstack/react-query";
 
 export default async function FetchUserData() {

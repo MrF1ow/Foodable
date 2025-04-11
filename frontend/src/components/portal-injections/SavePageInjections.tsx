@@ -3,8 +3,8 @@
 import { useGeneralStore } from "@/stores/general/store";
 import PortalInjector from "../PortalInjector";
 import { FORM_NAMES } from "@/lib/constants/forms";
-import { SideList } from "@/components/common/side-list/side-list-client";
-import { RecipePopUp } from "../common/recipe/recipe-popup";
+import SideList from "@/components/side-list/SideList";
+import RecipePopUp from "@/components/popups/RecipePopup";
 import { useRouter } from "next/navigation";
 
 

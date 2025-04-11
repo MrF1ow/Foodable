@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import AuthOptions from "@/components/auth-options";
+import AuthOptions from "@/components/authentication/AuthOptions";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";

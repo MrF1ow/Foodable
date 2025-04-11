@@ -1,19 +1,19 @@
 "use client";
 
 // Local Imports
-import { GeneralAccordion } from "@/components/general-accordion";
-import { AddButton } from "@/components/common/saved/add-button";
-import { EditButton } from "@/components/common/saved/edit-button";
+import GeneralAccordion from "@/components/GeneralAccordion";
+import SaveCategoryAddButton from "@/components/page-specific/saved/SaveCategoryAddButton";
+import SaveCategoryEditButton from "@/components/page-specific/saved/SaveCategoryEditButton";
 import { useGeneralStore } from "@/stores/general/store";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import { useRouter } from "next/navigation";
 
-import { RecipeBox } from "@/components/common/recipe/recipe-box";
-import GroceryBox  from "@/components/common/grocery/GroceryBox";
-import { capitalizeTitle } from "@/utils/other";
+import RecipeBox from "@/components/page-specific/recipe/RecipeBox";
+import GroceryBox from "@/components/page-specific/grocery/GroceryBox";
+import { capitalizeTitle } from "@/lib/utils/other";
 import { SavedItem } from "@/types/saved";
-import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
-import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
+import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
+import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import SavePageInjections from "@/components/portal-injections/SavePageInjections";
 import { FORM_NAMES } from "@/lib/constants/forms";
@@ -108,13 +108,13 @@ export default function Saved() {
             width={isMobile ? (splitLayout ? "100%" : "85%") : "85%"}
             iconSize={40}
             textSize="2rem"
-            additional={<EditButton category={title} />}
+            additional={<SaveCategoryEditButton category={title} />}
           />
         ))}
       </div>
 
       {/* Add Button */}
-      <AddButton />
+      <SaveCategoryAddButton />
     </>
   );
 }

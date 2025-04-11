@@ -3,8 +3,8 @@
 import { useGeneralStore } from "@/stores/general/store";
 import PortalInjector from "../PortalInjector";
 import { FORM_NAMES } from "@/lib/constants/forms";
-import { SideList } from "@/components/common/side-list/side-list-client";
-import { AddRecipe } from "../common/recipe/add-recipe";
+import SideList from "@/components/side-list/SideList";
+import { AddRecipe } from "@/components/forms/AddRecipe";
 import AddItem from "@/components/forms/AddItem";
 
 

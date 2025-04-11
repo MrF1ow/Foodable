@@ -1,6 +1,6 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
-import RecipeSearchBar from "@/components/common/recipe/recipe-search-bar";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
+import RecipeSearchBar from "@/components/page-specific/recipe/RecipeSearchBar";
 
 export default function RecipeLayout({
   children,
