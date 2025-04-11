@@ -27,7 +27,6 @@ export default function RecipePopUp({ additionalBackButtonClick }: RecipePopUpPr
         additionalBackButtonClick?.();
     }
 
-
     return (
         <>
             <Card className="absolute top-0 left-0 z-50 w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">

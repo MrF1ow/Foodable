@@ -14,6 +14,8 @@ import { Icons } from "@/components/ui/icons";
 import { getIsItemSaved, insertItemIntoGroceryMap } from "@/lib/utils/listItems";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import SaveBookmark from "@/components/SaveBookmark";
+import { showToast } from "@/app/providers";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
 
 
 interface RecipePopupHeaderProps {
@@ -78,6 +80,15 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
 
   const addIngredient = async (ingredient: GroceryItem) => {
     const newMap = insertItemIntoGroceryMap(ingredient, groceryMap);
+    if (!newMap) {
+      // this needs to be fixed (does not work)
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Not Convertable",
+        `Units are not compatible. Must input manually.`,
+      );
+      return;
+    };
     setMap(newMap);
 
     const updatedItems = Array.from(newMap.values());
@@ -95,6 +106,7 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
   };
 
   const AddButtonForAdditional = () => {
+
     const handleIngredientTransfer = () => {
       const updatedItems = [];
       for (const ingredient of additionalIngredients) {
@@ -104,6 +116,7 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
           updatedItems.push(ingredient);
         }
       }
+      console.log("Updated items after transfer:", updatedItems);
       setAdditionalIngredients(updatedItems);
     };
 

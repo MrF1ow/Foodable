@@ -189,11 +189,6 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
                 list.id !== currentList._id || currentList._id === null
         )
         : availableLists;
-
-    console.log("Filtered Lists", filteredLists);
-
-    console.log("Title", currentList.title);
-
     return (
         <div className="flex flex-row justify-between items-center" style={{ width: width }}>
             <div

@@ -36,7 +36,6 @@ export default function Page() {
     });
 
     useEffect(() => {
-        console.log("RecipeFetcher - useEffect - recipeId:", recipeId);
         if (!recipeId || recipeId === "undefined") {
             console.error("Invalid recipeId");
             return;
@@ -44,8 +43,15 @@ export default function Page() {
 
         refetchRecipe().then((response) => {
             if (response.data) {
-                console.log("Recipe fetched successfully:", response.data);
                 setCurrentData(response.data);
+                console.log("GroceryMap:", groceryMap);
+                const additionalIngredients = getAdditionalIngredients(
+                    response.data.ingredients,
+                    groceryMap
+                );
+                console.log("Additional Ingredients:", additionalIngredients);
+
+                setAdditionalIngredients(additionalIngredients);
             } else {
                 console.error("Error fetching recipe:", response.error);
             }
@@ -61,7 +67,6 @@ export default function Page() {
         if (imageId && isValidObjectId(imageId)) {
             refetchImage().then((response) => {
                 if (response.data) {
-                    console.log("Image fetched successfully:", response.data);
                     setImageUrl(response.data.base64Image);
                 } else {
                     console.error("Error fetching image:", response.error);
@@ -70,12 +75,11 @@ export default function Page() {
         } else {
             console.warn("Invalid or missing imageId, skipping refetch.");
         }
-        if (recipe) {
+        if (recipe || currentList) {
             const additionalIngredients = getAdditionalIngredients(
                 recipe.ingredients,
                 groceryMap
             );
-            console.log("Additional Ingredients:", additionalIngredients);
             setAdditionalIngredients(additionalIngredients);
         }
 

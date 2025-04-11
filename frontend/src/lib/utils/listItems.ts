@@ -1,4 +1,4 @@
-import { unitConversions } from "@/config/unit-conversions";
+import { unitConversions, unitDecimalPlaces } from "@/config/unit-conversions";
 import { FilterOptions, Units } from "@/types";
 import { Recipe, RecipeIngredient } from "@/types/recipe";
 import {
@@ -40,6 +40,9 @@ export const getCurrentGrocerySections = () => {
 };
 
 export function isConvertable(fromUnit: Units, toUnit: Units): boolean {
+  // Check if the units are the same
+  if (fromUnit === toUnit) return true;
+
   return (
     unitConversions[fromUnit] !== undefined &&
     unitConversions[fromUnit][toUnit] !== undefined
@@ -57,7 +60,11 @@ export function convertAmount(
     return amount;
   }
 
-  return amount * unitConversions[fromUnit][toUnit];
+  const convertedAmount = amount * unitConversions[fromUnit][toUnit];
+
+  const decimalPlaces = unitDecimalPlaces[toUnit] || 1;
+
+  return parseFloat(convertedAmount.toFixed(decimalPlaces));
 }
 
 export function getMissingIngredients(
@@ -105,11 +112,10 @@ export const getAdditionalIngredients = (
     groceryMap
   );
 
-  const groceryItemAdditionalIngredients = recipeIngredientsToGroceryItems(
+  return recipeIngredientsToGroceryItems(
     additionalIngredients
   );
 
-  return groceryItemAdditionalIngredients;
 };
 
 export const getGroceryAccordingItems = (
@@ -144,10 +150,13 @@ export const getIsItemSaved = (
 export const insertItemIntoGroceryMap = (
   item: GroceryItem,
   groceryMap: Map<string, GroceryItem>
-) => {
+): Map<string, GroceryItem> | null => {
   const newMap = groceryMap;
   const existingItem = groceryMap.get(item.name.toLowerCase());
   if (existingItem) {
+    if (!isConvertable(item.unit, existingItem.unit)) {
+      return newMap;
+    }
     const convertedQuantity = convertAmount(
       item.quantity,
       item.unit,
