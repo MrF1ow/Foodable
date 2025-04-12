@@ -9,13 +9,15 @@ import { getAdditionalIngredients } from "@/lib/utils/listItems";
 import { getRouteParam } from "@/lib/utils/routeHelpers";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
     const id = params.id;
     const recipeId = getRouteParam(id);
+
+    const [renderComponent, setRenderComponent] = useState(false);
 
     const setAdditionalIngredients = useRecipeStore(
         (state) => state.setAdditionalIngredients
@@ -44,13 +46,11 @@ export default function Page() {
         refetchRecipe().then((response) => {
             if (response.data) {
                 setCurrentData(response.data);
-                console.log("GroceryMap:", groceryMap);
+                setRenderComponent(true);
                 const additionalIngredients = getAdditionalIngredients(
                     response.data.ingredients,
                     groceryMap
                 );
-                console.log("Additional Ingredients:", additionalIngredients);
-
                 setAdditionalIngredients(additionalIngredients);
             } else {
                 console.error("Error fetching recipe:", response.error);
@@ -59,11 +59,9 @@ export default function Page() {
     });
 
     useEffect(() => {
-        if (isErrorRecipe) {
-            console.error("Error fetching recipe:", errorRecipe);
-        }
-        const imageId = currentData?.imageId;
-        // only refetch if imageId is valid
+        if (!currentData) return;
+
+        const imageId = currentData.imageId;
         if (imageId && isValidObjectId(imageId)) {
             refetchImage().then((response) => {
                 if (response.data) {
@@ -74,6 +72,12 @@ export default function Page() {
             });
         } else {
             console.warn("Invalid or missing imageId, skipping refetch.");
+        }
+    }, [currentData]);
+
+    useEffect(() => {
+        if (isErrorRecipe) {
+            console.error("Error fetching recipe:", errorRecipe);
         }
         if (recipe || currentList) {
             const additionalIngredients = getAdditionalIngredients(
@@ -87,5 +91,12 @@ export default function Page() {
 
     if (!currentData) return null;
 
-    return (<><RecipePopUp /><RecipePageInjections /></>);
+    if (!renderComponent) return null;
+
+    return (
+        <>
+            <RecipePopUp />
+            <RecipePageInjections />
+        </>
+    );
 }

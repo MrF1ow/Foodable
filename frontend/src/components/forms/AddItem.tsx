@@ -75,6 +75,16 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
 
     const newMap = insertItemIntoGroceryMap(newItem, groceryMap);
 
+    if (!newMap) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Item Already Exists",
+        `${newItem.name} already exists in the list`,
+        3000
+      );
+      return;
+    }
+
     const updatedItems = Array.from(newMap.values());
 
     const newList = {
