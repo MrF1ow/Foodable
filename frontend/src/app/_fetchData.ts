@@ -11,70 +11,74 @@ import {
   PREFERENCES,
   CURRENT_LIST,
 } from "@/lib/constants/process";
-import { GroceryApi } from "@/server/api/groceryListApi";
-import { RecipeApi } from "@/server/api/recipeApi";
-import { UserApi } from "@/server/api/userApi";
-import { SavedItemsApi } from "@/server/api/savedItemsApi";
-import { checkRole } from "@/utils/roles";
+import { GroceryApi, RecipeApi, UserApi, SavedItemsApi } from "@/server/api";
+import { checkRole } from "@/lib/utils/roles";
 import { dehydrate } from "@tanstack/react-query";
 
-export default async function FetchUserData() {
+type FetchDataOptions = {
+  grocery?: boolean;
+  recipes?: boolean;
+  userData?: boolean;
+  saved?: boolean;
+};
+
+export default async function FetchData(options: FetchDataOptions = {}) {
   const queryClient = createServerQueryClient();
 
   const isUser = await checkRole("user");
 
-  // only fetch user data if user is logged in
   if (isUser) {
-    // Prefetch recipes data
-    await queryClient.prefetchQuery({
-      queryKey: [GROCERY_LISTS],
-      queryFn: () => GroceryApi.fetchAllGroceryLists(true),
-    });
+    if (options?.grocery) {
+      await queryClient.prefetchQuery({
+        queryKey: [GROCERY_LISTS],
+        queryFn: () => GroceryApi.fetchAllGroceryLists(true),
+      });
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, CURRENT_LIST],
+        queryFn: () => UserApi.fetchUserCurrentList(),
+      });
+    }
+    if (options?.saved) {
+      await queryClient.prefetchQuery({
+        queryKey: [SAVED_ITEMS],
+        queryFn: () => SavedItemsApi.getAllSavedItems(),
+      });
 
-    // Prefetch saved items data
-    await queryClient.prefetchQuery({
-      queryKey: [SAVED_ITEMS],
-      queryFn: () => SavedItemsApi.getAllSavedItems(),
-    });
+      await queryClient.prefetchQuery({
+        queryKey: [SAVED_CATEGORIES],
+        queryFn: () => SavedItemsApi.getAllSavedCategories(),
+      });
+    }
 
-    // Prefetch saved categories data
-    await queryClient.prefetchQuery({
-      queryKey: [SAVED_CATEGORIES],
-      queryFn: () => SavedItemsApi.getAllSavedCategories(),
-    });
+    if (options?.userData) {
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, FOLLOWERS],
+        queryFn: () => UserApi.fetchAllFollowersOfUser(),
+      });
 
-    // Prefetch user data
-    await queryClient.prefetchQuery({
-      queryKey: [USERS, CURRENT_LIST],
-      queryFn: () => UserApi.fetchUserCurrentList(),
-    });
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, FOLLOWING],
+        queryFn: () => UserApi.fetchAllFollowingOfUser(),
+      });
 
-    await queryClient.prefetchQuery({
-      queryKey: [USERS, FOLLOWERS],
-      queryFn: () => UserApi.fetchAllFollowersOfUser(),
-    });
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, SETTINGS],
+        queryFn: () => UserApi.fetchUserSettings(),
+      });
 
-    await queryClient.prefetchQuery({
-      queryKey: [USERS, FOLLOWING],
-      queryFn: () => UserApi.fetchAllFollowingOfUser(),
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: [USERS, SETTINGS],
-      queryFn: () => UserApi.fetchUserSettings(),
-    });
-
-    await queryClient.prefetchQuery({
-      queryKey: [USERS, PREFERENCES],
-      queryFn: () => UserApi.fetchUserPreferences(),
-    });
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, PREFERENCES],
+        queryFn: () => UserApi.fetchUserPreferences(),
+      });
+    }
   }
 
-  // Prefetch recipes data
-  await queryClient.prefetchQuery({
-    queryKey: [RECIPES],
-    queryFn: () => RecipeApi.fetchAllRecipes(true),
-  });
+  if (options?.recipes) {
+    await queryClient.prefetchQuery({
+      queryKey: [RECIPES],
+      queryFn: () => RecipeApi.fetchAllRecipes(true),
+    });
+  }
 
   return dehydrate(queryClient);
 }

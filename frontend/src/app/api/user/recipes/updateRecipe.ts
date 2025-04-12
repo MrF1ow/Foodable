@@ -1,7 +1,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/utils/validation";
-import { validateRecipe } from "@/utils/typeValidation/recipes";
+import { validateObject } from "@/lib/utils/validation";
+import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
 import { Recipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";

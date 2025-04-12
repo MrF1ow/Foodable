@@ -1,7 +1,6 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
-import RecipeSearchBar from "@/components/common/recipe/recipe-search-bar";
-import SideListComponent from "@/components/common/side-list";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
+import RecipeSearchBar from "@/components/page-specific/recipe/RecipeSearchBar";
 
 export default function RecipeLayout({
   children,
@@ -13,7 +12,6 @@ export default function RecipeLayout({
       <ContentLayout
         split
         mainContent={children}
-        subContent={<SideListComponent />}
       />
     </MainLayout>
   );

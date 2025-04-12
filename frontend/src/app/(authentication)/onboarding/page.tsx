@@ -1,4 +1,4 @@
-import { checkOnboarding } from "@/utils/roles";
+import { checkOnboarding } from "@/lib/utils/roles";
 import OnboardingComponent from "./onboarding";
 import { redirect } from "next/navigation";
 

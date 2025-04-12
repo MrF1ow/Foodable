@@ -1,7 +1,7 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
-import SocialLayout from "@/layouts/common/social/social-layout";
-import { SocialPageHeader } from "@/components/common/social/social-page-headers";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
+import SocialLayout from "@/layouts/page-specific/social/SocialLayout";
+import SocialPageHeader from "@/components/page-specific/social/SocialPageHeader";
 import userBanner from "../../../../public/images/user_banner.jpg";
 
 export default function SettingsPageLayout({

@@ -1,8 +1,8 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/utils/validation";
-import { validateRecipe } from "@/utils/typeValidation/recipes";
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { validateObject } from "@/lib/utils/validation";
+import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
+import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
 
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
@@ -10,7 +10,6 @@ import { ObjectId } from "mongodb";
 export async function GET(req: Request) {
   try {
     const id = getValueFromSearchParams(req, "id");
-    console.log("Request", req);
 
     if (!id) {
       return NextResponse.json(

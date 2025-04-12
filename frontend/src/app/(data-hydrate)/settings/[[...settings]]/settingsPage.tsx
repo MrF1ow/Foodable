@@ -1,9 +1,9 @@
 "use client";
 
 import { UserProfile } from "@clerk/nextjs";
-import TermsAndConditions from "@/components/common/settings-page/terms-conditions";
-import PreferencePage from "@/components/common/settings-page/preference-page";
-import ApplicationPage from "@/components/common/settings-page/application-page";
+import TermsAndConditions from "@/components/page-specific/settings/TermsTab";
+import PreferencePage from "@/components/page-specific/settings/PreferenceTab";
+import ApplicationPage from "@/components/page-specific/settings/ApplicationTab";
 import { Icons } from "@/components/ui/icons";
 import { useGeneralStore } from "@/stores/general/store";
 
