@@ -33,8 +33,10 @@ import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { JSX } from "react";
+import { useAuth } from "@clerk/nextjs";
 
 export default function AddItem({ className }: { className?: string }): JSX.Element {
+  const { isSignedIn } = useAuth();
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
 
@@ -92,11 +94,12 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
       items: updatedItems,
     };
 
-    if (currentList._id) {
+    if (currentList._id && isSignedIn) {
       await updateGroceryList(newList as GroceryList);
     }
 
     setMap(newMap);
+    console.log("New List:", currentList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,

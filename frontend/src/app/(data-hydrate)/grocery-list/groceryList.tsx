@@ -10,6 +10,8 @@ import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import AssistantButton from "@/components/buttons/AssistantButton";
 import GroceryPageInjections from "@/components/portal-injections/GroceryPageInjections";
+import { useAuth } from "@clerk/nextjs";
+import GuestDataMonitor from "@/components/GuestDataMonitor";
 
 interface GroceryListProps {
   isUser: boolean;
@@ -22,6 +24,7 @@ export default function GroceryList({
   renderContent,
   className,
 }: GroceryListProps) {
+  const { isSignedIn } = useAuth();
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList);
@@ -37,10 +40,11 @@ export default function GroceryList({
 
   return (
     <>
+      {!isUser && <GuestDataMonitor />}
       {isUser && <GroceryListDataFetcher />}
       {isUser && <SavedDataFetcher />}
       {currentList && <List className={className} />}
-      {renderContent && !splitLayout && !isMobile && (
+      {renderContent && !splitLayout && !isMobile && isSignedIn && (
         <AssistantButton mobile={false} handleOnClick={handleAssitantButtonClick} />
       )}
       <GroceryPageInjections />

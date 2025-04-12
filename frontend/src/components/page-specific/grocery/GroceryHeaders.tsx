@@ -24,8 +24,10 @@ import { MdClose } from "react-icons/md";
 
 import type { GroceryList } from "@/types/grocery";
 import { JSX } from "react";
+import { useAuth } from "@clerk/nextjs";
 
 export const MainGroceryHeader = (): JSX.Element => {
+    const { isSignedIn } = useAuth();
     const isMobile = useGeneralStore((state) => state.isMobile);
 
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
@@ -47,7 +49,7 @@ export const MainGroceryHeader = (): JSX.Element => {
         setCurrentList(newList);
 
         // only make the API call if the list is saved and has an id in the database
-        if ("_id" in groceryList && groceryList._id) {
+        if ("_id" in groceryList && groceryList._id && isSignedIn) {
             updateGroceryList(groceryList);
         }
         showToast(
@@ -153,6 +155,7 @@ export interface GroceryHeaderProps {
 }
 
 export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
+    const { isSignedIn } = useAuth();
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
     const currentForm = useGeneralStore((state) => state.currentForm);
@@ -167,7 +170,9 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
     if (!currentList) return null;
 
     const handleListChange = async (item: GroceryListIdentifier) => {
-        await updateUserCurrentList(item.id);
+        if (isSignedIn) {
+            await updateUserCurrentList(item.id);
+        }
         const newList = {
             ...currentList,
             items: [],
@@ -195,33 +200,40 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
                 className={`inline-flex items-center bg-primary font-bold rounded-[0%_0%_75%_0%] rounded-l-lg rounded-tr-lg px-4 py-2 h-full`}
                 style={{ width: width }}
             >
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <div
-                            className={`text-foreground ${isMobile ? "text-xl" : "text-4xl"}  whitespace-nowrap cursor-pointer outline-none`}
-                            data-testid="grocery-header"
-                        >
-                            {currentList.title || "New List"}
-                        </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        {filteredLists.length > 0 ? (
-                            filteredLists.map((list: GroceryListIdentifier) => (
-                                <DropdownMenuItem
-                                    key={list.id}
-                                    onClick={() => handleListChange(list)}
-                                >
-                                    {list.title}
-                                </DropdownMenuItem>
-                            ))
-                        ) : (
-                            <DropdownMenuItem disabled>No lists available</DropdownMenuItem>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <span>
-                    <GroceryEditButton />
-                </span>
+                {isSignedIn ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <div
+                                className={`text-foreground ${isMobile ? "text-xl" : "text-4xl"}  whitespace-nowrap cursor-pointer outline-none`}
+                                data-testid="grocery-header"
+                            >
+                                {currentList.title || "New List"}
+                            </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            {filteredLists.length > 0 ? (
+                                filteredLists.map((list: GroceryListIdentifier) => (
+                                    <DropdownMenuItem
+                                        key={list.id}
+                                        onClick={() => handleListChange(list)}
+                                    >
+                                        {list.title}
+                                    </DropdownMenuItem>
+                                ))
+                            ) : (
+                                <DropdownMenuItem disabled>No lists available</DropdownMenuItem>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : (
+                    <div
+                        className={`text-foreground ${isMobile ? "text-xl" : "text-4xl"}  whitespace-nowrap cursor-pointer outline-none`}
+                        data-testid="grocery-header"
+                    >
+                        {currentList.title || "New List"}
+                    </div>
+                )}
+                {isSignedIn && <GroceryEditButton />}
             </div>
             {currentForm === FORM_NAMES.GROCERY_LIST && (
                 <MdClose onClick={handleCloseSideList} size={40} />

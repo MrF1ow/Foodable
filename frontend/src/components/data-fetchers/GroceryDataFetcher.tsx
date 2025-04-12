@@ -17,8 +17,15 @@ import { useUserStore } from "@/stores/user/store";
 import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { getAvailableGroceryLists } from "@/lib/utils/listItems";
+import { useAuth } from "@clerk/nextjs";
 
 export default function GroceryListDataFetcher() {
+
+    const { isSignedIn } = useAuth();
+    if (!isSignedIn) {
+        return null;
+    }
+
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setAvailableLists = useGroceryStore((state) => state.setAvailableLists);
     const currentList = useGroceryStore((state) => state.currentList);

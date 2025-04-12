@@ -29,8 +29,15 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  if (!userId && !isPublicRoute(req))
+  if (!userId && !isPublicRoute(req)) {
+    if (req.nextUrl.pathname.startsWith("/api")) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     return redirectToSignIn({ returnBackUrl: req.url });
+  }
 
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {
     const onboardingUrl = new URL("/onboarding", req.url);

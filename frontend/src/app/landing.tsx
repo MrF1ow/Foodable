@@ -34,7 +34,7 @@ export default function LandingPage({ logo }: LandingPageProps) {
         <h2 className="text-2xl md:text-4xl lg:text-6xl">
           Making Food More Doable.
         </h2>
-        <AuthOptions />
+        <AuthOptions className="w-full text-foreground" />
         <Button variant="link" asChild>
           <Link href="/recipe">Continue As Guest</Link>
         </Button>

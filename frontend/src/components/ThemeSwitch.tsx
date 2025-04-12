@@ -5,16 +5,19 @@ import { useTheme } from "next-themes";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { FaMoon } from "react-icons/fa";
 import { useUpdateUserSettings } from "@/server/hooks/userHooks";
+import { useAuth } from "@clerk/nextjs";
 
 export default function ThemeSwitch() {
   const [mounted, setMounted] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
+  const { isSignedIn } = useAuth();
 
   const { updateUserSettings } = useUpdateUserSettings();
 
   const handleThemeChange = async (newTheme: "light" | "dark") => {
     console.log("newTheme: ", newTheme);
     setTheme(newTheme);
+    if (!isSignedIn) return;
     await updateUserSettings({ theme: newTheme });
   };
 
