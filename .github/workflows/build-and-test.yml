@@ -14,22 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
       - name: Install dependencies
         working-directory: frontend
-        run: npm install --legacy-peer-deps
+        run: npm install
 
-      - name: Install Docker using Docker's official script
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      - name: Run docker-compose
+      - name: Run Jest tests
+        working-directory: frontend
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -37,11 +32,18 @@ jobs:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
           NEXT_PUBLIC_CLERK_SIGN_OUT_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }}
-        run: docker-compose up -d
-
-      - name: Run Jest tests
-        working-directory: frontend
         run: npm test
+
+      - name: Start application in background
+        working-directory: frontend
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
+          NEXT_PUBLIC_CLERK_SIGN_OUT_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_OUT_URL }}
+        run: npm run dev
 
       - name: Run Postman tests
         run: |
@@ -54,6 +56,3 @@ jobs:
           CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
         run: npx cypress run
-
-      - name: Shut down Docker Compose
-        run: docker-compose down
