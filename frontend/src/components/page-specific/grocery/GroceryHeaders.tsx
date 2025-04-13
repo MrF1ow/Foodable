@@ -233,6 +233,17 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
                         {currentList.title || "New List"}
                     </div>
                 )}
+
+                {isUser && (
+                <button
+                    className="ml-2 text-foreground hover:text-primary transition hover:scale-110"
+                    data-testid="add-new-grocery-list"
+                    aria-label="Add new grocery list"
+                >
+                    <Icons.plus className="w-6 h-6" />
+                </button>
+                )}
+
                 {isUser && <GroceryEditButton />}
             </div>
             {currentForm === FORM_NAMES.GROCERY_LIST && (
