@@ -4,6 +4,7 @@ import { UserPreferences } from "@/types/user";
 import { UserSections } from "@/types";
 
 export type UserState = {
+  isUser: boolean;
   currentItemId: string | null;
   selectedUserSection: UserSections;
   searchQuery: string;
@@ -19,6 +20,7 @@ export type UserState = {
 };
 
 export type UserActions = {
+  setIsUser: (isUser: boolean) => void;
   setCurrentItemId: (currentItemId: string) => void;
   setSelectedUserSection: (selectedUserSection: UserSections) => void;
   setSearchQuery: (searchQuery: string) => void;
@@ -28,6 +30,8 @@ export type UserActions = {
 };
 
 export const createUserActions = (set: any): UserActions => ({
+  setIsUser: (isUser: boolean) =>
+    set((state: UserState) => ({ ...state, isUser })),
   setCurrentItemId: (currentItemId: string) =>
     set((state: UserState) => ({ ...state, currentItemId })),
   setSelectedUserSection: (selectedUserSection: UserSections) =>
@@ -45,6 +49,7 @@ export const createUserActions = (set: any): UserActions => ({
 export type UserStore = UserState & UserActions;
 
 export const defaultInitState: UserState = {
+  isUser: false,
   currentItemId: null,
   selectedUserSection: "following",
   searchQuery: "",

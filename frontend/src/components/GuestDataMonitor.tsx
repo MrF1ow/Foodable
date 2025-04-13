@@ -1,7 +1,6 @@
 'use client'
     ;
 import { useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useUserStore } from "@/stores/user/store";
 import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
@@ -9,7 +8,8 @@ import { useFetchUserLocation } from "@/server/hooks/googleHooks";
 import { NewGroceryList } from "@/types/grocery";
 
 export default function GuestDataMonitor() {
-    const { isSignedIn } = useAuth();
+    const isUser = useUserStore((state) => state.isUser);
+    const currentList = useGroceryStore((state) => state.currentList);
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setLocation = useUserStore((state) => state.setLocation);
 
@@ -34,6 +34,8 @@ export default function GuestDataMonitor() {
     }, []);
 
     useEffect(() => {
+        if (currentList) return;
+        console.log("No current list found, creating a new one");
         const newList: NewGroceryList = {
             _id: null,
             creatorId: null,
@@ -41,7 +43,7 @@ export default function GuestDataMonitor() {
             items: [],
         };
         setCurrentList(newList);
-    }, [isSignedIn]);
+    }, [isUser]);
 
     return null;
 }

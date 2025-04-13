@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { FORM_NAMES } from "@/lib/constants/forms";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 export default function RecipeSearchBar() {
-  const { isSignedIn } = useAuth();
+  const isUser = useUserStore((state) => state.isUser);
   const setFilter = useRecipeStore((state) => state.setFilter);
   const filter = useRecipeStore((state) => state.filter);
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -74,14 +74,14 @@ export default function RecipeSearchBar() {
             <DropdownMenuItem onClick={handleGroceryList}>
               Grocery List
             </DropdownMenuItem>
-            {isSignedIn && (
+            {isUser && (
               <DropdownMenuItem onClick={handleCreateRecipe}>
                 Create Recipe
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (!isMobile && isSignedIn) ? (
+      ) : (!isMobile && isUser) ? (
         <Button onClick={handleCreateRecipe}>Create Recipe</Button>
       ) : null}
     </div>

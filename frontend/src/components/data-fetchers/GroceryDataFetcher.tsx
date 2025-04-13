@@ -13,16 +13,15 @@ import {
     useFetchUserCurrentList
 } from "@/server/hooks/userHooks";
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
-import { useUserStore } from "@/stores/user/store";
 import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { getAvailableGroceryLists } from "@/lib/utils/listItems";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 export default function GroceryListDataFetcher() {
 
-    const { isSignedIn } = useAuth();
-    if (!isSignedIn) {
+    const isUser = useUserStore((state) => state.isUser);
+    if (!isUser) {
         return null;
     }
 

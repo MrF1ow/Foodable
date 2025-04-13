@@ -65,6 +65,10 @@ export const createGroceryActions = (set: any): GroceryActions => ({
         if (item.category) newCategories.add(item.category);
       });
 
+      console.log("Items:", items);
+      console.log("Updated Map:", updatedMap);
+      console.log("List:", list);
+
       return {
         ...state,
         currentList: { ...list, items },
@@ -93,8 +97,6 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       // convert map values to an array to update currentList.items
       const updatedItems = Array.from(map.values());
 
-      console.log("Updated Items:", updatedItems);
-
       const newSections = Array.from(
         new Set(updatedItems.map((item) => item.category))
       );
@@ -106,9 +108,9 @@ export const createGroceryActions = (set: any): GroceryActions => ({
         openSections: newSections,
         currentCategories: categories,
         map,
-        currentList:
-          { ...state.currentList, items: updatedItems }
-
+        currentList: state.currentList
+          ? { ...state.currentList, items: updatedItems }
+          : null,
       };
     }),
   setOnGroceryForm: (onGroceryForm: boolean) =>

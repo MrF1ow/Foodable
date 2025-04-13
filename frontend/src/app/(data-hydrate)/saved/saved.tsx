@@ -15,7 +15,6 @@ import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
-import SavePageInjections from "@/components/portal-injections/SavePageInjections";
 import { FORM_NAMES } from "@/lib/constants/forms";
 
 export default function Saved() {

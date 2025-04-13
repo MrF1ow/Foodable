@@ -16,7 +16,7 @@ import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import SaveBookmark from "@/components/SaveBookmark";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 
 interface RecipePopupHeaderProps {
@@ -30,14 +30,14 @@ export const RecipePopupHeader = ({
   recipe,
   setOpen,
 }: RecipePopupHeaderProps) => {
-  const { isSignedIn } = useAuth();
+  const isUser = useUserStore((state) => state.isUser);
   const { savedItems } = useAllSavedItems({ enabled: true });
 
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // useEffect to update 'isSaved' whenever savedItems change
   useEffect(() => {
-    if (!isSignedIn) return;
+    if (!isUser) return;
     if (savedItems && savedItems.recipes) {
       const saved = getIsItemSaved(recipe, savedItems.recipes);
       setIsSaved(saved);
@@ -57,14 +57,14 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        {isSignedIn && <SaveBookmark isSaved={isSaved} data={recipe} setOpen={setOpen} />}
+        {isUser && <SaveBookmark isSaved={isSaved} data={recipe} setOpen={setOpen} />}
       </div>
     </div>
   );
 };
 
 export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
-  const { isSignedIn } = useAuth();
+  const isUser = useUserStore((state) => state.isUser);
   const groceryMap = useGroceryStore((state) => state.map);
   const setMap = useGroceryStore((state) => state.setMap);
   const currentList = useGroceryStore((state) => state.currentList);
@@ -102,7 +102,7 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
       items: updatedItems,
     };
 
-    if (isSignedIn) {
+    if (isUser) {
       if (currentList?._id) {
         await updateGroceryList(newList as GroceryList);
       }
