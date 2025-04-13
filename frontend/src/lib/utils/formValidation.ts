@@ -35,3 +35,46 @@ export const getAddItemFormValidation = () => {
     resolver: zodResolver(AddItemFormSchema),
   };
 };
+
+export const AddRecipeFormSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  image: z
+    .union([z.instanceof(File), z.null()])
+    .refine((file) => file === null || file.size > 0, {
+      message: "Image is required",
+    }),
+  ingredients: z
+    .array(
+      z.object({
+        name: z.string().min(1, "Ingredient name is required"),
+        quantity: z.number(),
+        unit: z.string(),
+        category: z.string(),
+      })
+    )
+    .min(1, "At least one ingredient is required"),
+  instructions: z
+    .array(
+      z.object({
+        step: z.string().min(1, "Step cannot be empty"),
+      })
+    )
+    .min(1, "At least one instruction step is required"),
+});
+
+export const getAddRecipeFormValidation = () => {
+  const defaultValues = {
+    title: "",
+    description: "",
+    ingredients: [{ name: "", quantity: 1, unit: "", category: "" }],
+    instructions: [{ step: "" }],
+    image: null,
+  };
+
+  return {
+    AddRecipeFormSchema,
+    defaultValues,
+    resolver: zodResolver(AddRecipeFormSchema),
+  };
+};

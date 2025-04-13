@@ -24,8 +24,9 @@ import { Button } from "@/components/ui/button";
 import { unitOptions } from "@/config/unit-conversions";
 import { useFieldArray } from "react-hook-form";
 import { grocerySections } from "@/config/grocery-sections";
-
+import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
+import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
 
 export const AddRecipe = ({ className }: { className?: string }) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -34,28 +35,12 @@ export const AddRecipe = ({ className }: { className?: string }) => {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
-  type RecipeFormValues = {
-    title: string;
-    description: string;
-    ingredients: {
-      name: string;
-      quantity: number;
-      unit: string;
-      category: string;
-    }[];
-    instructions: { step: string }[];
-    image: File | null;
-  };
+  const { AddRecipeFormSchema, defaultValues, resolver } =
+    getAddRecipeFormValidation();
 
-  const form = useForm<RecipeFormValues>({
-    shouldUnregister: true,
-    defaultValues: {
-      title: "",
-      description: "",
-      ingredients: [{ name: "", quantity: 1, unit: "", category: "" }],
-      instructions: [{ step: "" }],
-      image: null,
-    },
+  const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
+    defaultValues,
+    resolver,
   });
 
   const {
@@ -76,7 +61,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
     name: "instructions",
   });
 
-  const onSubmit = (data: RecipeFormValues) => {
+  const onSubmit = (data: z.infer<typeof AddRecipeFormSchema>) => {
     console.log("Form submitted:", data);
   };
 
@@ -223,15 +208,17 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                         )}
                       />
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => removeIngredient(index)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2"
-                      data-testid={`remove-ingredient-${index}`}
-                      aria-label="Remove ingredient"
-                    >
-                      <Icons.delete />
-                    </button>
+                    {ingredientFields.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeIngredient(index)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2"
+                        data-testid={`remove-ingredient-${index}`}
+                        aria-label="Remove ingredient"
+                      >
+                        <Icons.delete />
+                      </button>
+                    )}
                     <div className="flex flex-row gap-4">
                       <FormField
                         control={form.control}
@@ -335,13 +322,15 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                         </FormItem>
                       )}
                     />
-                    <button
-                      type="button"
-                      onClick={() => removeInstruction(index)}
-                      data-testid={`remove-instruction-${index}`}
-                    >
-                      <Icons.delete />
-                    </button>
+                    {instructionFields.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeInstruction(index)}
+                        data-testid={`remove-instruction-${index}`}
+                      >
+                        <Icons.delete />
+                      </button>
+                    )}
                   </div>
                 ))}
 
