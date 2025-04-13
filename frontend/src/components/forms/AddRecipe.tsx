@@ -44,6 +44,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
       category: string;
     }[];
     instructions: { step: string }[];
+    image: File | null;
   };
 
   const form = useForm<RecipeFormValues>({
@@ -53,6 +54,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
       description: "",
       ingredients: [{ name: "", quantity: 1, unit: "", category: "" }],
       instructions: [{ step: "" }],
+      image: null,
     },
   });
 
@@ -104,6 +106,31 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                         {...field}
                         data-testid="recipe-title-input"
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-2xl">Recipe Picture</FormLabel>
+                    <FormControl>
+                      <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-primary transition text-lg">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            field.onChange(file);
+                          }}
+                          data-testid="recipe-image-input"
+                        />
+                        {field.value?.name || "Click to upload image"}
+                      </label>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
