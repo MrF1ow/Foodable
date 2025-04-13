@@ -6,21 +6,21 @@ import { FORM_NAMES } from "@/lib/constants/forms";
 import SideList from "@/components/side-list/SideList";
 import { AddRecipe } from "@/components/forms/AddRecipe";
 import AddItem from "@/components/forms/AddItem";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 
 export default function RecipePageInjections() {
-    const { isSignedIn } = useAuth();
+    const isUser = useUserStore((state) => state.isUser);
     const isMobile = useGeneralStore((state) => state.isMobile);
     const currentForm = useGeneralStore((state) => state.currentForm);
 
-    const sideList = <SideList isUser={isSignedIn as boolean} />;
+    const sideList = <SideList isUser={isUser as boolean} />;
     const recipeForm = <AddRecipe />; const addItemForm = <AddItem className="h-full" />;
 
 
     return (
         <>
-            {currentForm === FORM_NAMES.CREATE_RECIPE && isSignedIn && (
+            {currentForm === FORM_NAMES.CREATE_RECIPE && isUser && (
                 <PortalInjector
                     containerId={isMobile ? "content-mobile-portal" : "content-split-portal"}
                     componentToInject={recipeForm}

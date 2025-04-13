@@ -6,11 +6,11 @@ import {
 } from "@/server/hooks/savedItemsHooks";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 export default function SavedDataFetcher() {
-    const { isSignedIn } = useAuth();
-    if (!isSignedIn) {
+    const isUser = useUserStore((state) => state.isUser);
+    if (!isUser) {
         return null;
     }
     const currentCategories = useSavedItemsStore(

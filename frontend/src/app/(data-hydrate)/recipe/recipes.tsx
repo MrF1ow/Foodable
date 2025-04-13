@@ -12,7 +12,7 @@ import { RecipeMetaData } from "@/types/saved";
 import { filterRecipes } from "@/lib/utils/listItems";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 
-export default function Recipes() {
+export default function Recipes({ isUser }: { isUser: boolean }) {
   const { recipes } = useAllRecipes(true);
 
   const router = useRouter();

@@ -22,7 +22,7 @@ export const showToast = (
   globalToast?.current?.show({ severity, summary, detail, life });
 };
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children, isUser }: { children: React.ReactNode, isUser: boolean }) {
   const toastRef = useRef<Toast | null>(null);
   useEffect(() => {
     globalToast = toastRef; // Assign global reference when component mounts
@@ -38,11 +38,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       {/* GroceryStoreProvider handles grocery list state */}
       {/* UserStoreProvider handles client-side state */}
       <GeneralStoreProvider>
-        <SavedItemsStoreProvider>
-          <RecipeStoreProvider>
-            <GroceryStoreProvider>
-              {/* UserStoreProvider handles client-side state */}
-              <UserStoreProvider>
+        <UserStoreProvider isUser={isUser}>
+          <SavedItemsStoreProvider>
+            <RecipeStoreProvider>
+              <GroceryStoreProvider>
+                {/* UserStoreProvider handles client-side state */}
                 <ThemeProvider
                   attribute="class"
                   defaultTheme="system"
@@ -52,10 +52,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   <Toast ref={toastRef} />
                   {children}
                 </ThemeProvider>
-              </UserStoreProvider>
-            </GroceryStoreProvider>
-          </RecipeStoreProvider>
-        </SavedItemsStoreProvider>
+              </GroceryStoreProvider>
+            </RecipeStoreProvider>
+          </SavedItemsStoreProvider>
+        </UserStoreProvider>
       </GeneralStoreProvider>
     </ReactQueryProvider>
   );

@@ -20,7 +20,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { getGroceryAccordingItems } from "@/lib/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { FORM_NAMES } from "@/lib/constants/forms";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
     return (
@@ -34,7 +34,7 @@ const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
 };
 
 export default function GroceryAccordion({ title, Icon, color }: GrocerySection): JSX.Element {
-    const { isSignedIn } = useAuth();
+    const isUser = useUserStore((state) => state.isUser);
     const { updateGroceryList } = useUpdateGroceryList();
 
     const setCurrentCategory = useGroceryStore(
@@ -92,7 +92,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
 
         const newList = { ...currentList, items: updatedItems };
 
-        if (currentList._id && isSignedIn) {
+        if (currentList._id && isUser) {
             await updateGroceryList(newList as GroceryList);
         }
 

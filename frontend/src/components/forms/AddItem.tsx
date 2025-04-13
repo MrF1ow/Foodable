@@ -33,10 +33,10 @@ import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { JSX } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useUserStore } from "@/stores/user/store";
 
 export default function AddItem({ className }: { className?: string }): JSX.Element {
-  const { isSignedIn } = useAuth();
+  const isUser = useUserStore((state) => state.isUser);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
 
@@ -48,6 +48,7 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
   );
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setMap = useGroceryStore((state) => state.setMap);
 
   const handleCategoryChange = useGroceryStore(
@@ -94,12 +95,20 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
       items: updatedItems,
     };
 
-    if (currentList._id && isSignedIn) {
+    console.log("New List:", newList);
+
+    if (currentList._id && isUser) {
       await updateGroceryList(newList as GroceryList);
     }
 
     setMap(newMap);
-    console.log("New List:", currentList);
+
+    if (!isUser) {
+      console.log("Setting new list for guest user");
+      setCurrentList(newList);
+    }
+
+    console.log("Current List:", currentList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,
