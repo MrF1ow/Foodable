@@ -43,21 +43,35 @@ export const AddRecipe = ({ className }: { className?: string }) => {
       unit: string;
       category: string;
     }[];
-    instructions: string;
+    instructions: { step: string }[];
   };
 
   const form = useForm<RecipeFormValues>({
+    shouldUnregister: true,
     defaultValues: {
       title: "",
       description: "",
       ingredients: [{ name: "", quantity: 1, unit: "", category: "" }],
-      instructions: "",
+      instructions: [{ step: "" }],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: ingredientFields,
+    append: appendIngredient,
+    remove: removeIngredient,
+  } = useFieldArray({
     control: form.control,
     name: "ingredients",
+  });
+
+  const {
+    fields: instructionFields,
+    append: appendInstruction,
+    remove: removeInstruction,
+  } = useFieldArray({
+    control: form.control,
+    name: "instructions",
   });
 
   const onSubmit = (data: RecipeFormValues) => {
@@ -116,7 +130,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
 
               <div className="flex flex-col gap-4">
                 <FormLabel className="text-2xl">Ingredients</FormLabel>
-                {fields.map((field, index) => (
+                {ingredientFields.map((field, index) => (
                   <div
                     key={field.id}
                     className="relative border p-3 pr-12 rounded flex flex-col gap-2"
@@ -184,7 +198,7 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                     </div>
                     <button
                       type="button"
-                      onClick={() => remove(index)}
+                      onClick={() => removeIngredient(index)}
                       className="absolute right-4 top-1/2 -translate-y-1/2"
                       data-testid={`remove-ingredient-${index}`}
                       aria-label="Remove ingredient"
@@ -258,31 +272,62 @@ export const AddRecipe = ({ className }: { className?: string }) => {
                   <button
                     type="button"
                     onClick={() =>
-                      append({ name: "", quantity: 1, unit: "", category: "" })
+                      appendIngredient({
+                        name: "",
+                        quantity: 1,
+                        unit: "",
+                        category: "",
+                      })
                     }
                   >
                     <Icons.plus />
                   </button>
                 </div>
               </div>
-              <FormField
-                control={form.control}
-                name="instructions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-2xl">Instructions</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="!text-xl h-40"
-                        placeholder="Enter instructions, separated by new lines"
-                        {...field}
-                        data-testid="instructions-input"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex flex-col gap-4">
+                <FormLabel className="text-2xl">Instructions</FormLabel>
+                {instructionFields.map((field, index) => (
+                  <div key={field.id} className="flex items-center gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`instructions.${index}.step`}
+                      render={({ field: instructionField }) => (
+                        <FormItem className="flex flex-row items-center gap-4 flex-1">
+                          <FormLabel className="text-lg">
+                            Step {index + 1}
+                          </FormLabel>
+                          <FormControl className="flex-1">
+                            <Input
+                              {...form.register(`instructions.${index}.step`)}
+                              placeholder={`Explain step ${index + 1}...`}
+                              className="!text-lg h-10"
+                              data-testid={`instruction-${index}`}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeInstruction(index)}
+                      data-testid={`remove-instruction-${index}`}
+                    >
+                      <Icons.delete />
+                    </button>
+                  </div>
+                ))}
+
+                <div className="flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => appendInstruction({ step: "" })}
+                    className="btn-primary p-2 mt-2 text-lg"
+                  >
+                    <Icons.plus />
+                  </button>
+                </div>
+              </div>
             </div>
           }
           footer={
