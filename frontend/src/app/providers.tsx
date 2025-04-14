@@ -13,13 +13,37 @@ import { useEffect, useRef } from "react";
 
 let globalToast: React.RefObject<Toast | null> = { current: null };
 
+const severityStyles = {
+  [TOAST_SEVERITY.SUCCESS]: "bg-green-100 text-green-800 border border-green-300",
+  [TOAST_SEVERITY.ERROR]: "bg-red-100 text-red-800 border border-red-300",
+  [TOAST_SEVERITY.INFO]: "bg-blue-100 text-blue-800 border border-blue-300",
+  [TOAST_SEVERITY.WARN]: "bg-yellow-100 text-yellow-800 border border-yellow-300",
+  [TOAST_SEVERITY.SECONDARY]: "bg-gray-100 text-gray-800 border border-gray-300",
+  [TOAST_SEVERITY.CONTRAST]: "bg-black text-white border border-white",
+};
+
 export const showToast = (
   severity: TOAST_SEVERITY,
   summary: string,
   detail: string,
   life: number = 5000
 ) => {
-  globalToast?.current?.show({ severity, summary, detail, life });
+  globalToast?.current?.show({
+    severity,
+    summary,
+    detail,
+    life,
+    content: (
+      <div
+        className={`p-4 rounded-md shadow-md w-full max-w-sm border ${
+          severityStyles[severity]
+        }`}
+      >
+        <strong className="block font-semibold">{summary}</strong>
+        <p className="text-sm mt-1">{detail}</p>
+      </div>
+    ),
+  });
 };
 
 export default function Providers({ children, isUser }: { children: React.ReactNode, isUser: boolean }) {
