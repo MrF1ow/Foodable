@@ -23,10 +23,6 @@ export default function FindPrice(): JSX.Element {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
-  const TestzipCode = useGeneralStore((state) => state.zipCode);
-  console.log("Test zip code", TestzipCode);
-  //   const setZipCode = useGeneralStore((state) => state.setZipCode);
-  //   const zipCode = useGeneralStore((state) => state.zipCode);
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
 
@@ -55,7 +51,8 @@ export default function FindPrice(): JSX.Element {
     let locationId = "";
     try {
       setZipCode(data.zipCode);
-      const { data: updatedKrogerLocations } = await refetchKrogerLocations();
+      const result = await refetchKrogerLocations();
+      const updatedKrogerLocations = result?.data;
       if (
         !updatedKrogerLocations ||
         !updatedKrogerLocations.data ||
@@ -66,19 +63,18 @@ export default function FindPrice(): JSX.Element {
       const firstLocationId = updatedKrogerLocations.data[0]?.locationId;
 
       locationId = firstLocationId;
-      console.log("Locations from Kroger:", updatedKrogerLocations);
     } catch (error) {
       return;
     }
 
-    if (locationId !== "") {
-      setLocationId(locationId);
-      setTerm("milk");
-      try {
-        const products = await refetchKrogerProducts();
-        // console.log("Products from Kroger:", products);
-      } catch (error) {}
-    }
+    // if (locationId !== "") {
+    //   setLocationId(locationId);
+    //   setTerm("milk");
+    //   try {
+    //     const products = await refetchKrogerProducts();
+    //     // console.log("Products from Kroger:", products);
+    //   } catch (error) {}
+    // }
   }
 
   const handleInputClose = () => {
@@ -118,28 +114,27 @@ export default function FindPrice(): JSX.Element {
                 <FormItem>
                   <FormLabel className="text-2xl">Select Stores</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                     >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
+                    {krogerLocations?.data?.map((location: any) => (
+                        <FormItem
+                        key={location.locationId}
+                        className="flex items-center space-x-3"
+                        >
                         <FormControl>
-                          <RadioGroupItem value="store 1" />
+                            <RadioGroupItem value={location.locationId} />
                         </FormControl>
-                        <FormLabel className="text-lg">Fred Meyer</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="store 2" />
-                        </FormControl>
-                        <FormLabel className="text-lg">Target</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="store 3" />
-                        </FormControl>
-                        <FormLabel className="text-lg">Walmart</FormLabel>
-                      </FormItem>
+                        <FormLabel className="text-lg">{location.name}</FormLabel>
+                        </FormItem>
+                    ))}
+
+                    {!krogerLocations?.data?.length && (
+                        <p className="text-lg">
+                            No store found near to this zipcode
+                        </p>
+                    )}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -148,7 +143,7 @@ export default function FindPrice(): JSX.Element {
             />
             <FormField
               control={form.control}
-              name="selectStores"
+              name="searchBy"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-2xl">Search By</FormLabel>

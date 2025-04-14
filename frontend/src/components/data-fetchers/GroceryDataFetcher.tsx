@@ -85,10 +85,13 @@ export default function GroceryListDataFetcher() {
                 setLatitude(latitude);
                 setLongitude(longitude);
                 try {
-                    const { zipCode } = (await refetchZipCode()).data;
-                    console.log("User Zip Code:", zipCode);
-                    if (zipCode) {
-                        setZipCode(zipCode);
+                    const data = await refetchZipCode();
+                    if (data != undefined) {
+                        const { zipCode } = data.data;
+                        console.log("User Zip Code:", zipCode);
+                        if (zipCode) {
+                            setZipCode(zipCode);
+                        }
                     }
                 } catch (err) {
                     console.error("Failed to get zip from coordinates", err);

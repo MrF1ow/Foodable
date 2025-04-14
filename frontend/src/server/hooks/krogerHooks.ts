@@ -11,8 +11,7 @@ export const useFetchKrogerLocations = (zipCode: string) => {
   } = useQuery({
     queryKey: ["krogerLocations", zipCode],
     queryFn: async () => {
-      const response = await KrogerApi.fetchKrogerLocations(zipCode);
-      return response.json();
+        return await  KrogerApi.fetchKrogerLocations(zipCode);
     },
     retry: 0,
   });

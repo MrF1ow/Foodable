@@ -9,7 +9,7 @@ export const KrogerApi = {
         );
       }
       const data = await response.json();
-        console.log("Kroger locations response:", data);
+      console.log("Kroger locations response:", data);
       return data;
     } catch (error) {
       console.error("Error getting Kroger locations: ", error);
