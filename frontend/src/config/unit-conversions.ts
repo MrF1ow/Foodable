@@ -32,6 +32,22 @@ export const unitsAsTuple = [
   "gallon",
 ] as const;
 
+export const unitDecimalPlaces: Record<Units, number> = {
+  pcs: 0,
+  kg: 2,
+  g: 1,
+  l: 2,
+  ml: 1,
+  tbsp: 1,
+  tsp: 2,
+  lb: 2,
+  oz: 2,
+  cup: 2,
+  pint: 2,
+  quart: 2,
+  gallon: 2,
+};
+
 export const unitConversions: UnitConversions = {
   kg: {
     g: 1000,

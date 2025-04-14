@@ -1,5 +1,5 @@
-import MainLayout from "@/layouts/common/main";
-import ContentLayout from "@/layouts/common/content";
+import MainLayout from "@/layouts/main";
+import ContentLayout from "@/layouts/content";
 
 export default function SettingsPageLayout({
   children,

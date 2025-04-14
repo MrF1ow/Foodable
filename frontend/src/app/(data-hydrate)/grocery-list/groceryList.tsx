@@ -1,58 +1,57 @@
 "use client";
 
-import { useEffect } from "react";
-
 // Local Imports
-import { Icons } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { List } from "@/components/common/grocery/list";
+import { useUserStore } from "@/stores/user/store";
+import List from "@/components/page-specific/grocery/GroceryList";
 import type { GroceryList } from "@/types/grocery";
-import GroceryListDataFetcher from "@/components/common/grocery/grocery-list-data-fetcher";
-import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
-import RightSideCard from "@/components/common/grocery/gorcery-right-side-card";
+import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
+import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
+import { FORM_NAMES } from "@/lib/constants/forms";
+import AssistantButton from "@/components/buttons/AssistantButton";
+import GroceryPageInjections from "@/components/portal-injections/GroceryPageInjections";
+import GuestDataMonitor from "@/components/GuestDataMonitor";
 
 interface GroceryListProps {
   isUser: boolean;
   renderContent: boolean;
   className?: string;
 }
+
 export default function GroceryList({
   isUser,
   renderContent,
   className,
 }: GroceryListProps) {
-  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
+
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList);
-  const setCurrentForm = useGroceryStore((state) => state.setCurrentForm);
-  const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
-  const onGroceryForm = useGroceryStore((state) => state.onGroceryForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+  const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
 
-  if (isMobile && onGroceryForm) {
-    return <RightSideCard />;
+  const handleAssitantButtonClick = () => {
+    setCurrentForm(FORM_NAMES.LIST_ASSISTANT);
+    setShowPortal(true);
+    setSplitLayout(true);
   }
 
   return (
     <>
-      {isUser && <GroceryListDataFetcher />}
-      <SavedDataFetcher />
-      {currentList && <List className={className} />}
-      {renderContent && !splitLayout && !isMobile && (
-        <Button
-          className={`btn-primary rounded-full w-12 h-12 hover:bg-primary flex items-center justify-center fixed bottom-4 right-4 z-50 ${
-            isMobile ? "mb-16" : ""
-          }`}
-          data-testid="helper-button"
-          onClick={() =>
-            setCurrentForm("groceryHelper", isMobile, setSplitLayout)
-          }
-        >
-          <Icons.ai className="!w-6 !h-6" />
-        </Button>
+      {isUser && (
+        <>
+          <GroceryListDataFetcher />
+          <SavedDataFetcher />
+        </>
       )}
+      {!isUser && <GuestDataMonitor />}
+      {currentList && <List className={className} />}
+      {renderContent && !splitLayout && !isMobile && isUser && (
+        <AssistantButton mobile={false} handleOnClick={handleAssitantButtonClick} />
+      )}
+      <GroceryPageInjections />
     </>
   );
 }

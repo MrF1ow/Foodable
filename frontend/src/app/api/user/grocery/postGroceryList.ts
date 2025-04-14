@@ -1,8 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateGroceryListWithoutId } from "@/utils/typeValidation/grocery";
-import { isValidObjectId } from "@/utils/validation";
+import { validateGroceryListWithoutId } from "@/lib/utils/typeValidation/grocery";
+import { isValidObjectId } from "@/lib/utils/validation";
 import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports

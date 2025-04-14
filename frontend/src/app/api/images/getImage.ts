@@ -1,7 +1,7 @@
 // Local Imports
 import { setupGridFS } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
 
 // Package Imports
 import { NextResponse } from "next/server";

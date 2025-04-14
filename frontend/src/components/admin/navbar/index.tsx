@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import logoNoShadow from "../../../../public/images/logo_current_no_shadow.png";
 import { NavbarItem } from "./item";
-import ThemeSwitch from "@/components/theme-switch";
+import ThemeSwitch from "@/components/ThemeSwitch";
 
 export const Navbar = () => {
   return (

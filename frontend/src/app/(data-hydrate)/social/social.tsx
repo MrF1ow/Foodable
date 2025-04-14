@@ -15,17 +15,17 @@ import {
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 
 // **Utility Imports**
-import { filterUsers, filterRecipes } from "@/utils/listItems";
+import { filterUsers, filterRecipes } from "@/lib/utils/listItems";
 
 // **Type Imports**
 import { RecipeMetaData } from "@/types/saved";
 
 // **Component Imports**
-import SavedDataFetcher from "@/components/common/saved/saved-data-fetcher";
+import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import {
   UserFollowSection,
   UserRecipesSection,
-} from "@/components/common/social/social-page-user-data-sections";
+} from "@/components/page-specific/social/SocialPageDataSections";
 
 export default function Social() {
   const searchQuery = useUserStore((state) => state.searchQuery);

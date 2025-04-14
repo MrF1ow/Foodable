@@ -25,6 +25,31 @@ export const useFetchUserLocation = () => {
   };
 };
 
+export const useFetchZipFromCoordinates = (latitude: number, longitude: number) => {
+    const {
+      data: userZipCode,
+      isLoading: isLoadingZipCode,
+      refetch: refetchZipCode,
+      error: errorZipCode,
+      isError: isErrorZipCode,
+    } = useQuery({
+      queryKey: ["userZipCode", latitude, longitude],
+      queryFn: async () => {
+        const response = await GoogleApi.fetchZipFromUserCoordinates(latitude, longitude);
+        return response.json();
+      },
+      enabled: typeof latitude === "number" && typeof longitude === "number",
+      retry: 0,
+    });
+  
+    return {
+      userZipCode,
+      isLoadingZipCode,
+      refetchZipCode,
+      errorZipCode,
+    };
+  };
+
 export const useFetchUserLocationFromZip = (zipCode: string) => {
   const {
     data: userLocationFromZip,

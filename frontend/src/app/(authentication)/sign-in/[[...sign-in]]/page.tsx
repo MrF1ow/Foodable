@@ -1,7 +1,7 @@
 
 import SignIn from "./sign-in";
 import { redirect } from "next/navigation";
-import { checkSession } from "@/utils/roles";
+import { checkSession } from "@/lib/utils/roles";
 
 export default async function SignInPage() {
 

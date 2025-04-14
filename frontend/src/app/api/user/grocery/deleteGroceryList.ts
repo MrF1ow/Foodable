@@ -4,7 +4,7 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "@/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function DELETE(req: Request) {
@@ -23,7 +23,16 @@ export async function DELETE(req: Request) {
       );
     }
     const db = await getDB();
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
 
+    if (!userProfile) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
+    // delete the grocery list
     const deletedGroceryList = await db
       .collection("groceryLists")
       .findOneAndDelete({
@@ -37,6 +46,26 @@ export async function DELETE(req: Request) {
         { status: 404 }
       );
     }
+
+    // Remove the deleted ID from savedItems.groceryLists
+    const updatedSavedLists = (userProfile.savedItems?.groceryLists || []).filter(
+      (listId: string) => listId !== id
+    );
+
+    console.log("Updated saved lists: ", updatedSavedLists);
+
+    const updateFields: any = {
+      'savedItems.groceryLists': updatedSavedLists,
+    };
+
+    if (userProfile.currentGroceryList === id) {
+      updateFields.currentGroceryList = updatedSavedLists[0] || null;
+    }
+
+    await db.collection("users").updateOne(
+      { clerkId: clerkUser.id },
+      { $set: updateFields }
+    );
 
     return NextResponse.json(
       { message: "Grocery List Deleted" },

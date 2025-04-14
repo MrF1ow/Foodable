@@ -28,16 +28,17 @@ export const useRecipeById = (
   const {
     data: recipe,
     isLoading: isLoadingRecipe,
+    refetch: refetchRecipe,
     error: errorRecipe,
     isError: isErrorRecipe,
   } = useQuery({
     queryKey: [RECIPES, id],
     queryFn: () => RecipeApi.fetchRecipeById(id),
-    retry: 0,
+    retry: 2,
     enabled,
   });
 
-  return { recipe, isLoadingRecipe, errorRecipe, isErrorRecipe };
+  return { recipe, refetchRecipe, isLoadingRecipe, errorRecipe, isErrorRecipe };
 };
 
 // Custom hook for creating a recipe

@@ -1,5 +1,5 @@
-import { getAccessToken } from "@/utils/getAccessToken";
-import { getValueFromSearchParams } from "@/utils/routeHelpers";
+import { getAccessToken } from "@/lib/utils/getAccessToken";
+import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
 
 interface ProductResponse {
   data: Array<{
