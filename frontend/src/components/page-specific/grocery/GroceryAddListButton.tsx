@@ -38,21 +38,24 @@ import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { capitalizeTitle } from "@/lib/utils/other";
 
 export default function GroceryAddButton(): JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [selectedList, setSelectedList] = useState("");
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
-  const { user } = useUser();
-  const { createGroceryList } = useCreateGroceryList();
-  const { createSavedItem } = useCreateSavedItem();
+  const currentCategories = useSavedItemsStore(
+    (state) => state.currentCategories
+  );
+
+  const [selectedList, setSelectedList] = useState("");
+  const [newTitle, setNewTitle] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
     enabled: true,
   });
-  const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories
-  );
-  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const { createGroceryList } = useCreateGroceryList();
+  const { createSavedItem } = useCreateSavedItem();
+
+  const { user } = useUser();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,41 +70,42 @@ export default function GroceryAddButton(): JSX.Element {
       return;
     }
 
-    if (selectedList === "") {
+    if (selectedList !== "") {
+      const newList = {
+        _id: null,
+        creatorId: user.id,
+        title: newTitle || "New List",
+        items: [],
+      };
+
+      const newSavedList = {
+        ...newList,
+        type: "groceryList",
+        category: selectedList,
+      };
+
+      const createData = await createGroceryList(newList as GroceryList);
+      setCurrentList(createData);
+
+      await createSavedItem(newSavedList as unknown as SavedItem);
+
+      showToast(
+        TOAST_SEVERITY.SUCCESS,
+        "List Created",
+        "Grocery list created successfully",
+        3000
+      );
+
+      await refetchGroceryLists();
+      setIsOpen(false);
+    } else {
       showToast(
         TOAST_SEVERITY.ERROR,
         "Error",
         "You must select a category to save the list",
         3000
       );
-      return;
     }
-
-    const newList: GroceryList = {
-      _id: null,
-      creatorId: user.id,
-      title: newTitle || "New List",
-      items: [],
-    };
-
-    const savedItem: SavedItem = {
-      ...newList,
-      type: "groceryList",
-      category: selectedList,
-    } as SavedItem;
-
-    const created = await createGroceryList(newList);
-    setCurrentList(created);
-
-    await createSavedItem(savedItem);
-    await refetchGroceryLists();
-
-    showToast(
-      TOAST_SEVERITY.SUCCESS,
-      "List Created",
-      "Grocery list created successfully",
-      3000
-    );
     setIsOpen(false);
   };
 
