@@ -36,6 +36,8 @@ import { SavedItem } from "@/types/saved";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { capitalizeTitle } from "@/lib/utils/other";
+import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
+import { create } from "node_modules/cypress/types/lodash";
 
 export default function GroceryAddButton(): JSX.Element {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
@@ -48,6 +50,7 @@ export default function GroceryAddButton(): JSX.Element {
   const [newTitle, setNewTitle] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const { updateUserCurrentList } = useUpdateUserCurrentList();
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
     enabled: true,
@@ -76,25 +79,42 @@ export default function GroceryAddButton(): JSX.Element {
         creatorId: user.id,
         title: newTitle || "New List",
         items: [],
-      };
-
-      const newSavedList = {
-        ...newList,
-        type: "groceryList",
         category: selectedList,
       };
 
       const createData = await createGroceryList(newList as GroceryList);
+
+      if (!createData) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          "Failed to create grocery list",
+          3000
+        );
+        return;
+      }
+
+      const newSaveItem = {
+        _id: createData._id,
+        title: createData.title,
+        type: "groceryList",
+        category: selectedList,
+      }
+
+      const savedItem = await createSavedItem(newSaveItem as SavedItem);
+      if (!savedItem) {
+        showToast(
+          TOAST_SEVERITY.ERROR,
+          "Error",
+          "Failed to save grocery list",
+          3000
+        );
+        return;
+      }
+
+      await updateUserCurrentList(createData._id);
       setCurrentList(createData);
 
-      await createSavedItem(newSavedList as unknown as SavedItem);
-
-      showToast(
-        TOAST_SEVERITY.SUCCESS,
-        "List Created",
-        "Grocery list created successfully",
-        3000
-      );
 
       await refetchGroceryLists();
       setIsOpen(false);

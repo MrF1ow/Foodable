@@ -39,6 +39,8 @@ import {
 import { capitalizeTitle } from "@/lib/utils/other";
 import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
 import { SavedItem } from "@/types/saved";
+import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";
+import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
 
 export default function GroceryEditButton(): JSX.Element {
   const currentList = useGroceryStore((state) => state.currentList);
@@ -56,10 +58,14 @@ export default function GroceryEditButton(): JSX.Element {
     metadata: true,
     enabled: true,
   });
+  const { refetchCurrentListId } = useFetchUserCurrentList({
+    enabled: true,
+  });
   const { updateGroceryList } = useUpdateGroceryList();
   const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
   const { createSavedItem } = useCreateSavedItem();
+  const { removeAllGroceryListFromAllUsers } = useRemoveAllGroceryListFromAllUsers();
 
   const { user } = useUser();
 
@@ -164,7 +170,9 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
 
+        removeAllGroceryListFromAllUsers(currentList._id.toString())
         // After deletion, force refetch of the grocery lists
+        await refetchCurrentListId();
         await refetchGroceryLists();
 
         showToast(
@@ -191,6 +199,7 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
       },
+
     });
   };
 

@@ -16,6 +16,8 @@ export async function POST(req: Request) {
 
     const requestBody = await req.json(); // Parse request body
 
+    console.log("Request body: ", requestBody); // Log the request body for debugging
+
     const { _id, title, category, type } = requestBody; // Parse request body metadata
 
     if (!_id || !title || !category || !type) {
@@ -27,7 +29,7 @@ export async function POST(req: Request) {
 
     if (!isValidObjectId(_id)) {
       return NextResponse.json(
-        { message: "Invalid userId or _id" },
+        { message: "Invalid _id" },
         { status: 400 }
       );
     }
