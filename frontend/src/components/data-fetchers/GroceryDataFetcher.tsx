@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Local Imports
 import { useGroceryStore } from "@/stores/grocery/store";
@@ -13,10 +13,12 @@ import {
     useFetchUserCurrentList
 } from "@/server/hooks/userHooks";
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
+import { useFetchZipFromCoordinates } from "@/server/hooks/googleHooks";
 import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { getAvailableGroceryLists } from "@/lib/utils/listItems";
 import { useUserStore } from "@/stores/user/store";
+import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryListDataFetcher() {
 
@@ -25,11 +27,16 @@ export default function GroceryListDataFetcher() {
         return null;
     }
 
+    const [latitude, setLatitude] = useState(0)
+    const [longitude, setLongitude] = useState(0)
+
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setAvailableLists = useGroceryStore((state) => state.setAvailableLists);
     const currentList = useGroceryStore((state) => state.currentList);
     const { refetchUserLocation } = useFetchUserLocation();
+    const { refetchZipCode } = useFetchZipFromCoordinates(latitude, longitude);
     const setLocation = useUserStore((state) => state.setLocation);
+    const setZipCode = useGeneralStore((state) => state.setZipCode);
 
     // fetch the currentList that the user is currently on
     // this will be used to fetch the grocery list by id
@@ -68,17 +75,25 @@ export default function GroceryListDataFetcher() {
     useEffect(() => {
         async function fetchUserLocation() {
             const browserLocation = await getBrowserLocation();
-            if (browserLocation) {
-                setLocation(browserLocation);
-                console.log("User Location From Browser:", browserLocation);
-            } else {
-                const result = await refetchUserLocation();
-                const location = result.data;
-                if (location) {
-                    setLocation(location);
-                    console.log("User Location From Google:", location);
+
+            const location = browserLocation || (await refetchUserLocation()).data;
+            if (location) {
+                setLocation(location);
+                console.log("User Location:", location);
+
+                const { latitude, longitude } = location;
+                setLatitude(latitude);
+                setLongitude(longitude);
+                try {
+                    const { zipCode } = (await refetchZipCode()).data;
+                    console.log("User Zip Code:", zipCode);
+                    if (zipCode) {
+                        setZipCode(zipCode);
+                    }
+                } catch (err) {
+                    console.error("Failed to get zip from coordinates", err);
                 }
-            }
+            } 
         }
         fetchUserLocation();
     }, []);

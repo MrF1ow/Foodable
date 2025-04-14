@@ -16,18 +16,22 @@ import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { JSX } from "react";
 
 export default function FindPrice(): JSX.Element {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
+  const TestzipCode = useGeneralStore((state) => state.zipCode);
+  console.log("Test zip code", TestzipCode);
   //   const setZipCode = useGeneralStore((state) => state.setZipCode);
   //   const zipCode = useGeneralStore((state) => state.zipCode);
-  const [zipCode, setZipCodeState] = useState("97330");
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
+
+  const zipCode = useGeneralStore((state) => state.zipCode);
+  const setZipCode = useGeneralStore((state) => state.setZipCode);
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
@@ -50,8 +54,7 @@ export default function FindPrice(): JSX.Element {
   async function onSubmit(data: any) {
     let locationId = "";
     try {
-      //   setZipCode(data.zipCode);
-      setZipCodeState(data.zipCode);
+      setZipCode(data.zipCode);
       const { data: updatedKrogerLocations } = await refetchKrogerLocations();
       if (
         !updatedKrogerLocations ||
@@ -73,7 +76,7 @@ export default function FindPrice(): JSX.Element {
       setTerm("milk");
       try {
         const products = await refetchKrogerProducts();
-        console.log("Products from Kroger:", products);
+        // console.log("Products from Kroger:", products);
       } catch (error) {}
     }
   }
@@ -101,7 +104,7 @@ export default function FindPrice(): JSX.Element {
                     <Input
                       type="number"
                       className="w-24 !text-xl h-12"
-                      placeholder="123456"
+                      placeholder={zipCode || "12345"}
                       {...field}
                     />
                   </FormControl>
@@ -189,3 +192,4 @@ export default function FindPrice(): JSX.Element {
     </Form>
   );
 }
+
