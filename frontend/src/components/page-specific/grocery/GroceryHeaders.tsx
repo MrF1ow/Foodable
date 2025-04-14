@@ -25,6 +25,7 @@ import { MdClose } from "react-icons/md";
 import type { GroceryList } from "@/types/grocery";
 import { JSX } from "react";
 import { useUserStore } from "@/stores/user/store";
+import GroceryAddButton from "./GroceryAddListButton";
 
 export const MainGroceryHeader = (): JSX.Element => {
     const isUser = useUserStore((state) => state.isUser);
@@ -234,17 +235,9 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
                     </div>
                 )}
 
-                {isUser && (
-                <button
-                    className="ml-2 text-foreground hover:text-primary transition hover:scale-110"
-                    data-testid="add-new-grocery-list"
-                    aria-label="Add new grocery list"
-                >
-                    <Icons.plus className="w-6 h-6" />
-                </button>
-                )}
-
                 {isUser && <GroceryEditButton />}
+
+                {isUser && <GroceryAddButton />}
             </div>
             {currentForm === FORM_NAMES.GROCERY_LIST && (
                 <MdClose onClick={handleCloseSideList} size={40} />
