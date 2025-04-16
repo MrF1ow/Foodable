@@ -31,7 +31,7 @@ export const RecipePopupHeader = ({
   setOpen,
 }: RecipePopupHeaderProps) => {
   const isUser = useUserStore((state) => state.isUser);
-  const { savedItems } = useAllSavedItems({ enabled: true });
+  const { savedItems } = useAllSavedItems({ enabled: !!isUser });
 
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
@@ -71,7 +71,7 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
-    enabled: true,
+    enabled: isUser,
   });
   const { updateGroceryList } = useUpdateGroceryList();
 
