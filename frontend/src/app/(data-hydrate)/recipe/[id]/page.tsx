@@ -11,6 +11,7 @@ import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
+import { Router } from "lucide-react";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
@@ -76,18 +77,19 @@ export default function Page() {
     }, [currentData]);
 
     useEffect(() => {
-        if (isErrorRecipe) {
-            console.error("Error fetching recipe:", errorRecipe);
-        }
-        if (recipe || currentList) {
-            const additionalIngredients = getAdditionalIngredients(
-                recipe.ingredients,
-                groceryMap
-            );
-            setAdditionalIngredients(additionalIngredients);
+        if (currentList) {
+            if (currentData) {
+                if ('ingredients' in currentData) {
+                    const additionalIngredients = getAdditionalIngredients(
+                        currentData?.ingredients,
+                        groceryMap
+                    );
+                    setAdditionalIngredients(additionalIngredients);
+                }
+            }
         }
 
-    }, [recipe, currentList]);
+    }, [currentList]);
 
     if (!currentData) return null;
 
