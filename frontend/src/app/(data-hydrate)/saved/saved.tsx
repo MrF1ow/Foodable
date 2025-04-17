@@ -1,8 +1,7 @@
 "use client";
 
 // Local Imports
-import GeneralAccordion from "@/components/GeneralAccordion";
-import SaveCategoryAddButton from "@/components/page-specific/saved/SaveCategoryAddButton";
+import SaveItemAccordion from "@/components/page-specific/saved/SaveItemAccordion";
 import SaveCategoryEditButton from "@/components/page-specific/saved/SaveCategoryEditButton";
 import { useGeneralStore } from "@/stores/general/store";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
@@ -20,7 +19,6 @@ import { FORM_NAMES } from "@/lib/constants/forms";
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
 
-  const splitLayout = useGeneralStore((state) => state.splitLayout);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
@@ -67,33 +65,44 @@ export default function Saved() {
     <>
       <GroceryListDataFetcher />
       <SavedDataFetcher />
+
       {/* Accordion Components */}
-      <div className="flex flex-wrap w-full justify-start gap-4">
+      <div className="flex flex-col w-full justify-start gap-4">
         {sortedSavedItems.map(({ title, items }) => (
-          <GeneralAccordion
+          <SaveItemAccordion
             key={title}
             title={capitalizeTitle(title)}
             content={
-              <div className="flex flex-row items-center w-full space-x-2 overflow-x-auto">
+              <div className="flex flex-row gap-2 px-2 overflow-x-auto w-full snap-x snap-mandatory">
                 {items.length > 0 ? (
                   items.map((item: SavedItem) => {
                     const typeOfData = item.type;
 
                     if (typeOfData === "recipe") {
                       return (
-                        <RecipeBox
+                        <div
                           key={item._id.toString()}
-                          handleBoxClick={() => handleBoxClick(item)}
-                          data={item}
-                        />
+                          className="flex-shrink-0 min-w-[50px] max-w-[200px] w-full snap-start"
+                        >
+                          <RecipeBox
+                            key={item._id.toString()}
+                            handleBoxClick={() => handleBoxClick(item)}
+                            data={item}
+                          />
+                        </div>
                       );
                     } else if (typeOfData === "groceryList") {
                       return (
-                        <GroceryBox
+                        <div
                           key={item._id.toString()}
-                          handleBoxClick={() => handleBoxClick(item)}
-                          data={item}
-                        />
+                          className="flex-shrink-0 min-w-[50px] max-w-[200px] w-full snap-start"
+                        >
+                          <GroceryBox
+                            key={item._id.toString()}
+                            handleBoxClick={() => handleBoxClick(item)}
+                            data={item}
+                          />
+                        </div>
                       );
                     }
                   })
@@ -104,16 +113,12 @@ export default function Saved() {
                 )}
               </div>
             }
-            width={isMobile ? "100%" : "85%"}
             iconSize={isMobile ? 20 : 40}
             textSize={isMobile ? "1.5rem" : "2rem"}
             additional={<SaveCategoryEditButton category={title} textSize={isMobile ? "1.5rem" : "2rem"} />}
           />
         ))}
       </div>
-
-      {/* Add Button */}
-      <SaveCategoryAddButton />
     </>
   );
 }

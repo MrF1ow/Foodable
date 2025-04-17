@@ -23,10 +23,10 @@ export default function ContentLayout({
   const splitPage = split ? split : isSplit;
 
   return (
-    <div className="w-full h-full bg-background overflow-x-hidden overflow-y-auto">
+    <div className="w-full h-full bg-background overflow-x-hidden overflow-y-auto pb-[20%] md:pb-0">
       {isMobile ? (
         <>
-          <div className="h-full overflow-y-auto overflow-x-hidden pb-[12%]">{mainContent}</div>
+          <div className="h-full overflow-y-auto overflow-x-hidden">{mainContent}</div>
           <div
             id="content-mobile-portal"
             className={clsx({
@@ -37,7 +37,7 @@ export default function ContentLayout({
         </>
       ) : splitPage ? (
         <div className="flex flex-row h-full bg-background">
-          <div className="relative w-[67%] h-auto bg-background overflow-auto">
+          <div className="relative w-[65%] h-auto bg-background overflow-auto">
             {mainContent}
           </div>
           <div

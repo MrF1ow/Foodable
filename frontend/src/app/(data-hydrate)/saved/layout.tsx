@@ -1,6 +1,6 @@
 import MainLayout from "@/layouts/main";
 import ContentLayout from "@/layouts/content";
-import GeneralHeader from "@/components/GeneralHeader";
+import SaveHeader from "@/components/page-specific/saved/SaveHeader";
 import { checkRole } from "@/lib/utils/roles";
 
 export default async function SavedItemsLayout({
@@ -11,7 +11,7 @@ export default async function SavedItemsLayout({
   const isUser = await checkRole("user");
   return (
     <MainLayout
-      headerComponent={isUser && <GeneralHeader title={"Saved Items"} />}
+      headerComponent={isUser && <SaveHeader />}
     >
       <ContentLayout
         mainContent={children}

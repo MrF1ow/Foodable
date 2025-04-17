@@ -8,7 +8,7 @@ interface BoxProps {
 export default function Box({ onClick, children }: BoxProps): JSX.Element {
     return (
         <div
-            className="w-full sm:w-40 md:w-40 aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
+            className="w-full aspect-square rounded-lg relative shadow-lg overflow-hidden cursor-pointer z-10"
             onClick={onClick}
         >
             {children}

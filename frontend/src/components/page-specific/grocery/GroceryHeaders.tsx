@@ -6,6 +6,7 @@ import { Icons } from "@/components/ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import VerticalOptionsButton from "@/components/buttons/VerticalOptionsButton";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/app/providers";
