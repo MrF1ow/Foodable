@@ -54,7 +54,7 @@ const SignInForm = ({ signInWithEmail, clerkError }: SignInFormProps) => {
   };
 
   return (
-    <Card className="w-full sm:w-96 bg-card-background text-foreground">
+    <Card className="w-full h-full bg-card-background text-foreground">
       <CardHeader className="text-center">
         <CardDescription className="mb-2">Welcome back!👋</CardDescription>
         <CardTitle className="text-xl">Login to your account</CardTitle>
@@ -107,7 +107,7 @@ const SignInForm = ({ signInWithEmail, clerkError }: SignInFormProps) => {
             </Button>
           </form>
         </Form>
-        <CardFooter>
+        <CardFooter className="flex w-full items-center justify-center">
           <Button variant="link" size="sm">
             <Link href="/sign-up">Don&apos;t have an account? Sign up</Link>
           </Button>

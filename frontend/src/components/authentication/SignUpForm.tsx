@@ -61,7 +61,7 @@ const SignUpForm = ({ signUpWithEmail, clerkError }: SignUpFormProps) => {
   };
 
   return (
-    <Card className="w-full sm:w-96 bg-card-background text-foreground">
+    <Card className="w-full h-full bg-card-background text-foreground">
       <CardHeader className="text-center">
         <CardDescription className="mb-2">Welcome!👋</CardDescription>
         <CardTitle className="text-xl">Create an Account</CardTitle>
