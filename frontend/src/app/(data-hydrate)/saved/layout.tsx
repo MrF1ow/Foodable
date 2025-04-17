@@ -11,7 +11,7 @@ export default async function SavedItemsLayout({
   const isUser = await checkRole("user");
   return (
     <MainLayout
-      headerComponent={isUser && <GeneralHeader title={"Saved Items"} width="25%" />}
+      headerComponent={isUser && <GeneralHeader title={"Saved Items"} />}
     >
       <ContentLayout
         mainContent={children}

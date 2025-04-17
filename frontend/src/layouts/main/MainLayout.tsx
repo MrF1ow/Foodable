@@ -59,7 +59,7 @@ export default function MainLayout({
       )}
       {headerComponent ? (
         <div className="grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] w-full h-full bg-background p-2 md:p-4 lg:p-6 gap-y-2">
-          <div className="h-full">{headerComponent}</div>
+          <div className="h-full w-full">{headerComponent}</div>
           <div className="flex-1 h-full">{children}</div>
         </div>
       ) : (

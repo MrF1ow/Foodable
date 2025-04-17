@@ -68,7 +68,7 @@ export default function Saved() {
       <GroceryListDataFetcher />
       <SavedDataFetcher />
       {/* Accordion Components */}
-      <div className="flex flex-wrap justify-start gap-4">
+      <div className="flex flex-wrap w-full justify-start gap-4">
         {sortedSavedItems.map(({ title, items }) => (
           <GeneralAccordion
             key={title}
@@ -104,10 +104,10 @@ export default function Saved() {
                 )}
               </div>
             }
-            width={isMobile ? (splitLayout ? "100%" : "85%") : "85%"}
-            iconSize={40}
-            textSize="2rem"
-            additional={<SaveCategoryEditButton category={title} />}
+            width={isMobile ? "100%" : "85%"}
+            iconSize={isMobile ? 20 : 40}
+            textSize={isMobile ? "1.5rem" : "2rem"}
+            additional={<SaveCategoryEditButton category={title} textSize={isMobile ? "1.5rem" : "2rem"} />}
           />
         ))}
       </div>
