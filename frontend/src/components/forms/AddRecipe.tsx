@@ -28,7 +28,7 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
 
-export const AddRecipe = ({ className }: { className?: string }) => {
+export const AddRecipe = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
 

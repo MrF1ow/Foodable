@@ -12,7 +12,7 @@ export const getBrowserLocation = async (): Promise<
           });
         }
       );
-
+      console.log("Browser geolocation success:", position.coords);
       const { latitude, longitude } = position.coords;
       return { latitude, longitude };
     } catch (error: any) {

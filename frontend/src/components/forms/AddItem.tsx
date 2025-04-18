@@ -32,10 +32,17 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { useUserStore } from "@/stores/user/store";
+import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 
-export default function AddItem({ className }: { className?: string }): JSX.Element {
+export default function AddItem({
+  className,
+}: {
+  className?: string;
+}): JSX.Element {
+  const [term, setTerm] = useState("");
+  const [locationId, setLocationId] = useState("70100070");
   const isUser = useUserStore((state) => state.isUser);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
@@ -43,9 +50,7 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
   const currentList = useGroceryStore((state) => state.currentList);
   const groceryMap = useGroceryStore((state) => state.map);
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
-  const setShowPortal = useGeneralStore(
-    (state) => state.setShowPortal
-  );
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
@@ -56,6 +61,13 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
   );
 
   const { updateGroceryList } = useUpdateGroceryList();
+
+  const {
+    krogerProducts,
+    isLoadingKrogerProducts,
+    refetchKrogerProducts,
+    errorKrogerProducts,
+  } = useFetchKrogerProducts(term, locationId);
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -143,6 +155,13 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
                         className="!text-xl h-12"
                         placeholder="Enter item name"
                         {...field}
+                        onChange={async (e) => {
+                          field.onChange(e.target.value);
+                          setTerm(e.target.value);
+                          if (e.target.value.trim().length > 1) {
+                            await refetchKrogerProducts();
+                          }
+                        }}
                         data-testid="itemName-input"
                       />
                     </FormControl>
@@ -151,8 +170,9 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
                 )}
               />
               <div
-                className={`flex ${isMobile ? "justify-center" : ""
-                  } items-center`}
+                className={`flex ${
+                  isMobile ? "justify-center" : ""
+                } items-center`}
               >
                 <FormField
                   control={form.control}
@@ -273,5 +293,4 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
       </Form>
     </div>
   );
-};
-
+}

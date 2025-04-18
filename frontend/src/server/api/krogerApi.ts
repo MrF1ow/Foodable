@@ -28,6 +28,7 @@ export const KrogerApi = {
           `Error getting Kroger products: ${response.statusText}`
         );
       }
+      console.log("Kroger products response:", response);
       const data = await response.json();
       return data;
     } catch (error) {
