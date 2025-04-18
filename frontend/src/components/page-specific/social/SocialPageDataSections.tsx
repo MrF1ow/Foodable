@@ -48,7 +48,7 @@ export const UserFollowSection = ({
   return (
     <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
       {selectedUserSection === "followers" && (
-        <div>
+        <div className="w-full h-full">
           {followers.length === 0 && (
             <div className="text-center text-lg text-foreground italic">
               No followers
@@ -88,7 +88,7 @@ export const UserFollowSection = ({
 export const UserRecipesSection = ({ recipes }: UserRecipesSectionProps) => {
   return (
     <SocialSectionLayout headerComponent={<RecipeSearchBar />}>
-      <div>
+      <div className="w-full h-full">
         {recipes.map((recipe) => (
           <SocialItem
             key={recipe._id.toString()}

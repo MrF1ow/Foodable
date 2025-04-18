@@ -7,41 +7,38 @@ import pfp from "../../../../public/images/pfp.jpg";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/user/store";
 import Image from "next/image";
-import { useUser } from "@clerk/nextjs";
 import { JSX } from "react";
+import userBanner from "../../../../public/images/user_banner.jpg";
 
-interface SocialPageHeaderProps {
-  bannerUrl: string;
-}
+export default function SocialPageHeader({ userDetails }: { userDetails: any }): JSX.Element {
 
-export default function SocialPageHeader({ bannerUrl }: SocialPageHeaderProps): JSX.Element {
-  const { user } = useUser();
+  const { userName, userPfp } = userDetails;
 
   return (
-    <Card className="relative w-full md:w-full lg:w-full h-full rounded-md overflow-hidden">
+    <Card className="relative w-full h-full rounded-md overflow-hidden">
       <CardContent>
         <Image
-          src={bannerUrl}
+          src={userBanner}
           alt="User Banner"
           fill
           className="object-cover"
         />
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <div className="flex flex-row items-center justify-between w-full">
-            <div className="flex flex-row items-center ">
-              <Avatar className="w-20 md:w-25 lg:w-32 h-20 md:h-25 lg:h-32 rounded-full mr-20">
+            <div className="flex flex-row items-center gap-4">
+              <Avatar className="aspect-square w-16 h-auto md:w-24 lg:w-32 rounded-full">
                 <AvatarImage
-                  src={user?.imageUrl || pfp.src}
+                  src={userPfp || pfp.src}
                   alt="User Avatar"
                   className="object-cover w-full h-full rounded-full"
                 />
                 <AvatarFallback>PFP</AvatarFallback>
               </Avatar>
-              <h1 className="text-3xl md:text-7xl lg:text-8xl font-semibold text-green">
-                {user?.username}
+              <h1 className="text-2xl md:text-4xl lg:text-6xl font-semibold">
+                {userName}
               </h1>
             </div>
-            <FaHeart style={{ fontSize: "60px", color: "red" }} />
+            <FaHeart className="aspect-square w-10 h-auto md:w-12 lg:w-16 text-red-500" />
           </div>
         </div>
       </CardContent>

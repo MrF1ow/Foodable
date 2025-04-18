@@ -58,7 +58,7 @@ export default function Social() {
   return (
     <>
       <SavedDataFetcher />
-      <div className="grid grid-rows-2 lg:grid-cols-2 gap-6 h-full">
+      <div className="w-full h-full flex flex-col lg:flex-row gap-x-0 gap-y-2 lg:gap-x-6 lg:gap-y-0">
         <UserFollowSection
           followers={filteredFollowers}
           following={filteredFollowing}
