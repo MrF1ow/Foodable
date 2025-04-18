@@ -24,7 +24,7 @@ import { useUserStore } from "@/stores/user/store";
 
 const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
     return (
-        <div className="flex items-center w-full space-x-2">
+        <div className="flex items-center w-full space-x-2 transition-all hover:scale-y-105">
             <Icon className="w-10 h-10" fill={color} />
             <p className="text-xl font-bold" style={{ color: color }}>
                 {title}
@@ -102,7 +102,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
     return (
         <Accordion
             type="multiple"
-            className="bg-card-background rounded-lg shadow-lg"
+            className="flex flex-row bg-card-background rounded-lg shadow-lg justify-between p-4"
             value={openAccordion}
             onValueChange={(newValue) =>
                 setOpenAccordion(newValue as GrocerySectionOptions[])
@@ -110,10 +110,10 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
         >
             <AccordionItem
                 value={title}
-                className="w-[90%] md:w-[80%] max-w-[560px] mx-auto"
+                className="w-full"
             >
                 <AccordionTrigger
-                    className="flex items-center md:space-x-2 hover:no-underline hover:scale-105"
+                    className="flex items-center md:space-x-2 hover:no-underline"
                     data-testid={`${title}-accordion`}
                 >
                     <AccordionHeader title={title} Icon={Icon} color={color} />
@@ -124,7 +124,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
                             borderRadius: "50%",
                         }}
                         onClick={(event) => handleAccordionAdd(event)}
-                        className="transition-all hover:scale-125"
+                        className="transition-all hover:scale-105 mr-2"
                         data-testid={`${title}-add-item-button`}
                     >
                         <Icons.plus />

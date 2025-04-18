@@ -1,7 +1,6 @@
 'use client';
 
 import GeneralHeader from "@/components/GeneralHeader"
-import VerticalOptionsButton from "@/components/buttons/VerticalOptionsButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -38,7 +37,7 @@ export default function SaveHeader() {
         <div className="flex flex-row items-center justify-between gap-x-2">
             <GeneralHeader title={"Saved"} />
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger className={isMobile ? "" : "absolute bottom-0 right-0 pr-4 pb-4"} asChild>
+                <DialogTrigger asChild>
                     {isMobile ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -59,7 +58,7 @@ export default function SaveHeader() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
-                        <IoMdAddCircle size={60} className="text-primary" onClick={() => setOpen(true)} />
+                        <IoMdAddCircle size={40} className="text-primary" onClick={() => setOpen(true)} />
                     )}
                 </DialogTrigger>
                 <DialogContent>
