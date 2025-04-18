@@ -23,7 +23,7 @@ export default function ContentLayout({
   const splitPage = split ? split : isSplit;
 
   return (
-    <div className="w-full h-full bg-background overflow-x-hidden overflow-y-auto pb-[20%] md:pb-0">
+    <div className="w-full h-full bg-background overflow-x-hidden overflow-y-auto pb-[20%] md:pb-[15%]">
       {isMobile ? (
         <>
           <div className="h-full overflow-y-auto overflow-x-hidden">{mainContent}</div>
