@@ -20,8 +20,8 @@ export const KrogerApi = {
     console.log("fetchKrogerProducts starting...");
     try {
       const url = locationId
-        ? `/api/kroger?term=${term}&locationId=${locationId}`
-        : `/api/kroger?term=${term}`;
+        ? `/api/kroger?term=${term}${locationId}&filter.limit=50`
+        : `/api/kroger?term=${term}&filter.limit=50`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(

@@ -21,7 +21,10 @@ import InputCard from "@/components/InputCard";
 import { Button } from "@/components/ui/button";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { grocerySections } from "@/config/grocery-sections";
+import {
+  grocerySectionOptions,
+  grocerySections,
+} from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/app/providers";
 
@@ -32,9 +35,11 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { JSX, useState } from "react";
+import { JSX, useState, useEffect } from "react";
 import { useUserStore } from "@/stores/user/store";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
+import { KrogerProduct } from "@/types/kroger";
+import Image from "next/image";
 
 export default function AddItem({
   className,
@@ -42,7 +47,8 @@ export default function AddItem({
   className?: string;
 }): JSX.Element {
   const [term, setTerm] = useState("");
-  const [locationId, setLocationId] = useState("70100070");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const isUser = useUserStore((state) => state.isUser);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
@@ -67,7 +73,16 @@ export default function AddItem({
     isLoadingKrogerProducts,
     refetchKrogerProducts,
     errorKrogerProducts,
-  } = useFetchKrogerProducts(term, locationId);
+  } = useFetchKrogerProducts(debouncedTerm);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(term);
+      refetchKrogerProducts();
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [term, refetchKrogerProducts]);
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -151,19 +166,58 @@ export default function AddItem({
                   <FormItem>
                     <FormLabel className="text-2xl">Item Name</FormLabel>
                     <FormControl>
-                      <Input
-                        className="!text-xl h-12"
-                        placeholder="Enter item name"
-                        {...field}
-                        onChange={async (e) => {
-                          field.onChange(e.target.value);
-                          setTerm(e.target.value);
-                          if (e.target.value.trim().length > 1) {
-                            await refetchKrogerProducts();
+                      <div className="relative">
+                        <Input
+                          className="!text-xl h-12"
+                          placeholder="Enter item name"
+                          {...field}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() =>
+                            setTimeout(() => setIsFocused(false), 100)
                           }
-                        }}
-                        data-testid="itemName-input"
-                      />
+                          onChange={async (e) => {
+                            field.onChange(e.target.value);
+                            setTerm(e.target.value);
+                          }}
+                          data-testid="itemName-input"
+                        />
+                        {isFocused && krogerProducts?.data?.length > 0 && (
+                          <div className="absolute bg-white border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
+                            {krogerProducts.data.map((item: KrogerProduct) => {
+                              const image =
+                                item.images?.[0]?.sizes?.[0]?.url ?? undefined;
+                              const description = item.description ?? undefined;
+
+                              return (
+                                <div
+                                  key={item.productId}
+                                  className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                                  onClick={() => {
+                                    form.setValue("itemName", description);
+                                    form.setValue("quantity", 1);
+                                  }}
+                                >
+                                  {image && (
+                                    <Image
+                                      width={40}
+                                      height={40}
+                                      src={image}
+                                      alt={description}
+                                      className="w-10 h-10"
+                                    />
+                                  )}
+                                  <div className="flex flex-col text-sm">
+                                    <p className="font-medium">{description}</p>
+                                    <p className="text-gray-500">
+                                      {item.brand}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
