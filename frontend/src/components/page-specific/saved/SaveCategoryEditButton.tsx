@@ -28,9 +28,10 @@ import { getIndexOfItemInArray } from "@/lib/utils/other";
 
 interface EditButtonProps {
   category: string;
+  textSize: string;
 }
 
-export default function SaveCategoryEditButton({ category }: EditButtonProps): JSX.Element {
+export default function SaveCategoryEditButton({ category, textSize }: EditButtonProps): JSX.Element {
   const [newTitle, setNewTitle] = useState(category);
 
   const currentCategories = useSavedItemsStore(
@@ -91,7 +92,7 @@ export default function SaveCategoryEditButton({ category }: EditButtonProps): J
     <Dialog>
       <DialogTrigger className="ml-4" asChild>
         <MdEdit
-          size={40}
+          size={textSize}
           className="text-foreground"
           onClick={(event) => event.stopPropagation()}
         />
@@ -103,8 +104,8 @@ export default function SaveCategoryEditButton({ category }: EditButtonProps): J
             Edit your custom category to store your recipes or grocery lists.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="flex items-center space-x-2">
+        <form onSubmit={handleSubmit} className="w-full">
+          <div className="flex items-center space-x-2 w-full">
             <Label htmlFor="name" className="sr-only">
               Name
             </Label>
@@ -117,12 +118,13 @@ export default function SaveCategoryEditButton({ category }: EditButtonProps): J
             />
           </div>
           {/* For some reason the DialogFooter is not taking up the full width */}
-          <DialogFooter className="w-full flex items-center justify-between mt-4">
+          <DialogFooter className="w-full flex flex-row items-center justify-between mt-4">
             {/* Left side: Delete button */}
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="destructive"
+                className="w-[30%] md:w-1/4 lg:w-1/5"
                 onClick={handleDeleteList}
               >
                 Delete
@@ -130,12 +132,10 @@ export default function SaveCategoryEditButton({ category }: EditButtonProps): J
             </DialogClose>
 
             {/* Right side: Cancel and Submit buttons */}
-            <div className="flex space-x-2">
-              <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogClose>
-              <Button type="submit">Submit</Button>
-            </div>
+            <DialogClose asChild>
+              <Button className="w-[30%] md:w-1/4 lg:w-1/5" variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button className="w-[30%] md:w-1/4 lg:w-1/5" type="submit">Submit</Button>
           </DialogFooter>
         </form>
       </DialogContent>

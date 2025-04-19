@@ -4,6 +4,7 @@ import { create } from "zustand";
 export type GeneralState = {
   currentPage: string;
   showPortal: boolean;
+  showMainPortal: boolean;
   currentForm: FormName | null;
   isMobile: boolean;
   splitLayout: boolean;
@@ -14,6 +15,7 @@ export type GeneralState = {
 export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setShowPortal: (showPortal: boolean) => void;
+  setShowMainPortal: (showMainPortal: boolean) => void;
   setCurrentForm: (currentForm: FormName | null) => void;
   resetCurrentForm: () => void;
   setIsMobile: (isMobile: boolean) => void;
@@ -29,6 +31,9 @@ export const createGeneralActions = (set: any): GeneralActions => ({
 
   setShowPortal: (showPortal: boolean) =>
     set((state: GeneralState) => ({ ...state, showPortal })),
+
+  setShowMainPortal: (showMainPortal: boolean) =>
+    set((state: GeneralState) => ({ ...state, showMainPortal })),
 
   setCurrentForm: (currentForm: FormName | null) =>
     set((state: GeneralState) => ({ ...state, currentForm })),
@@ -59,6 +64,7 @@ export type GeneralStore = GeneralState & GeneralActions;
 export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
   showPortal: false,
+  showMainPortal: false,
   currentForm: null,
   isMobile: false,
   splitLayout: false,

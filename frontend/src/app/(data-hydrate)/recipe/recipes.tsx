@@ -81,6 +81,7 @@ export default function Recipes({ isUser }: { isUser: boolean }) {
                 key={data._id.toString()}
                 data={data}
                 handleBoxClick={() => handleBoxClick(data)}
+                width="w-full md:w-[25%] lg:w-[15%]"
               />
             ))
           )}

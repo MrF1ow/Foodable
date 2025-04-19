@@ -46,7 +46,7 @@ export default function Navbar(): JSX.Element {
                         <Image
                             src={logoNoShadow}
                             alt="Foodable Logo"
-                            className="cursor-pointer w-[50px] h-[50px]"
+                            className="cursor-pointer aspect-square h-auto w-12 md:w-16 lg:w-24"
                         />
                     </Link>
                 </CardHeader>

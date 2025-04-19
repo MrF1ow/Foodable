@@ -10,7 +10,7 @@ export default function SocialSectionLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="w-full md:w-full lg:w-full h-full bg-card-background shadow-lg">
+    <Card className="w-full h-full bg-card-background shadow-lg">
       <CardHeader className="pb-4">{headerComponent}</CardHeader>
       <CardContent className="flex flex-col gap-4">
         {children}

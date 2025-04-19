@@ -13,9 +13,10 @@ import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
 interface GroceryBoxProps {
   handleBoxClick: () => void;
   data: SavedGroceryMetaData;
+  width: string;
 }
 
-export default function GroceryBox({ handleBoxClick, data }: GroceryBoxProps): JSX.Element {
+export default function GroceryBox({ handleBoxClick, data, width }: GroceryBoxProps): JSX.Element {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -34,7 +35,7 @@ export default function GroceryBox({ handleBoxClick, data }: GroceryBoxProps): J
 
   return (
     <>
-      <Box key={data._id.toString()} onClick={handleGroceryClick}>
+      <Box key={data._id.toString()} onClick={handleGroceryClick} width={width}>
         {/* Make this a Hover Box */}
         <h3 className="text-lg font-semibold truncate">{data.title}</h3>
       </Box>

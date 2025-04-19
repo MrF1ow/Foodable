@@ -28,9 +28,8 @@ export type User = NewUser & {
 };
 
 export type FollowMetadata = {
-  userId: string; // clerk Id of user
+  _id: string; // mongodb id of user
   username: string; // Username of the user
-  avatarImageId: ObjectId; // Avatar image ID
 };
 
 // User profile settings (will add more later)

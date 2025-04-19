@@ -41,8 +41,10 @@ import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
 import { SavedItem } from "@/types/saved";
 import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
+import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryEditButton(): JSX.Element {
+  const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
@@ -207,8 +209,8 @@ export default function GroceryEditButton(): JSX.Element {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger className="ml-4" asChild>
         <MdEdit
-          size={40}
-          className="text-foreground "
+          className="text-foreground hover:scale-105"
+          aria-label="Add Current List"
           data-testid="list-edit"
           onClick={(event) => {
             event.stopPropagation();

@@ -1,13 +1,10 @@
 import { create } from "zustand";
 
 import { UserPreferences } from "@/types/user";
-import { UserSections } from "@/types";
 
 export type UserState = {
   isUser: boolean;
   currentItemId: string | null;
-  selectedUserSection: UserSections;
-  searchQuery: string;
   language: string;
   preferences: {
     dietaryRestrictions: string[] | null;
@@ -22,8 +19,6 @@ export type UserState = {
 export type UserActions = {
   setIsUser: (isUser: boolean) => void;
   setCurrentItemId: (currentItemId: string) => void;
-  setSelectedUserSection: (selectedUserSection: UserSections) => void;
-  setSearchQuery: (searchQuery: string) => void;
   setLanguage: (language: string) => void;
   setPreferences: (preferences: UserPreferences) => void;
   setLocation: (location: UserState["location"]) => void;
@@ -34,10 +29,6 @@ export const createUserActions = (set: any): UserActions => ({
     set((state: UserState) => ({ ...state, isUser })),
   setCurrentItemId: (currentItemId: string) =>
     set((state: UserState) => ({ ...state, currentItemId })),
-  setSelectedUserSection: (selectedUserSection: UserSections) =>
-    set((state: UserState) => ({ ...state, selectedUserSection })),
-  setSearchQuery: (searchQuery: string) =>
-    set((state: UserState) => ({ ...state, searchQuery })),
   setLanguage: (language: string) =>
     set((state: UserState) => ({ ...state, language })),
   setPreferences: (preferences: UserPreferences) =>
@@ -51,8 +42,6 @@ export type UserStore = UserState & UserActions;
 export const defaultInitState: UserState = {
   isUser: false,
   currentItemId: null,
-  selectedUserSection: "following",
-  searchQuery: "",
   language: "en",
   preferences: {
     dietaryRestrictions: null,

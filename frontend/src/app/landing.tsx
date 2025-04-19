@@ -29,12 +29,12 @@ export default function LandingPage({ logo }: LandingPageProps) {
   return (
     <div className="flex w-full h-full items-center justify-between px-8 lg:px-16 font-league text-foreground">
       {/* Title and Button Section */}
-      <div className="flex flex-col space-y-10 text-center w-full md:text-left md:w-auto">
+      <div className="flex flex-col space-y-5 md:space-y-10 text-center w-full lg:text-left lg:w-auto">
         <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold">Foodable</h1>
         <h2 className="text-2xl md:text-4xl lg:text-6xl">
           Making Food More Doable.
         </h2>
-        <AuthOptions className="w-full text-foreground" />
+        <AuthOptions className="w-full text-foreground pr-4 pl-4 md:p-0" />
         <Button variant="link" asChild>
           <Link href="/recipe">Continue As Guest</Link>
         </Button>

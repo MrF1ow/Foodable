@@ -7,13 +7,13 @@ export default function AuthOptions({ className }: { className?: string }) {
     <div className={`flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 ${className}`}>
       <Button
         asChild
-        className="w-[40%] md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
+        className="w-full md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
       >
         <Link href="/sign-in">Login</Link>
       </Button>
       <Button
         asChild
-        className="w-[40%] md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
+        className="w-full md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"
       >
         <Link href="/sign-up">Sign Up</Link>
       </Button>

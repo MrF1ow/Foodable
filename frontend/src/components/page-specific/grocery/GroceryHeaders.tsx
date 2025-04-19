@@ -6,10 +6,12 @@ import { Icons } from "@/components/ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
+import VerticalOptionsButton from "@/components/buttons/VerticalOptionsButton";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/app/providers";
 import { MoreVertical } from "lucide-react";
+import { FaEllipsisV } from "react-icons/fa";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -62,18 +64,8 @@ export const MainGroceryHeader = (): JSX.Element => {
     };
 
     return (
-        <GroceryHeaderWithChildren
-            width={isMobile ? "40%" : "60%"}
-
-        >
-            <div className="flex flex-row items-center">
-                <Button
-                    onClick={handleItemDeletion}
-                    className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                    data-testid="remove-items-button"
-                >
-                    <Icons.delete className="!h-6 !w-6" />
-                </Button>
+        <GroceryHeaderWithChildren>
+            <div className="flex flex-row items-center h-full w-full">
                 {isMobile ? (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -116,21 +108,37 @@ export const MainGroceryHeader = (): JSX.Element => {
                             >
                                 AI Helper
                             </DropdownMenuItem>
+                            <DropdownMenuItem
+                                className="text-red"
+                                onClick={handleItemDeletion}
+                                data-testid="dropdown-remove-items-button"
+                            >
+                                Clear Selected
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 ) : (
-                    <Button
-                        onClick={() => {
-                            setCurrentForm(FORM_NAMES.FIND_PRICE)
-                            setShowPortal(true);
-                            setSplitLayout(true);
-                        }
-                        }
-                        className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                        data-testid="find-price-button"
-                    >
-                        {"Find Price"}
-                    </Button>
+                    <>
+                        <Button
+                            onClick={handleItemDeletion}
+                            className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                            data-testid="remove-items-button"
+                        >
+                            <Icons.delete className="!h-6 !w-6" />
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setCurrentForm(FORM_NAMES.FIND_PRICE)
+                                setShowPortal(true);
+                                setSplitLayout(true);
+                            }
+                            }
+                            className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                            data-testid="find-price-button"
+                        >
+                            {"Find Price"}
+                        </Button>
+                    </>
                 )}
             </div>
         </GroceryHeaderWithChildren>
@@ -138,24 +146,20 @@ export const MainGroceryHeader = (): JSX.Element => {
 }
 
 export const GroceryHeaderWithChildren = ({
-    width,
     children,
-}: GroceryHeaderProps & {
+}: {
     children: React.ReactNode;
 }) => {
     return (
-        <div className="h-full flex justify-between items-center">
-            <GroceryHeader width={width} />
+        <div className="h-full flex justify-between items-center gap-2">
+            <GroceryHeader />
             <div>{children}</div>
         </div>
     );
 };
 
-export interface GroceryHeaderProps {
-    width: string;
-}
 
-export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
+export const GroceryHeader = () => {
     const isUser = useUserStore((state) => state.isUser);
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
@@ -196,16 +200,15 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
         )
         : availableLists;
     return (
-        <div className="flex flex-row justify-between items-center" style={{ width: width }}>
+        <div className="flex flex-row justify-between items-center w-full">
             <div
-                className={`inline-flex items-center bg-primary font-bold rounded-[0%_0%_75%_0%] rounded-l-lg rounded-tr-lg px-4 py-2 h-full`}
-                style={{ width: width }}
+                className="inline-flex items-center justify-between md:justify-start bg-primary font-bold md:rounded-[0%_0%_75%_0%] md:rounded-l-lg md:rounded-tr-lg rounded-lg px-4 py-2 h-full w-full lg:w-[40%] text-2xl md:text-3xl lg:text-4xl"
             >
                 {isUser ? (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <div
-                                className={`text-foreground ${isMobile ? "text-xl" : "text-4xl"}  whitespace-nowrap cursor-pointer outline-none`}
+                                className={`text-foreground whitespace-nowrap cursor-pointer outline-none`}
                                 data-testid="grocery-header"
                             >
                                 {currentList.title || "New List"}
@@ -228,16 +231,19 @@ export const GroceryHeader = ({ width }: GroceryHeaderProps) => {
                     </DropdownMenu>
                 ) : (
                     <div
-                        className={`text-foreground ${isMobile ? "text-xl" : "text-4xl"}  whitespace-nowrap cursor-pointer outline-none`}
+                        className={`text-foreground whitespace-nowrap cursor-pointer outline-none`}
                         data-testid="grocery-header"
                     >
                         {currentList.title || "New List"}
                     </div>
                 )}
 
-                {isUser && <GroceryEditButton />}
-
-                {isUser && <GroceryAddButton />}
+                {isUser && (
+                    <div className="flex flex-row lg:ml-4 gap-2 items-center justify-center">
+                        <GroceryEditButton />
+                        <GroceryAddButton />
+                    </div>
+                )}
             </div>
             {currentForm === FORM_NAMES.GROCERY_LIST && (
                 <MdClose onClick={handleCloseSideList} size={40} />

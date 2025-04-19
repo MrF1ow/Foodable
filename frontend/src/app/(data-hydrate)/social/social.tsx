@@ -1,69 +1,51 @@
 "use client";
 
-// **Package Imports**
-import { useEffect, useState } from "react";
-
-// **Store Imports**
-import { useUserStore } from "@/stores/user/store";
-import { useRecipeStore } from "@/stores/recipe/store";
-
-// **Hook Imports**
-import {
-  useFetchAllFollowersOfUser,
-  useFetchAllFollowingOfUser,
-} from "@/server/hooks/userHooks";
-import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
-
 // **Utility Imports**
-import { filterUsers, filterRecipes } from "@/lib/utils/listItems";
+import { filterUsers, filterSavedItems } from "@/lib/utils/listItems";
 
-// **Type Imports**
-import { RecipeMetaData } from "@/types/saved";
-
-// **Component Imports**
-import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import {
   UserFollowSection,
-  UserRecipesSection,
+  UserSavedSection,
 } from "@/components/page-specific/social/SocialPageDataSections";
+import { useSocialStore } from "@/stores/social/store";
+import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
+import { useUserStore } from "@/stores/user/store";
+import { useFetchAllFollowersOfUser, useFetchAllFollowingOfUser } from "@/server/hooks/userHooks";
+import { SavedGroceryMetaData, SavedRecipeMetaData } from "@/types/saved";
 
 export default function Social() {
-  const searchQuery = useUserStore((state) => state.searchQuery);
-  const filter = useRecipeStore((state) => state.filter);
-
-  const [savedRecipes, setSavedRecipes] = useState<RecipeMetaData[]>([]);
+  const itemSearchQuery = useSocialStore((state) => state.savedItemsQuery);
+  const userSearchQuery = useSocialStore((state) => state.userQuery);
+  const isUser = useUserStore((state) => state.isUser);
+  if (!isUser) {
+    return null;
+  }
 
   const { savedItems } = useAllSavedItems({
-    enabled: true,
-  });
-
-  const { followers } = useFetchAllFollowersOfUser({
-    enabled: true,
+    enabled: isUser,
   });
 
   const { following } = useFetchAllFollowingOfUser({
-    enabled: true,
-  });
+    enabled: isUser,
+  })
 
-  useEffect(() => {
-    if (savedItems) {
-      setSavedRecipes(savedItems.recipes);
-    }
-  }, [savedItems]);
+  const { followers } = useFetchAllFollowersOfUser({
+    enabled: isUser
+  })
 
-  const filteredFollowers = filterUsers(followers, searchQuery);
-  const filteredFollowing = filterUsers(following, searchQuery);
-  const filteredRecipes = filterRecipes(savedRecipes, filter);
+  const filteredFollowers = filterUsers(followers, userSearchQuery);
+  const filteredFollowing = filterUsers(following, userSearchQuery);
+  const filteredRecipes = filterSavedItems(savedItems.recipes, itemSearchQuery) as SavedRecipeMetaData[];
+  const filteredGroceryLists = filterSavedItems(savedItems.groceryLists, itemSearchQuery) as SavedGroceryMetaData[];
 
   return (
     <>
-      <SavedDataFetcher />
-      <div className="grid grid-rows-2 lg:grid-cols-2 gap-6 h-full">
+      <div className="w-full h-full flex flex-col lg:flex-row gap-x-0 gap-y-2 lg:gap-x-6 lg:gap-y-0">
         <UserFollowSection
           followers={filteredFollowers}
           following={filteredFollowing}
         />
-        <UserRecipesSection recipes={filteredRecipes} />
+        <UserSavedSection recipes={filteredRecipes} groceryLists={filteredGroceryLists} />
       </div>
     </>
   );

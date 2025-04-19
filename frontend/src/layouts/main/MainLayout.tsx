@@ -6,6 +6,8 @@ import { useGeneralStore } from "@/stores/general/store";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "next-themes";
 import { clerkThemeVariables } from "@/config/clerk-theme-variables";
+import clsx from "clsx";
+
 
 export default function MainLayout({
   children,
@@ -18,6 +20,7 @@ export default function MainLayout({
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setClerkVariables = useGeneralStore((state) => state.setClerkVariables);
   const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
+  const showMainPortal = useGeneralStore((state) => state.showMainPortal);
 
   const { theme } = useTheme();
 
@@ -29,7 +32,7 @@ export default function MainLayout({
 
   useEffect(() => {
     const checkScreenWidth = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 900);
     };
 
     checkScreenWidth();
@@ -47,8 +50,15 @@ export default function MainLayout({
 
   return (
     <>
+      <div
+        id="main-modal-portal"
+        className={clsx({
+          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all lg:max-w-[45%] lg:max-h-[80%]": showMainPortal,
+          hidden: !showMainPortal
+        })}
+      />
       {isMobile && (
-        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[8%] sm:h-[14%] bg-background z-50">
+        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[10%] bg-background z-50">
           <Navbar />
         </div>
       )}
@@ -58,12 +68,12 @@ export default function MainLayout({
         </div>
       )}
       {headerComponent ? (
-        <div className="grid grid-rows-[6%_94%] md:grid-rows-[8%_90%] lg:grid-rows-[10%_90%] w-full h-full bg-background p-2 md:p-4 lg:p-6 gap-y-2">
-          <div className="h-full">{headerComponent}</div>
-          <div className="flex-1 h-full">{children}</div>
+        <div className="grid grid-rows-[10%_90%] w-full h-full bg-background p-2 md:p-4 lg:p-6 gap-y-2">
+          <div className="h-full w-full">{headerComponent}</div>
+          <div className="flex-1 h-full w-full">{children}</div>
         </div>
       ) : (
-        <div className={`overflow-y-auto w-full h-full bg-background p-6`}>{children}</div>
+        <div className="overflow-y-auto w-full h-full bg-background p-6">{children}</div>
       )}
     </>
   );
