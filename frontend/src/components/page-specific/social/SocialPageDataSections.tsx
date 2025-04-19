@@ -1,17 +1,19 @@
 "use client";
 
 import { FollowMetadata } from "@/types/user";
-import { SocialPageFollowingHeader } from "./SocialPageHeader";
-import RecipeSearchBar from "@/components/page-specific/recipe/RecipeSearchBar";
+import { SocialPageFollowingHeader, SocialPageSavedHeader } from "./SocialPageHeader";
+import SaveItemSearchBar from "../saved/SaveItemSearchBar";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
-import { RecipeMetaData } from "@/types/saved";
-import { useUserStore } from "@/stores/user/store";
+import { RecipeMetaData, SavedGroceryMetaData } from "@/types/saved";
+import { useSocialStore } from "@/stores/social/store";
 import {
   useDeleteFollowing,
   useFetchAllFollowingOfUser,
 } from "@/server/hooks/userHooks";
 import { FaHeart } from "react-icons/fa";
+import { useState } from "react";
+import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 
 interface UserFollowSectionProps {
   following: FollowMetadata[];
@@ -20,28 +22,24 @@ interface UserFollowSectionProps {
 
 interface UserRecipesSectionProps {
   recipes: RecipeMetaData[];
+  groceryLists: SavedGroceryMetaData[];
 }
 
 export const UserFollowSection = ({
   following,
   followers,
 }: UserFollowSectionProps) => {
-  const selectedUserSection = useUserStore(
-    (state) => state.selectedUserSection
-  );
-  const currentItemId = useUserStore((state) => state.currentItemId);
-  const setCurrentId = useUserStore((state) => state.setCurrentItemId);
+  const selectedUserSection = useSocialStore((state) => state.currentFollowSection);
 
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
   });
 
-  const { deleteFollowing } = useDeleteFollowing(currentItemId || "");
+  const { deleteFollowing } = useDeleteFollowing();
 
-  const handleDeleteFollowing = async () => {
-    if (!currentItemId) return;
-    setCurrentId(currentItemId);
-    deleteFollowing(currentItemId);
+  const handleDeleteFollowing = async (id: string) => {
+    if (!id) return;
+    deleteFollowing(id);
     await refetchFollowing();
   };
 
@@ -56,17 +54,16 @@ export const UserFollowSection = ({
           )}
           {followers.map((follower) => (
             <SocialItem
-              key={follower.userId}
+              key={follower._id}
               title={follower.username}
-              imageId={follower.avatarImageId.toString()}
               icon={<FaHeart />}
-              handleRemove={handleDeleteFollowing}
+              handleRemove={() => handleDeleteFollowing(follower._id.toString())}
             />
           ))}
         </div>
       )}
       {selectedUserSection === "following" && (
-        <div>
+        <div className="w-full h-full">
           {following.length === 0 && (
             <div className="text-center text-lg text-foreground italic">
               Not following anyone
@@ -74,9 +71,8 @@ export const UserFollowSection = ({
           )}
           {following.map((follow) => (
             <SocialItem
-              key={follow.userId}
+              key={follow._id}
               title={follow.username}
-              imageId={follow.avatarImageId.toString()}
             />
           ))}
         </div>
@@ -85,17 +81,38 @@ export const UserFollowSection = ({
   );
 };
 
-export const UserRecipesSection = ({ recipes }: UserRecipesSectionProps) => {
+export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionProps) => {
+  const selectedSection = useSocialStore((state) => state.currentSavedSection);
+
+  const { refetchSavedItems } = useAllSavedItems({
+    enabled: true
+  })
+
+
   return (
-    <SocialSectionLayout headerComponent={<RecipeSearchBar />}>
+    <SocialSectionLayout headerComponent={<SocialPageSavedHeader />}>
       <div className="w-full h-full">
-        {recipes.map((recipe) => (
-          <SocialItem
-            key={recipe._id.toString()}
-            title={recipe.title}
-            imageId={recipe.imageId.toString()}
-          />
-        ))}
+        {selectedSection === "recipes" && (
+          <>
+            {recipes.map((recipe) => (
+              <SocialItem
+                key={recipe._id.toString()}
+                title={recipe.title}
+                imageId={recipe.imageId.toString()}
+              />
+            ))}
+          </>
+        )}
+        {selectedSection === "groceryLists" && (
+          <>
+            {groceryLists.map((groceryList) => (
+              <SocialItem
+                key={groceryList._id.toString()}
+                title={groceryList.title}
+              />
+            ))}
+          </>
+        )}
       </div>
     </SocialSectionLayout>
   );

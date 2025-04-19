@@ -9,7 +9,7 @@ import {
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { RecipeMetaData, SavedGroceryMetaData, SavedItem } from "@/types/saved";
+import { RecipeMetaData, SavedGroceryMetaData, SavedItem, SavedRecipeMetaData } from "@/types/saved";
 import { compareTag } from "./filterHelpers";
 import { FollowMetadata } from "@/types/user";
 
@@ -215,3 +215,7 @@ export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 };
+
+export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[], searchQuery: string) => {
+  return savedItems.filter((savedItem) => savedItem.title.toLowerCase().includes(searchQuery.toLowerCase()))
+}
