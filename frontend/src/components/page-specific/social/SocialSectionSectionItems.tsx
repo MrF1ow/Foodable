@@ -10,6 +10,7 @@ import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 interface SocialItemProps {
   title: string;
   imageId?: string;
+  handleClick: () => void;
   icon?: React.ReactNode;
   handleRemove?: () => void;
 }
@@ -17,6 +18,7 @@ interface SocialItemProps {
 export default function SocialItem({
   title,
   imageId,
+  handleClick,
   icon,
   handleRemove,
 }: SocialItemProps) {
@@ -33,7 +35,7 @@ export default function SocialItem({
     return <div>Error loading image</div>;
   }
   return (
-    <div className="flex items-center bg-background p-4 rounded-md shadow-md mb-4 text-foreground">
+    <div className="flex items-center bg-background p-4 rounded-md shadow-md mb-4 text-foreground" onClick={handleClick}>
       {imageId && (
         <Avatar className="w-10 h-10 mr-4">
           <AvatarImage

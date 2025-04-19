@@ -11,8 +11,8 @@ export type SocialState = {
 export type SocialActions = {
   setSavedItemsQuery: (query: string) => void;
   setUserQuery: (query: string) => void;
-  setCurrentFollowSection: (section: "following" | "followers") => void;
-  setCurrentSavedSection: (section: "recipes" | "groceryLists") => void;
+  setCurrentFollowSection: (section: UserSections) => void;
+  setCurrentSavedSection: (section: SavedSections) => void;
   resetSocialState: () => void;
 };
 
@@ -23,10 +23,10 @@ export const createSocialActions = (set: any): SocialActions => ({
   setUserQuery: (query: string) =>
     set((state: SocialState) => ({ ...state, userQuery: query })),
 
-  setCurrentFollowSection: (section: "following" | "followers") =>
+  setCurrentFollowSection: (section: UserSections) =>
     set((state: SocialState) => ({ ...state, currentFollowSection: section })),
 
-  setCurrentSavedSection: (section: "recipes" | "groceryLists") =>
+  setCurrentSavedSection: (section: SavedSections) =>
     set((state: SocialState) => ({ ...state, currentSavedSection: section })),
 
   resetSocialState: () =>

@@ -14,6 +14,7 @@ import {
 import { FaHeart } from "react-icons/fa";
 import { useState } from "react";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
+import { useRouter } from "next/navigation";
 
 interface UserFollowSectionProps {
   following: FollowMetadata[];
@@ -43,6 +44,8 @@ export const UserFollowSection = ({
     await refetchFollowing();
   };
 
+  const router = useRouter();
+
   return (
     <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
       {selectedUserSection === "followers" && (
@@ -58,6 +61,7 @@ export const UserFollowSection = ({
               title={follower.username}
               icon={<FaHeart />}
               handleRemove={() => handleDeleteFollowing(follower._id.toString())}
+              handleClick={() => router.push(`social/user/${follower._id.toString()}`)}
             />
           ))}
         </div>
@@ -73,6 +77,7 @@ export const UserFollowSection = ({
             <SocialItem
               key={follow._id}
               title={follow.username}
+              handleClick={() => router.push(`social/user/${follow._id.toString()}`)}
             />
           ))}
         </div>
@@ -88,6 +93,8 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
     enabled: true
   })
 
+  const router = useRouter();
+
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageSavedHeader />}>
@@ -99,6 +106,7 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
                 key={recipe._id.toString()}
                 title={recipe.title}
                 imageId={recipe.imageId.toString()}
+                handleClick={() => router.push(`social/saved/recipe/${recipe._id.toString()}`)}
               />
             ))}
           </>
@@ -109,6 +117,7 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
               <SocialItem
                 key={groceryList._id.toString()}
                 title={groceryList.title}
+                handleClick={() => router.push(`social/saved/grocery/${groceryList._id.toString()}`)}
               />
             ))}
           </>
