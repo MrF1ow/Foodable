@@ -6,6 +6,8 @@ import { useGeneralStore } from "@/stores/general/store";
 import Navbar from "@/components/Navbar";
 import { useTheme } from "next-themes";
 import { clerkThemeVariables } from "@/config/clerk-theme-variables";
+import clsx from "clsx";
+
 
 export default function MainLayout({
   children,
@@ -18,6 +20,7 @@ export default function MainLayout({
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setClerkVariables = useGeneralStore((state) => state.setClerkVariables);
   const setCurrentPage = useGeneralStore((state) => state.setCurrentPage);
+  const showMainPortal = useGeneralStore((state) => state.showMainPortal);
 
   const { theme } = useTheme();
 
@@ -47,6 +50,13 @@ export default function MainLayout({
 
   return (
     <>
+      <div
+        id="main-modal-portal"
+        className={clsx({
+          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all lg:max-w-[45%] lg:max-h-[80%]": showMainPortal,
+          hidden: !showMainPortal
+        })}
+      />
       {isMobile && (
         <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[10%] bg-background z-50">
           <Navbar />

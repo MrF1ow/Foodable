@@ -15,6 +15,9 @@ import { FaHeart } from "react-icons/fa";
 import { useState } from "react";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import { useRouter } from "next/navigation";
+import { useGeneralStore } from "@/stores/general/store";
+import { FORM_NAMES } from "@/lib/constants/forms";
+import { SavedSections } from "@/types";
 
 interface UserFollowSectionProps {
   following: FollowMetadata[];
@@ -88,6 +91,7 @@ export const UserFollowSection = ({
 
 export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionProps) => {
   const selectedSection = useSocialStore((state) => state.currentSavedSection);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm)
 
   const { refetchSavedItems } = useAllSavedItems({
     enabled: true
@@ -95,6 +99,16 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
 
   const router = useRouter();
 
+  const handleItemClick = (id: string, type: SavedSections) => {
+    if (type === "recipes") {
+      setCurrentForm(FORM_NAMES.RECIPE)
+      router.push(`social/recipe/${id}`);
+    } else if (type === "groceryLists") {
+      setCurrentForm(FORM_NAMES.GROCERY_LIST);
+      router.push(`social/grocery/${id}`);
+
+    }
+  }
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageSavedHeader />}>
@@ -106,7 +120,7 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
                 key={recipe._id.toString()}
                 title={recipe.title}
                 imageId={recipe.imageId.toString()}
-                handleClick={() => router.push(`social/saved/recipe/${recipe._id.toString()}`)}
+                handleClick={() => handleItemClick(recipe._id.toString(), "recipes")}
               />
             ))}
           </>
@@ -117,7 +131,7 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
               <SocialItem
                 key={groceryList._id.toString()}
                 title={groceryList.title}
-                handleClick={() => router.push(`social/saved/grocery/${groceryList._id.toString()}`)}
+                handleClick={() => handleItemClick(groceryList._id.toString(), "groceryLists")}
               />
             ))}
           </>

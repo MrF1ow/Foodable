@@ -13,10 +13,11 @@ import { useEffect, useState } from "react";
 import SPLoader from "@/components/ui/loader";
 import RecipePopUp from "@/components/popups/RecipePopup";
 import { useRouter } from "next/navigation";
+import Social from "@/app/(data-hydrate)/social/social"
+import SocialPageInjections from '@/components/portal-injections/SocialPageInjections'
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
 
     const params = useParams<{ id: string }>();
     const id = params.id;
@@ -26,7 +27,6 @@ export default function Page() {
     const groceryMap = useGroceryStore(state => state.map);
     const setCurrentData = useRecipeStore(state => state.setCurrentRecipe);
     const setImageUrl = useRecipeStore(state => state.setCurrentImageUrl);
-    const setSplitLayout = useGeneralStore(state => state.setSplitLayout);
     const currentData = useRecipeStore(state => state.currentRecipe);
     const currentList = useGroceryStore(state => state.currentList);
 
@@ -54,8 +54,6 @@ export default function Page() {
                 console.error("Error fetching recipe:", response.error);
             }
         });
-
-        setSplitLayout(true);
     }, []);
 
     useEffect(() => {
@@ -93,13 +91,10 @@ export default function Page() {
         return <SPLoader loading={true} />;
     }
 
-    const additionalBackButtonClick = () => {
-        router.push("/social");
-    };
-
     return (
         <>
-            <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />
+            <Social />
+            <SocialPageInjections />
         </>
     );
 }

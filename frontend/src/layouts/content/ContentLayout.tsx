@@ -49,7 +49,8 @@ export default function ContentLayout({
           />
         </div>
       ) : (
-        <div className="h-full overflow-auto">{mainContent}</div>
+        <div className="h-full overflow-auto">{mainContent}
+        </div>
       )}
     </div>
   );

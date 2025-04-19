@@ -88,7 +88,7 @@ export default function Saved() {
                             key={item._id.toString()}
                             handleBoxClick={() => handleBoxClick(item)}
                             data={item}
-                            className="w-full"
+                            width="w-full"
                           />
                         </div>
                       );
