@@ -1,7 +1,10 @@
 "use client";
 
 import { FollowMetadata } from "@/types/user";
-import { SocialPageFollowingHeader, SocialPageSavedHeader } from "./SocialPageHeader";
+import {
+  SocialPageFollowingHeader,
+  SocialPageSavedHeader,
+} from "./SocialPageHeader";
 import SaveItemSearchBar from "../saved/SaveItemSearchBar";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
@@ -18,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useGeneralStore } from "@/stores/general/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { SavedSections } from "@/types";
+import { FollowingPopup } from "./SocialFollowerPopup";
 
 interface UserFollowSectionProps {
   following: FollowMetadata[];
@@ -33,7 +37,12 @@ export const UserFollowSection = ({
   following,
   followers,
 }: UserFollowSectionProps) => {
-  const selectedUserSection = useSocialStore((state) => state.currentFollowSection);
+  const selectedUserSection = useSocialStore(
+    (state) => state.currentFollowSection
+  );
+
+  const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
+  const [open, setOpen] = useState(false);
 
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
@@ -47,68 +56,78 @@ export const UserFollowSection = ({
     await refetchFollowing();
   };
 
-  const router = useRouter();
+  const handleOpenDialog = (user: FollowMetadata) => {
+    setSelectedUser(user);
+    setOpen(true);
+  };
 
   return (
-    <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
-      {selectedUserSection === "followers" && (
-        <div className="w-full h-full">
-          {followers.length === 0 && (
-            <div className="text-center text-lg text-foreground italic">
-              No followers
-            </div>
-          )}
-          {followers.map((follower) => (
-            <SocialItem
-              key={follower._id}
-              title={follower.username}
-              icon={<FaHeart />}
-              handleRemove={() => handleDeleteFollowing(follower._id.toString())}
-              handleClick={() => router.push(`social/user/${follower._id.toString()}`)}
-            />
-          ))}
-        </div>
-      )}
-      {selectedUserSection === "following" && (
-        <div className="w-full h-full">
-          {following.length === 0 && (
-            <div className="text-center text-lg text-foreground italic">
-              Not following anyone
-            </div>
-          )}
-          {following.map((follow) => (
-            <SocialItem
-              key={follow._id}
-              title={follow.username}
-              handleClick={() => router.push(`social/user/${follow._id.toString()}`)}
-            />
-          ))}
-        </div>
-      )}
-    </SocialSectionLayout>
+    <>
+      <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
+        {selectedUserSection === "followers" && (
+          <div className="w-full h-full">
+            {followers.length === 0 && (
+              <div className="text-center text-lg text-foreground italic">
+                No followers
+              </div>
+            )}
+            {followers.map((follower) => (
+              <SocialItem
+                key={follower._id}
+                title={follower.username}
+                icon={<FaHeart />}
+                handleRemove={() =>
+                  handleDeleteFollowing(follower._id.toString())
+                }
+                handleClick={() => handleOpenDialog(follower)}
+              />
+            ))}
+          </div>
+        )}
+        {selectedUserSection === "following" && (
+          <div className="w-full h-full">
+            {following.length === 0 && (
+              <div className="text-center text-lg text-foreground italic">
+                Not following anyone
+              </div>
+            )}
+            {following.map((follow) => (
+              <SocialItem
+                key={follow._id}
+                title={follow.username}
+                handleClick={() => handleOpenDialog(follow)}
+              />
+            ))}
+          </div>
+        )}
+      </SocialSectionLayout>
+      <FollowingPopup open={open} onOpenChange={setOpen} />
+    </>
   );
 };
 
-export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionProps) => {
+export const UserSavedSection = ({
+  recipes,
+  groceryLists,
+}: UserRecipesSectionProps) => {
   const selectedSection = useSocialStore((state) => state.currentSavedSection);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm)
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const { refetchSavedItems } = useAllSavedItems({
-    enabled: true
-  })
+    enabled: true,
+  });
 
   const router = useRouter();
 
   const handleItemClick = (id: string, type: SavedSections) => {
     if (type === "recipes") {
-      setCurrentForm(FORM_NAMES.RECIPE)
+      setCurrentForm(FORM_NAMES.RECIPE);
       router.push(`social/recipe/${id}`);
     } else if (type === "groceryLists") {
       setCurrentForm(FORM_NAMES.GROCERY_LIST);
       router.push(`social/grocery/${id}`);
-
     }
-  }
+  };
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageSavedHeader />}>
@@ -120,7 +139,9 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
                 key={recipe._id.toString()}
                 title={recipe.title}
                 imageId={recipe.imageId.toString()}
-                handleClick={() => handleItemClick(recipe._id.toString(), "recipes")}
+                handleClick={() =>
+                  handleItemClick(recipe._id.toString(), "recipes")
+                }
               />
             ))}
           </>
@@ -131,7 +152,9 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
               <SocialItem
                 key={groceryList._id.toString()}
                 title={groceryList.title}
-                handleClick={() => handleItemClick(groceryList._id.toString(), "groceryLists")}
+                handleClick={() =>
+                  handleItemClick(groceryList._id.toString(), "groceryLists")
+                }
               />
             ))}
           </>

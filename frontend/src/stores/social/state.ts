@@ -1,11 +1,13 @@
 import { UserSections, SavedSections } from "@/types";
+import { FollowMetadata } from "@/types/user";
 import { create } from "zustand";
 
 export type SocialState = {
   savedItemsQuery: string;
   userQuery: string;
-  currentFollowSection: UserSections
-  currentSavedSection: SavedSections
+  currentFollowSection: UserSections;
+  currentSavedSection: SavedSections;
+  selectedUser: FollowMetadata | null;
 };
 
 export type SocialActions = {
@@ -13,6 +15,7 @@ export type SocialActions = {
   setUserQuery: (query: string) => void;
   setCurrentFollowSection: (section: UserSections) => void;
   setCurrentSavedSection: (section: SavedSections) => void;
+  setSelectedUser: (user: FollowMetadata) => void;
   resetSocialState: () => void;
 };
 
@@ -29,6 +32,9 @@ export const createSocialActions = (set: any): SocialActions => ({
   setCurrentSavedSection: (section: SavedSections) =>
     set((state: SocialState) => ({ ...state, currentSavedSection: section })),
 
+  setSelectedUser: (user: FollowMetadata) =>
+    set((state: SocialState) => ({ ...state, currentUserPopup: user })),
+
   resetSocialState: () =>
     set(() => ({
       ...defaultInitState,
@@ -40,8 +46,9 @@ export type SocialStore = SocialState & SocialActions;
 export const defaultInitState: SocialState = {
   savedItemsQuery: "",
   userQuery: "",
-  currentFollowSection: 'following',
-  currentSavedSection: 'recipes'
+  currentFollowSection: "following",
+  currentSavedSection: "recipes",
+  selectedUser: null,
 };
 
 export const createSocialStore = (
