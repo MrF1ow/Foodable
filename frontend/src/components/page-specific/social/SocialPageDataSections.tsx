@@ -69,6 +69,8 @@ export const UserFollowSection = ({
     setOpen(true);
   };
 
+  const router = useRouter();
+
   return (
     <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
       {selectedUserSection === "followers" && (
