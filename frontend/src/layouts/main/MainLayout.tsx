@@ -53,7 +53,7 @@ export default function MainLayout({
       <div
         id="main-modal-portal"
         className={clsx({
-          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all lg:max-w-[45%] lg:max-h-[80%]": showMainPortal,
+          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all w-full h-full": showMainPortal,
           hidden: !showMainPortal
         })}
       />

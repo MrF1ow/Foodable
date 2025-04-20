@@ -11,7 +11,7 @@ import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 import Box from "@/components/Box";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
-import SPLoader from "@/components/ui/loader"; // 👈 Import loader
+import Spinner from "@/components/Spinner";
 
 interface RecipeBoxProps {
   data: RecipeMetaData | SavedRecipeMetaData;
@@ -35,7 +35,7 @@ export default function RecipeBox({ data, handleBoxClick, width }: RecipeBoxProp
   if (isLoadingImage) {
     return (
       <div className="w-[200px] h-[200px] flex items-center justify-center">
-        <SPLoader loading={true} />
+        <Spinner />
       </div>
     );
   }

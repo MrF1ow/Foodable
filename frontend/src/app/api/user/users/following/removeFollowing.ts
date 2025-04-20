@@ -5,6 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function DELETE(req: Request) {
   try {
@@ -30,7 +31,7 @@ export async function DELETE(req: Request) {
       .collection("users")
       .updateOne(
         { clerkId: clerkUser.id },
-        { $pull: { following: { userId: followingId } as any } }
+        { $pull: { following: { _id: ObjectId.createFromHexString(followingId) } as any } }
       );
 
     if (result.modifiedCount === 0) {

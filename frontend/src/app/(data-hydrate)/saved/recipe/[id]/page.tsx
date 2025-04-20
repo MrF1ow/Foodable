@@ -12,7 +12,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Saved from "../../saved";
 import SavePageInjections from "@/components/portal-injections/SavePageInjections";
-import SPLoader from "@/components/ui/loader"; // make sure this path is correct
+import Spinner from "@/components/Spinner"
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
@@ -89,7 +89,7 @@ export default function Page() {
     }, [recipe, currentList]);
 
     if (loading || !currentData) {
-        return <SPLoader loading={true} />;
+        return <Spinner />;
     }
 
     return (

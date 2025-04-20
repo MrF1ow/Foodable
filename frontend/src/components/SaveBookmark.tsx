@@ -11,6 +11,7 @@ import {
     DialogClose,
 } from "@/components/ui/dialog";
 import { IoBookmarkOutline, IoBookmark } from "react-icons/io5";
+import { createToMutate } from "@/lib/utils/listItems";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { JSX, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -57,29 +58,6 @@ export default function SaveBookmark({ isSaved, data, setOpen }: SaveBookmarkPro
         const category = newListTitle.trim();
         setNewListTitle("");
         setCurrentCategories([...categories, category]);
-    };
-
-    const createToMutate = (data: any, listName: string) => {
-        let newData;
-        if ("instructions" in data) {
-            newData = {
-                ...data,
-                type: "recipe",
-                category: listName,
-            } as SavedItem;
-        } else if ("items" in data) {
-            newData = {
-                ...data,
-                type: "groceryList",
-                category: listName,
-            } as SavedItem;
-        } else {
-            newData = {
-                ...data,
-                category: listName,
-            } as SavedItem;
-        }
-        return newData;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
-const isUserRoute = createRouteMatcher(["/social(.*)", "/social/saved/(.*)", "/social/saved/recipe/(.*)", "/social/saved/grocery/(.*)", "/api/user(.*)"]);
+const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)"]);
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
