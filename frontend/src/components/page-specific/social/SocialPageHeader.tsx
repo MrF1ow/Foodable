@@ -67,6 +67,7 @@ export const SocialPageSavedHeader = () => {
   return (
     <div className="w-full flex gap-2 lg:justify-between items-center">
       <SearchBar
+        placeHolder="Find Saved Items..."
         searchQuery={currentSearchQuery}
         setSearchQuery={setSearchQuery}
       />
@@ -134,6 +135,7 @@ export const SocialPageFollowingHeader = () => {
   return (
     <div className="w-full flex gap-2 lg:justify-between items-center">
       <SearchBar
+        placeHolder="Find Users..."
         searchQuery={currentSearchQuery}
         setSearchQuery={setSearchQuery}
       />

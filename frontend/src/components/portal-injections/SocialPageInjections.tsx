@@ -15,12 +15,12 @@ export default function RecipePageInjections() {
 
     const additionalBackButtonClick = () => {
         setShowMainPortal(false);
-        router.push("/social");
+        router.back();
     };
 
-    const sideList = <SideList isUser={true} additionalBackButtonClick={additionalBackButtonClick} />;
+    const sideList = <SideList isUser={true} additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[35%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" />;
 
-    const recipeForm = <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />;
+    const recipeForm = <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" />;
 
     return (
         <>

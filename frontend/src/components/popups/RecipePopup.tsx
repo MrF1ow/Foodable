@@ -12,24 +12,23 @@ import { Recipe } from "@/types/recipe";
 import { JSX } from "react";
 
 interface RecipePopUpProps {
+    className?: string
     additionalBackButtonClick?: () => void;
 }
 
-export default function RecipePopUp({ additionalBackButtonClick }: RecipePopUpProps): JSX.Element {
-    const router = useRouter();
+export default function RecipePopUp({ className, additionalBackButtonClick }: RecipePopUpProps): JSX.Element {
     const currentData = useRecipeStore((state) => state.currentRecipe);
     const imageUrl = useRecipeStore((state) => state.currentImageUrl);
 
     if (!currentData) return <></>;
 
     const handleBackButtonClick = () => {
-        router.back();
         additionalBackButtonClick?.();
     }
 
     return (
         <>
-            <Card className="z-[50] w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl">
+            <Card className={`z-[50] w-full h-full bg-card-background overflow-hidden rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl ${className}`}>
                 <CardContent className="p-0 h-full flex flex-col">
 
                     {currentData && (
@@ -48,7 +47,7 @@ export default function RecipePopUp({ additionalBackButtonClick }: RecipePopUpPr
                         </>
                     )}
                 </CardContent>
-            </Card>
+            </Card >
         </>
     );
 };

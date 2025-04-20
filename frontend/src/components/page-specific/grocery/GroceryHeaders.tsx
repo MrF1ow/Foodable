@@ -10,7 +10,7 @@ import VerticalOptionsButton from "@/components/buttons/VerticalOptionsButton";
 
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { showToast } from "@/app/providers";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Router } from "lucide-react";
 import { FaEllipsisV } from "react-icons/fa";
 import {
     DropdownMenu,
@@ -159,7 +159,7 @@ export const GroceryHeaderWithChildren = ({
 };
 
 
-export const GroceryHeader = () => {
+export const GroceryHeader = ({ additionalBackClick }: { additionalBackClick?: () => void; }) => {
     const isUser = useUserStore((state) => state.isUser);
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
@@ -189,6 +189,7 @@ export const GroceryHeader = () => {
     };
 
     const handleCloseSideList = () => {
+        additionalBackClick?.();
         setCurrentForm(null);
         setShowPortal(false);
     }

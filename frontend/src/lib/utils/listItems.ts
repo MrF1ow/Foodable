@@ -219,3 +219,26 @@ export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
 export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[], searchQuery: string) => {
   return savedItems.filter((savedItem) => savedItem.title.toLowerCase().includes(searchQuery.toLowerCase()))
 }
+
+export const createToMutate = (data: any, listName: string) => {
+  let newData;
+  if ("instructions" in data) {
+      newData = {
+          ...data,
+          type: "recipe",
+          category: listName,
+      } as SavedItem;
+  } else if ("items" in data) {
+      newData = {
+          ...data,
+          type: "groceryList",
+          category: listName,
+      } as SavedItem;
+  } else {
+      newData = {
+          ...data,
+          category: listName,
+      } as SavedItem;
+  }
+  return newData;
+};
