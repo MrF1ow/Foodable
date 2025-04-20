@@ -1,5 +1,5 @@
 import { UserSections, SavedSections } from "@/types";
-import { FollowMetadata } from "@/types/user";
+import { FollowMetadata, User } from "@/types/user";
 import { create } from "zustand";
 
 export type SocialState = {
@@ -7,7 +7,8 @@ export type SocialState = {
   userQuery: string;
   currentFollowSection: UserSections;
   currentSavedSection: SavedSections;
-  selectedUser: FollowMetadata | null;
+  selectedUser: User | null;
+  isFollowerPopupOpen: boolean;
 };
 
 export type SocialActions = {
@@ -15,8 +16,9 @@ export type SocialActions = {
   setUserQuery: (query: string) => void;
   setCurrentFollowSection: (section: UserSections) => void;
   setCurrentSavedSection: (section: SavedSections) => void;
-  setSelectedUser: (user: FollowMetadata) => void;
+  setSelectedUser: (user: User | null) => void;
   resetSocialState: () => void;
+  setIsFollowerPopupOpen: (isOpen: boolean) => void;
 };
 
 export const createSocialActions = (set: any): SocialActions => ({
@@ -32,8 +34,11 @@ export const createSocialActions = (set: any): SocialActions => ({
   setCurrentSavedSection: (section: SavedSections) =>
     set((state: SocialState) => ({ ...state, currentSavedSection: section })),
 
-  setSelectedUser: (user: FollowMetadata) =>
+  setSelectedUser: (user: User | null) =>
     set((state: SocialState) => ({ ...state, selectedUser: user })),
+
+  setIsFollowerPopupOpen: (isOpen: boolean) =>
+    set((state: SocialState) => ({ ...state, isFollowerPopupOpen: isOpen })),
 
   resetSocialState: () =>
     set(() => ({
@@ -49,6 +54,7 @@ export const defaultInitState: SocialState = {
   currentFollowSection: "following",
   currentSavedSection: "recipes",
   selectedUser: null,
+  isFollowerPopupOpen: false,
 };
 
 export const createSocialStore = (

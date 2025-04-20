@@ -31,11 +31,9 @@ export async function GET(req: Request) {
       HTTP_RESPONSES.BAD_REQUEST,
       400
     );
-
     if (validationResponse) {
       return validationResponse;
     }
-
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("Error getting user:", error);

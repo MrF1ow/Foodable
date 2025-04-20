@@ -64,11 +64,6 @@ export const UserFollowSection = ({
     await refetchFollowing();
   };
 
-  const handleOpenDialog = (user: FollowMetadata) => {
-    setSelectedUser(user);
-    setOpen(true);
-  };
-
   const router = useRouter();
 
   return (
