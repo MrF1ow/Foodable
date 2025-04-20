@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSocialStore } from "@/stores/social/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useFetchUserById } from "@/server/hooks/userHooks";
 
 interface FollowingPopupProps {
   open: boolean;
@@ -19,11 +20,17 @@ interface FollowingPopupProps {
 }
 
 export function FollowingPopup({ open, onOpenChange }: FollowingPopupProps) {
+  const selectedUser = useSocialStore((state) => state.selectedUser);
+  //   const userId = selectedUser?._id;
+  //   const { user, isLoadingUser } = useFetchUserById({
+  //     id: userId!,
+  //     enabled: !!userId,
+  //   });
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>User&#39;s Profile</DialogTitle>
+          <DialogTitle>{selectedUser?.username}&apos;s Profile</DialogTitle>
           <DialogDescription>Recipes and followed users.</DialogDescription>
         </DialogHeader>
 

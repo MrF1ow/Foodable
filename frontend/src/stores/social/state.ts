@@ -33,7 +33,7 @@ export const createSocialActions = (set: any): SocialActions => ({
     set((state: SocialState) => ({ ...state, currentSavedSection: section })),
 
   setSelectedUser: (user: FollowMetadata) =>
-    set((state: SocialState) => ({ ...state, currentUserPopup: user })),
+    set((state: SocialState) => ({ ...state, selectedUser: user })),
 
   resetSocialState: () =>
     set(() => ({
