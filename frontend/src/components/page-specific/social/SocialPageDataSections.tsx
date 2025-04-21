@@ -1,11 +1,18 @@
 "use client";
 
 import { FollowMetadata } from "@/types/user";
-import { SocialPageFollowingHeader, SocialPageSavedHeader } from "./SocialPageHeader";
+import {
+  SocialPageFollowingHeader,
+  SocialPageSavedHeader,
+} from "./SocialPageHeader";
 import SaveItemSearchBar from "../saved/SaveItemSearchBar";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
-import { RecipeMetaData, SavedGroceryMetaData, SavedRecipeMetaData } from "@/types/saved";
+import {
+  RecipeMetaData,
+  SavedGroceryMetaData,
+  SavedRecipeMetaData,
+} from "@/types/saved";
 import { useSocialStore } from "@/stores/social/store";
 import {
   useDeleteFollowing,
@@ -14,7 +21,10 @@ import {
 import { FaHeart } from "react-icons/fa";
 import { IoBookmark } from "react-icons/io5";
 import { useState } from "react";
-import { useAllSavedItems, useDeleteSavedItem } from "@/server/hooks/savedItemsHooks";
+import {
+  useAllSavedItems,
+  useDeleteSavedItem,
+} from "@/server/hooks/savedItemsHooks";
 import { useRouter } from "next/navigation";
 import { useGeneralStore } from "@/stores/general/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
@@ -35,11 +45,17 @@ export const UserFollowSection = ({
   following,
   followers,
 }: UserFollowSectionProps) => {
-  const selectedUserSection = useSocialStore((state) => state.currentFollowSection);
+  const selectedUserSection = useSocialStore(
+    (state) => state.currentFollowSection
+  );
+
+  const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
+  const [open, setOpen] = useState(false);
 
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
   });
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const { deleteFollowing } = useDeleteFollowing();
 
@@ -50,6 +66,11 @@ export const UserFollowSection = ({
   };
 
   const router = useRouter();
+
+  const handleFollowerClick = (id: string) => {
+    setCurrentForm(FORM_NAMES.FOLLOWER_POPUP);
+    router.push(`social/user/${id}`);
+  };
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
@@ -64,7 +85,7 @@ export const UserFollowSection = ({
             <SocialItem
               key={follower._id}
               title={follower.username}
-              handleClick={() => router.push(`social/user/${follower._id.toString()}`)}
+              handleClick={() => handleFollowerClick(follower._id.toString())}
             />
           ))}
         </div>
@@ -82,7 +103,7 @@ export const UserFollowSection = ({
               title={follow.username}
               Icon={FaHeart}
               handleRemove={() => handleDeleteFollowing(follow._id.toString())}
-              handleClick={() => router.push(`social/user/${follow._id.toString()}`)}
+              handleClick={() => handleFollowerClick(follow._id.toString())}
             />
           ))}
         </div>
@@ -91,33 +112,36 @@ export const UserFollowSection = ({
   );
 };
 
-export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionProps) => {
+export const UserSavedSection = ({
+  recipes,
+  groceryLists,
+}: UserRecipesSectionProps) => {
   const selectedSection = useSocialStore((state) => state.currentSavedSection);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm)
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const { refetchSavedItems } = useAllSavedItems({
-    enabled: true
+    enabled: true,
   });
   const { deleteSavedItem } = useDeleteSavedItem();
-
 
   const router = useRouter();
 
   const handleItemClick = (id: string, type: SavedSections) => {
     if (type === "recipes") {
-      setCurrentForm(FORM_NAMES.RECIPE)
+      setCurrentForm(FORM_NAMES.RECIPE);
       router.push(`social/recipe/${id}`);
     } else if (type === "groceryLists") {
       setCurrentForm(FORM_NAMES.GROCERY_LIST);
       router.push(`social/grocery/${id}`);
-
     }
-  }
+  };
 
-  const handleRemoveItem = async (data: SavedRecipeMetaData | SavedGroceryMetaData) => {
+  const handleRemoveItem = async (
+    data: SavedRecipeMetaData | SavedGroceryMetaData
+  ) => {
     deleteSavedItem(data);
     await refetchSavedItems();
-  }
+  };
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageSavedHeader />}>
@@ -130,7 +154,9 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
                 title={recipe.title}
                 imageId={recipe.imageId.toString()}
                 Icon={IoBookmark}
-                handleClick={() => handleItemClick(recipe._id.toString(), "recipes")}
+                handleClick={() =>
+                  handleItemClick(recipe._id.toString(), "recipes")
+                }
                 handleRemove={() => handleRemoveItem(recipe)}
               />
             ))}
@@ -143,7 +169,9 @@ export const UserSavedSection = ({ recipes, groceryLists }: UserRecipesSectionPr
                 key={groceryList._id.toString()}
                 title={groceryList.title}
                 Icon={IoBookmark}
-                handleClick={() => handleItemClick(groceryList._id.toString(), "groceryLists")}
+                handleClick={() =>
+                  handleItemClick(groceryList._id.toString(), "groceryLists")
+                }
                 handleRemove={() => handleRemoveItem(groceryList)}
               />
             ))}

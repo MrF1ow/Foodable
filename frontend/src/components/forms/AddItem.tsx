@@ -21,7 +21,10 @@ import InputCard from "@/components/InputCard";
 import { Button } from "@/components/ui/button";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { grocerySections } from "@/config/grocery-sections";
+import {
+  grocerySectionOptions,
+  grocerySections,
+} from "@/config/grocery-sections";
 import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/app/providers";
 
@@ -32,10 +35,20 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { JSX } from "react";
+import { JSX, useState, useEffect } from "react";
 import { useUserStore } from "@/stores/user/store";
+import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
+import { KrogerProduct } from "@/types/kroger";
+import Image from "next/image";
 
-export default function AddItem({ className }: { className?: string }): JSX.Element {
+export default function AddItem({
+  className,
+}: {
+  className?: string;
+}): JSX.Element {
+  const [term, setTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const isUser = useUserStore((state) => state.isUser);
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
@@ -43,9 +56,7 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
   const currentList = useGroceryStore((state) => state.currentList);
   const groceryMap = useGroceryStore((state) => state.map);
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
-  const setShowPortal = useGeneralStore(
-    (state) => state.setShowPortal
-  );
+  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
@@ -56,6 +67,22 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
   );
 
   const { updateGroceryList } = useUpdateGroceryList();
+
+  const {
+    krogerProducts,
+    isLoadingKrogerProducts,
+    refetchKrogerProducts,
+    errorKrogerProducts,
+  } = useFetchKrogerProducts(debouncedTerm);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(term);
+      refetchKrogerProducts();
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [term, refetchKrogerProducts]);
 
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
@@ -139,20 +166,67 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
                   <FormItem>
                     <FormLabel className="text-2xl">Item Name</FormLabel>
                     <FormControl>
-                      <Input
-                        className="!text-xl h-12"
-                        placeholder="Enter item name"
-                        {...field}
-                        data-testid="itemName-input"
-                      />
+                      <div className="relative">
+                        <Input
+                          className="!text-xl h-12"
+                          placeholder="Enter item name"
+                          {...field}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={() =>
+                            setTimeout(() => setIsFocused(false), 100)
+                          }
+                          onChange={async (e) => {
+                            field.onChange(e.target.value);
+                            setTerm(e.target.value);
+                          }}
+                          data-testid="itemName-input"
+                        />
+                        {isFocused && krogerProducts?.data?.length > 0 && (
+                          <div className="absolute bg-white border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
+                            {krogerProducts.data.map((item: KrogerProduct) => {
+                              const image =
+                                item.images?.[0]?.sizes?.[0]?.url ?? undefined;
+                              const description = item.description ?? undefined;
+
+                              return (
+                                <div
+                                  key={item.productId}
+                                  className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                                  onClick={() => {
+                                    form.setValue("itemName", description);
+                                    form.setValue("quantity", 1);
+                                  }}
+                                >
+                                  {image && (
+                                    <Image
+                                      width={40}
+                                      height={40}
+                                      src={image}
+                                      alt={description}
+                                      className="w-10 h-10"
+                                    />
+                                  )}
+                                  <div className="flex flex-col text-sm">
+                                    <p className="font-medium">{description}</p>
+                                    <p className="text-gray-500">
+                                      {item.brand}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div
-                className={`flex ${isMobile ? "justify-center" : ""
-                  } items-center`}
+                className={`flex ${
+                  isMobile ? "justify-center" : ""
+                } items-center`}
               >
                 <FormField
                   control={form.control}
@@ -273,5 +347,4 @@ export default function AddItem({ className }: { className?: string }): JSX.Elem
       </Form>
     </div>
   );
-};
-
+}
