@@ -4,7 +4,7 @@ import fetchWithAuth from "../fetchInstance";
 export const UserApi = {
   fetchUserById: async (id: string) => {
     try {
-      const response = await fetchWithAuth(`/user?id=${id}`);
+      const response = await fetchWithAuth(`/user/users/?id=${id}`);
       return response;
     } catch (error) {
       console.error("Error getting user:", error);
@@ -13,7 +13,7 @@ export const UserApi = {
   },
   createUser: async (user: NewUser) => {
     try {
-      const response = await fetchWithAuth("/user", {
+      const response = await fetchWithAuth("/user/users", {
         method: "POST",
         body: JSON.stringify(user),
       });
@@ -25,7 +25,7 @@ export const UserApi = {
   },
   updateUser: async (user: User) => {
     try {
-      const response = await fetchWithAuth("/user", {
+      const response = await fetchWithAuth("/user/users", {
         method: "PUT",
         body: JSON.stringify(user),
       });
@@ -37,7 +37,7 @@ export const UserApi = {
   },
   deleteUser: async (id: string) => {
     try {
-      const response = await fetchWithAuth("/user", {
+      const response = await fetchWithAuth("/user/users", {
         method: "DELETE",
         body: JSON.stringify({ id }),
       });

@@ -78,7 +78,7 @@ export const GoogleApi = {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log("fetchUserLocation response", data);
+      console.log("fetchUserLocation Google response", data);
       const { lat, lng } = data.location;
       return NextResponse.json(
         { latitude: lat, longitude: lng },

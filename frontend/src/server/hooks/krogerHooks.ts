@@ -11,7 +11,7 @@ export const useFetchKrogerLocations = (zipCode: string) => {
   } = useQuery({
     queryKey: ["krogerLocations", zipCode],
     queryFn: async () => {
-        return await  KrogerApi.fetchKrogerLocations(zipCode);
+      return await KrogerApi.fetchKrogerLocations(zipCode);
     },
     retry: 0,
   });
@@ -35,6 +35,7 @@ export const useFetchKrogerProducts = (term: string, locationId?: string) => {
     queryKey: ["krogerProducts", term, locationId],
     queryFn: () =>
       term ? KrogerApi.fetchKrogerProducts(term, locationId) : null,
+    enabled: term.trim().length > 2,
     retry: 0,
   });
 

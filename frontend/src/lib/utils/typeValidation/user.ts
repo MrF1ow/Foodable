@@ -35,41 +35,40 @@ export const validateUserWithoutID = (
   validateIdFn: (id: any) => boolean
 ): user is NewUser => {
   return (
-    (user &&
-      typeof user.username === "string" &&
-      typeof user.email === "string" &&
-      validateSettings(user.settings) &&
-      validatePreferences(user.preferences) &&
-      Array.isArray(user.savedItems.recipes) &&
-      Array.isArray(user.savedItems.groceryLists) &&
-      Array.isArray(user.createdRecipes) &&
-      Array.isArray(user.following) &&
-      Array.isArray(user.followers) &&
-      (user.savedItems.recipes.length === 0 ||
-        user.savedItems.recipes.every((item) =>
-          item && typeof item === "object" && item._id
-            ? validateIdFn(item._id)
-            : false
-        )) &&
-      (user.savedItems.groceryLists.length === 0 ||
-        user.savedItems.groceryLists.every((item) =>
-          item && typeof item === "object" && item._id
-            ? validateIdFn(item._id)
-            : false
-        )) &&
-      (user.currentGroceryList === null ||
-        (user.currentGroceryList !== null &&
-          validateIdFn(user.currentGroceryList))) &&
-      user.createdRecipes.every((item) => validateIdFn(item)) &&
-      user.following.every((item) => validateIdFn(item)) &&
-      user.followers.every((item) => validateIdFn(item)) &&
-      // Optional lastLogin validation
-      (user.lastLogin === undefined ||
-        (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&
-      // Optional dateJoined validation
-      (user.dateJoined === undefined ||
-        (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime())))
-    )
+    user &&
+    typeof user.username === "string" &&
+    typeof user.email === "string" &&
+    validateSettings(user.settings) &&
+    validatePreferences(user.preferences) &&
+    Array.isArray(user.savedItems.recipes) &&
+    Array.isArray(user.savedItems.groceryLists) &&
+    Array.isArray(user.createdRecipes) &&
+    Array.isArray(user.following) &&
+    Array.isArray(user.followers) &&
+    (user.savedItems.recipes.length === 0 ||
+      user.savedItems.recipes.every((item) =>
+        item && typeof item === "object" && item._id
+          ? validateIdFn(item._id)
+          : false
+      )) &&
+    (user.savedItems.groceryLists.length === 0 ||
+      user.savedItems.groceryLists.every((item) =>
+        item && typeof item === "object" && item._id
+          ? validateIdFn(item._id)
+          : false
+      )) &&
+    (user.currentGroceryList === null ||
+      (user.currentGroceryList !== null &&
+        validateIdFn(user.currentGroceryList))) &&
+    user.createdRecipes.every((item) => validateIdFn(item)) &&
+    user.following.every((item) => validateIdFn(item)) &&
+    user.followers.every((item) => validateIdFn(item)) &&
+    // Optional lastLogin validation
+    (user.lastLogin === undefined ||
+      (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&
+    // Optional dateJoined validation
+    (user.dateJoined === undefined ||
+      (user.dateJoined instanceof Date && !isNaN(user.dateJoined.getTime())))
   );
 };
 

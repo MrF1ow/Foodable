@@ -28,6 +28,8 @@ export async function GET(req: Request) {
   const locationId = getValueFromSearchParams(req, "locationId") || "";
   console.log("Location ID:", locationId);
   const searchByLocation = locationId ? `&filter.locationId=${locationId}` : "";
+  const limit = getValueFromSearchParams(req, "pagination.limit") ?? "50";
+  const filterLimit = limit ? `&filter.limit=${limit}` : "";
 
   const accessToken = await getAccessToken();
   if (!accessToken) {
@@ -35,7 +37,7 @@ export async function GET(req: Request) {
     return new Response("Failed to retrieve access token", { status: 500 });
   }
 
-  const productsUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/products?filter.term=${searchTerm}${searchByLocation}`;
+  const productsUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/products?filter.term=${searchTerm}${searchByLocation}${filterLimit}`;
   console.log("Products URL:", productsUrl);
 
   try {

@@ -8,7 +8,6 @@ import { useTheme } from "next-themes";
 import { clerkThemeVariables } from "@/config/clerk-theme-variables";
 import clsx from "clsx";
 
-
 export default function MainLayout({
   children,
   headerComponent,
@@ -53,8 +52,9 @@ export default function MainLayout({
       <div
         id="main-modal-portal"
         className={clsx({
-          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all w-full h-full": showMainPortal,
-          hidden: !showMainPortal
+          "fixed inset-0 z-[9999] flex items-center justify-center bg-black/5 backdrop-blur-sm transition-all w-full h-full":
+            showMainPortal,
+          hidden: !showMainPortal,
         })}
       />
       {isMobile && (
@@ -73,7 +73,9 @@ export default function MainLayout({
           <div className="flex-1 h-full w-full">{children}</div>
         </div>
       ) : (
-        <div className="overflow-y-auto w-full h-full bg-background p-6">{children}</div>
+        <div className="overflow-y-auto w-full h-full bg-background p-6">
+          {children}
+        </div>
       )}
     </>
   );
