@@ -12,7 +12,7 @@ export default async function AuthenticationLayout(
     <>
       <div className="flex flex-col items-center justify-center h-screen w-screen bg-background relative">
         {/* Figure out how to get the title aligned */}
-        <div className="flex flex-col w-full justify-center items-center px-4 sm:justify-center">
+        <div className="flex flex-col w-full lg:w-[25%] md:w-[50%] justify-center items-center px-2 lg:px-4 sm:justify-center">
           <h1 className="text-primary text-4xl font-bold mb-6">Foodable</h1>
           {children}
         </div>

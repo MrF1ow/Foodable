@@ -9,7 +9,7 @@ import {
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { RecipeMetaData, SavedGroceryMetaData, SavedItem } from "@/types/saved";
+import { RecipeMetaData, SavedGroceryMetaData, SavedItem, SavedRecipeMetaData } from "@/types/saved";
 import { compareTag } from "./filterHelpers";
 import { FollowMetadata } from "@/types/user";
 
@@ -214,4 +214,31 @@ export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
   return users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
+};
+
+export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[], searchQuery: string) => {
+  return savedItems.filter((savedItem) => savedItem.title.toLowerCase().includes(searchQuery.toLowerCase()))
+}
+
+export const createToMutate = (data: any, listName: string) => {
+  let newData;
+  if ("instructions" in data) {
+      newData = {
+          ...data,
+          type: "recipe",
+          category: listName,
+      } as SavedItem;
+  } else if ("items" in data) {
+      newData = {
+          ...data,
+          type: "groceryList",
+          category: listName,
+      } as SavedItem;
+  } else {
+      newData = {
+          ...data,
+          category: listName,
+      } as SavedItem;
+  }
+  return newData;
 };

@@ -5,6 +5,7 @@ import { GeneralStoreProvider } from "@/stores/general/store";
 import { GroceryStoreProvider } from "@/stores/grocery/store";
 import { RecipeStoreProvider } from "@/stores/recipe/store";
 import { SavedItemsStoreProvider } from "@/stores/saved/store";
+import { SocialStoreProvider } from "@/stores/social/store";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { ReactQueryProvider } from "@/providers/react-query-provider";
 import { Toast } from "primereact/toast";
@@ -35,9 +36,8 @@ export const showToast = (
     life,
     content: (
       <div
-        className={`p-4 rounded-md shadow-md w-full max-w-sm border ${
-          severityStyles[severity]
-        }`}
+        className={`p-4 rounded-md shadow-md w-full max-w-sm border ${severityStyles[severity]
+          }`}
       >
         <strong className="block font-semibold">{summary}</strong>
         <p className="text-sm mt-1">{detail}</p>
@@ -63,22 +63,24 @@ export default function Providers({ children, isUser }: { children: React.ReactN
       {/* UserStoreProvider handles client-side state */}
       <GeneralStoreProvider>
         <UserStoreProvider isUser={isUser}>
-          <SavedItemsStoreProvider>
-            <RecipeStoreProvider>
-              <GroceryStoreProvider>
-                {/* UserStoreProvider handles client-side state */}
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  <Toast ref={toastRef} />
-                  {children}
-                </ThemeProvider>
-              </GroceryStoreProvider>
-            </RecipeStoreProvider>
-          </SavedItemsStoreProvider>
+          <SocialStoreProvider>
+            <SavedItemsStoreProvider>
+              <RecipeStoreProvider>
+                <GroceryStoreProvider>
+                  {/* UserStoreProvider handles client-side state */}
+                  <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                  >
+                    <Toast ref={toastRef} />
+                    {children}
+                  </ThemeProvider>
+                </GroceryStoreProvider>
+              </RecipeStoreProvider>
+            </SavedItemsStoreProvider>
+          </SocialStoreProvider>
         </UserStoreProvider>
       </GeneralStoreProvider>
     </ReactQueryProvider>

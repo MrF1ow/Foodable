@@ -1,5 +1,6 @@
 // Package Imports
 import { create } from "zustand";
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 // Local Imports
 import {
@@ -9,6 +10,7 @@ import {
   GroceryListIdentifier,
   NewGroceryList,
 } from "@/types/grocery";
+import { init } from "next/dist/compiled/webpack/webpack";
 
 export type GroceryState = {
   currentList: GroceryList | NewGroceryList | null;
@@ -142,7 +144,29 @@ export const defaultInitState: GroceryState = {
 export const createGroceryStore = (
   initState: GroceryState = defaultInitState
 ) =>
-  create<GroceryStore>()((set) => ({
-    ...initState,
-    ...createGroceryActions(set),
-  }));
+  create<GroceryStore>()(
+    persist(
+      (set) => ({
+        ...initState,
+        ...createGroceryActions(set),
+      }),
+      {
+        name: "grocery-storage",
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          ...state,
+          map: Object.fromEntries(state.map), // Map -> Object
+        }),
+        merge: (persistedState, currentState) => {
+          const map = new Map<string, GroceryItem>(
+            Object.entries((persistedState as any).map || {})
+          );
+          return {
+            ...currentState,
+            ...(persistedState as GroceryState),
+            map,
+          };
+        },
+      }
+    )
+  );

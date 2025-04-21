@@ -21,21 +21,24 @@ export default function SavedDataFetcher() {
     );
 
     const { savedItems } = useAllSavedItems({
-        enabled: true,
+        enabled: isUser,
     });
-    const { categories } = useGetCategories({ enabled: true });
+    const { categories } = useGetCategories({ enabled: isUser });
     useEffect(() => {
         if (savedItems) {
             let combinedCategories: string[] = [];
 
-            if (categories.length !== 0) {
-                combinedCategories = [...currentCategories, ...categories];
-            } else if (currentCategories.length !== 0) {
-                combinedCategories = currentCategories;
-            } else {
-                combinedCategories = [];
+            if (categories) {
+
+                if (categories.length !== 0) {
+                    combinedCategories = [...currentCategories, ...categories];
+                } else if (currentCategories.length !== 0) {
+                    combinedCategories = currentCategories;
+                } else {
+                    combinedCategories = [];
+                }
+                setCurrentCategories(combinedCategories);
             }
-            setCurrentCategories(combinedCategories);
         }
     }, [savedItems, categories]);
     return <></>;

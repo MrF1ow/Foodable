@@ -15,7 +15,8 @@ export default function RecipePageInjections() {
     const currentForm = useGeneralStore((state) => state.currentForm);
 
     const sideList = <SideList isUser={isUser as boolean} />;
-    const recipeForm = <AddRecipe />; const addItemForm = <AddItem className="h-full" />;
+    const recipeForm = <AddRecipe />; 
+    const addItemForm = <AddItem className="h-full" />;
 
 
     return (

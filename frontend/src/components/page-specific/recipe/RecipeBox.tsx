@@ -11,14 +11,15 @@ import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 import Box from "@/components/Box";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
-import SPLoader from "@/components/ui/loader"; // 👈 Import loader
+import Spinner from "@/components/Spinner";
 
 interface RecipeBoxProps {
   data: RecipeMetaData | SavedRecipeMetaData;
   handleBoxClick: () => void;
+  width: string;
 }
 
-export default function RecipeBox({ data, handleBoxClick }: RecipeBoxProps): JSX.Element {
+export default function RecipeBox({ data, handleBoxClick, width }: RecipeBoxProps): JSX.Element {
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipe);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
 
@@ -34,7 +35,7 @@ export default function RecipeBox({ data, handleBoxClick }: RecipeBoxProps): JSX
   if (isLoadingImage) {
     return (
       <div className="w-[200px] h-[200px] flex items-center justify-center">
-        <SPLoader loading={true} />
+        <Spinner />
       </div>
     );
   }
@@ -59,7 +60,7 @@ export default function RecipeBox({ data, handleBoxClick }: RecipeBoxProps): JSX
   };
 
   return (
-    <Box key={data._id.toString()} onClick={handleRecipeClick}>
+    <Box key={data._id.toString()} onClick={handleRecipeClick} width={width}>
       {image?.base64Image && (
         <Image
           src={image.base64Image}

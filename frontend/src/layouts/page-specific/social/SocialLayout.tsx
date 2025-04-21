@@ -1,15 +1,17 @@
+import SocialPageHeader from "@/components/page-specific/social/SocialPageHeader"
+
 interface SocialLayoutProps {
-  profileBanner: React.ReactNode;
   children: React.ReactNode;
+  userDetails: any;
 }
 export default function SocialLayout({
-  profileBanner,
   children,
+  userDetails,
 }: SocialLayoutProps) {
   return (
-    <div className="flex flex-col lg:grid lg:grid-rows-[45%_55%] w-full h-full bg-background gap-y-6">
-      <div className="h-full w-full">{profileBanner}</div>
-      <div className="flex-1 h-full">{children}</div>
+    <div className="flex flex-col w-full h-full bg-background gap-y-2 md:gap-y-4 lg:gap-y-6">
+      <div className="h-[45%] w-full"><SocialPageHeader userDetails={userDetails} /></div>
+      <div className="h-[55%] w-full">{children}</div>
     </div>
   );
 }

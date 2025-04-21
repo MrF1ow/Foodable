@@ -1,69 +1,88 @@
 "use client";
 
-// **Package Imports**
-import { useEffect, useState } from "react";
-
-// **Store Imports**
-import { useUserStore } from "@/stores/user/store";
-import { useRecipeStore } from "@/stores/recipe/store";
-
-// **Hook Imports**
-import {
-  useFetchAllFollowersOfUser,
-  useFetchAllFollowingOfUser,
-} from "@/server/hooks/userHooks";
-import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
-
 // **Utility Imports**
-import { filterUsers, filterRecipes } from "@/lib/utils/listItems";
+import { filterUsers, filterSavedItems } from "@/lib/utils/listItems";
 
-// **Type Imports**
-import { RecipeMetaData } from "@/types/saved";
-
-// **Component Imports**
-import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import {
   UserFollowSection,
-  UserRecipesSection,
+  UserSavedSection,
 } from "@/components/page-specific/social/SocialPageDataSections";
+import { useSocialStore } from "@/stores/social/store";
+import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
+import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
+import { useUserStore } from "@/stores/user/store";
+import { useFetchAllFollowersOfUser, useFetchAllFollowingOfUser } from "@/server/hooks/userHooks";
+import { SavedGroceryMetaData, SavedRecipeMetaData } from "@/types/saved";
+import { useEffect, useState } from "react";
+import { FollowMetadata } from "@/types/user";
 
 export default function Social() {
-  const searchQuery = useUserStore((state) => state.searchQuery);
-  const filter = useRecipeStore((state) => state.filter);
+  const itemSearchQuery = useSocialStore((state) => state.savedItemsQuery);
+  const userSearchQuery = useSocialStore((state) => state.userQuery);
 
-  const [savedRecipes, setSavedRecipes] = useState<RecipeMetaData[]>([]);
+  const [filteredFollowers, setFilteredFollowers] = useState<FollowMetadata[]>([])
+  const [filteredFollowing, setFilteredFollowing] = useState<FollowMetadata[]>([])
+  const [filteredRecipes, setFilteredRecipes] = useState<SavedRecipeMetaData[]>([])
+  const [filteredGroceryLists, setFilteredGroceryLists] = useState<SavedGroceryMetaData[]>([])
 
-  const { savedItems } = useAllSavedItems({
-    enabled: true,
+  const isUser = useUserStore((state) => state.isUser);
+  if (!isUser) {
+    return null;
+  }
+
+  const { savedItems, refetchSavedItems } = useAllSavedItems({
+    enabled: isUser,
   });
 
-  const { followers } = useFetchAllFollowersOfUser({
-    enabled: true,
-  });
+  const { following, refetchFollowing } = useFetchAllFollowingOfUser({
+    enabled: isUser,
+  })
 
-  const { following } = useFetchAllFollowingOfUser({
-    enabled: true,
-  });
+  const { followers, refetchFollowers } = useFetchAllFollowersOfUser({
+    enabled: isUser
+  })
 
   useEffect(() => {
-    if (savedItems) {
-      setSavedRecipes(savedItems.recipes);
-    }
-  }, [savedItems]);
+    refetchSavedItems().then((response) => {
+      if (response.data) {
+        const recipes = filterSavedItems(savedItems.recipes, itemSearchQuery) as SavedRecipeMetaData[];
+        const lists = filterSavedItems(savedItems.groceryLists, itemSearchQuery) as SavedGroceryMetaData[];
+        setFilteredRecipes(recipes);
+        setFilteredGroceryLists(lists);
+      }
+    })
 
-  const filteredFollowers = filterUsers(followers, searchQuery);
-  const filteredFollowing = filterUsers(following, searchQuery);
-  const filteredRecipes = filterRecipes(savedRecipes, filter);
+  }, [savedItems])
+
+  useEffect(() => {
+
+    refetchFollowing().then((response) => {
+      if (response.data) {
+        const following = filterUsers(response.data, userSearchQuery);
+        setFilteredFollowing(following)
+      }
+    })
+  }, [following])
+
+  useEffect(() => {
+    refetchFollowers().then((response) => {
+      if (response.data) {
+        const followers = filterUsers(response.data, userSearchQuery);
+        setFilteredFollowers(followers)
+      }
+    })
+
+  }, [followers])
 
   return (
     <>
-      <SavedDataFetcher />
-      <div className="grid grid-rows-2 lg:grid-cols-2 gap-6 h-full">
+      <GroceryListDataFetcher />
+      <div className="w-full h-full flex flex-col lg:flex-row gap-x-0 gap-y-2 lg:gap-x-6 lg:gap-y-0">
         <UserFollowSection
           followers={filteredFollowers}
           following={filteredFollowing}
         />
-        <UserRecipesSection recipes={filteredRecipes} />
+        <UserSavedSection recipes={filteredRecipes} groceryLists={filteredGroceryLists} />
       </div>
     </>
   );

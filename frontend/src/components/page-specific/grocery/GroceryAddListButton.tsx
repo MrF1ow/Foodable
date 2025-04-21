@@ -23,6 +23,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { FaPlus } from "react-icons/fa";
 
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useSavedItemsStore } from "@/stores/saved/store";
@@ -37,9 +38,11 @@ import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { capitalizeTitle } from "@/lib/utils/other";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
-import { create } from "node_modules/cypress/types/lodash";
+import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryAddButton(): JSX.Element {
+  const isMobile = useGeneralStore((state) => state.isMobile);
+
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
   const currentCategories = useSavedItemsStore(
@@ -132,13 +135,7 @@ export default function GroceryAddButton(): JSX.Element {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button
-          className="ml-2 text-foreground hover:scale-110"
-          aria-label="Add new grocery list"
-          data-testid="add-grocery-list"
-        >
-          <Icons.plus className="w-6 h-6" />
-        </button>
+        <FaPlus className="text-foreground hover:scale-105" data-testid="add-grocery-list" aria-label="Add new grocery list" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

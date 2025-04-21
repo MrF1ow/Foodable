@@ -1,9 +1,7 @@
 import MainLayout from "@/layouts/main";
 import ContentLayout from "@/layouts/content";
 import SocialLayout from "@/layouts/page-specific/social/SocialLayout";
-import SocialPageHeader from "@/components/page-specific/social/SocialPageHeader";
-import userBanner from "../../../../public/images/user_banner.jpg";
-import { checkRole } from "@/lib/utils/roles";
+import { checkRole, getUserDetails } from "@/lib/utils/roles";
 
 export default async function SettingsPageLayout({
   children,
@@ -12,14 +10,14 @@ export default async function SettingsPageLayout({
 }) {
 
   const isUser = await checkRole("user");
+  const user = await getUserDetails();
+
   return (
     <MainLayout>
       <ContentLayout
         mainContent={
           isUser ? (
-            <SocialLayout
-              profileBanner={<SocialPageHeader bannerUrl={userBanner.src} />}
-            >
+            <SocialLayout userDetails={user}>
               {children}
             </SocialLayout>
           ) : (
