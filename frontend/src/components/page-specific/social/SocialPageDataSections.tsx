@@ -55,6 +55,7 @@ export const UserFollowSection = ({
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
   });
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const { deleteFollowing } = useDeleteFollowing();
 
@@ -65,6 +66,11 @@ export const UserFollowSection = ({
   };
 
   const router = useRouter();
+
+  const handleFollowerClick = (id: string) => {
+    setCurrentForm(FORM_NAMES.FOLLOWER_POPUP);
+    router.push(`social/user/${id}`);
+  };
 
   return (
     <SocialSectionLayout headerComponent={<SocialPageFollowingHeader />}>
@@ -79,9 +85,7 @@ export const UserFollowSection = ({
             <SocialItem
               key={follower._id}
               title={follower.username}
-              handleClick={() =>
-                router.push(`social/user/${follower._id.toString()}`)
-              }
+              handleClick={() => handleFollowerClick(follower._id.toString())}
             />
           ))}
         </div>
@@ -99,9 +103,7 @@ export const UserFollowSection = ({
               title={follow.username}
               Icon={FaHeart}
               handleRemove={() => handleDeleteFollowing(follow._id.toString())}
-              handleClick={() =>
-                router.push(`social/user/${follow._id.toString()}`)
-              }
+              handleClick={() => handleFollowerClick(follow._id.toString())}
             />
           ))}
         </div>

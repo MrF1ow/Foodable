@@ -44,7 +44,6 @@ export default function Page() {
     <>
       <Social />
       <SocialPageInjections />
-      <FollowingPopup />
     </>
   );
 }

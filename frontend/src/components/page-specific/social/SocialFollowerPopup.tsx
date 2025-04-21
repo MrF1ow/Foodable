@@ -2,7 +2,6 @@
 
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -14,8 +13,23 @@ import { useSocialStore } from "@/stores/social/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FORM_NAMES } from "@/lib/constants/forms";
+import { SavedSections } from "@/types";
+import { useGeneralStore } from "@/stores/general/store";
+import SocialItem from "./SocialSectionSectionItems";
+import { IoBookmark } from "react-icons/io5";
+import Spinner from "@/components/Spinner";
+import { JSX } from "react";
 
-export function FollowingPopup() {
+interface FollowerPopUpProps {
+  className?: string;
+  additionalBackButtonClick?: () => void;
+}
+
+export function FollowingPopup({
+  className,
+  additionalBackButtonClick,
+}: FollowerPopUpProps): JSX.Element {
   const selectedUser = useSocialStore((state) => state.selectedUser);
   const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
   const isFollowerPopupOpen = useSocialStore(
@@ -24,24 +38,34 @@ export function FollowingPopup() {
   const setIsFollowerPopupOpen = useSocialStore(
     (state) => state.setIsFollowerPopupOpen
   );
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
   const recipes = selectedUser?.savedItems.recipes || [];
   const following = selectedUser?.following || [];
 
+  const handleItemClick = (id: string) => {
+    setCurrentForm(FORM_NAMES.RECIPE);
+    setIsFollowerPopupOpen(false);
+    router.replace(`/social/recipe/${id}`);
+  };
+
   const router = useRouter();
+
   return (
     <Dialog
       open={isFollowerPopupOpen}
       onOpenChange={(open) => {
         if (!open) {
           setSelectedUser(null);
+          additionalBackButtonClick?.();
           setIsFollowerPopupOpen(false);
-          router.back();
         }
       }}
     >
       {/* Hides the default close button */}
-      <DialogContent className="max-w-2xl [&>button:last-child]:hidden">
+      <DialogContent
+        className={`z-[99999] [&>button:last-child]:hidden ${className}`}
+      >
         <DialogHeader>
           <DialogTitle>{selectedUser?.username}&apos;s Profile</DialogTitle>
           <DialogDescription>Recipes and followed users.</DialogDescription>
@@ -67,10 +91,14 @@ export function FollowingPopup() {
                 {recipes.length === 0 ? (
                   <li className="text-muted-foreground">No recipes saved.</li>
                 ) : (
-                  recipes.map((r) => (
-                    <li key={r._id.toString()}>
-                      {r.title ?? "Untitled Recipe"}
-                    </li>
+                  recipes.map((recipe) => (
+                    <SocialItem
+                      key={recipe._id.toString()}
+                      title={recipe.title}
+                      imageId={recipe.imageId.toString()}
+                      Icon={IoBookmark}
+                      handleClick={() => handleItemClick(recipe._id.toString())}
+                    />
                   ))
                 )}
               </ul>
@@ -88,8 +116,8 @@ export function FollowingPopup() {
                     Not following anyone.
                   </li>
                 ) : (
-                  following.map((f) => (
-                    <li key={f._id.toString()}>{f.username}</li>
+                  following.map((follower) => (
+                    <li key={follower._id.toString()}>{follower.username}</li>
                   ))
                 )}
               </ul>
