@@ -17,22 +17,31 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
-
     const db = await getDB();
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (!userProfile) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
+
+    const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
 
     const projection = fetchMetadata
       ? {
-          type: "grocery",
-          _id: 1,
-          title: 1,
-          category: 1,
-        }
+        type: "grocery",
+        _id: 1,
+        title: 1,
+        category: 1,
+      }
       : {};
 
     const groceryLists = await db
       .collection("groceryLists")
-      .find({ creatorId: clerkUser.id }, { projection })
+      .find({ creatorId: userProfile._id }, { projection })
       .toArray();
 
     if (!fetchMetadata) {

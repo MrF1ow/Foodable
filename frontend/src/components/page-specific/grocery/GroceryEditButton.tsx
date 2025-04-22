@@ -69,8 +69,6 @@ export default function GroceryEditButton(): JSX.Element {
   const { createSavedItem } = useCreateSavedItem();
   const { removeAllGroceryListFromAllUsers } = useRemoveAllGroceryListFromAllUsers();
 
-  const { user } = useUser();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -113,19 +111,6 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
       } else {
-        if (!user) {
-          showToast(
-            TOAST_SEVERITY.ERROR,
-            "Error",
-            "You must be logged in to create a grocery list",
-            3000
-          );
-          return;
-        }
-        const newCreateList = {
-          ...newList,
-          creatorId: user?.id,
-        };
 
         const newSavedList = {
           ...newList,
@@ -134,7 +119,7 @@ export default function GroceryEditButton(): JSX.Element {
         };
 
         const createData = await createGroceryList(
-          newCreateList as GroceryList
+          newList as GroceryList
         );
         setCurrentList(createData);
 

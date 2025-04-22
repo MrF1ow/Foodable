@@ -6,14 +6,28 @@ import { validateGroceryList } from "@/lib/utils/typeValidation/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 import { GroceryList } from "@/types/grocery";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function PUT(req: Request) {
   try {
-    const groceryList: GroceryList = await req.json();
+    const clerkUser = await currentUser();
 
-    console.log("groceryList: ", groceryList);
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const db = await getDB();
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (!userProfile) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
+    const groceryList: GroceryList = await req.json();
 
     const preValidationResponse = validateObject(
       groceryList,
@@ -22,20 +36,18 @@ export async function PUT(req: Request) {
       400
     );
 
-    console.log("preValidationResponse: ", preValidationResponse);
-
     if (preValidationResponse) {
       return preValidationResponse;
     }
 
-    const db = await getDB();
+    console.log("Grocery List", groceryList)
 
-    const { _id, ...groceryListWithoutId } = groceryList;
+    const { _id, creatorId, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: ObjectId.createFromHexString(_id) },
+        { _id: _id, creatorId: userProfile._id },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
@@ -53,8 +65,6 @@ export async function PUT(req: Request) {
       HTTP_RESPONSES.BAD_REQUEST,
       404
     );
-
-    console.log("validationResponse: ", validationResponse);
 
     if (validationResponse) {
       return validationResponse;
