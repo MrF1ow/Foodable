@@ -8,6 +8,7 @@ import { validateGroceryList } from "@/lib/utils/typeValidation/grocery";
 import { NextResponse } from "next/server";
 import { GroceryList } from "@/types/grocery";
 import { currentUser } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
@@ -40,14 +41,12 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    console.log("Grocery List", groceryList)
-
     const { _id, creatorId, ...groceryListWithoutId } = groceryList;
 
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: _id, creatorId: userProfile._id },
+        { _id: ObjectId.createFromHexString(_id.toString()), creatorId: userProfile._id.toString() },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );

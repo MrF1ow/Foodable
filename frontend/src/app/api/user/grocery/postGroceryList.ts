@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
     const { _id, ...groceryListToInsert } = {
       ...groceryList,
-      creatorId: ObjectId.createFromHexString(userProfile._id.toString()),
+      creatorId: userProfile._id,
       title: groceryList.title,
       items: groceryList.items || [],
       timestamp: groceryList.timestamp || new Date(),

@@ -37,7 +37,7 @@ export async function DELETE(req: Request) {
       .collection("groceryLists")
       .findOneAndDelete({
         _id: ObjectId.createFromHexString(id),
-        creatorId: clerkUser.id,
+        creatorId: userProfile._id.toString(),
       });
 
     if (!deletedGroceryList) {
