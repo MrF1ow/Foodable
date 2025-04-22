@@ -172,7 +172,9 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
 
-        removeAllGroceryListFromAllUsers(currentList._id.toString())
+        console.log("List id before bulk deletion", currentList._id.toString());
+
+        await removeAllGroceryListFromAllUsers(currentList._id.toString())
         // After deletion, force refetch of the grocery lists
         await refetchCurrentListId();
         await refetchGroceryLists();
