@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 
     const { bucket } = await setupGridFS();
 
-    const imageIdAsObjectId = new ObjectId(imageId);
+    const imageIdAsObjectId = ObjectId.createFromHexString(imageId);
     const file = await bucket.find({ _id: imageIdAsObjectId }).toArray();
 
     if (!file.length || file.length === 0) {

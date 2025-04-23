@@ -41,12 +41,12 @@ export const useDeleteImage = () => {
 };
 
 export const useUploadImage = () => {
-  const mutation = useMutation<NewImageData, Error, NewImageData, unknown>({
+  const mutation = useMutation<unknown, Error, NewImageData, unknown>({
     mutationFn: (imageInfo: NewImageData) => ImageApi.uploadImage(imageInfo)
   })
 
   return {
-    uploadImage: mutation.mutate,
+    uploadImage: mutation.mutateAsync,
     isUploadingImage: mutation.isPending,
     uploadImageError: mutation.error
   }

@@ -152,7 +152,7 @@ export const UserSavedSection = ({
               <SocialItem
                 key={recipe._id.toString()}
                 title={recipe.title}
-                imageId={recipe.imageId.toString()}
+                imageId={recipe.imageId ? recipe.imageId.toString() : null}
                 Icon={IoBookmark}
                 handleClick={() =>
                   handleItemClick(recipe._id.toString(), "recipes")

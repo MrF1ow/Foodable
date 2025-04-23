@@ -1,6 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
+import { validateObject } from "@/lib/utils/validation";
+import { validateUser } from "@/lib/utils/typeValidation/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
@@ -13,22 +15,16 @@ export async function GET() {
         if (!clerkUser || !clerkUser.id) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
+
         const db = await getDB();
 
-        // Find the user document in the database
         const user = await db
             .collection("users")
-            .findOne({ clerkId: clerkUser.id }, { projection: { imageId: 1 } });
+            .findOne({ clerkId: clerkUser.id });
 
-        if (!user) {
-            return NextResponse.json(
-                { message: "User not found in DB" },
-                { status: 404 }
-            );
-        }
-        return NextResponse.json(user.imageId, { status: 200 });
+        return NextResponse.json(user, { status: 200 });
     } catch (error) {
-        console.error("Error getting user:", error);
+        console.error("Error getting current self:", error);
 
         return NextResponse.json(
             { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },

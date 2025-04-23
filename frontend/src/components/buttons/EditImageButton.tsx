@@ -6,13 +6,10 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { getChangeImageFormValidation } from "@/lib/utils/formValidation"
 import { useForm } from "react-hook-form"
@@ -20,12 +17,14 @@ import { z } from "zod";
 import { useState } from "react"
 
 interface EditImageButtonProps {
+    handleSubmit: (image: File) => Promise<void>;
     iconClassName: string
 }
 
-export default function EditImageButton({ iconClassName }: EditImageButtonProps) {
+export default function EditImageButton({ iconClassName, handleSubmit }: EditImageButtonProps) {
 
     const [isOpen, setIsOpen] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const { ChangeImageFormSchema, defaultValues, resolver } = getChangeImageFormValidation()
 
@@ -37,6 +36,7 @@ export default function EditImageButton({ iconClassName }: EditImageButtonProps)
     const handleFormSubmit = async (data: z.infer<typeof ChangeImageFormSchema>) => {
         if (data.image) {
             console.log("Image selected, submitting form...");
+            await handleSubmit(data.image);
             setIsOpen(false);
         } else {
             console.log("No image selected, dialog stays open.");
@@ -73,6 +73,13 @@ export default function EditImageButton({ iconClassName }: EditImageButtonProps)
                                                     onChange={(e) => {
                                                         const file = e.target.files?.[0] || null;
                                                         field.onChange(file);
+
+                                                        if (file) {
+                                                            const url = URL.createObjectURL(file);
+                                                            setPreviewUrl(url);
+                                                        } else {
+                                                            setPreviewUrl(null);
+                                                        }
                                                     }}
                                                     data-testid="edit-image-input"
                                                 />
@@ -83,6 +90,15 @@ export default function EditImageButton({ iconClassName }: EditImageButtonProps)
                                     </FormItem>
                                 )}
                             />
+                            {previewUrl && (
+                                <div className="mt-4 flex justify-center">
+                                    <img
+                                        src={previewUrl}
+                                        alt="Preview"
+                                        className="max-h-48 rounded-md border"
+                                    />
+                                </div>
+                            )}
                         </div>
                         <div className="flex justify-center">
                             <Button

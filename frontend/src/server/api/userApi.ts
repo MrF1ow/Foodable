@@ -174,5 +174,17 @@ export const UserApi = {
       console.error("Error Fetching User Banner Id", error);
       throw error;
     }
+  },
+
+  fetchSelf: async () => {
+    try {
+      const response = await fetchWithAuth("/user", {
+        method: "GET"
+      })
+      return response;
+    } catch (error) {
+      console.error("Error fetching self:", error);
+      throw error;
+    }
   }
 };

@@ -8,7 +8,8 @@ import {
   FOLLOWING,
   SETTINGS,
   PREFERENCES,
-  IMAGES
+  IMAGES,
+  SELF
 } from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
@@ -278,3 +279,26 @@ export const useUpdateUserBannerId = () => {
     isErrorUpdateBannerId: mutation.isError
   }
 }
+
+export const useFetchSelf = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: userProfile,
+    isLoading: isLoadingSelf,
+    refetch: refetchSelf,
+    error: errorSelf,
+    isError: isErrorSelf,
+  } = useQuery({
+    queryKey: [USERS, SELF],
+    queryFn: UserApi.fetchSelf,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    userProfile,
+    isLoadingSelf,
+    refetchSelf,
+    errorSelf,
+    isErrorSelf,
+  };
+};

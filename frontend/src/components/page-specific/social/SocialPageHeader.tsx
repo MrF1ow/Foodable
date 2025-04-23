@@ -14,21 +14,42 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical } from "lucide-react";
 import { useSocialStore } from "@/stores/social/store";
 import EditImageButton from "@/components/buttons/EditImageButton";
+import { useFetchSelf, useFetchUserBannerId } from "@/server/hooks/userHooks";
+import { useFetchImageById, useUploadImage } from "@/server/hooks/imageHooks";
+import { NewImageData } from "@/types/images";
+import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { useUserBannerImageFlow } from "@/hooks/useUserBannerImageFlow";
+import Spinner from "@/components/Spinner";
 
 
 export default function SocialPageHeader({ userDetails }: { userDetails: any }): JSX.Element {
 
   const { userName, userPfp } = userDetails;
 
+  const { handleImageEditSubmit, bannerImage, isLoadingBannerImage } = useUserBannerImageFlow()
+
   return (
     <Card className="relative w-full h-full rounded-md overflow-hidden">
       <CardContent>
-        <Image
-          src={userBanner}
-          alt="User Banner"
-          fill
-          className="object-cover"
-        />
+        {isLoadingBannerImage && (
+          <Spinner />
+        )}
+        {bannerImage && bannerImage.base64Image && (
+          <Image
+            src={bannerImage.base64Image}
+            alt="User Banner"
+            fill
+            className="object-cover"
+          />
+        )}
+        {!bannerImage && !bannerImage?.base64Image && (
+          <Image
+            src={userBanner}
+            alt="User Banner"
+            fill
+            className="object-cover"
+          />
+        )}
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <div className="flex flex-row items-center justify-between w-full">
             <div className="flex flex-row items-center gap-4">
@@ -48,7 +69,7 @@ export default function SocialPageHeader({ userDetails }: { userDetails: any }):
           </div>
         </div>
         <div className="absolute top-0 right-0">
-          <EditImageButton iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
+          <EditImageButton handleSubmit={handleImageEditSubmit} iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
         </div>
       </CardContent>
     </Card>
