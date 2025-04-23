@@ -1,11 +1,5 @@
-// Package Imports
-import { BiArrowBack } from "react-icons/bi";
-import { useRouter } from "next/navigation";
-
 // Local Imports
 import { Card, CardContent } from "@/components/ui/card";
-import pfp from "../../../public/images/pfp.jpg";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   RecipeContent,
   RecipePopupHeader,

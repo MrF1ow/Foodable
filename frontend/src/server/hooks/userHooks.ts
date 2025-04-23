@@ -8,6 +8,7 @@ import {
   FOLLOWING,
   SETTINGS,
   PREFERENCES,
+  IMAGES
 } from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
@@ -245,3 +246,35 @@ export const useUpdateUserCurrentList = () => {
     isErrorUpdateCurrentList: mutation.isError,
   };
 };
+
+export const useFetchUserBannerId = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: bannerId,
+    isLoading: isLoadingBannerId,
+    refetch: refetchBannerId,
+    error: errorBannerId,
+    isError: isErrorBannerId,
+  } = useQuery({
+    queryKey: [USERS, IMAGES],
+    queryFn: UserApi.fetchSignInUserBannerId,
+    retry: 2,
+    enabled
+  })
+
+  return {
+    bannerId, isLoadingBannerId, refetchBannerId, errorBannerId, isErrorBannerId
+  }
+}
+
+export const useUpdateUserBannerId = () => {
+  const mutation = useMutation<string, Error, string>({
+    mutationFn: (bannerId: string) => UserApi.updateSignInUserBannerId(bannerId)
+  })
+
+  return {
+    updateBannerId: mutation.mutateAsync,
+    isLoadingUpdateBannerId: mutation.isPending,
+    errorUpdateBannerid: mutation.error,
+    isErrorUpdateBannerId: mutation.isError
+  }
+}

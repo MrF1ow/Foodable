@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
     const user = await db
       .collection("users")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: ObjectId.createFromHexString(id) });
 
     const validationResponse = validateObject(
       user,

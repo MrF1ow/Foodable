@@ -8,6 +8,8 @@ import { Readable, pipeline } from "stream";
 import { ObjectId } from "mongodb";
 import { isValidCollectionName } from "@/lib/utils/typeValidation/general";
 import { isValidObjectId } from "@/lib/utils/validation";
+import { getCreatorFromImageIdLocation } from "@/lib/utils/routeHelpers";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
@@ -26,9 +28,35 @@ export async function POST(req: Request) {
       );
     }
 
-    const requestedCollection = collectionName?.toString();
+    const docId = sourceId?.toString()
+    const creatorTag = getCreatorFromImageIdLocation(collectionName)
 
-    const collection = db.collection(requestedCollection);
+    const sourceDoc = await db.collection(collectionName).findOne({
+      _id: ObjectId.createFromHexString(docId!)
+    })
+
+    if (!sourceDoc) {
+      return NextResponse.json(
+        { message: "Document Not Found" },
+        { status: 404 }
+      );
+    }
+
+    const creatorId = sourceDoc[creatorTag]
+
+    const clerkUser = await currentUser();
+
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (creatorId.toString() !== userProfile?._id.toString()) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const collection = db.collection(collectionName);
 
     const fileStream = file.stream();
 
@@ -67,6 +95,7 @@ export async function POST(req: Request) {
     const uploadStream = bucket.openUploadStream(file.name, {
       metadata: {
         sourceId: sourceId,
+        creatorId: userProfile?._id,
         contentType: file.type,
       },
     });

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { JSX } from "react";
 import userBanner from "../../../../public/images/user_banner.jpg";
-import { MdEdit } from "react-icons/md";
 import SearchBar from "@/components/SearchBar";
 import { useGeneralStore } from "@/stores/general/store";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";

@@ -39,6 +39,7 @@ export const validateUserWithoutID = (
     typeof user.username === "string" &&
     typeof user.email === "string" &&
     validateSettings(user.settings) &&
+    (user.imageId === undefined || user.imageId === null || validateIdFn(user.imageId)) &&
     validatePreferences(user.preferences) &&
     Array.isArray(user.savedItems.recipes) &&
     Array.isArray(user.savedItems.groceryLists) &&
