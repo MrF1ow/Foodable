@@ -1,3 +1,5 @@
+import type { CollectionNames } from "@/types";
+
 export const isValidObjectId = (id: any): boolean => {
   const objectIdPattern = /^[a-fA-F0-9]{24}$/; // MongoDB ObjectId pattern
   return typeof id.toString() === "string" && objectIdPattern.test(id);
@@ -29,4 +31,9 @@ export const isValidDate = (value: any): boolean => {
   }
   console.log("bad date");
   return false;
+};
+
+export const isValidCollectionName = (str: any): str is CollectionNames => {
+  if (str === null) return false;
+  return ["recipes", "users", "groceryLists", "vectors"].includes(str);
 };

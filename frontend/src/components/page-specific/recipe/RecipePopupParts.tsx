@@ -20,11 +20,10 @@ import { useUserStore } from "@/stores/user/store";
 import { BiArrowBack } from "react-icons/bi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import pfp from "../../../../public/images/pfp.jpg";
-
-
+import logo from "../../../../public/images/logo_current_no_shadow.png"
 
 interface RecipePopupHeaderProps {
-  imageUrl: string;
+  imageUrl: string | null;
   recipe: Recipe;
   setOpen?: (arg0: boolean) => void;
   handleBackButton: () => void;
@@ -57,6 +56,13 @@ export const RecipePopupHeader = ({
           src={imageUrl}
           alt={recipe.title}
           className="object-cover w-full h-full"
+        />
+      )}
+      {(!imageUrl || imageUrl === null) && (
+        <img
+          src={logo.src}
+          alt={recipe.title}
+          className="object-contain w-full h-full"
         />
       )}
       <div className="absolute top-0 left-0 text-foreground p-4 z-50">

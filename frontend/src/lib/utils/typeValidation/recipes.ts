@@ -40,7 +40,7 @@ export const validateRecipeWithoutId = (
     typeof recipe.averageRating === "number" &&
     typeof recipe.priceApproximation === "number" &&
     (recipe.timestamp === undefined || isValidDate(recipe.timestamp)) &&
-    (recipe.imageId === undefined || validateIdFn(recipe.imageId))
+    (recipe.imageId === undefined || recipe.imageId === null || validateIdFn(recipe.imageId))
   );
 };
 

@@ -6,28 +6,34 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { Readable, pipeline } from "stream";
 import { ObjectId } from "mongodb";
+import { isValidCollectionName } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/utils/validation";
 
 export async function POST(req: Request) {
   try {
     const { bucket, db } = await setupGridFS();
-    const recipeCollection = db.collection("recipes");
 
     const formData = await req.formData();
 
     const file = formData.get("image");
     const sourceId = formData.get("sourceId");
+    const collectionName = formData.get("collectionName");
 
-    if (!file || !(file instanceof Blob)) {
+    if (!file || !(file instanceof Blob) || !isValidObjectId(sourceId) || !isValidCollectionName(collectionName)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
 
+    const requestedCollection = collectionName?.toString();
+
+    const collection = db.collection(requestedCollection);
+
     const fileStream = file.stream();
 
     const nodeReadableStream = new Readable();
-    nodeReadableStream._read = () => {};
+    nodeReadableStream._read = () => { };
 
     // Process the file into the nodeReadableStream
     const reader = fileStream.getReader();
@@ -78,9 +84,9 @@ export async function POST(req: Request) {
     });
 
     if (sourceId) {
-      const recipeId = new ObjectId(sourceId.toString());
-      recipeCollection.updateOne(
-        { _id: recipeId },
+      const docId = ObjectId.createFromHexString(sourceId.toString());
+      collection.updateOne(
+        { _id: docId },
         { $set: { imageId: uploadStream.id } }
       );
     }

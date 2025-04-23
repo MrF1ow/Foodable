@@ -46,3 +46,5 @@ export interface FilterTag {
 export type UserSections = "following" | "followers";
 
 export type SavedSections = 'recipes' | 'groceryLists';
+
+export type CollectionNames = "recipes" | "users" | "groceryLists" | "vectors"

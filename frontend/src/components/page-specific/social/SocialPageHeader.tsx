@@ -14,6 +14,7 @@ import { useGeneralStore } from "@/stores/general/store";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { useSocialStore } from "@/stores/social/store";
+import EditImageButton from "@/components/buttons/EditImageButton";
 
 
 export default function SocialPageHeader({ userDetails }: { userDetails: any }): JSX.Element {
@@ -48,7 +49,7 @@ export default function SocialPageHeader({ userDetails }: { userDetails: any }):
           </div>
         </div>
         <div className="absolute top-0 right-0">
-          <MdEdit className="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
+          <EditImageButton iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
         </div>
       </CardContent>
     </Card>

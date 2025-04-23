@@ -1,10 +1,16 @@
+import { NewImageData, ExistingImageData } from "@/types/images";
 import fetchWithAuth from "../fetchInstance";
 
 export const ImageApi = {
-  uploadImage: async (image: File) => {
+  uploadImage: async (imageInfo: NewImageData) => {
     try {
       const formData = new FormData();
-      formData.append("image", image);
+
+      // append the necessary info to the form data for api request
+      formData.append("image", imageInfo.image);
+      formData.append("sourceId", imageInfo.sourceId);
+      formData.append("collectionName", imageInfo.collectionName)
+
       const response = await fetchWithAuth("/user/images", {
         method: "POST",
         body: formData,
@@ -24,10 +30,11 @@ export const ImageApi = {
       throw error;
     }
   },
-  deleteImageById: async (imageId: string) => {
+  deleteImageById: async (imageInfo: ExistingImageData) => {
     try {
-      const response = await fetchWithAuth(`/user/images?id=${imageId}`, {
+      const response = await fetchWithAuth(`/user/images`, {
         method: "DELETE",
+        body: JSON.stringify({imageInfo}),
       });
       return response;
     } catch (error) {
