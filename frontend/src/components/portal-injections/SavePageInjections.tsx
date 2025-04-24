@@ -13,17 +13,20 @@ export default function RecipePageInjections() {
     const isMobile = useGeneralStore((state) => state.isMobile);
     const currentForm = useGeneralStore((state) => state.currentForm);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-    const setForm = useGeneralStore((state) => state.setCurrentForm);
+    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
     const router = useRouter();
 
     const additionalBackButtonClick = () => {
+        setCurrentForm(null);
+        setShowPortal(false);
         setSplitLayout(false);
         router.push("/saved");
     };
 
     const handleAddItemClose = () => {
-        setForm(FORM_NAMES.GROCERY_LIST)
+        setCurrentForm(FORM_NAMES.GROCERY_LIST)
     }
 
     const sideList = <SideList isUser={true} additionalBackButtonClick={additionalBackButtonClick} />;

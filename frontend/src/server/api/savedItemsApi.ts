@@ -1,6 +1,5 @@
 import { SavedItem } from "@/types/saved";
 import fetchWithAuth from "../fetchInstance";
-import { get } from "node_modules/cypress/types/lodash";
 
 export const SavedItemsApi = {
   getAllSavedItems: async () => {
@@ -29,6 +28,18 @@ export const SavedItemsApi = {
     try {
       const response = await fetchWithAuth("/user/saved-items/items", {
         method: "DELETE",
+        body: JSON.stringify(data),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+    }
+  },
+
+  updateSavedItem: async (data: SavedItem) => {
+    try {
+      const response = await fetchWithAuth("/user/saved-items/items", {
+        method: "PUT",
         body: JSON.stringify(data),
       });
       return response;

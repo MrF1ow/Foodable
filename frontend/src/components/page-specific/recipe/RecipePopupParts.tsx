@@ -26,13 +26,14 @@ interface RecipePopupHeaderProps {
   imageUrl: string | null;
   recipe: Recipe;
   setOpen?: (arg0: boolean) => void;
+  handleRemoveItem: () => Promise<void>;
   handleBackButton: () => void;
 }
 
 export const RecipePopupHeader = ({
   imageUrl,
   recipe,
-  setOpen,
+  handleRemoveItem,
   handleBackButton
 }: RecipePopupHeaderProps) => {
   const isUser = useUserStore((state) => state.isUser);
@@ -48,6 +49,11 @@ export const RecipePopupHeader = ({
       setIsSaved(saved);
     }
   }, [savedItems, recipe]);
+
+  const handleRemoveSavedItem = async () => {
+    await handleRemoveItem();
+    handleBackButton();
+  }
 
   return (
     <div className="w-full h-[40%] relative">
@@ -76,11 +82,11 @@ export const RecipePopupHeader = ({
           </AvatarFallback>
         </Avatar>
       </div>
-      <div className="absolute w-full bottom-0 left-0 p-4 text-white bg-black bg-opacity-50">
+      <div className="absolute flex flex-row justify-between items-center w-full bottom-0 left-0 p-4 text-white bg-black bg-opacity-50">
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {recipe.title}
         </h3>
-        {isUser && <SaveBookmark isSaved={isSaved} data={recipe} setOpen={setOpen} />}
+        {isUser && <SaveBookmark isSaved={isSaved} data={recipe} handleRemove={handleRemoveSavedItem} />}
       </div>
     </div>
   );

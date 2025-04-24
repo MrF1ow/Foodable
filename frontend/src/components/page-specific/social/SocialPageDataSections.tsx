@@ -165,6 +165,11 @@ export const UserSavedSection = ({
       <div className="w-full h-full">
         {selectedSection === "recipes" && (
           <>
+            {recipes.length === 0 && (
+              <div className="text-center text-lg text-foreground italic">
+                No Saved Recipes
+              </div>
+            )}
             {recipes.map((recipe) => (
               <SocialItem
                 key={recipe._id.toString()}
@@ -179,8 +184,14 @@ export const UserSavedSection = ({
             ))}
           </>
         )}
+
         {selectedSection === "groceryLists" && (
           <>
+            {groceryLists.length === 0 && (
+              <div className="text-center text-lg text-foreground italic">
+                No Saved Grocery Lists
+              </div>
+            )}
             {groceryLists.map((groceryList) => (
               <SocialItem
                 key={groceryList._id.toString()}

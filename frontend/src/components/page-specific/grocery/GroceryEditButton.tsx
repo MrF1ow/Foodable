@@ -37,14 +37,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { capitalizeTitle } from "@/lib/utils/other";
-import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
+import { useAllSavedItems, useCreateSavedItem, useUpdateSavedItem } from "@/server/hooks/savedItemsHooks";
 import { SavedItem } from "@/types/saved";
 import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
-import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryEditButton(): JSX.Element {
-  const isMobile = useGeneralStore((state) => state.isMobile);
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
@@ -63,9 +61,11 @@ export default function GroceryEditButton(): JSX.Element {
   const { refetchCurrentListId } = useFetchUserCurrentList({
     enabled: true,
   });
+  const { refetchSavedItems } = useAllSavedItems({ enabled: true })
   const { updateGroceryList } = useUpdateGroceryList();
   const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
+  const { updateSavedItem } = useUpdateSavedItem();
   const { createSavedItem } = useCreateSavedItem();
   const { removeAllGroceryListFromAllUsers } = useRemoveAllGroceryListFromAllUsers();
 
@@ -102,7 +102,7 @@ export default function GroceryEditButton(): JSX.Element {
           category: selectedList,
         } as SavedItem;
 
-        await createSavedItem(savedItem);
+        await updateSavedItem(savedItem);
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
@@ -123,7 +123,7 @@ export default function GroceryEditButton(): JSX.Element {
         );
         setCurrentList(createData);
 
-        await createSavedItem(newSavedList as unknown as SavedItem);
+        await createSavedItem(newSavedList as SavedItem);
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
@@ -133,6 +133,7 @@ export default function GroceryEditButton(): JSX.Element {
         );
       }
       await refetchGroceryLists();
+      await refetchSavedItems();
     } else {
       showToast(
         TOAST_SEVERITY.ERROR,
@@ -147,6 +148,8 @@ export default function GroceryEditButton(): JSX.Element {
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!currentList) return;
+
+    console.log("Delete List Id:", currentList._id);
 
     deleteGroceryList(currentList._id.toString(), {
       onSuccess: async () => {
@@ -163,6 +166,8 @@ export default function GroceryEditButton(): JSX.Element {
         // After deletion, force refetch of the grocery lists
         await refetchCurrentListId();
         await refetchGroceryLists();
+        await refetchSavedItems();
+
 
         showToast(
           TOAST_SEVERITY.SUCCESS,

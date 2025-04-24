@@ -163,8 +163,6 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
     const currentForm = useGeneralStore((state) => state.currentForm);
-    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
-    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
@@ -188,8 +186,6 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
 
     const handleCloseSideList = () => {
         additionalBackClick?.();
-        setCurrentForm(null);
-        setShowPortal(false);
     }
 
     const filteredLists = currentList._id
@@ -259,8 +255,6 @@ export const GroceryHeaderMin = ({ additionalBackClick }: GroceryHeaderProps) =>
 
     const handleCloseSideList = () => {
         additionalBackClick?.();
-        setCurrentForm(null);
-        setShowPortal(false);
     }
 
     if (!currentList) return null;
