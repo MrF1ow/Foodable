@@ -67,60 +67,65 @@ export default function EditImageButton({ iconClassName, handleSubmit, handleDel
     return (
         <>
             <MdEdit
-                className={iconClassName}
+                className={`${iconClassName} mix-blend-difference text-white`}
                 onClick={() => setIsOpen(true)}
                 role="button"
                 aria-label="Edit image"
             />
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="">
+                <DialogContent className="overflow-hidden w-full">
                     <DialogHeader>
                         <DialogTitle>Change Image</DialogTitle>
                         <DialogDescription>Select an Image to replace current Image</DialogDescription>
                     </DialogHeader>
                     <Form {...form}>
-                        <div>
-                            <FormField
-                                control={form.control}
-                                name="image"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-primary transition text-lg">
-                                                <Input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    onChange={(e) => {
-                                                        const file = e.target.files?.[0] || null;
-                                                        field.onChange(file);
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl>
+                                        <label className="w-full flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-primary transition text-lg">
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0] || null;
+                                                    field.onChange(file);
 
-                                                        if (file) {
-                                                            const url = URL.createObjectURL(file);
-                                                            setPreviewUrl(url);
-                                                        } else {
-                                                            setPreviewUrl(null);
-                                                        }
-                                                    }}
-                                                    data-testid="edit-image-input"
-                                                />
-                                                {field.value?.name || "Click to upload image"}
-                                            </label>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            {previewUrl && (
-                                <div className="mt-4 flex justify-center">
-                                    <img
-                                        src={previewUrl}
-                                        alt="Preview"
-                                        className="max-h-48 rounded-md border"
-                                    />
-                                </div>
+                                                    if (file) {
+                                                        const url = URL.createObjectURL(file);
+                                                        setPreviewUrl(url);
+                                                    } else {
+                                                        setPreviewUrl(null);
+                                                    }
+                                                }}
+                                                data-testid="edit-image-input"
+                                            />
+                                            <div className="w-full max-w-[300px] text-center">
+                                                <span
+                                                    className="block truncate overflow-hidden whitespace-nowrap text-ellipsis"
+                                                    title={field.value?.name}
+                                                >
+                                                    {field.value?.name || "Click to upload image"}
+                                                </span>
+                                            </div>
+                                        </label>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
                             )}
-                        </div>
+                        />
+                        {previewUrl && (
+                            <div className="mt-4 flex justify-center">
+                                <img
+                                    src={previewUrl}
+                                    alt="Preview"
+                                    className="max-h-48 rounded-md border"
+                                />
+                            </div>
+                        )}
                         <div className="flex flex-row items-center justify-center gap-4">
                             <Button
                                 type="submit"

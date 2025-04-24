@@ -21,7 +21,6 @@ import { getGroceryAccordingItems } from "@/lib/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { useUserStore } from "@/stores/user/store";
-import { usePathname } from "next/navigation";
 
 const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
     return (
@@ -33,6 +32,7 @@ const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
         </div>
     );
 };
+
 
 export default function GroceryAccordion({ title, Icon, color }: GrocerySection): JSX.Element {
     const isUser = useUserStore((state) => state.isUser);
@@ -46,10 +46,10 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
 
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const showMainPortal = useGeneralStore((state) => state.showMainPortal);
     const setShowPortal = useGeneralStore((state) => state.setShowPortal);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
     const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
-    const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
     const [accordionItems, setAccordionItems] = useState<
         GroceryItem[] | undefined
@@ -68,10 +68,11 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
     const handleAccordionAdd = (event: React.MouseEvent) => {
         event.stopPropagation();
         setCurrentCategory(title);
-        setOnGroceryForm(true);
         setCurrentForm(FORM_NAMES.ADD_ITEM_TO_LIST);
-        setShowPortal(true);
-        setSplitLayout(true);
+        if (!showMainPortal) {
+            setShowPortal(true);
+            setSplitLayout(true);
+        }
     };
 
     const handleCheckboxChange = async (

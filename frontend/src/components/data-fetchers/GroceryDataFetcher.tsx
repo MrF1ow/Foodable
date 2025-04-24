@@ -24,16 +24,9 @@ export default function GroceryListDataFetcher() {
     return null;
   }
 
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setAvailableLists = useGroceryStore((state) => state.setAvailableLists);
   const currentList = useGroceryStore((state) => state.currentList);
-  const { refetchUserLocation } = useFetchUserLocation();
-  const { refetchZipCode } = useFetchZipFromCoordinates(latitude, longitude);
-  const setLocation = useUserStore((state) => state.setLocation);
-  const setZipCode = useGeneralStore((state) => state.setZipCode);
 
   // fetch the currentList that the user is currently on
   // this will be used to fetch the grocery list by id
@@ -70,35 +63,6 @@ export default function GroceryListDataFetcher() {
   async function refetchUserCurrentListId(): Promise<{ data?: string | null }> {
     return await refetchCurrentListId();
   }
-
-  // get the user location from the browser
-  useEffect(() => {
-    async function fetchUserLocation() {
-      const browserLocation = await getBrowserLocation();
-      const location = browserLocation || (await refetchUserLocation()).data;
-      if (location) {
-        setLocation(location);
-        console.log("User Location:", location);
-
-        const { latitude, longitude } = location;
-        setLatitude(latitude);
-        setLongitude(longitude);
-        try {
-          const data = await refetchZipCode();
-          if (data != undefined && data.data) {
-            const { zipCode } = data.data;
-            console.log("User Zip Code:", zipCode);
-            if (zipCode) {
-              setZipCode(zipCode);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to get zip from coordinates", err);
-        }
-      }
-    }
-    fetchUserLocation();
-  }, []);
 
   // handle the grocery lists metadata and set the available lists
   useEffect(() => {

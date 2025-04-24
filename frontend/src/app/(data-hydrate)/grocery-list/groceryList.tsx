@@ -12,6 +12,7 @@ import { FORM_NAMES } from "@/lib/constants/forms";
 import AssistantButton from "@/components/buttons/AssistantButton";
 import GroceryPageInjections from "@/components/portal-injections/GroceryPageInjections";
 import GuestDataMonitor from "@/components/GuestDataMonitor";
+import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
 interface GroceryListProps {
   isUser: boolean;
@@ -40,6 +41,7 @@ export default function GroceryList({
 
   return (
     <>
+      <LocationDataFetcher />
       {isUser && (
         <>
           <GroceryListDataFetcher />

@@ -17,6 +17,7 @@ import { useSocialStore } from "@/stores/social/store";
 import {
   useDeleteFollowing,
   useFetchAllFollowingOfUser,
+  useUpdateUserCurrentList,
 } from "@/server/hooks/userHooks";
 import { FaHeart } from "react-icons/fa";
 import { IoBookmark } from "react-icons/io5";
@@ -30,6 +31,8 @@ import { useGeneralStore } from "@/stores/general/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { SavedSections } from "@/types";
 import { createToMutate } from "@/lib/utils/listItems";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { GroceryItem, GroceryList } from "@/types/grocery";
 
 interface UserFollowSectionProps {
   following: FollowMetadata[];
@@ -119,6 +122,9 @@ export const UserSavedSection = ({
   const selectedSection = useSocialStore((state) => state.currentSavedSection);
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
 
+  const setCurrentList = useGroceryStore((state) => state.setCurrentList);
+  const { updateUserCurrentList } = useUpdateUserCurrentList();
+
   const { refetchSavedItems } = useAllSavedItems({
     enabled: true,
   });
@@ -126,12 +132,23 @@ export const UserSavedSection = ({
 
   const router = useRouter();
 
-  const handleItemClick = (id: string, type: SavedSections) => {
+  const handleGroceryClick = async (data: SavedGroceryMetaData) => {
+    const { category, type, ...rest } = data;
+    const newList = {
+      ...rest,
+      items: [] as GroceryItem[],
+    };
+    await updateUserCurrentList(newList._id.toString());
+    setCurrentList(newList as GroceryList);
+  };
+
+  const handleItemClick = async (id: string, type: SavedSections, data: SavedGroceryMetaData | SavedRecipeMetaData) => {
     if (type === "recipes") {
       setCurrentForm(FORM_NAMES.RECIPE);
       router.push(`social/recipe/${id}`);
     } else if (type === "groceryLists") {
       setCurrentForm(FORM_NAMES.GROCERY_LIST);
+      await handleGroceryClick(data as SavedGroceryMetaData);
       router.push(`social/grocery/${id}`);
     }
   };
@@ -155,7 +172,7 @@ export const UserSavedSection = ({
                 imageId={recipe.imageId ? recipe.imageId.toString() : null}
                 Icon={IoBookmark}
                 handleClick={() =>
-                  handleItemClick(recipe._id.toString(), "recipes")
+                  handleItemClick(recipe._id.toString(), "recipes", recipe)
                 }
                 handleRemove={() => handleRemoveItem(recipe)}
               />
@@ -170,7 +187,7 @@ export const UserSavedSection = ({
                 title={groceryList.title}
                 Icon={IoBookmark}
                 handleClick={() =>
-                  handleItemClick(groceryList._id.toString(), "groceryLists")
+                  handleItemClick(groceryList._id.toString(), "groceryLists", groceryList)
                 }
                 handleRemove={() => handleRemoveItem(groceryList)}
               />

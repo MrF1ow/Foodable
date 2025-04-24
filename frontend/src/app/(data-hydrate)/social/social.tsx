@@ -8,6 +8,7 @@ import {
   UserSavedSection,
 } from "@/components/page-specific/social/SocialPageDataSections";
 import { useSocialStore } from "@/stores/social/store";
+import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
 import SocialDataFetcher from "@/components/data-fetchers/SocialDataFetcher";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
@@ -16,6 +17,7 @@ import { useFetchAllFollowersOfUser, useFetchAllFollowingOfUser } from "@/server
 import { SavedGroceryMetaData, SavedRecipeMetaData } from "@/types/saved";
 import { useEffect, useState } from "react";
 import { FollowMetadata } from "@/types/user";
+import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
 export default function Social() {
   const itemSearchQuery = useSocialStore((state) => state.savedItemsQuery);
@@ -77,7 +79,7 @@ export default function Social() {
 
   return (
     <>
-      <GroceryListDataFetcher />
+      <LocationDataFetcher />
       <SocialDataFetcher />
       <div className="w-full h-full flex flex-col lg:flex-row gap-x-0 gap-y-2 lg:gap-x-6 lg:gap-y-0">
         <UserFollowSection

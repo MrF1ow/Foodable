@@ -110,7 +110,7 @@ export default function SocialPageHeader({ userDetails }: { userDetails: any }):
           </div>
         </div>
         <div className="absolute top-0 right-0">
-          <EditImageButton handleSubmit={handleImageEditSubmit} handleDelete={handleImageDelete} currentImageId={currentBannerId} iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
+          <EditImageButton handleSubmit={handleImageEditSubmit} handleDelete={handleImageDelete} currentImageId={currentBannerId} iconClassName="aspect-square w-8 h-auto hover:scale-105 mr-2 mt-2" />
         </div>
       </CardContent>
     </Card>

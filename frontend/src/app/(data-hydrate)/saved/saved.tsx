@@ -15,6 +15,7 @@ import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
+import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -65,6 +66,7 @@ export default function Saved() {
     <>
       <GroceryListDataFetcher />
       <SavedDataFetcher />
+      <LocationDataFetcher />
 
       {/* Accordion Components */}
       <div className="flex flex-col w-full justify-start gap-4">
