@@ -46,7 +46,7 @@ export async function PUT(req: Request) {
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: ObjectId.createFromHexString(_id.toString()), creatorId: userProfile._id.toString() },
+        { _id: ObjectId.createFromHexString(_id.toString()), creatorId: userProfile._id },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );

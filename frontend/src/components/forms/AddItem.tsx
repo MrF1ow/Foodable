@@ -41,11 +41,15 @@ import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { KrogerProduct } from "@/types/kroger";
 import Image from "next/image";
 
+interface AddItemFormProps {
+  className?: string,
+  handleClose?: () => void,
+}
+
 export default function AddItem({
   className,
-}: {
-  className?: string;
-}): JSX.Element {
+  handleClose
+}: AddItemFormProps): JSX.Element {
   const [term, setTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -146,13 +150,17 @@ export default function AddItem({
   }
 
   const handleInputClose = () => {
-    setCurrentForm(null);
-    setShowPortal(false);
-    setSplitLayout(false);
+    if (handleClose) {
+      handleClose()
+    } else {
+      setCurrentForm(null);
+      setShowPortal(false);
+      setSplitLayout(false);
+    }
   };
 
   return (
-    <div className={cn(className)}>
+    <div className={`w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6 ${className}`}>
       <Form {...form}>
         <InputCard
           title="Add Item"
@@ -224,9 +232,8 @@ export default function AddItem({
                 )}
               />
               <div
-                className={`flex ${
-                  isMobile ? "justify-center" : ""
-                } items-center`}
+                className={`flex ${isMobile ? "justify-center" : ""
+                  } items-center`}
               >
                 <FormField
                   control={form.control}

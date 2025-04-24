@@ -21,6 +21,7 @@ import { getGroceryAccordingItems } from "@/lib/utils/listItems";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { useUserStore } from "@/stores/user/store";
+import { usePathname } from "next/navigation";
 
 const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
     return (
@@ -117,6 +118,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
                     data-testid={`${title}-accordion`}
                 >
                     <AccordionHeader title={title} Icon={Icon} color={color} />
+
                     <div
                         style={{
                             color: "white",
@@ -129,6 +131,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
                     >
                         <Icons.plus />
                     </div>
+
                 </AccordionTrigger>
 
                 <AccordionContent className="max-h-80 overflow-y-auto">

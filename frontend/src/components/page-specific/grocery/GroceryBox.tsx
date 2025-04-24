@@ -37,7 +37,9 @@ export default function GroceryBox({ handleBoxClick, data, width }: GroceryBoxPr
     <>
       <Box key={data._id.toString()} onClick={handleGroceryClick} width={width}>
         {/* Make this a Hover Box */}
-        <h3 className="text-lg font-semibold truncate">{data.title}</h3>
+        <div className="h-full w-full flex justify-center items-center">
+          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold truncate">{data.title}</h3>
+        </div>
       </Box>
     </>
   );
