@@ -20,7 +20,6 @@ import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryListDataFetcher() {
   const isUser = useUserStore((state) => state.isUser);
-  console.log("isUser", isUser);
   if (!isUser) {
     return null;
   }

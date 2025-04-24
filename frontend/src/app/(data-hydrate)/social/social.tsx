@@ -9,6 +9,7 @@ import {
 } from "@/components/page-specific/social/SocialPageDataSections";
 import { useSocialStore } from "@/stores/social/store";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
+import SocialDataFetcher from "@/components/data-fetchers/SocialDataFetcher";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import { useUserStore } from "@/stores/user/store";
 import { useFetchAllFollowersOfUser, useFetchAllFollowingOfUser } from "@/server/hooks/userHooks";
@@ -77,6 +78,7 @@ export default function Social() {
   return (
     <>
       <GroceryListDataFetcher />
+      <SocialDataFetcher />
       <div className="w-full h-full flex flex-col lg:flex-row gap-x-0 gap-y-2 lg:gap-x-6 lg:gap-y-0">
         <UserFollowSection
           followers={filteredFollowers}

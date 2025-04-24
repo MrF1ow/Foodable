@@ -14,14 +14,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { getChangeImageFormValidation } from "@/lib/utils/formValidation"
 import { useForm } from "react-hook-form"
 import { z } from "zod";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface EditImageButtonProps {
     handleSubmit: (image: File) => Promise<void>;
-    iconClassName: string
+    handleDelete: (id: string) => Promise<void>;
+    iconClassName: string;
+    currentImageId: string | null;
 }
 
-export default function EditImageButton({ iconClassName, handleSubmit }: EditImageButtonProps) {
+export default function EditImageButton({ iconClassName, handleSubmit, handleDelete, currentImageId }: EditImageButtonProps) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -42,6 +44,25 @@ export default function EditImageButton({ iconClassName, handleSubmit }: EditIma
             console.log("No image selected, dialog stays open.");
         }
     }
+
+    const handleDeleteImage = async () => {
+        if (currentImageId) {
+            try {
+                console.log("Deleting image with ID:", currentImageId);
+                await handleDelete(currentImageId);
+                setIsOpen(false);
+            } catch (error) {
+                console.error("Failed to delete image:", error);
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (!isOpen) {
+            setPreviewUrl(null);
+            form.reset();
+        }
+    }, [isOpen, form]);
 
     return (
         <>
@@ -100,7 +121,7 @@ export default function EditImageButton({ iconClassName, handleSubmit }: EditIma
                                 </div>
                             )}
                         </div>
-                        <div className="flex justify-center">
+                        <div className="flex flex-row items-center justify-center gap-4">
                             <Button
                                 type="submit"
                                 onClick={form.handleSubmit(handleFormSubmit)}
@@ -109,6 +130,17 @@ export default function EditImageButton({ iconClassName, handleSubmit }: EditIma
                             >
                                 Submit
                             </Button>
+                            {currentImageId && (
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    onClick={handleDeleteImage}
+                                    className="p-2 m-2 transition-all hover:scale-[101%] hover:shadow-lg text-xl w-full"
+                                    data-testid="delete-button"
+                                >
+                                    Delete Image
+                                </Button>
+                            )}
                         </div>
                     </Form>
                 </DialogContent>

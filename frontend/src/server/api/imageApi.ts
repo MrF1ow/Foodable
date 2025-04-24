@@ -34,7 +34,7 @@ export const ImageApi = {
     try {
       const response = await fetchWithAuth(`/user/images`, {
         method: "DELETE",
-        body: JSON.stringify({imageInfo}),
+        body: JSON.stringify(imageInfo),
       });
       return response;
     } catch (error) {

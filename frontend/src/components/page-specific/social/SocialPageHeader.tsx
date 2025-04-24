@@ -14,41 +14,82 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical } from "lucide-react";
 import { useSocialStore } from "@/stores/social/store";
 import EditImageButton from "@/components/buttons/EditImageButton";
-import { useFetchSelf, useFetchUserBannerId } from "@/server/hooks/userHooks";
-import { useFetchImageById, useUploadImage } from "@/server/hooks/imageHooks";
-import { NewImageData } from "@/types/images";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
-import { useUserBannerImageFlow } from "@/hooks/useUserBannerImageFlow";
 import Spinner from "@/components/Spinner";
+import { useUserStore } from "@/stores/user/store";
+import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { useFetchImageById, useUploadImage, useDeleteImage } from "@/server/hooks/imageHooks";
+import { useFetchSelf } from "@/server/hooks/userHooks";
+import { ExistingImageData, NewImageData } from "@/types/images";
 
 
 export default function SocialPageHeader({ userDetails }: { userDetails: any }): JSX.Element {
 
   const { userName, userPfp } = userDetails;
 
-  const { handleImageEditSubmit, bannerImage, isLoadingBannerImage } = useUserBannerImageFlow()
+  const { userProfile } = useFetchSelf({ enabled: true });
+  const currentBannerId = useUserStore((state) => state.bannerId);
+  const setBannerId = useUserStore((state) => state.setBannerId);
+
+  const isValidBannerId = !!currentBannerId && isValidObjectId(currentBannerId);
+
+  const {
+    image,
+    isLoadingImage,
+  } = useFetchImageById(currentBannerId!, {
+    enabled: isValidBannerId,
+  });
+
+  const { uploadImage } = useUploadImage();
+  const { deleteImage } = useDeleteImage();
+
+  const handleImageEditSubmit = async (imageFile: File) => {
+    if (!userProfile?._id) return;
+
+    const newImage: NewImageData = {
+      image: imageFile,
+      sourceId: userProfile._id,
+      collectionName: "users",
+    };
+
+    const response = await uploadImage(newImage);
+
+    if (response._id) {
+      setBannerId(response._id);
+    }
+  }
+
+  const handleImageDelete = async (id: string) => {
+    if (!userProfile?._id || !id) return;
+
+    const existingImage: ExistingImageData = {
+      imageId: id,
+      collectionName: "users"
+    }
+
+    const response = await deleteImage(existingImage);
+
+    if (response.message) {
+      setBannerId(null);
+    }
+
+  }
 
   return (
     <Card className="relative w-full h-full rounded-md overflow-hidden">
       <CardContent>
-        {isLoadingBannerImage && (
+        {isLoadingImage && (
           <Spinner />
         )}
-        {bannerImage && bannerImage.base64Image && (
+        {image && image.base64Image && (
           <Image
-            src={bannerImage.base64Image}
+            src={image.base64Image}
             alt="User Banner"
             fill
             className="object-cover"
           />
         )}
-        {!bannerImage && !bannerImage?.base64Image && (
-          <Image
-            src={userBanner}
-            alt="User Banner"
-            fill
-            className="object-cover"
-          />
+        {!image && !image?.base64Image && (
+          <div className="w-full h-full bg-gray-200" />
         )}
         <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-black bg-opacity-50">
           <div className="flex flex-row items-center justify-between w-full">
@@ -69,7 +110,7 @@ export default function SocialPageHeader({ userDetails }: { userDetails: any }):
           </div>
         </div>
         <div className="absolute top-0 right-0">
-          <EditImageButton handleSubmit={handleImageEditSubmit} iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
+          <EditImageButton handleSubmit={handleImageEditSubmit} handleDelete={handleImageDelete} currentImageId={currentBannerId} iconClassName="aspect-square w-10 h-auto pr-2 pt-2 shadow-lg hover:scale-105" />
         </div>
       </CardContent>
     </Card>

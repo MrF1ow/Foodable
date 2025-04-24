@@ -12,6 +12,9 @@ export async function DELETE(req: Request) {
   try {
     const { imageId, collectionName } = await req.json()
 
+    console.log(imageId);
+    console.log(collectionName);
+
     if (!imageId || !isValidCollectionName(collectionName)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

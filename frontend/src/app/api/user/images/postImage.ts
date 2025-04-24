@@ -101,20 +101,21 @@ export async function POST(req: Request) {
     });
 
     // Use pipeline to pipe the data into GridFS
-    pipeline(nodeReadableStream, uploadStream, (err) => {
-      if (err) {
-        console.error("Pipeline error:", err);
-        return NextResponse.json(
-          { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },
-          { status: 500 }
-        );
-      }
-      console.log("Upload complete:", uploadStream.id);
+    await new Promise<void>((resolve, reject) => {
+      pipeline(nodeReadableStream, uploadStream, (err) => {
+        if (err) {
+          console.error("Pipeline error:", err);
+          reject(new Error(HTTP_RESPONSES.INTERNAL_SERVER_ERROR));
+        } else {
+          console.log("Upload complete:", uploadStream.id);
+          resolve();
+        }
+      });
     });
 
     if (sourceId) {
       const docId = ObjectId.createFromHexString(sourceId.toString());
-      collection.updateOne(
+      await collection.updateOne(
         { _id: docId },
         { $set: { imageId: uploadStream.id } }
       );
