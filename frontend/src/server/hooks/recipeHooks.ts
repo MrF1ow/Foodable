@@ -4,7 +4,7 @@ import { useDataFetching } from "@/hooks/useDataFetching";
 import { useQueryProps } from "@/types";
 import { ERROR_FETCHING_RECIPES } from "@/lib/constants/messages";
 import { RECIPES } from "@/lib/constants/process";
-import { Recipe } from "@/types/recipe";
+import { Recipe, NewRecipe } from "@/types/recipe";
 
 export const useAllRecipes = (metadata: boolean = true) => {
   const {
@@ -43,8 +43,8 @@ export const useRecipeById = (
 
 // Custom hook for creating a recipe
 export const useCreateRecipe = () => {
-  const mutation = useMutation<Recipe, Error, Recipe, unknown>({
-    mutationFn: (newRecipe: Recipe) => RecipeApi.createRecipe(newRecipe),
+  const mutation = useMutation<Recipe, Error, NewRecipe, unknown>({
+    mutationFn: (newRecipe: NewRecipe) => RecipeApi.createRecipe(newRecipe),
   });
 
   if (mutation.error) {

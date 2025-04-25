@@ -27,6 +27,7 @@ import { grocerySections } from "@/config/grocery-sections";
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
+import { useCreateRecipe } from "@/server/hooks/recipeHooks";
 
 export const AddRecipe = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -37,6 +38,8 @@ export const AddRecipe = () => {
 
   const { AddRecipeFormSchema, defaultValues, resolver } =
     getAddRecipeFormValidation();
+
+  const { createRecipe } = useCreateRecipe();
 
   const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
     defaultValues,
@@ -63,6 +66,16 @@ export const AddRecipe = () => {
 
   const onSubmit = (data: z.infer<typeof AddRecipeFormSchema>) => {
     console.log("Form submitted:", data);
+
+    const formattedRecipe = {
+      title: data.title,
+      description: data.description,
+      ingredients: data.ingredients,
+      instructions: data.instructions,
+      image: data.image, // or handle this separately if needed
+    };
+
+    createRecipe(formattedRecipe);
   };
 
   const handleInputClose = () => {
