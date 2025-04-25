@@ -9,7 +9,7 @@ export type RecipeState = {
   currentRecipe: Recipe | RecipeMetaData | SavedRecipeMetaData | null;
   filter: FilterOptions;
   additionalIngredients: GroceryItem[];
-  currentImageUrl: string;
+  currentImageUrl: string | null;
 };
 
 export type RecipeActions = {
@@ -18,7 +18,7 @@ export type RecipeActions = {
   ) => void;
   setFilter: (filter: FilterOptions) => void;
   setAdditionalIngredients: (items: GroceryItem[]) => void;
-  setCurrentImageUrl: (url: string) => void;
+  setCurrentImageUrl: (url: string | null) => void;
 };
 
 export const createRecipeActions = (set: any): RecipeActions => ({
@@ -37,7 +37,7 @@ export const createRecipeActions = (set: any): RecipeActions => ({
   setAdditionalIngredients: (items: GroceryItem[]) =>
     set((state: RecipeState) => ({ additionalIngredients: items })),
 
-  setCurrentImageUrl: (url: string) =>
+  setCurrentImageUrl: (url: string | null) =>
     set((state: RecipeState) => ({ currentImageUrl: url })),
 });
 
@@ -53,7 +53,7 @@ export const defaultInitState: RecipeState = {
   },
 
   additionalIngredients: [],
-  currentImageUrl: "",
+  currentImageUrl: null,
 };
 
 export const createRecipeStore = (initState: RecipeState = defaultInitState) =>

@@ -150,4 +150,41 @@ export const UserApi = {
       throw error;
     }
   },
+
+  fetchSignInUserBannerId: async () => {
+    try {
+      const response = await fetchWithAuth("/user/banner", {
+        method: "GET"
+      })
+      return response;
+    } catch (error) {
+      console.error("Error Fetching User Banner Id", error);
+      throw error;
+    }
+  },
+
+  updateSignInUserBannerId: async (id: string) => {
+    try {
+      const response = await fetchWithAuth("/user/banner", {
+        method: "PUT",
+        body: JSON.stringify({ bannerId: id })
+      })
+      return response;
+    } catch (error) {
+      console.error("Error Fetching User Banner Id", error);
+      throw error;
+    }
+  },
+
+  fetchSelf: async () => {
+    try {
+      const response = await fetchWithAuth("/user", {
+        method: "GET"
+      })
+      return response;
+    } catch (error) {
+      console.error("Error fetching self:", error);
+      throw error;
+    }
+  }
 };

@@ -53,7 +53,7 @@ export async function GET(req: Request) {
     }
 
     const data: ProductResponse = await response.json();
-    console.log("Products response:", data);
+    // console.log("Products response:", data);
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error: any) {
     console.error("Error fetching products:", error);

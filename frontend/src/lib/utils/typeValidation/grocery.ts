@@ -23,7 +23,7 @@ export const validateGroceryListWithoutId = (
 ): groceryList is GroceryList => {
   return (
     groceryList &&
-    isValidUserId(groceryList.creatorId) &&
+    validateIdFn(groceryList.creatorId) &&
     typeof groceryList.title === "string" &&
     Array.isArray(groceryList.items) &&
     (groceryList.items.length === 0 ||

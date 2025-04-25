@@ -7,13 +7,32 @@ import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
+    const clerkUser = await currentUser();
+
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const db = await getDB();
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (!userProfile) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
     const groceryList: NewGroceryList = await req.json();
 
     const { _id, ...groceryListToInsert } = {
       ...groceryList,
+      creatorId: userProfile._id,
       title: groceryList.title,
       items: groceryList.items || [],
       timestamp: groceryList.timestamp || new Date(),
@@ -25,8 +44,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
-    const db = await getDB();
 
     const result = await db
       .collection("groceryLists")

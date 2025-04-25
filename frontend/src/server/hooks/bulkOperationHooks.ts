@@ -9,7 +9,7 @@ export const useRemoveAllGroceryListFromAllUsers = () => {
     });
 
     return {
-        removeAllGroceryListFromAllUsers: mutation.mutate,
+        removeAllGroceryListFromAllUsers: mutation.mutateAsync,
         isRemovingGroceryList: mutation.isPending,
         removeError: mutation.error,
         removeData: mutation.data,
@@ -23,7 +23,7 @@ export const useRemoveAllRecipesFromAllUsers = () => {
     });
 
     return {
-        removeAllRecipesFromAllUsers: mutation.mutate,
+        removeAllRecipesFromAllUsers: mutation.mutateAsync,
         isRemovingRecipes: mutation.isPending,
         removeError: mutation.error,
         removeData: mutation.data,

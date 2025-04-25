@@ -37,7 +37,7 @@ export async function DELETE(req: Request) {
       .collection("groceryLists")
       .findOneAndDelete({
         _id: ObjectId.createFromHexString(id),
-        creatorId: clerkUser.id,
+        creatorId: userProfile._id.toString(),
       });
 
     if (!deletedGroceryList) {
@@ -48,18 +48,24 @@ export async function DELETE(req: Request) {
     }
 
     // Remove the deleted ID from savedItems.groceryLists
-    const updatedSavedLists = (userProfile.savedItems?.groceryLists || []).filter(
-      (listId: string) => listId !== id
-    );
+    const updatedSavedLists =
+      userProfile.savedItems?.groceryLists?.filter(
+        (list: { _id: string | ObjectId }) => list._id.toString() !== id.toString()
+      ) || [];
 
-    console.log("Updated saved lists: ", updatedSavedLists);
+    // Apply the filtered list back to the user profile
+    if (userProfile.savedItems) {
+      userProfile.savedItems.groceryLists = updatedSavedLists;
+    }
 
-    const updateFields: any = {
-      'savedItems.groceryLists': updatedSavedLists,
+    const updateFields: Record<string, any> = {
+      "savedItems.groceryLists": updatedSavedLists,
     };
 
-    if (userProfile.currentGroceryList === id) {
-      updateFields.currentGroceryList = updatedSavedLists[0] || null;
+    // Reset currentGroceryList if it matches the deleted ID
+    if (userProfile.currentGroceryList?.toString() === id.toString()) {
+      // If there's another saved list, set it as current; otherwise, null
+      updateFields.currentGroceryList = updatedSavedLists[0]?._id || null;
     }
 
     await db.collection("users").updateOne(

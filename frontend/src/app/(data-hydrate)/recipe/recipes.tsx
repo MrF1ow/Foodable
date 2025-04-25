@@ -19,6 +19,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
 export default function Recipes({ isUser }: { isUser: boolean }) {
   const { recipes } = useAllRecipes(true);
@@ -71,6 +72,7 @@ export default function Recipes({ isUser }: { isUser: boolean }) {
 
   return (
     <>
+      <LocationDataFetcher />
       <div className="h-full overflow-auto">
         <div className="flex flex-wrap justify-start gap-4 z-10">
           {paginatedRecipes.length === 0 ? (

@@ -33,6 +33,7 @@ const AccordionHeader = ({ title, Icon, color }: GrocerySection) => {
     );
 };
 
+
 export default function GroceryAccordion({ title, Icon, color }: GrocerySection): JSX.Element {
     const isUser = useUserStore((state) => state.isUser);
     const { updateGroceryList } = useUpdateGroceryList();
@@ -45,10 +46,10 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
 
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const showMainPortal = useGeneralStore((state) => state.showMainPortal);
     const setShowPortal = useGeneralStore((state) => state.setShowPortal);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
     const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
-    const setOnGroceryForm = useGroceryStore((state) => state.setOnGroceryForm);
 
     const [accordionItems, setAccordionItems] = useState<
         GroceryItem[] | undefined
@@ -67,10 +68,11 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
     const handleAccordionAdd = (event: React.MouseEvent) => {
         event.stopPropagation();
         setCurrentCategory(title);
-        setOnGroceryForm(true);
         setCurrentForm(FORM_NAMES.ADD_ITEM_TO_LIST);
-        setShowPortal(true);
-        setSplitLayout(true);
+        if (!showMainPortal) {
+            setShowPortal(true);
+            setSplitLayout(true);
+        }
     };
 
     const handleCheckboxChange = async (
@@ -117,6 +119,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
                     data-testid={`${title}-accordion`}
                 >
                     <AccordionHeader title={title} Icon={Icon} color={color} />
+
                     <div
                         style={{
                             color: "white",
@@ -129,6 +132,7 @@ export default function GroceryAccordion({ title, Icon, color }: GrocerySection)
                     >
                         <Icons.plus />
                     </div>
+
                 </AccordionTrigger>
 
                 <AccordionContent className="max-h-80 overflow-y-auto">

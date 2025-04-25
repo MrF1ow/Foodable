@@ -23,7 +23,6 @@ export type GroceryState = {
   openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
-  onGroceryForm: boolean;
 };
 
 export type GroceryActions = {
@@ -33,7 +32,6 @@ export type GroceryActions = {
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   setMap: (map: Map<string, GroceryItem>) => void;
-  setOnGroceryForm: (onGroceryForm: boolean) => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -115,8 +113,6 @@ export const createGroceryActions = (set: any): GroceryActions => ({
           : null,
       };
     }),
-  setOnGroceryForm: (onGroceryForm: boolean) =>
-    set((state: GroceryState) => ({ ...state, onGroceryForm })),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
@@ -128,7 +124,6 @@ export const initState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  onGroceryForm: false,
 };
 
 export const defaultInitState: GroceryState = {
@@ -138,7 +133,6 @@ export const defaultInitState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  onGroceryForm: false,
 };
 
 export const createGroceryStore = (

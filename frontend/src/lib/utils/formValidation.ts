@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GrocerySectionOptions } from "@/types/grocery";
 import { unitsAsTuple } from "@/config/unit-conversions";
 import { useGroceryStore } from "@/stores/grocery/store";
+import { resolve } from "path";
 
 export const AddItemFormSchema = z.object({
   itemName: z
@@ -78,3 +79,23 @@ export const getAddRecipeFormValidation = () => {
     resolver: zodResolver(AddRecipeFormSchema),
   };
 };
+
+export const ChangeImageFormSchema = z.object({
+  image: z
+    .union([z.instanceof(File), z.null()])
+    .refine((file) => file === null || file.size > 0, {
+      message: "Image is required",
+    })
+})
+
+export const getChangeImageFormValidation = () => {
+  const defaultValues = {
+    image: null,
+  }
+
+  return {
+    ChangeImageFormSchema,
+    defaultValues,
+    resolver: zodResolver(ChangeImageFormSchema)
+  }
+}

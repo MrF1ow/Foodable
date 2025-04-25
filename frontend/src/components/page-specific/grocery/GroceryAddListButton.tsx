@@ -1,7 +1,6 @@
 "use client";
 
 import { JSX, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 import { Icons } from "@/components/ui/icons";
 import {
   Dialog,
@@ -61,25 +60,13 @@ export default function GroceryAddButton(): JSX.Element {
   const { createGroceryList } = useCreateGroceryList();
   const { createSavedItem } = useCreateSavedItem();
 
-  const { user } = useUser();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!user) {
-      showToast(
-        TOAST_SEVERITY.ERROR,
-        "Error",
-        "You must be logged in to create a grocery list",
-        3000
-      );
-      return;
-    }
 
     if (selectedList !== "") {
       const newList = {
         _id: null,
-        creatorId: user.id,
+        creatorId: null,
         title: newTitle || "New List",
         items: [],
         category: selectedList,

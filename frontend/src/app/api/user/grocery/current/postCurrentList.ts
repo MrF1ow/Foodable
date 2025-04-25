@@ -15,16 +15,12 @@ export async function POST(req: Request) {
 
     const { _id } = await req.json();
 
-    console.log("Received _id: ", _id);
-
     if (!isValidObjectId(_id)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
-
-    console.log("Valid _id: ", _id);
 
     const db = await getDB();
     const usersCollection = db.collection("users");

@@ -2,6 +2,7 @@ import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { ObjectId } from "mongodb";
 
 export async function DELETE(id: any) {
     try {
@@ -13,19 +14,21 @@ export async function DELETE(id: any) {
         }
 
         const db = await getDB();
+        const objectId = ObjectId.createFromHexString(id);
+
 
         const pullResult = await db.collection("users").updateMany(
-            { "savedItems.recipes": id },
+            { "savedItems.recipes._id": objectId },
             {
                 $pull: {
-                    "savedItems.recipes": id,
+                    "savedItems.recipes": { _id: objectId },
                 },
-            }
+            } as any
         );
 
         return NextResponse.json(
             {
-                message: "Grocery list references cleaned up from all users",
+                message: "Recipe references cleaned up from all users",
                 removedFromSavedItems: pullResult.modifiedCount,
             },
             { status: 200 }

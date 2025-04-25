@@ -46,6 +46,7 @@ export type SavedGroceryItems = {
 export type NewUser = UserIdentifiers & {
   // User profile settings (will add more later)
   settings: UserSettings;
+  imageId: ObjectId | null; // banner of user
 
   // User profile preferences (will add more later)
   preferences: UserPreferences;

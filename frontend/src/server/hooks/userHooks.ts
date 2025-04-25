@@ -8,6 +8,8 @@ import {
   FOLLOWING,
   SETTINGS,
   PREFERENCES,
+  IMAGES,
+  SELF
 } from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
@@ -243,5 +245,60 @@ export const useUpdateUserCurrentList = () => {
     isLoadingUpdateCurrentList: mutation.isPending,
     errorUpdateCurrentList: mutation.error,
     isErrorUpdateCurrentList: mutation.isError,
+  };
+};
+
+export const useFetchUserBannerId = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: bannerId,
+    isLoading: isLoadingBannerId,
+    refetch: refetchBannerId,
+    error: errorBannerId,
+    isError: isErrorBannerId,
+  } = useQuery({
+    queryKey: [USERS, IMAGES],
+    queryFn: UserApi.fetchSignInUserBannerId,
+    retry: 2,
+    enabled
+  })
+
+  return {
+    bannerId, isLoadingBannerId, refetchBannerId, errorBannerId, isErrorBannerId
+  }
+}
+
+export const useUpdateUserBannerId = () => {
+  const mutation = useMutation<string, Error, string>({
+    mutationFn: (bannerId: string) => UserApi.updateSignInUserBannerId(bannerId)
+  })
+
+  return {
+    updateBannerId: mutation.mutateAsync,
+    isLoadingUpdateBannerId: mutation.isPending,
+    errorUpdateBannerid: mutation.error,
+    isErrorUpdateBannerId: mutation.isError
+  }
+}
+
+export const useFetchSelf = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: userProfile,
+    isLoading: isLoadingSelf,
+    refetch: refetchSelf,
+    error: errorSelf,
+    isError: isErrorSelf,
+  } = useQuery({
+    queryKey: [USERS, SELF],
+    queryFn: UserApi.fetchSelf,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    userProfile,
+    isLoadingSelf,
+    refetchSelf,
+    errorSelf,
+    isErrorSelf,
   };
 };

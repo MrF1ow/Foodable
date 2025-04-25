@@ -23,7 +23,7 @@ export default function SideList({ isUser, loading, className, additionalBackBut
   const [savedPage, setSavedPage] = useState(false)
 
   useEffect(() => {
-    const advancedHeader = !(pathname.includes('saved') || pathname.includes('social'));
+    const advancedHeader = !(pathname.includes('saved'));
     setSavedPage(advancedHeader);
   }, [pathname])
 
@@ -35,7 +35,7 @@ export default function SideList({ isUser, loading, className, additionalBackBut
     <div className={`w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6 ${className}`}>
       <Card className='h-full flex flex-col bg-card-background rounded-lg'>
         <CardHeader className='bg-primary text-[#202020] text-center rounded-lg'>
-          {savedPage ? <GroceryHeaderMin width='100%' /> : <GroceryHeader additionalBackClick={handleBackButtonClick} />}
+          {(savedPage && isUser) ? <GroceryHeader additionalBackClick={handleBackButtonClick} /> : <GroceryHeaderMin additionalBackClick={handleBackButtonClick} />}
         </CardHeader>
 
         <CardContent className='flex-1 bg-background overflow-y-auto relative'>
