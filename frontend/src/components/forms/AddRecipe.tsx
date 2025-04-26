@@ -34,10 +34,12 @@ import { GrocerySectionOptions } from "@/types/grocery";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
+import { useState } from "react";
 
 export const AddRecipe = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
@@ -163,10 +165,28 @@ export const AddRecipe = () => {
                         onChange={(e) => {
                           const file = e.target.files?.[0] || null;
                           field.onChange(file);
+
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            setPreviewUrl(url);
+                          } else {
+                            setPreviewUrl(null);
+                          }
                         }}
                         data-testid="recipe-image-input"
                       />
-                      {field.value?.name || "Click to upload image"}
+                      {previewUrl ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div>{field.value?.name}</div>
+                          <img
+                            src={previewUrl}
+                            alt="Recipe Preview"
+                            className="max-h-48 rounded-md"
+                          />
+                        </div>
+                      ) : (
+                        field.value?.name || "Click to upload image"
+                      )}
                     </label>
                   </FormControl>
                   <FormMessage />

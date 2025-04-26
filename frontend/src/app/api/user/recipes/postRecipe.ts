@@ -53,8 +53,6 @@ export async function POST(req: Request) {
 
     recipeToInsert.tags = tags;
 
-    console.log("recipeToInsert", recipeToInsert);
-
     if (!validateRecipeWithoutId(recipeToInsert, isValidObjectId)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
