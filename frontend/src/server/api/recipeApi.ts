@@ -2,13 +2,13 @@ import { Recipe, NewRecipe } from "@/types/recipe";
 import fetchWithAuth from "../fetchInstance";
 
 export const RecipeApi = {
-  createRecipe: async (recipe: NewRecipe) => {
+  createRecipe: async (recipe: NewRecipe): Promise<Recipe> => {
     try {
       const response = await fetchWithAuth("/user/recipes", {
         method: "POST",
         body: JSON.stringify(recipe),
       });
-      return response;
+      return response as Recipe;
     } catch (error) {
       console.error("Error creating recipe:", error);
       throw error;
@@ -25,7 +25,7 @@ export const RecipeApi = {
     }
   },
 
-  updateRecipe: async (recipe: Recipe) => {
+  updateRecipe: async (recipe: Recipe): Promise<Recipe> => {
     try {
       const response = await fetchWithAuth("/user/recipes", {
         method: "PUT",
@@ -38,7 +38,7 @@ export const RecipeApi = {
     }
   },
 
-  deleteRecipe: async (id: string) => {
+  deleteRecipe: async (id: string): Promise<Recipe> => {
     try {
       const response = await fetchWithAuth("/user/recipes", {
         method: "DELETE",

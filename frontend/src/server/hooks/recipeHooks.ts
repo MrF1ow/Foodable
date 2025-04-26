@@ -52,9 +52,10 @@ export const useCreateRecipe = () => {
   }
 
   return {
-    createRecipe: mutation.mutate,
+    createRecipe: mutation.mutateAsync,
     isCreatingRecipe: mutation.isPending,
     createRecipeError: mutation.error,
+    createData: mutation.data,
   };
 };
 

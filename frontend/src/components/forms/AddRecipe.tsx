@@ -28,6 +28,12 @@ import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
 import { useCreateRecipe } from "@/server/hooks/recipeHooks";
+import { NewRecipe, Recipe } from "@/types/recipe";
+// import { SavedItem } from "@/types/savedItems";
+import { GrocerySectionOptions } from "@/types/grocery";
+import { showToast } from "@/app/providers";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
 
 export const AddRecipe = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -40,6 +46,7 @@ export const AddRecipe = () => {
     getAddRecipeFormValidation();
 
   const { createRecipe } = useCreateRecipe();
+  const { createSavedItem } = useCreateSavedItem();
 
   const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
     defaultValues,
@@ -64,18 +71,51 @@ export const AddRecipe = () => {
     name: "instructions",
   });
 
-  const onSubmit = (data: z.infer<typeof AddRecipeFormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof AddRecipeFormSchema>) => {
     console.log("Form submitted:", data);
 
-    const formattedRecipe = {
+    const newRecipe = {
       title: data.title,
       description: data.description,
-      ingredients: data.ingredients,
-      instructions: data.instructions,
-      image: data.image, // or handle this separately if needed
+      ingredients: data.ingredients.map((ingredient) => ({
+        ...ingredient,
+        category: categories.find(
+          (section) => section.title === ingredient.category
+        )?.title as GrocerySectionOptions,
+      })),
+      instructions: data.instructions.map((instruction) => instruction.step),
+      image: data.image,
+      creatorId: null,
+      imageId: null,
+      userRatings: [],
+      averageRating: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      priceApproximation: 0,
+      timeApproximation: 0,
+      timestamp: new Date(),
+      tags: [],
     };
 
-    createRecipe(formattedRecipe);
+    const createData = await createRecipe(newRecipe as Recipe);
+
+    // if (!createData) {
+    //   showToast(
+    //     TOAST_SEVERITY.ERROR,
+    //     "Error",
+    //     "Failed to create grocery list",
+    //     3000
+    //   );
+    //   return;
+    // }
+
+    // const newSaveItem = {
+    //   _id: createData._id,
+    //   title: createData.title,
+    //   type: "recipe",
+    // };
+
+    // const savedItem = await createSavedItem(newSaveItem as SavedItem);
   };
 
   const handleInputClose = () => {
