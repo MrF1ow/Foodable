@@ -1,14 +1,12 @@
 import { MongoClient } from 'mongodb';
+import { getDB } from '../mongodb';
 
 // connect to your Atlas deployment
-const client = new MongoClient(`${process.env.ATLAS_CONNECTION_STRING}`);
-
 async function run() {
   try {
-    const database = client.db("foodable");
-    const collection = database.collection("vectors");
-   
-    // Define your Atlas Vector Search index
+      const db = await getDB()
+      const collection = db.collection("vectors")
+      // Define your Atlas Vector Search index
     const index = {
         name: "vector_index",
         type: "vectorSearch",
@@ -27,8 +25,8 @@ async function run() {
     // Call the method to create the index
     const result = await collection.createSearchIndex(index);
     console.log(result);
-  } finally {
-    await client.close();
+  } catch {
+    Error("error")
   }
 }
 run().catch(console.dir);
