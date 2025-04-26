@@ -17,9 +17,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const db = await getDB()
+    const db = await getDB();
 
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+    const userProfile = await db
+      .collection("users")
+      .findOne({ clerkId: clerkUser.id });
 
     if (!userProfile) {
       return NextResponse.json(
@@ -50,6 +52,8 @@ export async function POST(req: Request) {
     );
 
     recipeToInsert.tags = tags;
+
+    console.log("recipeToInsert", recipeToInsert);
 
     if (!validateRecipeWithoutId(recipeToInsert, isValidObjectId)) {
       return NextResponse.json(
