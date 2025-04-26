@@ -8,7 +8,7 @@ export const RecipeApi = {
         method: "POST",
         body: JSON.stringify(recipe),
       });
-      return response as Recipe;
+      return response;
     } catch (error) {
       console.error("Error creating recipe:", error);
       throw error;
