@@ -28,7 +28,8 @@ export type User = NewUser & {
 };
 
 export type FollowMetadata = {
-  _id: string; // mongodb id of user
+  _id: ObjectId; // mongodb id of user
+  imageId: ObjectId | null;
   username: string; // Username of the user
 };
 

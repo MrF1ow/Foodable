@@ -7,7 +7,7 @@ import SideList from "@/components/side-list/SideList";
 import RecipePopUp from "@/components/popups/RecipePopup";
 import AddItem from "@/components/forms/AddItem";
 import { useRouter } from "next/navigation";
-import { FollowingPopup } from "@/components/page-specific/social/SocialFollowerPopup";
+import FollowingPopup from "@/components/popups/FollowingPopup";
 
 export default function RecipePageInjections() {
   const currentForm = useGeneralStore((state) => state.currentForm);

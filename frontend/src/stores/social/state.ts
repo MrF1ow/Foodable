@@ -8,7 +8,6 @@ export type SocialState = {
   currentFollowSection: UserSections;
   currentSavedSection: SavedSections;
   selectedUser: User | null;
-  isFollowerPopupOpen: boolean;
 };
 
 export type SocialActions = {
@@ -18,7 +17,6 @@ export type SocialActions = {
   setCurrentSavedSection: (section: SavedSections) => void;
   setSelectedUser: (user: User | null) => void;
   resetSocialState: () => void;
-  setIsFollowerPopupOpen: (isOpen: boolean) => void;
 };
 
 export const createSocialActions = (set: any): SocialActions => ({
@@ -37,9 +35,6 @@ export const createSocialActions = (set: any): SocialActions => ({
   setSelectedUser: (user: User | null) =>
     set((state: SocialState) => ({ ...state, selectedUser: user })),
 
-  setIsFollowerPopupOpen: (isOpen: boolean) =>
-    set((state: SocialState) => ({ ...state, isFollowerPopupOpen: isOpen })),
-
   resetSocialState: () =>
     set(() => ({
       ...defaultInitState,
@@ -54,7 +49,6 @@ export const defaultInitState: SocialState = {
   currentFollowSection: "following",
   currentSavedSection: "recipes",
   selectedUser: null,
-  isFollowerPopupOpen: false,
 };
 
 export const createSocialStore = (

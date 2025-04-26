@@ -1,4 +1,4 @@
-import { NewUser, User, UserPreferences, UserSettings } from "@/types/user";
+import { FollowMetadata, NewUser, User, UserPreferences, UserSettings } from "@/types/user";
 import fetchWithAuth from "../fetchInstance";
 
 export const UserApi = {
@@ -73,6 +73,19 @@ export const UserApi = {
       const response = await fetchWithAuth("/user/users/following", {
         method: "DELETE",
         body: JSON.stringify({ followingId }),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error removing follower:", error);
+      throw error;
+    }
+  },
+
+  followUser: async (follow: FollowMetadata) => {
+    try {
+      const response = await fetchWithAuth("/user/users/following", {
+        method: "POST",
+        body: JSON.stringify(follow),
       });
       return response;
     } catch (error) {

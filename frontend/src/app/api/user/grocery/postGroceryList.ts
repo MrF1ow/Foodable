@@ -8,7 +8,6 @@ import { NewGroceryList } from "@/types/grocery";
 // Package Imports
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {

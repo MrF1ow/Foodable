@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { UserApi } from "../api/userApi";
-import { User, UserPreferences, UserSettings } from "@/types/user";
+import { FollowMetadata, User, UserPreferences, UserSettings } from "@/types/user";
 import {
   USERS,
   CURRENT_LIST,
@@ -137,6 +137,19 @@ export const useDeleteFollowing = () => {
     isLoadingDeleteFollowing: mutation.isPending,
     errorDeleteFollowing: mutation.error,
     isErrorDeleteFollowing: mutation.isError,
+  };
+};
+
+export const useFollowUser = () => {
+  const mutation = useMutation<string, Error, FollowMetadata>({
+    mutationFn: (follow: FollowMetadata) => UserApi.followUser(follow),
+  });
+
+  return {
+    followUser: mutation.mutate,
+    isLoadingFollowUser: mutation.isPending,
+    errorFollowUser: mutation.error,
+    isErrorFollowUser: mutation.isError
   };
 };
 

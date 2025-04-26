@@ -5,11 +5,9 @@ import {
   SocialPageFollowingHeader,
   SocialPageSavedHeader,
 } from "./SocialPageHeader";
-import SaveItemSearchBar from "../saved/SaveItemSearchBar";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
 import {
-  RecipeMetaData,
   SavedGroceryMetaData,
   SavedRecipeMetaData,
 } from "@/types/saved";
@@ -30,7 +28,6 @@ import { useRouter } from "next/navigation";
 import { useGeneralStore } from "@/stores/general/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { SavedSections } from "@/types";
-import { createToMutate } from "@/lib/utils/listItems";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { GroceryItem, GroceryList } from "@/types/grocery";
 
@@ -52,13 +49,12 @@ export const UserFollowSection = ({
     (state) => state.currentFollowSection
   );
 
-  const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
-  const [open, setOpen] = useState(false);
-
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
   });
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setShowMainPortal = useGeneralStore((state) => state.setShowMainPortal);
+
 
   const { deleteFollowing } = useDeleteFollowing();
 
@@ -72,6 +68,7 @@ export const UserFollowSection = ({
 
   const handleFollowerClick = (id: string) => {
     setCurrentForm(FORM_NAMES.FOLLOWER_POPUP);
+    setShowMainPortal(true);
     router.push(`social/user/${id}`);
   };
 
@@ -86,7 +83,7 @@ export const UserFollowSection = ({
           )}
           {followers.map((follower) => (
             <SocialItem
-              key={follower._id}
+              key={follower._id.toString()}
               title={follower.username}
               handleClick={() => handleFollowerClick(follower._id.toString())}
             />
@@ -102,7 +99,7 @@ export const UserFollowSection = ({
           )}
           {following.map((follow) => (
             <SocialItem
-              key={follow._id}
+              key={follow._id.toString()}
               title={follow.username}
               Icon={FaHeart}
               handleRemove={() => handleDeleteFollowing(follow._id.toString())}

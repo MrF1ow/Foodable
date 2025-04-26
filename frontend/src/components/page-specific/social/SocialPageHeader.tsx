@@ -22,7 +22,7 @@ import { useFetchSelf } from "@/server/hooks/userHooks";
 import { ExistingImageData, NewImageData } from "@/types/images";
 
 
-export default function SocialPageHeader({ userDetails }: { userDetails: any }): JSX.Element {
+export default function SocialPageHeader({ userDetails }: { userDetails?: any }): JSX.Element {
 
   const { userName, userPfp } = userDetails;
 
