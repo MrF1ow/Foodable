@@ -1,11 +1,5 @@
-// Package Imports
-import { BiArrowBack } from "react-icons/bi";
-import { useRouter } from "next/navigation";
-
 // Local Imports
 import { Card, CardContent } from "@/components/ui/card";
-import pfp from "../../../public/images/pfp.jpg";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   RecipeContent,
   RecipePopupHeader,
@@ -13,6 +7,8 @@ import {
 import { useRecipeStore } from "@/stores/recipe/store";
 import { Recipe } from "@/types/recipe";
 import { JSX } from "react";
+import { createToMutate } from "@/lib/utils/listItems";
+import { useAllSavedItems, useDeleteSavedItem } from "@/server/hooks/savedItemsHooks";
 
 interface RecipePopUpProps {
   className?: string;
@@ -25,12 +21,22 @@ export default function RecipePopUp({
 }: RecipePopUpProps): JSX.Element {
   const currentData = useRecipeStore((state) => state.currentRecipe);
   const imageUrl = useRecipeStore((state) => state.currentImageUrl);
+  const { refetchSavedItems } = useAllSavedItems({ enabled: true });
+
+  const { deleteSavedItem } = useDeleteSavedItem();
 
   if (!currentData) return <></>;
 
   const handleBackButtonClick = () => {
     additionalBackButtonClick?.();
   };
+
+  const handleRemoveSavedRecipe = async () => {
+    const toDelete = createToMutate(currentData, currentData.title);
+
+    deleteSavedItem(toDelete);
+    await refetchSavedItems();
+  }
 
   return (
     <>
@@ -45,6 +51,7 @@ export default function RecipePopUp({
                 imageUrl={imageUrl}
                 recipe={currentData as Recipe}
                 handleBackButton={handleBackButtonClick}
+                handleRemoveItem={handleRemoveSavedRecipe}
               />
 
               {/* Recipe Content */}

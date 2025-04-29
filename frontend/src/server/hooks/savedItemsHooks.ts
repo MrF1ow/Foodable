@@ -41,6 +41,19 @@ export const useCreateSavedItem = () => {
   };
 };
 
+export const useUpdateSavedItem = () => {
+  const mutation = useMutation<SavedItem, Error, SavedItem>({
+    mutationFn: (item: SavedItem) => SavedItemsApi.updateSavedItem(item),
+  });
+
+  return {
+    updateSavedItem: mutation.mutateAsync,
+    isUpdatingItem: mutation.isPending,
+    updateError: mutation.error,
+    updateData: mutation.data,
+  };
+}
+
 export const useDeleteSavedItem = () => {
   const mutation = useMutation<void, Error, SavedItem>({
     mutationFn: (item: SavedItem) => SavedItemsApi.deleteItem(item),

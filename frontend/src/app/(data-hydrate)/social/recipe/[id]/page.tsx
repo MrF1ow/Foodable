@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 import Social from "@/app/(data-hydrate)/social/social";
 import SocialPageInjections from "@/components/portal-injections/SocialPageInjections";
-import { FollowingPopup } from "@/components/page-specific/social/SocialFollowerPopup";
+import { FollowingPopup } from "@/components/popups/FollowingPopup";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);

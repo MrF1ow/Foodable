@@ -6,28 +6,62 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { Readable, pipeline } from "stream";
 import { ObjectId } from "mongodb";
+import { isValidCollectionName } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/utils/validation";
+import { getCreatorFromImageIdLocation } from "@/lib/utils/routeHelpers";
+import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
   try {
     const { bucket, db } = await setupGridFS();
-    const recipeCollection = db.collection("recipes");
 
     const formData = await req.formData();
 
     const file = formData.get("image");
     const sourceId = formData.get("sourceId");
+    const collectionName = formData.get("collectionName");
 
-    if (!file || !(file instanceof Blob)) {
+    if (!file || !(file instanceof Blob) || !isValidObjectId(sourceId) || !isValidCollectionName(collectionName)) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },
         { status: 400 }
       );
     }
 
+    const docId = sourceId?.toString()
+    const creatorTag = getCreatorFromImageIdLocation(collectionName)
+
+    const sourceDoc = await db.collection(collectionName).findOne({
+      _id: ObjectId.createFromHexString(docId!)
+    })
+
+    if (!sourceDoc) {
+      return NextResponse.json(
+        { message: "Document Not Found" },
+        { status: 404 }
+      );
+    }
+
+    const creatorId = sourceDoc[creatorTag]
+
+    const clerkUser = await currentUser();
+
+    if (!clerkUser || !clerkUser.id) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (creatorId.toString() !== userProfile?._id.toString()) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const collection = db.collection(collectionName);
+
     const fileStream = file.stream();
 
     const nodeReadableStream = new Readable();
-    nodeReadableStream._read = () => {};
+    nodeReadableStream._read = () => { };
 
     // Process the file into the nodeReadableStream
     const reader = fileStream.getReader();
@@ -61,26 +95,28 @@ export async function POST(req: Request) {
     const uploadStream = bucket.openUploadStream(file.name, {
       metadata: {
         sourceId: sourceId,
+        creatorId: userProfile?._id,
         contentType: file.type,
       },
     });
 
     // Use pipeline to pipe the data into GridFS
-    pipeline(nodeReadableStream, uploadStream, (err) => {
-      if (err) {
-        console.error("Pipeline error:", err);
-        return NextResponse.json(
-          { message: HTTP_RESPONSES.INTERNAL_SERVER_ERROR },
-          { status: 500 }
-        );
-      }
-      console.log("Upload complete:", uploadStream.id);
+    await new Promise<void>((resolve, reject) => {
+      pipeline(nodeReadableStream, uploadStream, (err) => {
+        if (err) {
+          console.error("Pipeline error:", err);
+          reject(new Error(HTTP_RESPONSES.INTERNAL_SERVER_ERROR));
+        } else {
+          console.log("Upload complete:", uploadStream.id);
+          resolve();
+        }
+      });
     });
 
     if (sourceId) {
-      const recipeId = new ObjectId(sourceId.toString());
-      recipeCollection.updateOne(
-        { _id: recipeId },
+      const docId = ObjectId.createFromHexString(sourceId.toString());
+      await collection.updateOne(
+        { _id: docId },
         { $set: { imageId: uploadStream.id } }
       );
     }

@@ -11,6 +11,7 @@ import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 import Box from "@/components/Box";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
+import logo from "../../../../public/images/logo_current_no_shadow.png"
 import Spinner from "@/components/Spinner";
 
 interface RecipeBoxProps {
@@ -23,7 +24,7 @@ export default function RecipeBox({ data, handleBoxClick, width }: RecipeBoxProp
   const setCurrentRecipe = useRecipeStore((state) => state.setCurrentRecipe);
   const setImageUrl = useRecipeStore((state) => state.setCurrentImageUrl);
 
-  const { image, isLoadingImage, errorImage } = useFetchImageById(data?.imageId, {
+  const { image, isLoadingImage, errorImage } = useFetchImageById(data?.imageId?.toString() ?? null, {
     enabled: !!data?.imageId && isValidObjectId(data?.imageId),
   });
 
@@ -50,7 +51,7 @@ export default function RecipeBox({ data, handleBoxClick, width }: RecipeBoxProp
 
   const handleRecipeClick = async () => {
     setCurrentRecipe(data);
-    setImageUrl(image.base64Image);
+    setImageUrl(image ? image.base64Image : null);
     const response = await refetchRecipe();
     if (response.data) {
       console.log("Recipe fetched successfully:", response.data);
@@ -61,9 +62,17 @@ export default function RecipeBox({ data, handleBoxClick, width }: RecipeBoxProp
 
   return (
     <Box key={data._id.toString()} onClick={handleRecipeClick} width={width}>
-      {image?.base64Image && (
+      {image && image.base64Image && (
         <Image
           src={image.base64Image}
+          alt={data.title}
+          fill
+          className="object-cover"
+        />
+      )}
+      {!image && !image?.base64Image && (
+        <Image
+          src={logo.src}
           alt={data.title}
           fill
           className="object-cover"

@@ -11,8 +11,9 @@ export type RecipeIngredient = {
 };
 
 export type NewRecipe = {
+  _id: null;
   creatorId: ObjectId; // The user ID of the creator
-  imageId: ObjectId; // The image ID of the recipe
+  imageId: ObjectId | null; // The image ID of the recipe
   title: string; // The title of the recipe
   description: string; // The description of the recipe
   ingredients: RecipeIngredient[]; // The ingredients of the recipe

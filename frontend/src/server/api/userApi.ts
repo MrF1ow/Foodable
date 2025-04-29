@@ -1,4 +1,4 @@
-import { NewUser, User, UserPreferences, UserSettings } from "@/types/user";
+import { FollowMetadata, NewUser, User, UserPreferences, UserSettings } from "@/types/user";
 import fetchWithAuth from "../fetchInstance";
 
 export const UserApi = {
@@ -81,6 +81,19 @@ export const UserApi = {
     }
   },
 
+  followUser: async (follow: FollowMetadata) => {
+    try {
+      const response = await fetchWithAuth("/user/users/following", {
+        method: "POST",
+        body: JSON.stringify(follow),
+      });
+      return response;
+    } catch (error) {
+      console.error("Error removing follower:", error);
+      throw error;
+    }
+  },
+
   fetchUserSettings: async () => {
     try {
       const response = await fetchWithAuth("/user/settings");
@@ -150,4 +163,41 @@ export const UserApi = {
       throw error;
     }
   },
+
+  fetchSignInUserBannerId: async () => {
+    try {
+      const response = await fetchWithAuth("/user/banner", {
+        method: "GET"
+      })
+      return response;
+    } catch (error) {
+      console.error("Error Fetching User Banner Id", error);
+      throw error;
+    }
+  },
+
+  updateSignInUserBannerId: async (id: string) => {
+    try {
+      const response = await fetchWithAuth("/user/banner", {
+        method: "PUT",
+        body: JSON.stringify({ bannerId: id })
+      })
+      return response;
+    } catch (error) {
+      console.error("Error Fetching User Banner Id", error);
+      throw error;
+    }
+  },
+
+  fetchSelf: async () => {
+    try {
+      const response = await fetchWithAuth("/user", {
+        method: "GET"
+      })
+      return response;
+    } catch (error) {
+      console.error("Error fetching self:", error);
+      throw error;
+    }
+  }
 };

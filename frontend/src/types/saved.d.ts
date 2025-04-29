@@ -8,7 +8,7 @@ export interface RecipeMetaData {
   creatorId: ObjectId;
   type: "recipe";
   title: string;
-  imageId: string; // Required for recipes
+  imageId: ObjectId | null;
   tags: {
     time: number;
     price: number;

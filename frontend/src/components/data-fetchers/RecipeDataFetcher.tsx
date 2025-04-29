@@ -32,7 +32,7 @@ export default function RecipeDataFetcher() {
         { enabled: !!recipeId && isValidObjectId(recipeId) }
     );
 
-    const { refetchImage } = useFetchImageById(currentData?.imageId as string, {
+    const { refetchImage } = useFetchImageById(currentData?.imageId as unknown as string, {
         enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
     });
 

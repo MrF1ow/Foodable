@@ -34,7 +34,7 @@ export default function Page() {
         { enabled: !!recipeId && isValidObjectId(recipeId) }
     );
 
-    const { refetchImage } = useFetchImageById(currentData?.imageId as string, {
+    const { refetchImage } = useFetchImageById(currentData?.imageId?.toString()!, {
         enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
     });
 

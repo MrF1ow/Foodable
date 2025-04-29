@@ -29,6 +29,8 @@ import { JSX } from "react";
 import { useUserStore } from "@/stores/user/store";
 import GroceryAddButton from "./GroceryAddListButton";
 
+import GroceryDeleteButton from "./GroceryDeleteButton";
+
 export const MainGroceryHeader = (): JSX.Element => {
     const isUser = useUserStore((state) => state.isUser);
     const isMobile = useGeneralStore((state) => state.isMobile);
@@ -118,27 +120,20 @@ export const MainGroceryHeader = (): JSX.Element => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 ) : (
-                    <>
-                        <Button
-                            onClick={handleItemDeletion}
-                            className="mr-2 p-6 px-4 flex items-center justify-center bg-destructive rounded-md hover:scale-105 hover:shadow-lg transition-all"
-                            data-testid="remove-items-button"
-                        >
-                            <Icons.delete className="!h-6 !w-6" />
-                        </Button>
+                    <div className="flex flex-row items-center pt-6 pb-6 h-full gap-2">
+                        <GroceryDeleteButton />
                         <Button
                             onClick={() => {
-                                setCurrentForm(FORM_NAMES.FIND_PRICE)
+                                setCurrentForm(FORM_NAMES.FIND_PRICE);
                                 setShowPortal(true);
                                 setSplitLayout(true);
-                            }
-                            }
-                            className="text-2xl p-6 bg-primary font-bold rounded-md hover:scale-105 hover:shadow-lg transition-all"
+                            }}
+                            className="h-12 px-4 bg-primary rounded-md hover:scale-105 hover:shadow-lg transition-all text-base"
                             data-testid="find-price-button"
                         >
-                            {"Find Price"}
+                            Find Price
                         </Button>
-                    </>
+                    </div>
                 )}
             </div>
         </GroceryHeaderWithChildren>
@@ -158,17 +153,18 @@ export const GroceryHeaderWithChildren = ({
     );
 };
 
+export interface GroceryHeaderProps {
+    additionalBackClick?: () => void;
+}
 
-export const GroceryHeader = ({ additionalBackClick }: { additionalBackClick?: () => void; }) => {
+
+export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
     const isUser = useUserStore((state) => state.isUser);
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
     const currentForm = useGeneralStore((state) => state.currentForm);
-    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
-    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
-    const isMobile = useGeneralStore((state) => state.isMobile);
 
     const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -190,8 +186,6 @@ export const GroceryHeader = ({ additionalBackClick }: { additionalBackClick?: (
 
     const handleCloseSideList = () => {
         additionalBackClick?.();
-        setCurrentForm(null);
-        setShowPortal(false);
     }
 
     const filteredLists = currentList._id
@@ -253,27 +247,33 @@ export const GroceryHeader = ({ additionalBackClick }: { additionalBackClick?: (
     );
 };
 
-
-export interface GroceryHeaderProps {
-    width: string;
-}
-
-export const GroceryHeaderMin = ({ width }: GroceryHeaderProps) => {
+export const GroceryHeaderMin = ({ additionalBackClick }: GroceryHeaderProps) => {
     const currentList = useGroceryStore((state) => state.currentList);
+    const currentForm = useGeneralStore((state) => state.currentForm);
+    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const setShowPortal = useGeneralStore((state) => state.setShowPortal);
+
+    const handleCloseSideList = () => {
+        additionalBackClick?.();
+    }
 
     if (!currentList) return null;
 
     return (
-        <div
-            className={`inline-flex items-center bg-primary font-bold rounded-[0%_0%_75%_0%] rounded-l-lg rounded-tr-lg px-4 py-2 h-full`}
-            style={{ width: width }}
-        >
+        <div className="flex flex-row justify-between items-center w-full">
             <div
-                className="text-foreground text-4xl cursor-pointer outline-none bg-transparent"
-                data-testid="grocery-header"
+                className={`inline-flex items-center justify-between md:justify-start bg-primary font-bold md:rounded-[0%_0%_75%_0%] md:rounded-l-lg md:rounded-tr-lg rounded-lg px-4 py-2 h-full w-full lg:w-[40%] text-2xl md:text-3xl lg:text-4xl`}
             >
-                {currentList.title || "New List"}
+                <div
+                    className="text-foreground text-4xl cursor-pointer outline-none bg-transparent"
+                    data-testid="grocery-header"
+                >
+                    {currentList.title || "New List"}
+                </div>
             </div>
+            {currentForm === FORM_NAMES.GROCERY_LIST && (
+                <MdClose onClick={handleCloseSideList} size={40} />
+            )}
         </div>
     );
 };

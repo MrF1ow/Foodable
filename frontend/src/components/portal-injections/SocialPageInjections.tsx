@@ -5,11 +5,13 @@ import PortalInjector from "../PortalInjector";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import SideList from "@/components/side-list/SideList";
 import RecipePopUp from "@/components/popups/RecipePopup";
+import AddItem from "@/components/forms/AddItem";
 import { useRouter } from "next/navigation";
-import { FollowingPopup } from "@/components/page-specific/social/SocialFollowerPopup";
+import FollowingPopup from "@/components/popups/FollowingPopup";
 
 export default function RecipePageInjections() {
   const currentForm = useGeneralStore((state) => state.currentForm);
+  const setForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowMainPortal = useGeneralStore((state) => state.setShowMainPortal);
 
   const router = useRouter();
@@ -18,6 +20,11 @@ export default function RecipePageInjections() {
     setShowMainPortal(false);
     router.back();
   };
+
+
+  const handleAddItemClose = () => {
+    setForm(FORM_NAMES.GROCERY_LIST)
+  }
 
   const sideList = (
     <SideList
@@ -41,6 +48,8 @@ export default function RecipePageInjections() {
     />
   );
 
+  const addItemForm = <AddItem className="lg:max-w-[35%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleClose={handleAddItemClose} />;
+
   return (
     <>
       {currentForm === FORM_NAMES.RECIPE && (
@@ -62,6 +71,12 @@ export default function RecipePageInjections() {
           containerId="main-modal-portal"
           componentToInject={followerPopop}
           changeShowMainPortal={true}
+        />
+      )}
+      {currentForm === FORM_NAMES.ADD_ITEM_TO_LIST && (
+        <PortalInjector
+          containerId="main-modal-portal"
+          componentToInject={addItemForm}
         />
       )}
     </>

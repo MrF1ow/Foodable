@@ -2,6 +2,7 @@ import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { ObjectId } from "mongodb";
 
 export async function DELETE(id: any) {
     try {
@@ -13,18 +14,19 @@ export async function DELETE(id: any) {
         }
 
         const db = await getDB();
+        const objectId = ObjectId.createFromHexString(id);
 
         const pullResult = await db.collection("users").updateMany(
-            { "savedItems.groceryLists": id },
+            { "savedItems.groceryLists._id": objectId },
             {
                 $pull: {
-                    "savedItems.groceryLists": id,
+                    "savedItems.groceryLists": { _id: objectId },
                 },
-            }
+            } as any
         );
 
         const resetCurrentResult = await db.collection("users").updateMany(
-            { currentGroceryList: id },
+            { currentGroceryList: objectId },
             { $set: { currentGroceryList: null } }
         );
 

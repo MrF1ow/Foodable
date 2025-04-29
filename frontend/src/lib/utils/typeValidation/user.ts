@@ -1,4 +1,4 @@
-import { User, UserRating, NewUser } from "@/types/user";
+import { User, UserRating, NewUser, FollowMetadata } from "@/types/user";
 import { isValidStringArray } from "@/lib/utils/typeValidation/general";
 import { isValidUserId } from "@/lib/utils/typeValidation/general";
 
@@ -15,6 +15,18 @@ const validatePreferences = (preferences: any): boolean => {
     isValidStringArray(preferences.allergies)
   );
 };
+
+export const validateUserFollow = (
+  follow: any,
+  validateIdFn: (id: any) => boolean
+): follow is FollowMetadata => {
+  return (
+    follow &&
+    validateIdFn(follow._id) &&
+    (validateIdFn(follow.imageId) || follow.imageId === null) &&
+    typeof follow.username === "string"
+  )
+}
 
 // Validate UserRating
 export const validateUserRating = (
@@ -39,6 +51,7 @@ export const validateUserWithoutID = (
     typeof user.username === "string" &&
     typeof user.email === "string" &&
     validateSettings(user.settings) &&
+    (user.imageId === undefined || user.imageId === null || validateIdFn(user.imageId)) &&
     validatePreferences(user.preferences) &&
     Array.isArray(user.savedItems.recipes) &&
     Array.isArray(user.savedItems.groceryLists) &&
@@ -61,8 +74,8 @@ export const validateUserWithoutID = (
       (user.currentGroceryList !== null &&
         validateIdFn(user.currentGroceryList))) &&
     user.createdRecipes.every((item) => validateIdFn(item)) &&
-    user.following.every((item) => validateIdFn(item)) &&
-    user.followers.every((item) => validateIdFn(item)) &&
+    user.following.every((item) => validateUserFollow(item, validateIdFn)) &&
+    user.followers.every((item) => validateUserFollow(item, validateIdFn)) &&
     // Optional lastLogin validation
     (user.lastLogin === undefined ||
       (user.lastLogin instanceof Date && !isNaN(user.lastLogin.getTime()))) &&

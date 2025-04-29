@@ -24,19 +24,37 @@ import { Button } from "@/components/ui/button";
 import { unitOptions } from "@/config/unit-conversions";
 import { useFieldArray } from "react-hook-form";
 import { grocerySections } from "@/config/grocery-sections";
-import { z } from "zod";
+import { date, z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
+import { useCreateRecipe } from "@/server/hooks/recipeHooks";
+import { NewRecipe, Recipe } from "@/types/recipe";
+// import { SavedItem } from "@/types/savedItems";
+import { GrocerySectionOptions } from "@/types/grocery";
+import { showToast } from "@/app/providers";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
+import { useState } from "react";
+import { useFetchSelf } from "@/server/hooks/userHooks";
+import { NewImageData } from "@/types/images";
+import { useUploadImage } from "@/server/hooks/imageHooks";
+import { randomUUID } from "crypto";
 
 export const AddRecipe = () => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
   const { AddRecipeFormSchema, defaultValues, resolver } =
     getAddRecipeFormValidation();
+
+  const { createRecipe } = useCreateRecipe();
+  const { createSavedItem } = useCreateSavedItem();
+  const { userProfile } = useFetchSelf({ enabled: true });
+  const { uploadImage } = useUploadImage();
 
   const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
     defaultValues,
@@ -61,8 +79,60 @@ export const AddRecipe = () => {
     name: "instructions",
   });
 
-  const onSubmit = (data: z.infer<typeof AddRecipeFormSchema>) => {
-    console.log("Form submitted:", data);
+  const onSubmit = async (data: z.infer<typeof AddRecipeFormSchema>) => {
+    const newRecipe = {
+      title: data.title,
+      description: data.description,
+      ingredients: data.ingredients.map((ingredient) => ({
+        ...ingredient,
+        category: categories.find(
+          (section) => section.title === ingredient.category
+        )?.title as GrocerySectionOptions,
+      })),
+      instructions: data.instructions.map((instruction) => instruction.step),
+      image: data.image,
+      creatorId: userProfile._id,
+      imageId: null,
+      userRatings: [],
+      averageRating: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      priceApproximation: 0,
+      timeApproximation: 0,
+      timestamp: new Date(),
+      tags: [],
+    };
+
+    const createData = await createRecipe(newRecipe as Recipe);
+
+    const newImage: NewImageData = {
+      image: data.image as File,
+      sourceId: createData._id,
+      collectionName: "recipes",
+    };
+
+    const image = await uploadImage(newImage);
+
+    if (!createData) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "Failed to create grocery list",
+        3000
+      );
+      return;
+    }
+
+    const newSaveItem = {
+      _id: createData._id,
+      imageId: image._id,
+      tags: [],
+      title: createData.title,
+      type: "recipe",
+      category: "Recipes",
+    };
+
+    const savedItem = await createSavedItem(newSaveItem as SavedItem);
   };
 
   const handleInputClose = () => {
@@ -110,10 +180,28 @@ export const AddRecipe = () => {
                         onChange={(e) => {
                           const file = e.target.files?.[0] || null;
                           field.onChange(file);
+
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            setPreviewUrl(url);
+                          } else {
+                            setPreviewUrl(null);
+                          }
                         }}
                         data-testid="recipe-image-input"
                       />
-                      {field.value?.name || "Click to upload image"}
+                      {previewUrl ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div>{field.value?.name}</div>
+                          <img
+                            src={previewUrl}
+                            alt="Recipe Preview"
+                            className="max-h-48 rounded-md"
+                          />
+                        </div>
+                      ) : (
+                        field.value?.name || "Click to upload image"
+                      )}
                     </label>
                   </FormControl>
                   <FormMessage />

@@ -10,6 +10,8 @@ import {
   SETTINGS,
   PREFERENCES,
   CURRENT_LIST,
+  IMAGES,
+  SELF,
 } from "@/lib/constants/process";
 import { GroceryApi, RecipeApi, UserApi, SavedItemsApi } from "@/server/api";
 import { checkRole } from "@/lib/utils/roles";
@@ -51,6 +53,17 @@ export default async function FetchData(options: FetchDataOptions = {}) {
     }
 
     if (options?.userData) {
+
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, IMAGES],
+        queryFn: () => UserApi.fetchSignInUserBannerId(),
+      });
+
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, SELF],
+        queryFn: () => UserApi.fetchSelf()
+      });
+
       await queryClient.prefetchQuery({
         queryKey: [USERS, FOLLOWERS],
         queryFn: () => UserApi.fetchAllFollowersOfUser(),

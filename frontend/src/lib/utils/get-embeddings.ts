@@ -7,4 +7,4 @@ export async function getEmbedding(data: any) {
         'Xenova/nomic-embed-text-v1');
     const results = await embedder(data, { pooling: 'mean', normalize: true });
     return Array.from(results.data);
-  }
+}

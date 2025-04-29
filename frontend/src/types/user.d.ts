@@ -28,7 +28,8 @@ export type User = NewUser & {
 };
 
 export type FollowMetadata = {
-  _id: string; // mongodb id of user
+  _id: ObjectId; // mongodb id of user
+  imageId: ObjectId | null;
   username: string; // Username of the user
 };
 
@@ -46,6 +47,7 @@ export type SavedGroceryItems = {
 export type NewUser = UserIdentifiers & {
   // User profile settings (will add more later)
   settings: UserSettings;
+  imageId: ObjectId | null; // banner of user
 
   // User profile preferences (will add more later)
   preferences: UserPreferences;

@@ -4,6 +4,7 @@ import { UserPreferences } from "@/types/user";
 
 export type UserState = {
   isUser: boolean;
+  bannerId: string | null;
   currentItemId: string | null;
   language: string;
   preferences: {
@@ -18,6 +19,7 @@ export type UserState = {
 
 export type UserActions = {
   setIsUser: (isUser: boolean) => void;
+  setBannerId: (bannerId: string | null) => void;
   setCurrentItemId: (currentItemId: string) => void;
   setLanguage: (language: string) => void;
   setPreferences: (preferences: UserPreferences) => void;
@@ -27,6 +29,9 @@ export type UserActions = {
 export const createUserActions = (set: any): UserActions => ({
   setIsUser: (isUser: boolean) =>
     set((state: UserState) => ({ ...state, isUser })),
+  setBannerId: (bannerId) => {
+    set((state: UserState) => ({ ...state, bannerId }))
+  },
   setCurrentItemId: (currentItemId: string) =>
     set((state: UserState) => ({ ...state, currentItemId })),
   setLanguage: (language: string) =>
@@ -41,6 +46,7 @@ export type UserStore = UserState & UserActions;
 
 export const defaultInitState: UserState = {
   isUser: false,
+  bannerId: null,
   currentItemId: null,
   language: "en",
   preferences: {

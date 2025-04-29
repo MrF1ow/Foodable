@@ -41,11 +41,18 @@ import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { KrogerProduct } from "@/types/kroger";
 import Image from "next/image";
 
+interface AddItemFormProps {
+  className?: string;
+  handleClose?: () => void;
+}
+
 export default function AddItem({
   className,
-}: {
-  className?: string;
-}): JSX.Element {
+  handleClose,
+}: AddItemFormProps): JSX.Element {
+  const [selectedProductId, setSelectedProductId] = useState<
+    string | undefined
+  >(undefined);
   const [term, setTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -99,6 +106,7 @@ export default function AddItem({
       unit: data.unit,
       category: selectedCategory,
       checked: false,
+      productId: selectedProductId,
     };
 
     if (!currentList) return;
@@ -146,13 +154,17 @@ export default function AddItem({
   }
 
   const handleInputClose = () => {
-    setCurrentForm(null);
-    setShowPortal(false);
-    setSplitLayout(false);
+    if (handleClose) {
+      handleClose();
+    } else {
+      setCurrentForm(null);
+      setShowPortal(false);
+      setSplitLayout(false);
+    }
   };
 
   return (
-    <div className={cn(className)}>
+    <div className={`w-full h-full pl-0 md:pl-4 lg:pl-6 xl:pl-6 ${className}`}>
       <Form {...form}>
         <InputCard
           title="Add Item"
@@ -178,6 +190,7 @@ export default function AddItem({
                           onChange={async (e) => {
                             field.onChange(e.target.value);
                             setTerm(e.target.value);
+                            setSelectedProductId(undefined);
                           }}
                           data-testid="itemName-input"
                         />
@@ -192,9 +205,10 @@ export default function AddItem({
                                 <div
                                   key={item.productId}
                                   className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                                  onClick={() => {
+                                  onMouseDown={() => {
                                     form.setValue("itemName", description);
                                     form.setValue("quantity", 1);
+                                    setSelectedProductId(item.productId);
                                   }}
                                 >
                                   {image && (

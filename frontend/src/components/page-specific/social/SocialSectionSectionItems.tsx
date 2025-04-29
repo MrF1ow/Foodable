@@ -10,7 +10,7 @@ import { IconType } from "react-icons/lib";
 // Need to add onClick functionality to the button so that the users can go to different pages
 interface SocialItemProps {
   title: string;
-  imageId?: string;
+  imageId?: string | null;
   handleClick: () => void;
   Icon?: React.ElementType;
   handleRemove?: () => void;

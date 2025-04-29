@@ -11,12 +11,15 @@ import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
-import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Recipe, RecipeIngredient } from "@/types/recipe";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
     const id = params.id;
     const recipeId = getRouteParam(id);
+
+    const router = useRouter();
 
     const [renderComponent, setRenderComponent] = useState(false);
 
@@ -29,12 +32,12 @@ export default function Page() {
     const currentData = useRecipeStore((state) => state.currentRecipe);
     const currentList = useGroceryStore((state) => state.currentList);
 
-    const { refetchRecipe, recipe, isErrorRecipe, errorRecipe } = useRecipeById(
+    const { refetchRecipe } = useRecipeById(
         recipeId as string,
         { enabled: !!recipeId && isValidObjectId(recipeId) }
     );
 
-    const { refetchImage } = useFetchImageById(currentData?.imageId as string, {
+    const { refetchImage } = useFetchImageById(currentData?.imageId?.toString() ?? null, {
         enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
     });
 
@@ -46,6 +49,7 @@ export default function Page() {
 
         refetchRecipe().then((response) => {
             if (response.data) {
+                console.log("Recipe Data", response.data)
                 setCurrentData(response.data);
                 setRenderComponent(true);
                 const additionalIngredients = getAdditionalIngredients(
@@ -72,7 +76,7 @@ export default function Page() {
                 }
             });
         } else {
-            console.warn("Invalid or missing imageId, skipping refetch.");
+            setImageUrl(null);
         }
     }, [currentData]);
 
@@ -81,7 +85,8 @@ export default function Page() {
             if (currentData) {
                 if ('ingredients' in currentData) {
                     const additionalIngredients = getAdditionalIngredients(
-                        currentData?.ingredients,
+                        // eslint-disable-next-line
+                        currentData?.ingredients as RecipeIngredient[],
                         groceryMap
                     );
                     setAdditionalIngredients(additionalIngredients);
@@ -95,9 +100,13 @@ export default function Page() {
 
     if (!renderComponent) return null;
 
+    const additionalBackButtonClick = () => {
+        router.back()
+    }
+
     return (
         <>
-            <RecipePopUp />
+            <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />
             <RecipePageInjections />
         </>
     );

@@ -37,10 +37,10 @@ import {
 interface SaveBookmarkProps {
     isSaved: boolean;
     data: Recipe | GroceryList | SavedItem | UnsavedItem;
-    setOpen?: (arg0: boolean) => void;
+    handleRemove: () => Promise<void>;
 }
 
-export default function SaveBookmark({ isSaved, data, setOpen }: SaveBookmarkProps): JSX.Element {
+export default function SaveBookmark({ isSaved, data, handleRemove }: SaveBookmarkProps): JSX.Element {
     const categories = useSavedItemsStore((state) => state.currentCategories);
 
     const setCurrentCategories = useSavedItemsStore(
@@ -49,7 +49,6 @@ export default function SaveBookmark({ isSaved, data, setOpen }: SaveBookmarkPro
 
     const { refetchSavedItems } = useAllSavedItems({ enabled: true });
     const { createSavedItem } = useCreateSavedItem();
-    const { deleteSavedItem } = useDeleteSavedItem();
 
     const [newListTitle, setNewListTitle] = useState("");
     const [selectedList, setSelectedList] = useState("");
@@ -67,21 +66,10 @@ export default function SaveBookmark({ isSaved, data, setOpen }: SaveBookmarkPro
 
         await createSavedItem(toInsert);
         await refetchSavedItems();
-
-        if (setOpen) {
-            setOpen(false);
-        }
     };
 
     const handleRemoveSave = async () => {
-        const toDelete = createToMutate(data, selectedList);
-
-        deleteSavedItem(toDelete);
-        await refetchSavedItems();
-
-        if (setOpen) {
-            setOpen(false);
-        }
+        await handleRemove();
     };
 
     if (isSaved) {
@@ -99,8 +87,8 @@ export default function SaveBookmark({ isSaved, data, setOpen }: SaveBookmarkPro
     if (!isSaved) {
         return (
             <Dialog>
-                <DialogTrigger className="absolute bottom-0 right-0 pr-4 pb-4" asChild>
-                    <IoBookmarkOutline size={60} className="text-primary" />
+                <DialogTrigger asChild>
+                    <IoBookmarkOutline size={50} className="text-primary" />
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
