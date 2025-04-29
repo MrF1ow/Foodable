@@ -114,30 +114,32 @@ export default function FindPrice(): JSX.Element {
                 <FormItem>
                   <FormLabel className="text-2xl">Select Stores</FormLabel>
                   <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      {krogerLocations?.data?.map((location: any) => (
-                        <FormItem
-                          key={location.locationId}
-                          className="flex items-center space-x-3"
-                        >
-                          <FormControl>
-                            <RadioGroupItem value={location.locationId} />
-                          </FormControl>
-                          <FormLabel className="text-lg">
-                            {location.name}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
+                    <div className="max-h-72 overflow-y-auto">
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        {krogerLocations?.data?.map((location: any) => (
+                          <FormItem
+                            key={location.locationId}
+                            className="flex items-center space-x-3"
+                          >
+                            <FormControl>
+                              <RadioGroupItem value={location.locationId} />
+                            </FormControl>
+                            <FormLabel className="text-lg">
+                              {location.name}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
 
-                      {!krogerLocations?.data?.length && (
-                        <p className="text-lg">
-                          No store found near to this zipcode
-                        </p>
-                      )}
-                    </RadioGroup>
+                        {!krogerLocations?.data?.length && (
+                          <p className="text-lg">
+                            No store found near to this zipcode
+                          </p>
+                        )}
+                      </RadioGroup>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

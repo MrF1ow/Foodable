@@ -42,14 +42,17 @@ import { KrogerProduct } from "@/types/kroger";
 import Image from "next/image";
 
 interface AddItemFormProps {
-  className?: string,
-  handleClose?: () => void,
+  className?: string;
+  handleClose?: () => void;
 }
 
 export default function AddItem({
   className,
-  handleClose
+  handleClose,
 }: AddItemFormProps): JSX.Element {
+  const [selectedProductId, setSelectedProductId] = useState<
+    string | undefined
+  >(undefined);
   const [term, setTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -103,6 +106,7 @@ export default function AddItem({
       unit: data.unit,
       category: selectedCategory,
       checked: false,
+      productId: selectedProductId,
     };
 
     if (!currentList) return;
@@ -151,7 +155,7 @@ export default function AddItem({
 
   const handleInputClose = () => {
     if (handleClose) {
-      handleClose()
+      handleClose();
     } else {
       setCurrentForm(null);
       setShowPortal(false);
@@ -186,6 +190,7 @@ export default function AddItem({
                           onChange={async (e) => {
                             field.onChange(e.target.value);
                             setTerm(e.target.value);
+                            setSelectedProductId(undefined);
                           }}
                           data-testid="itemName-input"
                         />
@@ -200,9 +205,10 @@ export default function AddItem({
                                 <div
                                   key={item.productId}
                                   className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
-                                  onClick={() => {
+                                  onMouseDown={() => {
                                     form.setValue("itemName", description);
                                     form.setValue("quantity", 1);
+                                    setSelectedProductId(item.productId);
                                   }}
                                 >
                                   {image && (
@@ -232,8 +238,9 @@ export default function AddItem({
                 )}
               />
               <div
-                className={`flex ${isMobile ? "justify-center" : ""
-                  } items-center`}
+                className={`flex ${
+                  isMobile ? "justify-center" : ""
+                } items-center`}
               >
                 <FormField
                   control={form.control}

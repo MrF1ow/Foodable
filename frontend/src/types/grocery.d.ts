@@ -32,6 +32,7 @@ export interface GroceryItem {
   unit: Units;
   category: GrocerySectionOptions;
   checked: boolean;
+  productId: string | undefined;
 }
 
 export type GroceryList = NewGroceryList & { _id: ObjectId };
