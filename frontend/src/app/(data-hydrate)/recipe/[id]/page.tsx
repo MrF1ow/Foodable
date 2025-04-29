@@ -12,6 +12,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
 import { useRouter } from "next/navigation";
+import { Recipe, RecipeIngredient } from "@/types/recipe";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
@@ -84,7 +85,8 @@ export default function Page() {
             if (currentData) {
                 if ('ingredients' in currentData) {
                     const additionalIngredients = getAdditionalIngredients(
-                        currentData?.ingredients,
+                        // eslint-disable-next-line
+                        currentData?.ingredients as RecipeIngredient[],
                         groceryMap
                     );
                     setAdditionalIngredients(additionalIngredients);

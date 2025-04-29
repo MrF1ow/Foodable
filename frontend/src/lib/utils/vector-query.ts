@@ -22,10 +22,9 @@ async function run() {
                 $vectorSearch: {
                     index: "vector_index",
                     queryVector: queryEmbedding,
+                    numCandidates: 4,
                     path: "embedding",
-                    exact: false,
                     limit: 5,
-                    numCandidates: 100,  // Number of candidates to consider
                 }
             },
             {
