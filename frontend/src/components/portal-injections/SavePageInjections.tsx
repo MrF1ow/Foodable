@@ -31,7 +31,7 @@ export default function SavePageInjections() {
 
     const sideList = <SideList isUser={true} additionalBackButtonClick={additionalBackButtonClick} />;
 
-    const recipeForm = <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />;
+    const recipeForm = <RecipePopUp additionalBackButtonClick={additionalBackButtonClick}/>;
 
     const addItemForm = <AddItem className="h-full" handleClose={handleAddItemClose} setCurrentForm={setCurrentForm}/>;
 

@@ -22,8 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import pfp from "../../../../public/images/pfp.jpg";
 import logo from "../../../../public/images/logo_current_no_shadow.png"
 import { useRouter } from "next/navigation";
-import { useGeneralStore } from "@/stores/general/store";
-import { FORM_NAMES } from "@/lib/constants/forms";
+import { usePathname } from "next/navigation";
 
 interface RecipePopupHeaderProps {
   imageUrl: string | null;
@@ -35,17 +34,17 @@ interface RecipePopupHeaderProps {
 export const RecipePopupHeader = ({
   imageUrl,
   handleRemoveItem,
-  handleBackButton
+  handleBackButton,
 }: RecipePopupHeaderProps) => {
   const currentData = useRecipeStore((state) => state.currentRecipe);
   if (!currentData) return null;
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const isUser = useUserStore((state) => state.isUser);
   const { savedItems } = useAllSavedItems({ enabled: !!isUser });
 
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   const router = useRouter();
+  const pathName = usePathname();
 
   // useEffect to update 'isSaved' whenever savedItems change
   useEffect(() => {
@@ -62,7 +61,11 @@ export const RecipePopupHeader = ({
   }
 
   const handleAvatarClick = (id: string) => {
-    router.push(`/recipe/user/${id}`)
+    if (pathName.includes('recipe')) {
+      router.push(`/recipe/user/${id}`)
+    } else if (pathName.includes('social')){
+      router.push(`/social/user/${id}`)
+    }
   }
 
   return (
