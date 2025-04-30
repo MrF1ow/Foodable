@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { DELETE as removeGroceryListsFromAll } from "./removeGroceryListsFromAll";
 import { DELETE as removeRecipesFromAll } from "./removeRecipesFromAll";
+import { DELETE as removeImagesFromAll } from "./removeImageFromAll"
 
 export async function DELETE(request: Request) {
     try {
@@ -12,6 +13,10 @@ export async function DELETE(request: Request) {
 
         if (type === "grocery") {
             return await removeGroceryListsFromAll(id);
+        }
+
+        if (type === "image") {
+            return await removeImagesFromAll(id);
         }
 
         return NextResponse.json(

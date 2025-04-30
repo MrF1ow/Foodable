@@ -16,7 +16,7 @@ export default function Page() {
   const id = params.id;
   const userId = getRouteParam(id);
   const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
   const setShowMainPortal = useGeneralStore((state) => state.setShowMainPortal);
 
   const { user, isLoadingUser, isErrorUser } = useFetchUserById({

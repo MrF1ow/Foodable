@@ -16,11 +16,11 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { useGeneralStore } from "@/stores/general/store";
 import { JSX } from "react";
+import { CurrentFormFunction } from "@/types";
 
-export default function ListHelper(): JSX.Element {
+export default function ListHelper({ setCurrentForm } : CurrentFormFunction): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const form = useForm();
 

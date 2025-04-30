@@ -10,7 +10,7 @@ import { useRecipeStore } from "@/stores/recipe/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
 import { filterRecipes } from "@/lib/utils/listItems";
-import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
+import { RecipeSidePortalInjections } from "@/components/portal-injections/RecipePageInjections";
 import {
   Pagination,
   PaginationContent,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/pagination";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
-export default function Recipes({ isUser }: { isUser: boolean }) {
+export default function Recipes() {
   const { recipes } = useAllRecipes(true);
   const router = useRouter();
   const filter = useRecipeStore((state) => state.filter);
@@ -134,7 +134,7 @@ export default function Recipes({ isUser }: { isUser: boolean }) {
         )}
       </div>
 
-      <RecipePageInjections />
+      <RecipeSidePortalInjections />
     </>
   );
 }

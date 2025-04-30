@@ -10,7 +10,7 @@ import { getRouteParam } from "@/lib/utils/routeHelpers";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import RecipePageInjections from "@/components/portal-injections/RecipePageInjections";
+import { RecipeSidePortalInjections } from "@/components/portal-injections/RecipePageInjections";
 import { useRouter } from "next/navigation";
 import { Recipe, RecipeIngredient } from "@/types/recipe";
 
@@ -107,7 +107,7 @@ export default function Page() {
     return (
         <>
             <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />
-            <RecipePageInjections />
+            <RecipeSidePortalInjections />
         </>
     );
 }

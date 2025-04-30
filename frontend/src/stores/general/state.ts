@@ -5,7 +5,8 @@ export type GeneralState = {
   currentPage: string;
   showPortal: boolean;
   showMainPortal: boolean;
-  currentForm: FormName | null;
+  currentSidePortalForm: FormName | null;
+  currentMainPortalForm: FormName | null;
   isMobile: boolean;
   splitLayout: boolean;
   clerkVariables: any;
@@ -16,7 +17,8 @@ export type GeneralActions = {
   setCurrentPage: (currentPage: string) => void;
   setShowPortal: (showPortal: boolean) => void;
   setShowMainPortal: (showMainPortal: boolean) => void;
-  setCurrentForm: (currentForm: FormName | null) => void;
+  setCurrentSidePortalForm: (currentSidePortalForm: FormName | null) => void;
+  setCurrentMainPortalForm: (currentMainPortalForm: FormName | null) => void;
   resetCurrentForm: () => void;
   setIsMobile: (isMobile: boolean) => void;
   setSplitLayout: (splitLayout: boolean) => void;
@@ -35,8 +37,11 @@ export const createGeneralActions = (set: any): GeneralActions => ({
   setShowMainPortal: (showMainPortal: boolean) =>
     set((state: GeneralState) => ({ ...state, showMainPortal })),
 
-  setCurrentForm: (currentForm: FormName | null) =>
-    set((state: GeneralState) => ({ ...state, currentForm })),
+  setCurrentSidePortalForm: (currentSidePortalForm: FormName | null) =>
+    set((state: GeneralState) => ({ ...state, currentSidePortalForm })),
+
+  setCurrentMainPortalForm: (currentMainPortalForm: FormName | null) =>
+    set((state: GeneralState) => ({ ...state, currentMainPortalForm })),
 
   resetCurrentForm: () =>
     set((state: GeneralState) => ({ ...state, currentForm: null })),
@@ -65,7 +70,8 @@ export const defaultInitState: GeneralState = {
   currentPage: "Recipes",
   showPortal: false,
   showMainPortal: false,
-  currentForm: null,
+  currentSidePortalForm: null,
+  currentMainPortalForm: null,
   isMobile: false,
   splitLayout: false,
   clerkVariables: {},

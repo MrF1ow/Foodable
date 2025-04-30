@@ -38,14 +38,13 @@ import { useState } from "react";
 import { useFetchSelf } from "@/server/hooks/userHooks";
 import { NewImageData } from "@/types/images";
 import { useUploadImage } from "@/server/hooks/imageHooks";
-import { randomUUID } from "crypto";
+import { CurrentFormFunction } from "@/types";
 
-export const AddRecipe = () => {
+export const AddRecipe = ({ setCurrentForm } : CurrentFormFunction) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
   const { AddRecipeFormSchema, defaultValues, resolver } =

@@ -9,11 +9,11 @@ import { useRouter } from "next/navigation";
 import AddItem from "../forms/AddItem";
 
 
-export default function RecipePageInjections() {
+export default function SavePageInjections() {
     const isMobile = useGeneralStore((state) => state.isMobile);
-    const currentForm = useGeneralStore((state) => state.currentForm);
+    const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
     const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
     const router = useRouter();
@@ -33,7 +33,7 @@ export default function RecipePageInjections() {
 
     const recipeForm = <RecipePopUp additionalBackButtonClick={additionalBackButtonClick} />;
 
-    const addItemForm = <AddItem className="h-full" handleClose={handleAddItemClose} />;
+    const addItemForm = <AddItem className="h-full" handleClose={handleAddItemClose} setCurrentForm={setCurrentForm}/>;
 
     return (
         <>

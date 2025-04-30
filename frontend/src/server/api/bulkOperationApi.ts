@@ -25,5 +25,17 @@ export const BulkOperationApi = {
             throw error;
         }
     },
+    bulkRemoveImageFromAllUsers: async (imageId: string) => {
+        try {
+            const response = await fetchWithAuth("/user/bulk", {
+                method: "DELETE",
+                body: JSON.stringify({ id: imageId, type: "image" }),
+            });
+            return response;
+        } catch (error) {
+            console.error("Error removing image from all users:", error);
+            throw error;
+        }
+    },
 }
 

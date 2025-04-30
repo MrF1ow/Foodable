@@ -11,11 +11,12 @@ import { useUserStore } from "@/stores/user/store";
 export default function GroceryPageInjections() {
     const isUser = useUserStore((state) => state.isUser);
     const isMobile = useGeneralStore((state) => state.isMobile);
-    const currentForm = useGeneralStore((state) => state.currentForm);
+    const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
+    const setCurrentSidePortalForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
 
-    const addItemForm = <AddItem className="h-full" />;
-    const findPriceForm = <FindPrice />;
-    const listHelperForm = <ListHelper />;
+    const addItemForm = <AddItem className="h-full" setCurrentForm={setCurrentSidePortalForm}/>;
+    const findPriceForm = <FindPrice setCurrentForm={setCurrentSidePortalForm}/>;
+    const listHelperForm = <ListHelper setCurrentForm={setCurrentSidePortalForm}/>;
 
     return (
         <>

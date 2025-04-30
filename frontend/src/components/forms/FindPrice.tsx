@@ -16,11 +16,12 @@ import { Button } from "@/components/ui/button";
 import { useGeneralStore } from "@/stores/general/store";
 import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { JSX } from "react";
+import { FormName } from "@/lib/constants/forms";
+import { CurrentFormFunction } from "@/types";
 
-export default function FindPrice(): JSX.Element {
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+export default function FindPrice({ setCurrentForm } : CurrentFormFunction): JSX.Element {
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   const [term, setTerm] = useState("milk");

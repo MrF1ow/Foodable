@@ -40,15 +40,18 @@ import { useUserStore } from "@/stores/user/store";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { KrogerProduct } from "@/types/kroger";
 import Image from "next/image";
+import { FormName } from "@/lib/constants/forms";
 
 interface AddItemFormProps {
   className?: string;
   handleClose?: () => void;
+  setCurrentForm: (form: FormName | null) => void;
 }
 
 export default function AddItem({
   className,
   handleClose,
+  setCurrentForm,
 }: AddItemFormProps): JSX.Element {
   const [selectedProductId, setSelectedProductId] = useState<
     string | undefined
@@ -65,7 +68,6 @@ export default function AddItem({
   const selectedCategory = useGroceryStore((state) => state.selectedCategory);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setMap = useGroceryStore((state) => state.setMap);
 

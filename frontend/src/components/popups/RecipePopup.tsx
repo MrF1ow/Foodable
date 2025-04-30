@@ -5,7 +5,6 @@ import {
   RecipePopupHeader,
 } from "@/components/page-specific/recipe/RecipePopupParts";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { Recipe } from "@/types/recipe";
 import { JSX } from "react";
 import { createToMutate } from "@/lib/utils/listItems";
 import { useAllSavedItems, useDeleteSavedItem } from "@/server/hooks/savedItemsHooks";
@@ -49,14 +48,13 @@ export default function RecipePopUp({
               {/* Recipe Header */}
               <RecipePopupHeader
                 imageUrl={imageUrl}
-                recipe={currentData as Recipe}
                 handleBackButton={handleBackButtonClick}
                 handleRemoveItem={handleRemoveSavedRecipe}
               />
 
               {/* Recipe Content */}
               <div className="flex-1 overflow-y-auto p-4">
-                <RecipeContent recipe={currentData as Recipe} />
+                <RecipeContent />
               </div>
             </>
           )}
