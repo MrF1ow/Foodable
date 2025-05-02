@@ -18,6 +18,8 @@ import { useFetchKrogerLocations } from "@/server/hooks/krogerHooks";
 import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { useEffect, useState } from "react";
 import { JSX } from "react";
+import { useGroceryStore } from "@/stores/grocery/store";
+import { fetchStorePricesFromGroceryMap } from "@/lib/utils/listItems";
 
 export default function FindPrice(): JSX.Element {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
@@ -25,6 +27,11 @@ export default function FindPrice(): JSX.Element {
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
+  const groceryMap = useGroceryStore((state) => state.map);
+  const [storePrices, setStorePrices] = useState<Map<string, number> | null>(
+    null
+  );
+  const [storeTotal, setStoreTotal] = useState<number | null>(null);
 
   const zipCode = useGeneralStore((state) => state.zipCode);
   const setZipCode = useGeneralStore((state) => state.setZipCode);
@@ -41,14 +48,13 @@ export default function FindPrice(): JSX.Element {
 
   const form = useForm({
     defaultValues: {
-      zipCode: "",
+      zipCode: zipCode || "",
       selectStores: "",
       searchBy: "",
     },
   });
 
   async function onSubmit(data: any) {
-    let locationId = "";
     try {
       setZipCode(data.zipCode);
       const result = await refetchKrogerLocations();
@@ -60,22 +66,30 @@ export default function FindPrice(): JSX.Element {
       ) {
         return;
       }
-      const firstLocationId = updatedKrogerLocations.data[0]?.locationId;
+      const storeId = data.selectStores;
+      if (!storeId) return;
 
-      locationId = firstLocationId;
+      //   const prices = await fetchStorePricesFromGroceryMap(storeId, groceryMap);
+
+      //   setStorePrices(prices);
+      //   console.log("Store prices:", prices);
+      //   let total = 0;
+      //   for (const [key, item] of groceryMap.entries()) {
+      //     const unitPrice = prices.get(key);
+      //     if (unitPrice !== undefined) {
+      //       total += unitPrice * item.quantity;
+      //     }
+      //   }
+      //   setStoreTotal(total);
     } catch (error) {
-      return;
+      console.error("Error finding prices:", error);
     }
-
-    // if (locationId !== "") {
-    //   setLocationId(locationId);
-    //   setTerm("milk");
-    //   try {
-    //     const products = await refetchKrogerProducts();
-    //     // console.log("Products from Kroger:", products);
-    //   } catch (error) {}
-    // }
   }
+  useEffect(() => {
+    if (zipCode) {
+      form.setValue("zipCode", zipCode);
+    }
+  }, [zipCode, form]);
 
   const handleInputClose = () => {
     setCurrentForm(null);

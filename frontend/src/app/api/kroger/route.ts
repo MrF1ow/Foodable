@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { GET as getLocations } from "./getLocations";
 import { GET as getProducts } from "./getProducts";
 
@@ -19,4 +19,8 @@ export async function GET(request: NextRequest) {
     console.log("Routing to getProducts...");
     return getProducts(request);
   }
+  return NextResponse.json(
+    { error: "Missing query parameters" },
+    { status: 400 }
+  );
 }

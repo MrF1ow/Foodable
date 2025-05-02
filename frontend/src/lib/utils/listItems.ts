@@ -9,9 +9,15 @@ import {
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { RecipeMetaData, SavedGroceryMetaData, SavedItem, SavedRecipeMetaData } from "@/types/saved";
+import {
+  RecipeMetaData,
+  SavedGroceryMetaData,
+  SavedItem,
+  SavedRecipeMetaData,
+} from "@/types/saved";
 import { compareTag } from "./filterHelpers";
 import { FollowMetadata } from "@/types/user";
+import { KrogerApi } from "@/server/api";
 
 export const getAvailableGroceryLists = (
   groceryLists: SavedGroceryMetaData[]
@@ -112,10 +118,7 @@ export const getAdditionalIngredients = (
     groceryMap
   );
 
-  return recipeIngredientsToGroceryItems(
-    additionalIngredients
-  );
-
+  return recipeIngredientsToGroceryItems(additionalIngredients);
 };
 
 export const getGroceryAccordingItems = (
@@ -173,6 +176,27 @@ export const insertItemIntoGroceryMap = (
   return newMap;
 };
 
+export const fetchStorePricesFromGroceryMap = async (
+  storeId: string,
+  groceryMap: Map<string, GroceryItem>
+): Promise<Map<string, number>> => {
+  const priceMap = new Map<string, number>();
+
+  for (const [key, item] of groceryMap.entries()) {
+    const response = await KrogerApi.fetchKrogerProducts(item.name, storeId);
+
+    const product = response?.data?.[0];
+    const price =
+      product?.items?.[0]?.price?.promo ?? product?.items?.[0]?.price?.regular;
+
+    if (price !== undefined) {
+      priceMap.set(key, price);
+    }
+  }
+
+  return priceMap;
+};
+
 export const filterRecipes = (
   recipes: RecipeMetaData[],
   filter: FilterOptions
@@ -216,29 +240,34 @@ export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
   );
 };
 
-export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[], searchQuery: string) => {
-  return savedItems.filter((savedItem) => savedItem.title.toLowerCase().includes(searchQuery.toLowerCase()))
-}
+export const filterSavedItems = (
+  savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[],
+  searchQuery: string
+) => {
+  return savedItems.filter((savedItem) =>
+    savedItem.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+};
 
 export const createToMutate = (data: any, listName: string) => {
   let newData;
   if ("instructions" in data) {
-      newData = {
-          ...data,
-          type: "recipe",
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      type: "recipe",
+      category: listName,
+    } as SavedItem;
   } else if ("items" in data) {
-      newData = {
-          ...data,
-          type: "groceryList",
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      type: "groceryList",
+      category: listName,
+    } as SavedItem;
   } else {
-      newData = {
-          ...data,
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      category: listName,
+    } as SavedItem;
   }
   return newData;
 };

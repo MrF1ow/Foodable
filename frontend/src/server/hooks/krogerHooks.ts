@@ -14,6 +14,7 @@ export const useFetchKrogerLocations = (zipCode: string) => {
       return await KrogerApi.fetchKrogerLocations(zipCode);
     },
     retry: 0,
+    enabled: !!zipCode,
   });
 
   return {
@@ -38,7 +39,7 @@ export const useFetchKrogerProducts = (term: string, locationId?: string) => {
     enabled: term.trim().length > 2,
     retry: 0,
   });
-
+  console.log("Kroger products:", krogerProducts);
   return {
     krogerProducts,
     isLoadingKrogerProducts,
