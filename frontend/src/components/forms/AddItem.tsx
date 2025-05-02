@@ -204,7 +204,7 @@ export default function AddItem({
                               return (
                                 <div
                                   key={item.productId}
-                                  className="p-2 hover:bg-green-400 cursor-pointer flex items-center gap-2"
+                                  className="p-2 hover:bg-green-00 cursor-pointer flex items-center gap-2"
                                   onMouseDown={() => {
                                     form.setValue("itemName", description);
                                     form.setValue("quantity", 1);
