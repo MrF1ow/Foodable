@@ -195,7 +195,7 @@ export default function AddItem({
                           data-testid="itemName-input"
                         />
                         {isFocused && krogerProducts?.data?.length > 0 && (
-                          <div className="absolute bg-white border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
+                          <div className="absolute bg-primary border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
                             {krogerProducts.data.map((item: KrogerProduct) => {
                               const image =
                                 item.images?.[0]?.sizes?.[0]?.url ?? undefined;
@@ -204,7 +204,7 @@ export default function AddItem({
                               return (
                                 <div
                                   key={item.productId}
-                                  className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                                  className="p-2 hover:bg-green-400 cursor-pointer flex items-center gap-2"
                                   onMouseDown={() => {
                                     form.setValue("itemName", description);
                                     form.setValue("quantity", 1);
