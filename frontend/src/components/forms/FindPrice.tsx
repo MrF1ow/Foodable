@@ -26,13 +26,16 @@ export default function FindPrice(): JSX.Element {
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   const groceryMap = useGroceryStore((state) => state.map);
-  const storePrices = useGroceryStore((state) => state.storePrices);
-  const setStorePrices = useGroceryStore((state) => state.setStorePrices);
+  const setStorePrices = useGroceryStore(
+    (state) => state.setStorePricesByStore
+  );
+  const storePrices = useGroceryStore((state) => state.storePricesByStore);
   const storeTotal = useGroceryStore((state) => state.storeTotal);
   const setStoreTotal = useGroceryStore((state) => state.setStoreTotal);
 
   const zipCode = useGeneralStore((state) => state.zipCode);
   const setZipCode = useGeneralStore((state) => state.setZipCode);
+  const [selectedStoreId, setSelectedStoreId] = useState<string>("");
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
@@ -62,8 +65,8 @@ export default function FindPrice(): JSX.Element {
 
       const prices = await fetchStorePricesFromGroceryMap(storeId, groceryMap);
 
-      setStorePrices(prices);
-      console.log("Store prices:", prices);
+      setStorePrices(storeId as string, prices as Map<string, number>);
+      console.log("Store prices:", storePrices);
       let total = 0;
       for (const [key, item] of groceryMap.entries()) {
         const unitPrice = prices.get(key);
@@ -121,7 +124,10 @@ export default function FindPrice(): JSX.Element {
                   <FormControl>
                     <div className="max-h-72 overflow-y-auto">
                       <RadioGroup
-                        onValueChange={field.onChange}
+                        onValueChange={(val) => {
+                          field.onChange(val);
+                          setSelectedStoreId(val);
+                        }}
                         defaultValue={field.value}
                       >
                         {krogerLocations?.data?.map((location: any) => (
@@ -185,8 +191,9 @@ export default function FindPrice(): JSX.Element {
                   Estimated Total: ${storeTotal.toFixed(2)}
                 </div>
                 <div className="text-center text-lg text-muted-foreground">
-                  Prices found for {storePrices?.size ?? 0}/{groceryMap.size}{" "}
-                  items in the list
+                  Prices found for{" "}
+                  {storePrices?.get(selectedStoreId)?.size ?? 0}/
+                  {groceryMap.size} items in the list
                 </div>
               </>
             )}

@@ -10,7 +10,6 @@ import {
   GroceryListIdentifier,
   NewGroceryList,
 } from "@/types/grocery";
-import { init } from "next/dist/compiled/webpack/webpack";
 
 export type GroceryState = {
   currentList: GroceryList | NewGroceryList | null;
@@ -23,7 +22,7 @@ export type GroceryState = {
   openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
-  storePrices: Map<string, number> | null;
+  storePricesByStore: Map<string, Map<string, number>>;
   storeTotal: number | null;
 };
 
@@ -34,7 +33,7 @@ export type GroceryActions = {
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   setMap: (map: Map<string, GroceryItem>) => void;
-  setStorePrices: (prices: Map<string, number> | null) => void;
+  setStorePricesByStore: (storeId: string, prices: Map<string, number>) => void;
   setStoreTotal: (total: number | null) => void;
 };
 
@@ -117,8 +116,15 @@ export const createGroceryActions = (set: any): GroceryActions => ({
           : null,
       };
     }),
-  setStorePrices: (prices) =>
-    set((state: GroceryState) => ({ ...state, storePrices: prices })),
+  setStorePricesByStore: (storeId: string, prices: Map<string, number>) =>
+    set((state: GroceryState) => {
+      const updated = new Map(state.storePricesByStore); // clone the outer map
+      updated.set(storeId, prices); // set the nested map
+      return {
+        ...state,
+        storePricesByStore: updated,
+      };
+    }),
   setStoreTotal: (total) =>
     set((state: GroceryState) => ({ ...state, storeTotal: total })),
 });
@@ -132,7 +138,7 @@ export const initState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  storePrices: null,
+  storePricesByStore: new Map(),
   storeTotal: null,
 };
 
@@ -143,7 +149,7 @@ export const defaultInitState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
-  storePrices: null,
+  storePricesByStore: new Map(),
   storeTotal: null,
 };
 
@@ -162,23 +168,31 @@ export const createGroceryStore = (
         partialize: (state) => ({
           ...state,
           map: Object.fromEntries(state.map), // Map -> Object
-          storePrices: state.storePrices
-            ? Object.fromEntries(state.storePrices)
-            : null, // Map -> Object or null
+          storePricesByStore: Object.fromEntries(
+            Array.from(state.storePricesByStore).map(([storeId, priceMap]) => [
+              storeId,
+              Object.fromEntries(priceMap),
+            ])
+          ),
         }),
         merge: (persistedState, currentState) => {
           const map = new Map<string, GroceryItem>(
             Object.entries((persistedState as any).map || {})
           );
-          const storePrices = new Map<string, number>(
-            Object.entries((persistedState as any).storePrices || {})
+          const storePricesByStore = new Map<string, Map<string, number>>(
+            Object.entries(
+              (persistedState as any).storePricesByStore || {}
+            ).map(([storeId, priceMap]) => [
+              storeId,
+              new Map(Object.entries(priceMap as Map<string, number>)),
+            ])
           );
 
           return {
             ...currentState,
             ...(persistedState as GroceryState),
             map,
-            storePrices,
+            storePricesByStore,
           };
         },
       }
