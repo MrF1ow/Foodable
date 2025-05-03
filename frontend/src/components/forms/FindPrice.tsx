@@ -28,10 +28,10 @@ export default function FindPrice(): JSX.Element {
   const [term, setTerm] = useState("milk");
   const [locationId, setLocationId] = useState("70100070");
   const groceryMap = useGroceryStore((state) => state.map);
-  const [storePrices, setStorePrices] = useState<Map<string, number> | null>(
-    null
-  );
-  const [storeTotal, setStoreTotal] = useState<number | null>(null);
+  const storePrices = useGroceryStore((state) => state.storePrices);
+  const setStorePrices = useGroceryStore((state) => state.setStorePrices);
+  const storeTotal = useGroceryStore((state) => state.storeTotal);
+  const setStoreTotal = useGroceryStore((state) => state.setStoreTotal);
 
   const zipCode = useGeneralStore((state) => state.zipCode);
   const setZipCode = useGeneralStore((state) => state.setZipCode);
@@ -188,6 +188,17 @@ export default function FindPrice(): JSX.Element {
                 </FormItem>
               )}
             />
+            {storeTotal !== null && (
+              <>
+                <div className="text-center text-2xl text-green-700">
+                  Estimated Total: ${storeTotal.toFixed(2)}
+                </div>
+                <div className="text-center text-lg text-muted-foreground">
+                  Prices found for {storePrices?.size ?? 0}/{groceryMap.size}{" "}
+                  items in the list
+                </div>
+              </>
+            )}
           </div>
         }
         footer={

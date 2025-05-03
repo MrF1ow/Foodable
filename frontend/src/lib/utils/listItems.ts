@@ -191,6 +191,7 @@ export const fetchStorePricesFromGroceryMap = async (
           storeId
         );
         product = response?.data;
+        console.log("Product response for ID flimflam:", product);
       } else {
         const response = await KrogerApi.fetchKrogerProducts(
           item.name,
@@ -205,9 +206,20 @@ export const fetchStorePricesFromGroceryMap = async (
         }
       }
 
-      const itemWithStock = product?.items?.find(
-        (item: any) => item.fulfillment?.inStore === true
-      );
+      let itemWithStock;
+
+      if (Array.isArray(product)) {
+        for (const p of product) {
+          itemWithStock = p.items?.find(
+            (item: any) => item.fulfillment?.inStore === true
+          );
+          if (itemWithStock) break;
+        }
+      } else {
+        itemWithStock = product?.items?.find(
+          (item: any) => item.fulfillment?.inStore === true
+        );
+      }
 
       const price = itemWithStock?.price?.regular;
 
@@ -215,7 +227,7 @@ export const fetchStorePricesFromGroceryMap = async (
         console.log(`Fetched price for ${item.name}: ${price}`);
         priceMap.set(key, price);
       } else {
-        console.error(`Price not found for ${item.productId}`, product);
+        console.log(`Price not found for ${item.productId}`, product);
       }
     } catch (error) {
       console.error(`Failed to fetch price for ${item.name} `, error);

@@ -1,6 +1,6 @@
 // Package Imports
 import { create } from "zustand";
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // Local Imports
 import {
@@ -23,6 +23,8 @@ export type GroceryState = {
   openSections: GrocerySectionOptions[];
   selectedCategory: GrocerySectionOptions;
   map: Map<string, GroceryItem>;
+  storePrices: Map<string, number> | null;
+  storeTotal: number | null;
 };
 
 export type GroceryActions = {
@@ -32,6 +34,8 @@ export type GroceryActions = {
   setSelectedCategory: (category: GrocerySectionOptions) => void;
   setCurrentCategories: (categories: GrocerySectionOptions[]) => void;
   setMap: (map: Map<string, GroceryItem>) => void;
+  setStorePrices: (prices: Map<string, number> | null) => void;
+  setStoreTotal: (total: number | null) => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -113,6 +117,10 @@ export const createGroceryActions = (set: any): GroceryActions => ({
           : null,
       };
     }),
+  setStorePrices: (prices) =>
+    set((state: GroceryState) => ({ ...state, storePrices: prices })),
+  setStoreTotal: (total) =>
+    set((state: GroceryState) => ({ ...state, storeTotal: total })),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
@@ -124,6 +132,8 @@ export const initState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
+  storePrices: null,
+  storeTotal: null,
 };
 
 export const defaultInitState: GroceryState = {
@@ -133,6 +143,8 @@ export const defaultInitState: GroceryState = {
   openSections: [],
   selectedCategory: "Bakery",
   map: new Map(),
+  storePrices: null,
+  storeTotal: null,
 };
 
 export const createGroceryStore = (

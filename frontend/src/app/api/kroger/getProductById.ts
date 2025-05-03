@@ -13,7 +13,7 @@ export async function GET(req: Request) {
   const productIdQuery = `filter.productId=${productId}`;
 
   const locationId = getValueFromSearchParams(req, "locationId") || "";
-  const locationQuery = locationId ? `?filter.locationId=${locationId}` : "";
+  const locationQuery = locationId ? `&filter.locationId=${locationId}` : "";
 
   const accessToken = await getAccessToken();
   if (!accessToken) {
