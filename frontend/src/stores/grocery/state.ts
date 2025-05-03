@@ -162,15 +162,23 @@ export const createGroceryStore = (
         partialize: (state) => ({
           ...state,
           map: Object.fromEntries(state.map), // Map -> Object
+          storePrices: state.storePrices
+            ? Object.fromEntries(state.storePrices)
+            : null, // Map -> Object or null
         }),
         merge: (persistedState, currentState) => {
           const map = new Map<string, GroceryItem>(
             Object.entries((persistedState as any).map || {})
           );
+          const storePrices = new Map<string, number>(
+            Object.entries((persistedState as any).storePrices || {})
+          );
+
           return {
             ...currentState,
             ...(persistedState as GroceryState),
             map,
+            storePrices,
           };
         },
       }

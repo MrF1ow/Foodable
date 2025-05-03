@@ -25,8 +25,6 @@ export default function FindPrice(): JSX.Element {
   const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
-  const [term, setTerm] = useState("milk");
-  const [locationId, setLocationId] = useState("70100070");
   const groceryMap = useGroceryStore((state) => state.map);
   const storePrices = useGroceryStore((state) => state.storePrices);
   const setStorePrices = useGroceryStore((state) => state.setStorePrices);
@@ -38,13 +36,6 @@ export default function FindPrice(): JSX.Element {
 
   const { krogerLocations, refetchKrogerLocations } =
     useFetchKrogerLocations(zipCode);
-
-  const {
-    krogerProducts,
-    isLoadingKrogerProducts,
-    refetchKrogerProducts,
-    errorKrogerProducts,
-  } = useFetchKrogerProducts(term, locationId);
 
   const form = useForm({
     defaultValues: {
