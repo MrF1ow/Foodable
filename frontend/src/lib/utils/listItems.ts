@@ -11,7 +11,7 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
 import { RecipeMetaData, SavedGroceryMetaData, SavedItem, SavedRecipeMetaData } from "@/types/saved";
 import { compareTag } from "./filterHelpers";
-import { FollowMetadata } from "@/types/user";
+import { FollowMetadata, User } from "@/types/user";
 
 export const getAvailableGroceryLists = (
   groceryLists: SavedGroceryMetaData[]
@@ -147,6 +147,13 @@ export const getIsItemSaved = (
   return savedItems.some((savedItem) => savedItem._id === item._id);
 };
 
+export const getIsFollowing = (
+  item: User,
+  following: FollowMetadata[]
+) => {
+  return following.some((follow) => follow._id === item._id);
+};
+
 export const insertItemIntoGroceryMap = (
   item: GroceryItem,
   groceryMap: Map<string, GroceryItem>
@@ -223,22 +230,22 @@ export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGrocer
 export const createToMutate = (data: any, listName: string) => {
   let newData;
   if ("instructions" in data) {
-      newData = {
-          ...data,
-          type: "recipe",
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      type: "recipe",
+      category: listName,
+    } as SavedItem;
   } else if ("items" in data) {
-      newData = {
-          ...data,
-          type: "groceryList",
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      type: "groceryList",
+      category: listName,
+    } as SavedItem;
   } else {
-      newData = {
-          ...data,
-          category: listName,
-      } as SavedItem;
+    newData = {
+      ...data,
+      category: listName,
+    } as SavedItem;
   }
   return newData;
 };

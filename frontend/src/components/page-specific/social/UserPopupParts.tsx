@@ -9,6 +9,7 @@ import { useSocialStore } from "@/stores/social/store";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
 import { MdClose } from "react-icons/md";
+import FollowButton from "@/components/buttons/FollowButton";
 
 interface UserPopupHeaderProps {
     handleClose: () => void;
@@ -49,6 +50,7 @@ export const UserPopupHeader = ({ handleClose }: UserPopupHeaderProps) => {
                                 {currentUser?.username || "Foodie"}
                             </h1>
                         </div>
+                        <FollowButton />
                     </div>
                 </div>
 

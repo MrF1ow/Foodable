@@ -8,14 +8,12 @@ export default async function RecipePage() {
     grocery: true,
     saved: true,
     recipes: true,
+    userData: true,
   });
-
-  const user = await checkRole("user");
-
 
   return (
     <HydrationBoundary state={dehydratedClient}>
-      <Recipes isUser={user}/>
+      <Recipes/>
     </HydrationBoundary>
   );
 }
