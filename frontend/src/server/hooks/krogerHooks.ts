@@ -39,11 +39,35 @@ export const useFetchKrogerProducts = (term: string, locationId?: string) => {
     enabled: term.trim().length > 2,
     retry: 0,
   });
-  console.log("Kroger products:", krogerProducts);
+
   return {
     krogerProducts,
     isLoadingKrogerProducts,
     refetchKrogerProducts,
     errorKrogerProducts,
+  };
+};
+export const useFetchKrogerProductById = (
+  productId: string,
+  locationId?: string
+) => {
+  const {
+    data: krogerProduct,
+    isLoading: isLoadingKrogerProduct,
+    refetch: refetchKrogerProduct,
+    error: errorKrogerProduct,
+    isError: isErrorKrogerProduct,
+  } = useQuery({
+    queryKey: ["krogerProductById", productId, locationId],
+    queryFn: () => KrogerApi.fetchKrogerProductById(productId, locationId),
+    enabled: !!productId,
+    retry: 0,
+  });
+
+  return {
+    krogerProduct,
+    isLoadingKrogerProduct,
+    refetchKrogerProduct,
+    errorKrogerProduct,
   };
 };

@@ -37,4 +37,25 @@ export const KrogerApi = {
       throw error;
     }
   },
+  fetchKrogerProductById: async (productId: string, locationId?: string) => {
+    console.log("fetchKrogerProductById starting...");
+    try {
+      const url = locationId
+        ? `/api/kroger?productId=${encodeURIComponent(
+            productId
+          )}&locationId=${locationId}`
+        : `/api/kroger?productId=${encodeURIComponent(productId)}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(
+          `Error getting Kroger product by ID: ${response.statusText}`
+        );
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error getting Kroger product by ID: ", error);
+      throw error;
+    }
+  },
 };

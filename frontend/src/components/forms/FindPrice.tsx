@@ -69,18 +69,18 @@ export default function FindPrice(): JSX.Element {
       const storeId = data.selectStores;
       if (!storeId) return;
 
-      //   const prices = await fetchStorePricesFromGroceryMap(storeId, groceryMap);
+      const prices = await fetchStorePricesFromGroceryMap(storeId, groceryMap);
 
-      //   setStorePrices(prices);
-      //   console.log("Store prices:", prices);
-      //   let total = 0;
-      //   for (const [key, item] of groceryMap.entries()) {
-      //     const unitPrice = prices.get(key);
-      //     if (unitPrice !== undefined) {
-      //       total += unitPrice * item.quantity;
-      //     }
-      //   }
-      //   setStoreTotal(total);
+      setStorePrices(prices);
+      console.log("Store prices:", prices);
+      let total = 0;
+      for (const [key, item] of groceryMap.entries()) {
+        const unitPrice = prices.get(key);
+        if (unitPrice !== undefined) {
+          total += unitPrice * item.quantity;
+        }
+      }
+      setStoreTotal(total);
     } catch (error) {
       console.error("Error finding prices:", error);
     }

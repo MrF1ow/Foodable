@@ -183,14 +183,43 @@ export const fetchStorePricesFromGroceryMap = async (
   const priceMap = new Map<string, number>();
 
   for (const [key, item] of groceryMap.entries()) {
-    const response = await KrogerApi.fetchKrogerProducts(item.name, storeId);
+    try {
+      let product;
+      if (item.productId) {
+        const response = await KrogerApi.fetchKrogerProductById(
+          item.productId,
+          storeId
+        );
+        product = response?.data;
+      } else {
+        const response = await KrogerApi.fetchKrogerProducts(
+          item.name,
+          storeId
+        );
+        if (response?.data?.length) {
+          product = response.data.find((product: any) => {
+            console.log("Here are the items:", product.items);
+            // return product?.items?.some(
+            //   (i: any) => i.fulfillment?.instore === true
+            // );
+          });
+        }
+      }
 
-    const product = response?.data?.[0];
-    const price =
-      product?.items?.[0]?.price?.promo ?? product?.items?.[0]?.price?.regular;
+      const price =
+        product?.items?.[0]?.price?.promo ??
+        product?.items?.[0]?.price?.regular;
 
-    if (price !== undefined) {
-      priceMap.set(key, price);
+      if (price !== undefined) {
+        console.log(
+          `Fetched price for ${item.name}: ${price} from ${product?.items?.[0]?.productUrl}`
+        );
+        priceMap.set(key, price);
+      } else {
+        console.error(`Price not found for ${item.name}`, product);
+      }
+    } catch (error) {
+      console.error(`Failed to fetch price for ${item.name}`, error);
     }
   }
 
