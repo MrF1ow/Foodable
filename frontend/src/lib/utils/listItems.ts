@@ -197,29 +197,28 @@ export const fetchStorePricesFromGroceryMap = async (
           storeId
         );
         if (response?.data?.length) {
-          product = response.data.find((product: any) => {
-            console.log("Here are the items:", product.items);
-            // return product?.items?.some(
-            //   (i: any) => i.fulfillment?.instore === true
-            // );
-          });
+          product = response.data.find((product: any) =>
+            product?.items?.some(
+              (item: any) => item.fulfillment?.inStore === true
+            )
+          );
         }
       }
 
-      const price =
-        product?.items?.[0]?.price?.promo ??
-        product?.items?.[0]?.price?.regular;
+      const itemWithStock = product?.items?.find(
+        (item: any) => item.fulfillment?.inStore === true
+      );
+
+      const price = itemWithStock?.price?.regular;
 
       if (price !== undefined) {
-        console.log(
-          `Fetched price for ${item.name}: ${price} from ${product?.items?.[0]?.productUrl}`
-        );
+        console.log(`Fetched price for ${item.name}: ${price}`);
         priceMap.set(key, price);
       } else {
-        console.error(`Price not found for ${item.name}`, product);
+        console.error(`Price not found for ${item.productId}`, product);
       }
     } catch (error) {
-      console.error(`Failed to fetch price for ${item.name}`, error);
+      console.error(`Failed to fetch price for ${item.name} `, error);
     }
   }
 

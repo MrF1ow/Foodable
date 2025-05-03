@@ -5,14 +5,25 @@ import { NextResponse } from "next/server";
 interface ProductResponse {
   data: Array<{
     productId: string;
+    aisleLocations?: Array<{
+      bayNumber: string;
+      description: string;
+      number: string;
+      numberOfFacings: string;
+      side: string;
+      shelfNumber: string;
+      shelfPositionInBay: string;
+    }>;
     description: string;
     brand: string;
     size: string;
-    price: {
-      regular: number;
-      promo?: number;
-    };
     images: Array<{ perspective: string; sizes: Array<{ url: string }> }>;
+    items: Array<{
+      price?: {
+        regular: number;
+        promo?: number;
+      };
+    }>;
   }>;
 }
 
@@ -26,7 +37,11 @@ export async function GET(req: Request) {
   }
   console.log("Search term:", searchTerm);
 
-  const locationId = getValueFromSearchParams(req, "locationId") || "";
+  const locationId =
+    getValueFromSearchParams(req, "locationId") ||
+    getValueFromSearchParams(req, "filter.locationId") ||
+    "";
+
   console.log("Location ID:", locationId);
   const searchByLocation = locationId ? `&filter.locationId=${locationId}` : "";
   const limit = getValueFromSearchParams(req, "pagination.limit") ?? "50";
@@ -41,7 +56,7 @@ export async function GET(req: Request) {
   }
 
   const productsUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/products?filter.term=${searchTerm}${searchByLocation}${filterLimit}`;
-  //   console.log("Products URL:", productsUrl);
+  console.log("Products URL:", productsUrl);
 
   try {
     const response = await fetch(productsUrl, {
@@ -56,7 +71,7 @@ export async function GET(req: Request) {
     }
 
     const data: ProductResponse = await response.json();
-    // console.log("Products response:", data);
+    console.log("getProducts response:", data);
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
