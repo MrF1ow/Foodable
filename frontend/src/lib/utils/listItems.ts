@@ -191,7 +191,6 @@ export const fetchStorePricesFromGroceryMap = async (
           storeId
         );
         product = response?.data;
-        console.log("Product response for ID flimflam:", product);
       } else {
         const response = await KrogerApi.fetchKrogerProducts(
           item.name,

@@ -35,6 +35,8 @@ export type GroceryActions = {
   setMap: (map: Map<string, GroceryItem>) => void;
   setStorePricesByStore: (storeId: string, prices: Map<string, number>) => void;
   setStoreTotal: (total: number | null) => void;
+  clearStorePrices: () => void;
+  clearStoreTotal: () => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -127,6 +129,16 @@ export const createGroceryActions = (set: any): GroceryActions => ({
     }),
   setStoreTotal: (total) =>
     set((state: GroceryState) => ({ ...state, storeTotal: total })),
+  clearStorePrices: () =>
+    set((state: GroceryState) => ({
+      ...state,
+      storePricesByStore: new Map(),
+    })),
+  clearStoreTotal: () =>
+    set((state: GroceryState) => ({
+      ...state,
+      storeTotal: null,
+    })),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
