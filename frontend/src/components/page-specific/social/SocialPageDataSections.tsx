@@ -52,7 +52,7 @@ export const UserFollowSection = ({
   const { refetchFollowing } = useFetchAllFollowingOfUser({
     enabled: true,
   });
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
   const setShowMainPortal = useGeneralStore((state) => state.setShowMainPortal);
 
 
@@ -117,7 +117,7 @@ export const UserSavedSection = ({
   groceryLists,
 }: UserRecipesSectionProps) => {
   const selectedSection = useSocialStore((state) => state.currentSavedSection);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { updateUserCurrentList } = useUpdateUserCurrentList();

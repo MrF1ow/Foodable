@@ -18,6 +18,7 @@ import Spinner from "@/components/Spinner";
 import { useUserStore } from "@/stores/user/store";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { useFetchImageById, useUploadImage, useDeleteImage } from "@/server/hooks/imageHooks";
+import { useRemoveAllImageFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchSelf } from "@/server/hooks/userHooks";
 import { ExistingImageData, NewImageData } from "@/types/images";
 
@@ -41,6 +42,8 @@ export default function SocialPageHeader({ userDetails }: { userDetails?: any })
 
   const { uploadImage } = useUploadImage();
   const { deleteImage } = useDeleteImage();
+  const { removeAllImageFromAllUsers } = useRemoveAllImageFromAllUsers();
+
 
   const handleImageEditSubmit = async (imageFile: File) => {
     if (!userProfile?._id) return;
@@ -67,6 +70,7 @@ export default function SocialPageHeader({ userDetails }: { userDetails?: any })
     }
 
     const response = await deleteImage(existingImage);
+    await removeAllImageFromAllUsers(id);
 
     if (response.message) {
       setBannerId(null);

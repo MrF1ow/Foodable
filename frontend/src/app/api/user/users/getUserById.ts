@@ -25,6 +25,8 @@ export async function GET(req: Request) {
       .collection("users")
       .findOne({ _id: ObjectId.createFromHexString(id) });
 
+    console.log("User", user);
+
     const validationResponse = validateObject(
       user,
       validateUser,

@@ -9,11 +9,12 @@ import { useSocialStore } from "@/stores/social/store";
 import SocialSectionLayout from "@/layouts/page-specific/social/SocialSectionLayout";
 import SocialItem from "./SocialSectionSectionItems";
 import { MdClose } from "react-icons/md";
+import FollowButton from "@/components/buttons/FollowButton";
 
-interface FollowingPopupHeaderProps {
+interface UserPopupHeaderProps {
     handleClose: () => void;
 }
-export const FollowPopupHeader = ({ handleClose }: FollowingPopupHeaderProps) => {
+export const UserPopupHeader = ({ handleClose }: UserPopupHeaderProps) => {
     const currentUser = useSocialStore((state) => state.selectedUser);
 
     const isValidBannerId = !!currentUser?.imageId && isValidObjectId(currentUser.imageId);
@@ -49,6 +50,7 @@ export const FollowPopupHeader = ({ handleClose }: FollowingPopupHeaderProps) =>
                                 {currentUser?.username || "Foodie"}
                             </h1>
                         </div>
+                        <FollowButton />
                     </div>
                 </div>
 
@@ -60,7 +62,7 @@ export const FollowPopupHeader = ({ handleClose }: FollowingPopupHeaderProps) =>
     );
 }
 
-export const FollowPopupFollowerSectionHeader = ({ title }: { title: string }) => {
+export const UserPopupFollowerSectionHeader = ({ title }: { title: string }) => {
     return (
         <div className="h-full w-full flex items-center justify-center bg-primary text-background rounded-md">
             <h3 className="text-xl text-center">{title}</h3>
@@ -68,14 +70,14 @@ export const FollowPopupFollowerSectionHeader = ({ title }: { title: string }) =
     )
 }
 
-export const FollowPopupFollowerSection = () => {
+export const UserPopupFollowerSection = () => {
     const currentUser = useSocialStore((state) => state.selectedUser);
 
     const handleFollowerClick = (id: string) => {
         console.log("Opening Another Follower");
     }
     return (
-        <SocialSectionLayout headerComponent={<FollowPopupFollowerSectionHeader title="Their Followers" />}>
+        <SocialSectionLayout headerComponent={<UserPopupFollowerSectionHeader title="Their Followers" />}>
             <div className="w-full h-full">
                 {currentUser?.followers.length === 0 && (
                     <div className="text-center text-lg text-foreground italic">
@@ -94,14 +96,14 @@ export const FollowPopupFollowerSection = () => {
     );
 }
 
-export const FollowPopupRecipeSection = () => {
+export const UserPopupRecipeSection = () => {
     const currentUser = useSocialStore((state) => state.selectedUser);
 
     const handleItemClick = (id: string) => {
         console.log("opening a users recipes");
     }
     return (
-        <SocialSectionLayout headerComponent={<FollowPopupFollowerSectionHeader title="Their Recipes" />}>
+        <SocialSectionLayout headerComponent={<UserPopupFollowerSectionHeader title="Their Recipes" />}>
             <div className="w-full h-full">
                 {currentUser?.savedItems.recipes.length === 0 && (
                     <div className="text-center text-lg text-foreground italic">

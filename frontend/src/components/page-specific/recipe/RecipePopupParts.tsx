@@ -21,10 +21,11 @@ import { BiArrowBack } from "react-icons/bi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import pfp from "../../../../public/images/pfp.jpg";
 import logo from "../../../../public/images/logo_current_no_shadow.png"
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface RecipePopupHeaderProps {
   imageUrl: string | null;
-  recipe: Recipe;
   setOpen?: (arg0: boolean) => void;
   handleRemoveItem: () => Promise<void>;
   handleBackButton: () => void;
@@ -32,27 +33,39 @@ interface RecipePopupHeaderProps {
 
 export const RecipePopupHeader = ({
   imageUrl,
-  recipe,
   handleRemoveItem,
-  handleBackButton
+  handleBackButton,
 }: RecipePopupHeaderProps) => {
+  const currentData = useRecipeStore((state) => state.currentRecipe);
+  if (!currentData) return null;
   const isUser = useUserStore((state) => state.isUser);
   const { savedItems } = useAllSavedItems({ enabled: !!isUser });
 
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
+  const router = useRouter();
+  const pathName = usePathname();
+
   // useEffect to update 'isSaved' whenever savedItems change
   useEffect(() => {
     if (!isUser) return;
     if (savedItems && savedItems.recipes) {
-      const saved = getIsItemSaved(recipe, savedItems.recipes);
+      const saved = getIsItemSaved(currentData as Recipe, savedItems.recipes);
       setIsSaved(saved);
     }
-  }, [savedItems, recipe]);
+  }, [savedItems, currentData]);
 
   const handleRemoveSavedItem = async () => {
     await handleRemoveItem();
     handleBackButton();
+  }
+
+  const handleAvatarClick = (id: string) => {
+    if (pathName.includes('recipe')) {
+      router.push(`/recipe/user/${id}`)
+    } else if (pathName.includes('social')){
+      router.push(`/social/user/${id}`)
+    }
   }
 
   return (
@@ -60,22 +73,22 @@ export const RecipePopupHeader = ({
       {imageUrl && (
         <img
           src={imageUrl}
-          alt={recipe.title}
+          alt={currentData.title}
           className="object-cover w-full h-full"
         />
       )}
       {(!imageUrl || imageUrl === null) && (
         <img
           src={logo.src}
-          alt={recipe.title}
+          alt={currentData.title}
           className="object-contain w-full h-full"
         />
       )}
-      <div className="absolute top-0 left-0 text-foreground p-4 z-50">
+      <div className="absolute top-0 left-0 text-foreground p-4 z-40">
         <BiArrowBack onClick={handleBackButton} size={40} />
       </div>
-      <div className="absolute top-0 right-0 text-foreground p-4 z-50">
-        <Avatar>
+      <div className="absolute top-0 right-0 text-foreground p-4 z-40">
+        <Avatar onClick={() => handleAvatarClick(currentData.creatorId.toString())}>
           <AvatarImage src={pfp.src} alt={"PFP"} width={60} height={60} />
           <AvatarFallback>
             <div>Hello</div>
@@ -84,19 +97,21 @@ export const RecipePopupHeader = ({
       </div>
       <div className="absolute flex flex-row justify-between items-center w-full bottom-0 left-0 p-4 text-white bg-black bg-opacity-50">
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
-          {recipe.title}
+          {currentData.title}
         </h3>
-        {isUser && <SaveBookmark isSaved={isSaved} data={recipe} handleRemove={handleRemoveSavedItem} />}
+        {isUser && <SaveBookmark isSaved={isSaved} data={currentData} handleRemove={handleRemoveSavedItem} />}
       </div>
     </div>
   );
 };
 
-export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
+export const RecipeContent = () => {
   const isUser = useUserStore((state) => state.isUser);
   const groceryMap = useGroceryStore((state) => state.map);
   const setMap = useGroceryStore((state) => state.setMap);
   const currentList = useGroceryStore((state) => state.currentList);
+  const currentRecipe = useRecipeStore((state) => state.currentRecipe) as Recipe;
+  if (!currentList || !currentRecipe ) return null;
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
@@ -188,40 +203,44 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
     };
 
     return (
-      <div className="flex flex-col gap-x-4">
-        {additionalIngredients.map((ingredient, index) => (
-          <div key={index} className="flex mb-2 gap-x-4 items-center">
-            <Checkbox
-              checked={ingredient.checked}
-              onCheckedChange={(checked: boolean) =>
-                handleCheckboxChange(
-                  ingredient.category,
-                  ingredient.name,
-                  checked
-                )
-              }
-            />
-            <p className="text-lg">
-              {ingredient.name.charAt(0).toUpperCase() +
-                ingredient.name.slice(1)}
-            </p>
-            <p className="bg-background text-foreground text-xs rounded-md p-1">
-              {ingredient.quantity} {ingredient.unit}
-            </p>
+      <>
+        {additionalIngredients.length === 0 ? null : (
+          <div className="flex flex-col gap-x-4">
+            {additionalIngredients.map((ingredient, index) => (
+              <div key={index} className="flex mb-2 gap-x-4 items-center">
+                <Checkbox
+                  checked={ingredient.checked}
+                  onCheckedChange={(checked: boolean) =>
+                    handleCheckboxChange(
+                      ingredient.category,
+                      ingredient.name,
+                      checked
+                    )
+                  }
+                />
+                <p className="text-lg">
+                  {ingredient.name.charAt(0).toUpperCase() +
+                    ingredient.name.slice(1)}
+                </p>
+                <p className="bg-background text-foreground text-xs rounded-md p-1">
+                  {ingredient.quantity} {ingredient.unit}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )}
+      </>
     );
   };
 
   const Decription = () => {
-    return <div className="text-lg text-foreground">{recipe.description}</div>;
+    return <div className="text-lg text-foreground">{currentRecipe.description}</div>;
   };
 
   const Ingredients = () => {
     return (
       <ul className="list-disc list-inside">
-        {recipe.ingredients.map((ingredient, index) => (
+        {currentRecipe.ingredients.map((ingredient, index) => (
           <li key={index} className="text-lg text-foreground">
             {ingredient.quantity} {ingredient.unit} {ingredient.name}
           </li>
@@ -233,7 +252,7 @@ export const RecipeContent = ({ recipe }: { recipe: Recipe }) => {
   const Instructions = () => {
     return (
       <ol className="list-decimal list-inside">
-        {recipe.instructions.map((instruction, index) => (
+        {currentRecipe.instructions.map((instruction, index) => (
           <li key={index} className="text-lg text-foreground">
             {instruction}
           </li>

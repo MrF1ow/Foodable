@@ -7,7 +7,6 @@ import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {

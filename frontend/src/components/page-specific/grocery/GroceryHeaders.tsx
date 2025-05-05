@@ -36,7 +36,7 @@ export const MainGroceryHeader = (): JSX.Element => {
     const isMobile = useGeneralStore((state) => state.isMobile);
 
     const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
-    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
     const setShowPortal = useGeneralStore((state) => state.setShowPortal);
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const currentList = useGroceryStore((state) => state.currentList);
@@ -162,7 +162,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
     const isUser = useUserStore((state) => state.isUser);
     const currentList = useGroceryStore((state) => state.currentList);
     const availableLists = useGroceryStore((state) => state.availableLists);
-    const currentForm = useGeneralStore((state) => state.currentForm);
+    const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
     const setCurrentList = useGroceryStore((state) => state.setCurrentList);
     const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
@@ -249,8 +249,8 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
 
 export const GroceryHeaderMin = ({ additionalBackClick }: GroceryHeaderProps) => {
     const currentList = useGroceryStore((state) => state.currentList);
-    const currentForm = useGeneralStore((state) => state.currentForm);
-    const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+    const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
+    const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
     const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
     const handleCloseSideList = () => {

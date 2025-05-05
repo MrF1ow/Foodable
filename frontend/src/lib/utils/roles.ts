@@ -1,5 +1,6 @@
 import { Roles } from "@/types/global";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 export const checkRole = async (role: Roles) => {
   const { sessionClaims } = await auth();
@@ -21,4 +22,14 @@ export const getUserDetails = async () => {
   const userName = user?.username
   const userPfp = user?.imageUrl
   return { userName, userPfp };
+}
+
+export const getClerkUserId = async () => {
+  const clerkUser = await currentUser();
+
+  if (!clerkUser || !clerkUser.id) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  return clerkUser.id;
 }

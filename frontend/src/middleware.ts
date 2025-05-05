@@ -19,6 +19,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/recipes(.*)",
   "/api/images(.*)",
   "/api/kroger(.*)",
+  "/api/kroger(.*)",
+  "/api/openAI(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

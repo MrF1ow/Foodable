@@ -29,21 +29,23 @@ export const showToast = (
   detail: string,
   life: number = 5000
 ) => {
-  globalToast?.current?.show({
-    severity,
-    summary,
-    detail,
-    life,
-    content: (
-      <div
-        className={`p-4 rounded-md shadow-md w-full max-w-sm border ${severityStyles[severity]
-          }`}
-      >
-        <strong className="block font-semibold">{summary}</strong>
-        <p className="text-sm mt-1">{detail}</p>
-      </div>
-    ),
-  });
+  if (globalToast?.current) {
+    globalToast.current.clear(); // Clear any existing toast
+    globalToast.current.show({
+      severity,
+      summary,
+      detail,
+      life,
+      content: (
+        <div
+          className={`p-4 rounded-md shadow-md w-full max-w-sm border ${severityStyles[severity]}`}
+        >
+          <strong className="block font-semibold">{summary}</strong>
+          <p className="text-sm mt-1">{detail}</p>
+        </div>
+      ),
+    });
+  }
 };
 
 export default function Providers({ children, isUser }: { children: React.ReactNode, isUser: boolean }) {

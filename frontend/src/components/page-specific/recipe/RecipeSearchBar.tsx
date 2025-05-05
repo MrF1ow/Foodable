@@ -20,9 +20,9 @@ export default function RecipeSearchBar() {
   const setFilter = useRecipeStore((state) => state.setFilter);
   const filter = useRecipeStore((state) => state.filter);
   const isMobile = useGeneralStore((state) => state.isMobile);
-  const currentForm = useGeneralStore((state) => state.currentForm);
+  const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
   const setCurrentForm = useGeneralStore(
-    (state) => state.setCurrentForm
+    (state) => state.setCurrentSidePortalForm
   );
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSearchQuery = (searchQuery: string) => {

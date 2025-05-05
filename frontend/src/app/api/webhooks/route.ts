@@ -66,6 +66,7 @@ export async function POST(req: Request) {
         settings: {
           theme: "light",
         },
+        imageId: null,
         preferences: {
           dietaryRestrictions: [],
 	  budget: 0,

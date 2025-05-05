@@ -48,3 +48,8 @@ export type UserSections = "following" | "followers";
 export type SavedSections = 'recipes' | 'groceryLists';
 
 export type CollectionNames = "recipes" | "users" | "groceryLists" | "vectors"
+
+
+interface CurrentFormFunction {
+  setCurrentForm: (currentForm: FormName | null ) => void;
+}

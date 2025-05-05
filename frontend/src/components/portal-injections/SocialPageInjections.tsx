@@ -7,18 +7,18 @@ import SideList from "@/components/side-list/SideList";
 import RecipePopUp from "@/components/popups/RecipePopup";
 import AddItem from "@/components/forms/AddItem";
 import { useRouter } from "next/navigation";
-import FollowingPopup from "@/components/popups/FollowingPopup";
+import UserPopup from "@/components/popups/UserPopup";
 
-export default function RecipePageInjections() {
-  const currentForm = useGeneralStore((state) => state.currentForm);
-  const setForm = useGeneralStore((state) => state.setCurrentForm);
+export default function SocialPageInjections() {
+  const currentForm = useGeneralStore((state) => state.currentMainPortalForm);
+  const setForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
   const setShowMainPortal = useGeneralStore((state) => state.setShowMainPortal);
 
   const router = useRouter();
 
   const additionalBackButtonClick = () => {
     setShowMainPortal(false);
-    router.back();
+    router.push("/social");
   };
 
 
@@ -41,14 +41,14 @@ export default function RecipePageInjections() {
     />
   );
 
-  const followerPopop = (
-    <FollowingPopup
+  const userPopup = (
+    <UserPopup
       additionalBackButtonClick={additionalBackButtonClick}
       className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]"
     />
   );
 
-  const addItemForm = <AddItem className="lg:max-w-[35%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleClose={handleAddItemClose} />;
+  const addItemForm = <AddItem className="lg:max-w-[35%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleClose={handleAddItemClose} setCurrentForm={setForm}/>;
 
   return (
     <>
@@ -69,7 +69,7 @@ export default function RecipePageInjections() {
       {currentForm === FORM_NAMES.FOLLOWER_POPUP && (
         <PortalInjector
           containerId="main-modal-portal"
-          componentToInject={followerPopop}
+          componentToInject={userPopup}
           changeShowMainPortal={true}
         />
       )}

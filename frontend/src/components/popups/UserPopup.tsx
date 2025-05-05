@@ -6,21 +6,18 @@ import { useRouter } from "next/navigation";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { useGeneralStore } from "@/stores/general/store";
 import { JSX } from "react";
-import { FollowPopupHeader, FollowPopupRecipeSection, FollowPopupFollowerSection } from "../page-specific/social/FollowPopupParts";
+import { UserPopupHeader, UserPopupRecipeSection, UserPopupFollowerSection } from "../page-specific/social/UserPopupParts";
 
-interface FollowerPopUpProps {
+interface UserPopupProps {
   className?: string;
   additionalBackButtonClick?: () => void;
 }
 
-export default function FollowingPopup({
+export default function UserPopup({
   className,
   additionalBackButtonClick,
-}: FollowerPopUpProps): JSX.Element {
-  const selectedUser = useSocialStore((state) => state.selectedUser);
-  const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
-  const currentForm = useGeneralStore((state) => state.currentForm);
+}: UserPopupProps): JSX.Element {
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
 
   const handleItemClick = (id: string) => {
     setCurrentForm(FORM_NAMES.RECIPE);
@@ -38,11 +35,11 @@ export default function FollowingPopup({
   return (
     <Card className={`z-[50] w-full h-full bg-card-background overflow-hidden overflow-y-scroll rounded-none shadow-none md:rounded-xl md:shadow-xl lg:rounded-xl lg:shadow-xl xl:rounded-xl xl:shadow-xl gap-2 ${className}`}>
       <CardHeader className="w-full h-[40%]">
-        <FollowPopupHeader handleClose={handleClose} />
+        <UserPopupHeader handleClose={handleClose} />
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <FollowPopupFollowerSection />
-        <FollowPopupRecipeSection />
+        <UserPopupFollowerSection />
+        <UserPopupRecipeSection />
       </CardContent>
     </Card>
   );

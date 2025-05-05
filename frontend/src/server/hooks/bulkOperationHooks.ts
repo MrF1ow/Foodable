@@ -29,3 +29,17 @@ export const useRemoveAllRecipesFromAllUsers = () => {
         removeData: mutation.data,
     };
 }
+
+export const useRemoveAllImageFromAllUsers = () => {
+    const mutation = useMutation<void, Error, string>({
+        mutationFn: (imageId: string) =>
+            BulkOperationApi.bulkRemoveImageFromAllUsers(imageId),
+    });
+
+    return {
+        removeAllImageFromAllUsers: mutation.mutateAsync,
+        isRemovingImage: mutation.isPending,
+        removeError: mutation.error,
+        removeData: mutation.data,
+    };
+}

@@ -24,7 +24,7 @@ export type UserIdentifiers = {
 };
 
 export type User = NewUser & {
-  id: ObjectId; // User ID
+ _id: ObjectId; // User ID
 };
 
 export type FollowMetadata = {
