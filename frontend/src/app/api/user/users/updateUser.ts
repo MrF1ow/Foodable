@@ -24,14 +24,14 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { id, ...userWithoutID } = user;
+    const { _id, ...userWithoutID } = user;
 
     const db = await getDB();
 
     const updatedUser = await db
       .collection("users")
       .findOneAndUpdate(
-        { _id: new ObjectId(id) },
+        { _id: _id },
         { $set: userWithoutID },
         { returnDocument: "after" }
       );

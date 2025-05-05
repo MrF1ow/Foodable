@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner";
 import Social from "@/app/(data-hydrate)/social/social";
 import SocialPageInjections from "@/components/portal-injections/SocialPageInjections";
-import { FollowingPopup } from "@/components/popups/UserPopup";
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -35,7 +34,7 @@ export default function Page() {
     { enabled: !!recipeId && isValidObjectId(recipeId) }
   );
 
-  const { refetchImage } = useFetchImageById(currentData?.imageId as string, {
+  const { refetchImage } = useFetchImageById(currentData?.imageId ? currentData?.imageId.toString() :  "", {
     enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
   });
 

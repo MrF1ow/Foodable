@@ -49,7 +49,7 @@ export default function GroceryAccordion({
   const currentList = useGroceryStore((state) => state.currentList);
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
   const showMainPortal = useGeneralStore((state) => state.showMainPortal);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);

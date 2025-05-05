@@ -140,6 +140,7 @@ export const recipeIngredientsToGroceryItems = (
     unit: ingredient.unit,
     category: ingredient.category,
     checked: false,
+    productId: undefined
   }));
 };
 

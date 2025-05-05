@@ -110,8 +110,8 @@ export const RecipeContent = () => {
   const groceryMap = useGroceryStore((state) => state.map);
   const setMap = useGroceryStore((state) => state.setMap);
   const currentList = useGroceryStore((state) => state.currentList);
-  const currentRecipe = useRecipeStore((state) => state.currentRecipe);
-  if (!currentList || !currentRecipe) return null;
+  const currentRecipe = useRecipeStore((state) => state.currentRecipe) as Recipe;
+  if (!currentList || !currentRecipe ) return null;
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,

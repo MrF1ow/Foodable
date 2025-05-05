@@ -102,11 +102,11 @@ export const AddRecipe = ({ setCurrentForm } : CurrentFormFunction) => {
       tags: [],
     };
 
-    const createData = await createRecipe(newRecipe as Recipe);
+    const createData = await createRecipe(newRecipe);
 
     const newImage: NewImageData = {
       image: data.image as File,
-      sourceId: createData._id,
+      sourceId: createData._id.toString(),
       collectionName: "recipes",
     };
 
@@ -130,8 +130,6 @@ export const AddRecipe = ({ setCurrentForm } : CurrentFormFunction) => {
       type: "recipe",
       category: "Recipes",
     };
-
-    const savedItem = await createSavedItem(newSaveItem as SavedItem);
   };
 
   const handleInputClose = () => {

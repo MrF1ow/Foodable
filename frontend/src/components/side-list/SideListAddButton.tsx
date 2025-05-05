@@ -16,7 +16,7 @@ import { FORM_NAMES } from "@/lib/constants/forms";
 import { JSX } from "react";
 
 export default function SideListAddButton(): JSX.Element {
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentForm);
+  const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
 
