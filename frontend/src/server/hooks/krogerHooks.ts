@@ -14,6 +14,7 @@ export const useFetchKrogerLocations = (zipCode: string) => {
       return await KrogerApi.fetchKrogerLocations(zipCode);
     },
     retry: 0,
+    enabled: !!zipCode,
   });
 
   return {
@@ -44,5 +45,29 @@ export const useFetchKrogerProducts = (term: string, locationId?: string) => {
     isLoadingKrogerProducts,
     refetchKrogerProducts,
     errorKrogerProducts,
+  };
+};
+export const useFetchKrogerProductById = (
+  productId: string,
+  locationId?: string
+) => {
+  const {
+    data: krogerProduct,
+    isLoading: isLoadingKrogerProduct,
+    refetch: refetchKrogerProduct,
+    error: errorKrogerProduct,
+    isError: isErrorKrogerProduct,
+  } = useQuery({
+    queryKey: ["krogerProductById", productId, locationId],
+    queryFn: () => KrogerApi.fetchKrogerProductById(productId, locationId),
+    enabled: !!productId,
+    retry: 0,
+  });
+
+  return {
+    krogerProduct,
+    isLoadingKrogerProduct,
+    refetchKrogerProduct,
+    errorKrogerProduct,
   };
 };

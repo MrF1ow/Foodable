@@ -41,6 +41,7 @@ import { useFetchKrogerProducts } from "@/server/hooks/krogerHooks";
 import { KrogerProduct } from "@/types/kroger";
 import Image from "next/image";
 import { FormName } from "@/lib/constants/forms";
+import { useWatch } from "react-hook-form";
 
 interface AddItemFormProps {
   className?: string;
@@ -56,7 +57,6 @@ export default function AddItem({
   const [selectedProductId, setSelectedProductId] = useState<
     string | undefined
   >(undefined);
-  const [term, setTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const isUser = useUserStore((state) => state.isUser);
@@ -84,15 +84,6 @@ export default function AddItem({
     errorKrogerProducts,
   } = useFetchKrogerProducts(debouncedTerm);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedTerm(term);
-      refetchKrogerProducts();
-    }, 500);
-
-    return () => clearTimeout(handler);
-  }, [term, refetchKrogerProducts]);
-
   const { AddItemFormSchema, defaultValues, resolver } =
     getAddItemFormValidation();
 
@@ -100,6 +91,20 @@ export default function AddItem({
     defaultValues,
     resolver,
   });
+
+  const watchedItemName = useWatch({
+    control: form.control,
+    name: "itemName",
+  });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(watchedItemName);
+      refetchKrogerProducts();
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [watchedItemName, refetchKrogerProducts]);
 
   async function onSubmit(data: z.infer<typeof AddItemFormSchema>) {
     const newItem: GroceryItem = {
@@ -191,13 +196,12 @@ export default function AddItem({
                           }
                           onChange={async (e) => {
                             field.onChange(e.target.value);
-                            setTerm(e.target.value);
                             setSelectedProductId(undefined);
                           }}
                           data-testid="itemName-input"
                         />
                         {isFocused && krogerProducts?.data?.length > 0 && (
-                          <div className="absolute bg-white border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
+                          <div className="absolute bg-primary border shadow max-h-60 overflow-y-auto mt-1 rounded w-full">
                             {krogerProducts.data.map((item: KrogerProduct) => {
                               const image =
                                 item.images?.[0]?.sizes?.[0]?.url ?? undefined;
@@ -206,7 +210,7 @@ export default function AddItem({
                               return (
                                 <div
                                   key={item.productId}
-                                  className="p-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                                  className="p-2 hover:bg-green-00 cursor-pointer flex items-center gap-2"
                                   onMouseDown={() => {
                                     form.setValue("itemName", description);
                                     form.setValue("quantity", 1);

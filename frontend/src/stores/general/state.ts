@@ -61,7 +61,8 @@ export const createGeneralActions = (set: any): GeneralActions => ({
 
   setClerkVariables: (clerkVariables: any) =>
     set((state: GeneralState) => ({ ...state, clerkVariables })),
-  setZipCode: (zipCode: string) => set((state: GeneralState) => ({ ...state, zipCode })),
+  setZipCode: (zipCode: string) =>
+    set((state: GeneralState) => ({ ...state, zipCode })),
 });
 
 export type GeneralStore = GeneralState & GeneralActions;

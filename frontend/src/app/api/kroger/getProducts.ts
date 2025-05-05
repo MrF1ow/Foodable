@@ -1,17 +1,29 @@
 import { getAccessToken } from "@/lib/utils/getAccessToken";
 import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { NextResponse } from "next/server";
 
 interface ProductResponse {
   data: Array<{
     productId: string;
+    aisleLocations?: Array<{
+      bayNumber: string;
+      description: string;
+      number: string;
+      numberOfFacings: string;
+      side: string;
+      shelfNumber: string;
+      shelfPositionInBay: string;
+    }>;
     description: string;
     brand: string;
     size: string;
-    price: {
-      regular: number;
-      promo?: number;
-    };
     images: Array<{ perspective: string; sizes: Array<{ url: string }> }>;
+    items: Array<{
+      price?: {
+        regular: number;
+        promo?: number;
+      };
+    }>;
   }>;
 }
 
@@ -21,11 +33,15 @@ export async function GET(req: Request) {
 
   const searchTerm = getValueFromSearchParams(req, "term");
   if (!searchTerm) {
-    return new Response("Missing search term", { status: 400 });
+    return NextResponse.json({ error: "Missing search term" }, { status: 400 });
   }
   console.log("Search term:", searchTerm);
 
-  const locationId = getValueFromSearchParams(req, "locationId") || "";
+  const locationId =
+    getValueFromSearchParams(req, "locationId") ||
+    getValueFromSearchParams(req, "filter.locationId") ||
+    "";
+
   console.log("Location ID:", locationId);
   const searchByLocation = locationId ? `&filter.locationId=${locationId}` : "";
   const limit = getValueFromSearchParams(req, "pagination.limit") ?? "50";
@@ -33,8 +49,10 @@ export async function GET(req: Request) {
 
   const accessToken = await getAccessToken();
   if (!accessToken) {
-    console.log("Failed to retrieve access token");
-    return new Response("Failed to retrieve access token", { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to retrieve access token" },
+      { status: 500 }
+    );
   }
 
   const productsUrl = `${process.env.NEXT_PUBLIC_KROGER_API_BASE_URL}/products?filter.term=${searchTerm}${searchByLocation}${filterLimit}`;
@@ -53,12 +71,12 @@ export async function GET(req: Request) {
     }
 
     const data: ProductResponse = await response.json();
-    // console.log("Products response:", data);
-    return new Response(JSON.stringify(data), { status: 200 });
+    // console.log("getProducts response:", data);
+    return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
-    console.error("Error fetching products:", error);
-    return new Response("Failed to fetch products", {
-      status: error.response?.status || 500,
-    });
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 }
+    );
   }
 }

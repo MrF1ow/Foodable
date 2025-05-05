@@ -9,9 +9,15 @@ import {
 } from "@/types/grocery";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { grocerySections } from "@/config/grocery-sections";
-import { RecipeMetaData, SavedGroceryMetaData, SavedItem, SavedRecipeMetaData } from "@/types/saved";
+import {
+  RecipeMetaData,
+  SavedGroceryMetaData,
+  SavedItem,
+  SavedRecipeMetaData,
+} from "@/types/saved";
 import { compareTag } from "./filterHelpers";
 import { FollowMetadata, User } from "@/types/user";
+import { KrogerApi } from "@/server/api";
 
 export const getAvailableGroceryLists = (
   groceryLists: SavedGroceryMetaData[]
@@ -112,10 +118,7 @@ export const getAdditionalIngredients = (
     groceryMap
   );
 
-  return recipeIngredientsToGroceryItems(
-    additionalIngredients
-  );
-
+  return recipeIngredientsToGroceryItems(additionalIngredients);
 };
 
 export const getGroceryAccordingItems = (
@@ -180,6 +183,66 @@ export const insertItemIntoGroceryMap = (
   return newMap;
 };
 
+export const fetchStorePricesFromGroceryMap = async (
+  storeId: string,
+  groceryMap: Map<string, GroceryItem>
+): Promise<Map<string, number>> => {
+  const priceMap = new Map<string, number>();
+
+  for (const [key, item] of groceryMap.entries()) {
+    try {
+      let product;
+      if (item.productId) {
+        const response = await KrogerApi.fetchKrogerProductById(
+          item.productId,
+          storeId
+        );
+        product = response?.data;
+      } else {
+        const response = await KrogerApi.fetchKrogerProducts(
+          item.name,
+          storeId
+        );
+        if (response?.data?.length) {
+          product = response.data.find((product: any) =>
+            product?.items?.some(
+              (item: any) => item.fulfillment?.inStore === true
+            )
+          );
+        }
+      }
+
+      let itemWithStock;
+
+      if (Array.isArray(product)) {
+        for (const p of product) {
+          itemWithStock = p.items?.find(
+            (item: any) => item.fulfillment?.inStore === true
+          );
+          if (itemWithStock) break;
+        }
+      } else {
+        itemWithStock = product?.items?.find(
+          (item: any) => item.fulfillment?.inStore === true
+        );
+      }
+
+      const price = itemWithStock?.price?.regular;
+
+      if (price !== undefined) {
+        console.log(`Fetched price for ${item.name}: ${price}`);
+        priceMap.set(key, price);
+      } else {
+        console.log(`Price not found for ${item.productId}`, product);
+      }
+    } catch (error) {
+      console.error(`Failed to fetch price for ${item.name} `, error);
+    }
+  }
+
+  return priceMap;
+};
+
 export const filterRecipes = (
   recipes: RecipeMetaData[],
   filter: FilterOptions
@@ -223,9 +286,14 @@ export const filterUsers = (users: FollowMetadata[], searchQuery: string) => {
   );
 };
 
-export const filterSavedItems = (savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[], searchQuery: string) => {
-  return savedItems.filter((savedItem) => savedItem.title.toLowerCase().includes(searchQuery.toLowerCase()))
-}
+export const filterSavedItems = (
+  savedItems: SavedRecipeMetaData[] | SavedGroceryMetaData[],
+  searchQuery: string
+) => {
+  return savedItems.filter((savedItem) =>
+    savedItem.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+};
 
 export const createToMutate = (data: any, listName: string) => {
   let newData;
