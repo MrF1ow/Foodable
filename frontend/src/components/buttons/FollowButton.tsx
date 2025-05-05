@@ -23,8 +23,8 @@ export default function FollowButton() {
     })
 
     useEffect(() => {
-        console.log('Following:', following);
         const isFollowing = getIsFollowing(selectedUser, following);
+        console.log(isFollowing);
         setIsFollowing(isFollowing)
         callRemount(false);
     }, [remount])
@@ -35,6 +35,8 @@ export default function FollowButton() {
             imageId: selectedUser.imageId,
             username: selectedUser.username
         } as FollowMetadata
+
+        console.log(userMetaData)
 
         followUser(userMetaData);
 
