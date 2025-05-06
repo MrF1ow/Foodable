@@ -15,7 +15,7 @@ export const useAllRecipes = (metadata: boolean = true, tags?: FilterTag) => {
     error: errorRecipes,
     isError: isErrorRecipes,
   } = useQuery({
-    queryKey: [RECIPES, tags],
+    queryKey: [RECIPES],
     queryFn: () => RecipeApi.fetchAllRecipes(metadata, tags),
   });
 

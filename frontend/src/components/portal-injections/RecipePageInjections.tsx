@@ -59,15 +59,15 @@ export const RecipeMainPortalInjections = () => {
 
     const handleRecipeItemClick = (id: string) => {
         setShowMainPortal(false);
-        router.push(`recipe/${id}`);
+        router.push(`/recipe/${id}`);
     }
 
     const handleFollowItemClick = (id: string) => {
         setShowMainPortal(true);
-        router.push(`recipe/user/${id}`);
+        router.push(`/recipe/user/${id}`);
     }
 
-    const userPopup = <UserPopup additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleFollowItemClick={handleFollowItemClick} handleRecipeItemClick={handleRecipeItemClick} />
+    const userPopup = <UserPopup additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleFollowItemClick={handleFollowItemClick} handleRecipeItemClick={handleRecipeItemClick}/>
 
     return (
         <>
