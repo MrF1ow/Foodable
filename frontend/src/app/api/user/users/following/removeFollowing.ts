@@ -24,14 +24,33 @@ export async function DELETE(req: Request) {
       );
     }
 
+    // get and check current user profile
     const db = await getDB();
+    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+
+    if (!userProfile) {
+      return NextResponse.json(
+        { message: HTTP_RESPONSES.NOT_FOUND },
+        { status: 404 }
+      );
+    }
+
+    const targetUserId = ObjectId.createFromHexString(followingId);
+
+    // Prevent following yourself
+    if (targetUserId.equals(userProfile._id)) {
+      return NextResponse.json(
+        { message: "You cannot unfollow yourself." },
+        { status: 400 }
+      );
+    }
 
     // Remove the follower from the user's followers list
     const result = await db
       .collection("users")
       .updateOne(
         { clerkId: clerkUser.id },
-        { $pull: { following: { _id: ObjectId.createFromHexString(followingId) } as any } }
+        { $pull: { following: { _id: targetUserId } as any } }
       );
 
     if (result.modifiedCount === 0) {
@@ -40,6 +59,11 @@ export async function DELETE(req: Request) {
         { status: 404 }
       );
     }
+
+    await db.collection('users').updateOne(
+      { _id: targetUserId },
+      { $pull: { followers: { _id: userProfile._id } as any } }
+    );
 
     return NextResponse.json(
       { message: "Follower removed successfully" },

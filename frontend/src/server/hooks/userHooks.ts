@@ -133,7 +133,7 @@ export const useDeleteFollowing = () => {
   });
 
   return {
-    deleteFollowing: mutation.mutate,
+    deleteFollowing: mutation.mutateAsync,
     isLoadingDeleteFollowing: mutation.isPending,
     errorDeleteFollowing: mutation.error,
     isErrorDeleteFollowing: mutation.isError,
@@ -146,7 +146,7 @@ export const useFollowUser = () => {
   });
 
   return {
-    followUser: mutation.mutate,
+    followUser: mutation.mutateAsync,
     isLoadingFollowUser: mutation.isPending,
     errorFollowUser: mutation.error,
     isErrorFollowUser: mutation.isError

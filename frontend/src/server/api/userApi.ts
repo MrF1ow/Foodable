@@ -108,7 +108,7 @@ export const UserApi = {
     try {
       const response = await fetchWithAuth("/user/settings", {
         method: "PUT",
-        body: JSON.stringify({ settings }),
+        body: JSON.stringify(settings),
       });
       return response;
     } catch (error) {
@@ -131,7 +131,7 @@ export const UserApi = {
     try {
       const response = await fetchWithAuth("/user/preferences", {
         method: "PUT",
-        body: JSON.stringify({ preferences }),
+        body: JSON.stringify(preferences),
       });
       return response;
     } catch (error) {
