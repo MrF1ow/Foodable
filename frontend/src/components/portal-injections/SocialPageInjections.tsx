@@ -26,6 +26,16 @@ export default function SocialPageInjections() {
     setForm(FORM_NAMES.GROCERY_LIST)
   }
 
+  const handleRecipeItemClick = (id: string) => {
+    setForm(FORM_NAMES.RECIPE);
+    router.push(`/social/recipe/${id}`);
+}
+
+const handleFollowItemClick = (id: string) => {
+    setForm(FORM_NAMES.FOLLOWER_POPUP);
+    router.push(`/social/user/${id}`);
+}
+
   const sideList = (
     <SideList
       isUser={true}
@@ -45,6 +55,8 @@ export default function SocialPageInjections() {
     <UserPopup
       additionalBackButtonClick={additionalBackButtonClick}
       className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]"
+      handleFollowItemClick={handleFollowItemClick}
+      handleRecipeItemClick={handleRecipeItemClick}
     />
   );
 

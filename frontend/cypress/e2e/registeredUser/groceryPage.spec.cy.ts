@@ -1,4 +1,4 @@
-describe("Visit Grocery Page", () => {
+describe("Registered User Grocery Page", () => {
   it("Grocery Page Should Load Successfully", () => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
     cy.wait(5000);

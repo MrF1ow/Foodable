@@ -3,13 +3,10 @@ import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  console.log("Getting Kroger product by ID");
-
   const productId = getValueFromSearchParams(req, "productId");
   if (!productId) {
     return NextResponse.json({ error: "Missing product ID" }, { status: 400 });
   }
-  console.log("Product ID:", productId);
   const productIdQuery = `filter.productId=${productId}`;
 
   const locationId = getValueFromSearchParams(req, "locationId") || "";
