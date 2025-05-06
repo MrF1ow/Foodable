@@ -5,19 +5,21 @@ import { useQueryProps } from "@/types";
 import { ERROR_FETCHING_RECIPES } from "@/lib/constants/messages";
 import { RECIPES } from "@/lib/constants/process";
 import { Recipe, NewRecipe } from "@/types/recipe";
+import { FilterTag } from "@/types";
 
-export const useAllRecipes = (metadata: boolean = true) => {
+export const useAllRecipes = (metadata: boolean = true, tags?: FilterTag) => {
   const {
     data: recipes,
+    refetch: refetchRecipes,
     isLoading: isLoadingRecipes,
     error: errorRecipes,
     isError: isErrorRecipes,
   } = useQuery({
-    queryKey: [RECIPES],
-    queryFn: () => RecipeApi.fetchAllRecipes(metadata),
+    queryKey: [RECIPES, tags],
+    queryFn: () => RecipeApi.fetchAllRecipes(metadata, tags),
   });
 
-  return { recipes, isLoadingRecipes, errorRecipes, isErrorRecipes };
+  return { recipes, refetchRecipes, isLoadingRecipes, errorRecipes, isErrorRecipes };
 };
 
 // Custom hook for fetching a recipe by ID

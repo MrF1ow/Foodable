@@ -1,5 +1,5 @@
 import { checkOnboarding } from "@/lib/utils/roles";
-import OnboardingComponent from "./onboarding";
+import OnboardingForm from "./onboarding";
 import { redirect } from "next/navigation";
 
 export default async function OnboardingPage() {
@@ -7,7 +7,7 @@ export default async function OnboardingPage() {
   const complete = await checkOnboarding();
 
   if (complete) {
-    redirect("/");
+    redirect("/grocery-list");
   }
-  return <OnboardingComponent />;
+  return <OnboardingForm />;
 }

@@ -7,7 +7,6 @@ import { User } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {

@@ -1,5 +1,6 @@
 import { Recipe, NewRecipe } from "@/types/recipe";
 import fetchWithAuth from "../fetchInstance";
+import { FilterOptions, FilterTag, Tag } from "@/types";
 
 export const RecipeApi = {
   createRecipe: async (recipe: NewRecipe): Promise<Recipe> => {
@@ -61,10 +62,17 @@ export const RecipeApi = {
     }
   },
 
-  fetchAllRecipes: async (includeMetadata = true) => {
+  fetchAllRecipes: async (includeMetadata = true, tags?: FilterTag) => {
     try {
-      const queryParam = includeMetadata ? "?metadata=true" : "";
-      const url = `/recipes${queryParam}`;
+      const params = new URLSearchParams();
+      if (includeMetadata) params.append("metadata", "true");
+
+      if (tags?.time) params.append("time", tags.time.toString());
+      if (tags?.price) params.append("price", tags.price.toString());
+      if (tags?.ingredient) params.append("ingredient", tags.ingredient.toString());
+
+      const queryString = params.toString();
+      const url = `/recipes${queryString ? `?${queryString}` : ""}`;
       const response = await fetchWithAuth(url);
       return response;
     } catch (error) {

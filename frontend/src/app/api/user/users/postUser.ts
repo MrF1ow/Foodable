@@ -20,6 +20,7 @@ export async function POST(req: Request) {
       preferences: {
         dietaryRestrictions: user.preferences.dietaryRestrictions || [],
         budget: user.preferences.budget || 0,
+        foodTypePreferences: user.preferences.foodTypePreferences || []
       },
       savedItems: {
         recipes: user.savedItems.recipes || [], // Ensure recipes is an array
@@ -32,8 +33,6 @@ export async function POST(req: Request) {
       lastLogin: user.lastLogin || new Date(),
       dateJoined: user.dateJoined || new Date(),
     };
-
-    console.log("User to insert:", userToInsert);
 
     if (!validateUserWithoutID(userToInsert, isValidObjectId)) {
       return NextResponse.json(

@@ -9,6 +9,7 @@ export type UserSettings = {
 export type UserPreferences = {
   dietaryRestrictions: string[];
   budget: number;
+  foodTypePreferences: string[];
 };
 
 export type UserRating = {

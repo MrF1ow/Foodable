@@ -69,7 +69,8 @@ export async function POST(req: Request) {
         imageId: null,
         preferences: {
           dietaryRestrictions: [],
-	  budget: 0,
+          budget: 0,
+          foodTypePreferences: [],
         },
         savedItems: {
           recipes: [],

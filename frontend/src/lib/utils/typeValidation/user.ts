@@ -11,8 +11,9 @@ const validateSettings = (settings: any): boolean => {
 const validatePreferences = (preferences: any): boolean => {
   return (
     preferences &&
-    isValidStringArray(preferences.dietaryRestrictions)
-    // isValidStringArray(preferences.allergies)
+    isValidStringArray(preferences.dietaryRestrictions) &&
+    isValidStringArray(preferences.foodTypePreferences) &&
+    typeof preferences.budget === "number"    
   );
 };
 
