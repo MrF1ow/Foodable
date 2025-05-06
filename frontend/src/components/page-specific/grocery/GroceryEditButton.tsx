@@ -3,7 +3,6 @@
 // Package Imports
 import { MdEdit } from "react-icons/md";
 import { JSX, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 
 import {
   Dialog,
