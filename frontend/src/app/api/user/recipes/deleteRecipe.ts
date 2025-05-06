@@ -65,6 +65,11 @@ export async function DELETE(req: Request) {
       { $set: updateFields }
     );
 
+    await db.collection("users").updateOne(
+      { _id: userProfile._id },
+      { $pull: { createdRecipes: { _id: ObjectId.createFromHexString(id) } } as any }
+    );
+
     return NextResponse.json(
       { message: "Recipe Deleted", id: id },
       { status: 200 }

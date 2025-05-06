@@ -62,9 +62,31 @@ export async function PUT(req: Request) {
       404
     );
 
+
+    const metaData = {
+      _id: _id,
+      title: recipeWithoutID.title,
+      imageId: recipeWithoutID.imageId,
+      category: "My Recipes",
+      type: "recipe"
+    }
+
     if (validationResponse) {
       return validationResponse;
     }
+
+    await db.collection('users').updateOne(
+      {
+        _id: userProfile._id,
+        "createdRecipes._id": _id
+      },
+      {
+        $set: {
+          "createdRecipes.$.title": recipeWithoutID.title,
+          "createdRecipes.$.imageId": recipeWithoutID.imageId
+        }
+      }
+    );
 
     return NextResponse.json(updatedRecipe, { status: 200 });
   } catch (error) {

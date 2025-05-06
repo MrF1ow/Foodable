@@ -7,6 +7,7 @@ import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { title } from "process";
 
 export async function POST(req: Request) {
   try {
@@ -60,6 +61,19 @@ export async function POST(req: Request) {
     }
 
     const result = await db.collection("recipes").insertOne(recipeToInsert);
+
+    const metaData = {
+      _id: result.insertedId,
+      title: recipeToInsert.title,
+      imageId: recipeToInsert.imageId,
+      category: "My Recipes",
+      type: "recipe"
+    }
+
+    await db.collection("users").updateOne({
+      _id: userProfile._id
+    },
+      { $addToSet: { createdRecipes: metaData } })
 
     return NextResponse.json(
       { ...recipeToInsert, _id: result.insertedId },
