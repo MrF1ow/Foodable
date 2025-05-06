@@ -49,6 +49,7 @@ export default function Recipes() {
 
   // Update filtered recipes when data or filter changes
   useEffect(() => {
+    console.log(recipes);
     const updated = filterRecipes(recipes, filter);
     setFilteredRecipes(updated);
     setCurrentPage(1);

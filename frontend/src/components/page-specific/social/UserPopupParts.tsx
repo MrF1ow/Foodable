@@ -70,12 +70,12 @@ export const UserPopupFollowerSectionHeader = ({ title }: { title: string }) => 
     )
 }
 
-export const UserPopupFollowerSection = () => {
-    const currentUser = useSocialStore((state) => state.selectedUser);
+interface UserPopupSectionProps {
+    handleItemClick: (id: string) => void;
+}
 
-    const handleFollowerClick = (id: string) => {
-        console.log("Opening Another Follower");
-    }
+export const UserPopupFollowerSection = ({ handleItemClick }: UserPopupSectionProps) => {
+    const currentUser = useSocialStore((state) => state.selectedUser);
     return (
         <SocialSectionLayout headerComponent={<UserPopupFollowerSectionHeader title="Their Followers" />}>
             <div className="w-full h-full">
@@ -88,7 +88,7 @@ export const UserPopupFollowerSection = () => {
                     <SocialItem
                         key={follow._id.toString()}
                         title={follow.username}
-                        handleClick={() => handleFollowerClick(follow._id.toString())}
+                        handleClick={() => handleItemClick(follow._id.toString())}
                     />
                 ))}
             </div>
@@ -96,12 +96,9 @@ export const UserPopupFollowerSection = () => {
     );
 }
 
-export const UserPopupRecipeSection = () => {
+export const UserPopupRecipeSection = ({ handleItemClick }: UserPopupSectionProps) => {
     const currentUser = useSocialStore((state) => state.selectedUser);
 
-    const handleItemClick = (id: string) => {
-        console.log("opening a users recipes");
-    }
     return (
         <SocialSectionLayout headerComponent={<UserPopupFollowerSectionHeader title="Their Recipes" />}>
             <div className="w-full h-full">
