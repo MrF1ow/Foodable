@@ -146,7 +146,7 @@ export const useFollowUser = () => {
   });
 
   return {
-    followUser: mutation.mutateAsync,
+    followUser: mutation.mutate,
     isLoadingFollowUser: mutation.isPending,
     errorFollowUser: mutation.error,
     isErrorFollowUser: mutation.isError

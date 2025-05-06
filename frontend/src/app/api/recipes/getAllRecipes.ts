@@ -5,29 +5,44 @@ import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
 
 import { NextResponse } from "next/server";
 import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { currentUser } from "@clerk/nextjs/server";
+import { ObjectId } from "mongodb";
 
 export async function GET(req: Request) {
   try {
     const fetchMetadata = getValueFromSearchParams(req, "metadata") === "true";
 
+    const clerkUser = await currentUser();
     const db = await getDB();
+
+    let userId: ObjectId | null = null;
+
+    if (clerkUser && clerkUser.id) {
+      const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
+      if (userProfile) {
+        userId = userProfile._id;
+      }
+    }
+
 
     const projection = fetchMetadata
       ? {
-          type: "recipe",
-          _id: 1,
-          title: 1,
-          category: 1,
-          imageId: 1,
-          "tags.time": 1,
-          "tags.price": 1,
-          "tags.ingredient": 1,
-        }
+        type: "recipe",
+        _id: 1,
+        title: 1,
+        category: 1,
+        imageId: 1,
+        "tags.time": 1,
+        "tags.price": 1,
+        "tags.ingredient": 1,
+      }
       : {};
+
+    const query = userId ? { creatorId: { $ne: userId } } : {};
 
     const recipes = await db
       .collection("recipes")
-      .find({}, { projection })
+      .find(query, { projection })
       .toArray();
 
     if (!fetchMetadata) {

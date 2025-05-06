@@ -27,7 +27,6 @@ export default function UserPopup({
   const handleClose = () => {
     setCurrentForm(null);
     additionalBackButtonClick?.()
-    router.back()
   }
 
   const router = useRouter();
