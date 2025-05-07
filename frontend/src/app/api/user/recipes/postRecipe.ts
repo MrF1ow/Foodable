@@ -7,7 +7,7 @@ import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { insertEmbeddings } from "@/lib/utils/embeddings";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 
 export async function POST(req: Request) {
   try {
@@ -70,16 +70,7 @@ export async function POST(req: Request) {
       type: "recipe"
     }
 
-    const embeddingData = {
-      _id: result.insertedId,
-      title: recipeToInsert.title,
-      description: recipeToInsert.description,
-      ingredients: recipeToInsert.ingredients,
-      instructions: recipeToInsert.instructions,
-      averageRating: recipeToInsert.averageRating,
-      priceApproximation: recipeToInsert.priceApproximation,
-      timeApproximation: recipeToInsert.timeApproximation,
-    }
+    const embeddingData = formEmbeddingData("recipe", recipeToInsert, result.insertedId)
 
     await db.collection("users").updateOne({
       _id: userProfile._id

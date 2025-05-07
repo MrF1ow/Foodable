@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { isValidObjectId } from "@/lib/utils/typeValidation/general";
 import { currentUser } from "@clerk/nextjs/server";
+import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
 
 export async function DELETE(req: Request) {
   try {
@@ -32,12 +33,16 @@ export async function DELETE(req: Request) {
       );
     }
 
+    const groceryListId = ObjectId.createFromHexString(id.toString());
+
+    console.log(groceryListId)
+
     // delete the grocery list
     const deletedGroceryList = await db
       .collection("groceryLists")
       .findOneAndDelete({
-        _id: ObjectId.createFromHexString(id),
-        creatorId: userProfile._id.toString(),
+        _id: groceryListId,
+        creatorId: userProfile._id,
       });
 
     if (!deletedGroceryList) {
@@ -72,6 +77,9 @@ export async function DELETE(req: Request) {
       { clerkId: clerkUser.id },
       { $set: updateFields }
     );
+
+    await deleteVectorEmbedding(groceryListId);
+
 
     return NextResponse.json(
       { message: "Grocery List Deleted" },

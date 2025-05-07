@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import { GroceryList } from "@/types/grocery";
 import { currentUser } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 
 export async function PUT(req: Request) {
   try {
@@ -68,6 +69,10 @@ export async function PUT(req: Request) {
     if (validationResponse) {
       return validationResponse;
     }
+
+    const embeddingData = formEmbeddingData("grocery", groceryList, ObjectId.createFromHexString(_id.toString()))
+
+    await insertEmbeddings([embeddingData]);
 
     return NextResponse.json(updatedGroceryList, { status: 200 });
   } catch (error) {

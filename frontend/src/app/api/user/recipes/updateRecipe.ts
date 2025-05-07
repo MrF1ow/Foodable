@@ -6,7 +6,7 @@ import { Recipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { insertEmbeddings } from "@/lib/utils/embeddings";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
     const updatedRecipe = await db
       .collection("recipes")
       .findOneAndUpdate(
-        { _id: recipeId, creatorId: userId},
+        { _id: recipeId, creatorId: userId },
         { $set: recipeWithoutID },
         { returnDocument: "after" }
       );
@@ -84,18 +84,8 @@ export async function PUT(req: Request) {
       }
     );
 
-    const embeddingData = {
-      _id: ObjectId.createFromHexString(_id.toString()),
-      title: recipe.title,
-      description: recipe.description,
-      ingredients: recipe.ingredients,
-      instructions: recipe.instructions,
-      averageRating: recipe.averageRating,
-      priceApproximation: recipe.priceApproximation,
-      timeApproximation: recipe.timeApproximation,
-    }
+    const embeddingData = formEmbeddingData("recipe", recipe, ObjectId.createFromHexString(_id.toString()))
 
-    console.log(embeddingData)
 
     await insertEmbeddings([embeddingData])
 

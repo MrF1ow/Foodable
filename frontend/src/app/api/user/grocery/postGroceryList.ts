@@ -8,6 +8,7 @@ import { NewGroceryList } from "@/types/grocery";
 // Package Imports
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 
 export async function POST(req: Request) {
   try {
@@ -51,6 +52,10 @@ export async function POST(req: Request) {
     const insertedGroceryList = await db
       .collection("groceryLists")
       .findOne({ _id: result.insertedId });
+
+    const embeddingData = formEmbeddingData("grocery", groceryListToInsert, result.insertedId)
+
+    await insertEmbeddings([embeddingData]);
 
     // return the entire grocery list
     return NextResponse.json(insertedGroceryList, { status: 201 });

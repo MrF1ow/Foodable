@@ -4,6 +4,7 @@ import { isValidObjectId } from "@/lib/utils/validation";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { currentUser } from "@clerk/nextjs/server";
+import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
 
 export async function DELETE(req: Request) {
   try {
@@ -70,9 +71,7 @@ export async function DELETE(req: Request) {
       { $pull: { createdRecipes: { _id: ObjectId.createFromHexString(id) } } as any }
     );
 
-    await db.collection("vectors").deleteOne(
-      { referenceId: ObjectId.createFromHexString(id) }
-    )
+    await deleteVectorEmbedding(ObjectId.createFromHexString(id));
 
     return NextResponse.json(
       { message: "Recipe Deleted", id: id },

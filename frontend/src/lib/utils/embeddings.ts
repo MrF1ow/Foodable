@@ -38,6 +38,32 @@ export function normalize(vector: number[]): number[] {
     return vector.map((val) => val / norm);
 }
 
+export function formEmbeddingData(type: VectorDocument["type"], data: any, id: ObjectId) {
+    if (type === "recipe") {
+        return {
+            _id: id,
+            title: data.title,
+            description: data.description,
+            ingredients: data.ingredients,
+            instructions: data.instructions,
+            averageRating: data.averageRating,
+            priceApproximation: data.priceApproximation,
+            timeApproximation: data.timeApproximation,
+        }
+    } else if (type === "grocery") {
+        return {
+            _id: id,
+            title: data.title,
+            items: data.items
+        }
+    } else {
+        return {
+            _id: id,
+            ...data
+        }
+    }
+}
+
 export async function insertEmbeddings(
     data: EmbeddableInput[],
     textExtractor: (item: EmbeddableInput) => string = defaultTextExtractor
@@ -75,6 +101,19 @@ export async function insertEmbeddings(
         console.log("Upserted/Updated vector embeddings:", result.upsertedCount + result.modifiedCount);
     } else {
         console.log("No vector embeddings to insert or update.");
+    }
+}
+
+export async function deleteVectorEmbedding(_id: ObjectId) {
+    try {
+        const db = await getDB();
+        await db.collection("vectors").deleteOne(
+            { referenceId: _id }
+        )
+        return 0;
+    } catch (error) {
+        console.log("Error Deleting Vector Embedding", error)
+        return -1;
     }
 }
 
