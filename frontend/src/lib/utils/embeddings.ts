@@ -125,32 +125,3 @@ export async function generateEmbeddings(data: any) {
     const results = await embedder(data, { pooling: 'mean', normalize: true });
     return Array.from(results.data);
 }
-
-export async function createAtlasVectorIndex() {
-    try {
-        const db = await getDB()
-        const collection = db.collection("vectors")
-
-        // Define your Atlas Vector Search index
-        const index = {
-            name: "vector_index",
-            type: "vectorSearch",
-            definition: {
-                "fields": [
-                    {
-                        "type": "vector",
-                        "path": "embedding",
-                        "similarity": "dotProduct",
-                        "numDimensions": 1536,
-                    }
-                ]
-            }
-        }
-
-        // Call the method to create the index
-        const result = await collection.createSearchIndex(index);
-        console.log(result);
-    } catch (error) {
-        Error("error")
-    }
-}

@@ -1,8 +1,13 @@
 import { getDB } from "@/lib/mongodb";
 import { generateEmbeddings, normalize } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
+import { formatVectorContext } from "@/lib/utils/vectors";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+
+export const maxDuration = 30;
 
 export async function POST(request: Request) {
     try {
@@ -12,16 +17,17 @@ export async function POST(request: Request) {
             "savedItems.groceryLists._id": 1
         });
 
-        console.log(userData);
-
         if (!userData) {
             return NextResponse.json({ message: error }, { status });
         }
 
-        const { query } = await request.json();
-        if (!query) {
+        const { messages } = await request.json();
+        if (!messages) {
             return NextResponse.json({ error: "Missing query in request body" }, { status: 400 });
         }
+
+        const messagesLength = messages.length
+        const query = messages[messagesLength - 1].content
 
         const queryEmbedding = await generateEmbeddings(query);
         if (!queryEmbedding) {
@@ -37,8 +43,6 @@ export async function POST(request: Request) {
         const savedGroceryIds = userData.savedItems.groceryLists.map((g: any) => ObjectId.createFromHexString(g._id));
         const createdRecipeIds = userData.createdRecipes.map((r: any) => ObjectId.createFromHexString(r._id.toString()));
         const vectorIds = [...savedRecipeIds, ...savedGroceryIds, ...createdRecipeIds, userData._id];
-
-        console.log(vectorIds);
 
         const db = await getDB();
         const collection = db.collection("vectors");
@@ -81,7 +85,21 @@ export async function POST(request: Request) {
             }
         }
 
-        return NextResponse.json({ query, result: results }, { status: 200 });
+        const contextMessage = formatVectorContext(results);
+
+        const result = streamText({
+            model: openai('gpt-4.1'),
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a helpful food assistant. Use user preferences and saved data when relevant.",
+                },
+                ...(contextMessage ? [contextMessage] : []),
+                ...messages
+            ],
+        });
+
+        return result.toDataStreamResponse();
 
     } catch (err) {
         console.error("Vector search error:", err);
