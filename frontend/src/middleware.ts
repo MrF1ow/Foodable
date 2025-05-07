@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
-const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)"]);
+const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)", "/api/assistant(.*)"]);
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -19,8 +19,6 @@ const isPublicRoute = createRouteMatcher([
   "/api/recipes(.*)",
   "/api/images(.*)",
   "/api/kroger(.*)",
-  "/api/kroger(.*)",
-  "/api/openAI(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

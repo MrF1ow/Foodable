@@ -35,7 +35,7 @@ export async function DELETE(req: Request) {
       .collection("recipes")
       .findOneAndDelete({
         _id: ObjectId.createFromHexString(id),
-        creatorId: clerkUser.id,
+        creatorId: userProfile._id,
       });
 
     if (!deletedRecipe) {
@@ -69,6 +69,10 @@ export async function DELETE(req: Request) {
       { _id: userProfile._id },
       { $pull: { createdRecipes: { _id: ObjectId.createFromHexString(id) } } as any }
     );
+
+    await db.collection("vectors").deleteOne(
+      { referenceId: ObjectId.createFromHexString(id) }
+    )
 
     return NextResponse.json(
       { message: "Recipe Deleted", id: id },

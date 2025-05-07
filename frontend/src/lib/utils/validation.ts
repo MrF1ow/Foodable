@@ -20,14 +20,12 @@ export const validateObject = <T>(
   errorStatus: number // this is the status code to return if the object is invalid
 ): NextResponse | null => {
   // Check if the object exists
-  console.log("Validating object:", obj);
   if (!obj) {
     return NextResponse.json(
       { message: errorMessage },
       { status: errorStatus }
     );
   }
-  console.log("Validating object structure");
   // Validate the object structure
   if (!validateFn(obj, isValidObjectId)) {
     console.log("Invalid object structure:", obj);

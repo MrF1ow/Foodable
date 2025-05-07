@@ -6,6 +6,8 @@ import { Recipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { insertEmbeddings } from "@/lib/utils/embeddings";
+import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
@@ -38,12 +40,15 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { _id, ...recipeWithoutID } = recipe;
+    const { _id, creatorId, ...recipeWithoutID } = recipe;
+
+    const recipeId = ObjectId.createFromHexString(_id.toString());
+    const userId = userProfile._id
 
     const updatedRecipe = await db
       .collection("recipes")
       .findOneAndUpdate(
-        { _id: _id, creatorId: userProfile._id },
+        { _id: recipeId, creatorId: userId},
         { $set: recipeWithoutID },
         { returnDocument: "after" }
       );
@@ -62,15 +67,6 @@ export async function PUT(req: Request) {
       404
     );
 
-
-    const metaData = {
-      _id: _id,
-      title: recipeWithoutID.title,
-      imageId: recipeWithoutID.imageId,
-      category: "My Recipes",
-      type: "recipe"
-    }
-
     if (validationResponse) {
       return validationResponse;
     }
@@ -87,6 +83,21 @@ export async function PUT(req: Request) {
         }
       }
     );
+
+    const embeddingData = {
+      _id: ObjectId.createFromHexString(_id.toString()),
+      title: recipe.title,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      averageRating: recipe.averageRating,
+      priceApproximation: recipe.priceApproximation,
+      timeApproximation: recipe.timeApproximation,
+    }
+
+    console.log(embeddingData)
+
+    await insertEmbeddings([embeddingData])
 
     return NextResponse.json(updatedRecipe, { status: 200 });
   } catch (error) {

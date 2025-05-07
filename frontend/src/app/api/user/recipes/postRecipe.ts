@@ -7,7 +7,7 @@ import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { title } from "process";
+import { insertEmbeddings } from "@/lib/utils/embeddings";
 
 export async function POST(req: Request) {
   try {
@@ -70,10 +70,23 @@ export async function POST(req: Request) {
       type: "recipe"
     }
 
+    const embeddingData = {
+      _id: result.insertedId,
+      title: recipeToInsert.title,
+      description: recipeToInsert.description,
+      ingredients: recipeToInsert.ingredients,
+      instructions: recipeToInsert.instructions,
+      averageRating: recipeToInsert.averageRating,
+      priceApproximation: recipeToInsert.priceApproximation,
+      timeApproximation: recipeToInsert.timeApproximation,
+    }
+
     await db.collection("users").updateOne({
       _id: userProfile._id
     },
       { $addToSet: { createdRecipes: metaData } })
+
+    await insertEmbeddings([embeddingData])
 
     return NextResponse.json(
       { ...recipeToInsert, _id: result.insertedId },

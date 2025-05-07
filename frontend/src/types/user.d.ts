@@ -6,6 +6,7 @@ export type UserSettings = {
   theme: "light" | "dark";
 };
 
+
 export type UserPreferences = {
   dietaryRestrictions: string[];
   budget: number;
