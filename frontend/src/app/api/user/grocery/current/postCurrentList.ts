@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       userData.currentGroceryList.toString() === newGroceryListId.toString()
     ) {
       return NextResponse.json(
-        { message: "Grocery list already set" },
+        { message: HTTP_RESPONSES.ALREADY_EXISTS },
         { status: 200 }
       );
     }
@@ -50,13 +50,13 @@ export async function POST(req: Request) {
 
     if (result.modifiedCount === 0) {
       return NextResponse.json(
-        { message: "Failed to update grocery list" },
+        { message: HTTP_RESPONSES.NOT_MODIFIED },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { message: "Current grocery list updated successfully" },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

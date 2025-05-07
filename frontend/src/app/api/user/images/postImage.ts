@@ -124,7 +124,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { _id: uploadStream.id, message: "Image Uploaded Successfully" },
+      { _id: uploadStream.id, message: HTTP_RESPONSES.OK },
       { status: 201 }
     );
   } catch (error) {

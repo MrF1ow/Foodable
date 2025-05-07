@@ -11,6 +11,7 @@ export const HTTP_RESPONSES = {
   NON_AUTHORITATIVE_INFORMATION:
     "The returned meta-information is not from the origin server, but is gathered from a local or a third-party copy.",
   NO_CONTENT: "The request was successful but there's no content to return.",
+  ALREADY_EXISTS: "No changes made. Resource is already up to date.",
   RESET_CONTENT:
     "The request was successful and the user agent should reset the document view.",
   PARTIAL_CONTENT:

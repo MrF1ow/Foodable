@@ -69,7 +69,7 @@ export async function DELETE(req: Request) {
     await deleteVectorEmbedding(ObjectId.createFromHexString(id));
 
     return NextResponse.json(
-      { message: "Recipe Deleted", id: id },
+      { message: HTTP_RESPONSES.OK},
       { status: 200 }
     );
   } catch (error) {

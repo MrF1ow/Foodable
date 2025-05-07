@@ -17,6 +17,7 @@ export async function PUT(req: Request) {
       return NextResponse.json({ message: error }, { status });
     }
 
+
     const db = await getDB();
 
     const { preferences } = await req.json();
@@ -37,7 +38,7 @@ export async function PUT(req: Request) {
       }
     );
 
-    if (result.modifiedCount === 0) {
+    if (result.matchedCount === 0) {
       return NextResponse.json(
         { message: "User update failed" },
         { status: 400 }
@@ -49,7 +50,7 @@ export async function PUT(req: Request) {
     await insertEmbeddings([embeddingData])
 
     return NextResponse.json(
-      { message: "User preferences updated successfully" },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

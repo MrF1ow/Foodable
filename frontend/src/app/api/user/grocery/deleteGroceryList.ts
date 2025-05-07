@@ -76,7 +76,7 @@ export async function DELETE(req: Request) {
     await deleteVectorEmbedding(groceryListId);
 
     return NextResponse.json(
-      { message: "Grocery List Deleted" },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {
