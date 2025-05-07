@@ -24,7 +24,6 @@ export async function GET(req: Request) {
       }
     }
 
-
     const projection = fetchMetadata
       ? {
         type: "recipe",

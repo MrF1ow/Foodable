@@ -9,9 +9,6 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   try {
     const title = getValueFromSearchParams(req, "title");
-    console.log("Title: ", title);
-    // console.log("Request: ", req);
-
     if (!title) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

@@ -1,30 +1,19 @@
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { getDB } from "@/lib/mongodb";
-import { currentUser } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<{ currentGroceryList: ObjectId }>({
+      currentGroceryList: 1,
+    });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
-    const db = await getDB();
-
-    const user = await db
-      .collection("users")
-      .findOne(
-        { clerkId: clerkUser.id },
-        { projection: { currentGroceryList: 1 } }
-      );
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(user.currentGroceryList || null, { status: 200 });
+    return NextResponse.json(userData.currentGroceryList || null, { status: 200 });
   } catch (error) {
     console.error("Error fetching current grocery list: ", error);
     return NextResponse.json(

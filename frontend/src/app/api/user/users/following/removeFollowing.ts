@@ -6,13 +6,17 @@ import { currentUser } from "@clerk/nextjs/server";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function DELETE(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { followingId } = await req.json();
@@ -26,19 +30,11 @@ export async function DELETE(req: Request) {
 
     // get and check current user profile
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const targetUserId = ObjectId.createFromHexString(followingId);
 
     // Prevent following yourself
-    if (targetUserId.equals(userProfile._id)) {
+    if (targetUserId.equals(userData._id)) {
       return NextResponse.json(
         { message: "You cannot unfollow yourself." },
         { status: 400 }
@@ -49,7 +45,7 @@ export async function DELETE(req: Request) {
     const result = await db
       .collection("users")
       .updateOne(
-        { clerkId: clerkUser.id },
+        { _id: userData._id },
         { $pull: { following: { _id: targetUserId } as any } }
       );
 
@@ -62,7 +58,7 @@ export async function DELETE(req: Request) {
 
     await db.collection('users').updateOne(
       { _id: targetUserId },
-      { $pull: { followers: { _id: userProfile._id } as any } }
+      { $pull: { followers: { _id: userData._id } as any } }
     );
 
     return NextResponse.json(

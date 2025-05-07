@@ -7,25 +7,24 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { FollowMetadata } from "@/types/user";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function POST(req: Request) {
     try {
-        const clerkUser = await currentUser();
+        const { userData, error, status } = await getCurrentUser<
+            { _id: ObjectId, imageId: ObjectId, username: string, following: any }>({
+                _id: 1,
+                imageId: 1,
+                username: 1,
+                following: 1
+            });
 
-        if (!clerkUser || !clerkUser.id) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
+        if (!userData) {
+            return NextResponse.json({ message: error }, { status });
         }
 
         // get and check current user profile
         const db = await getDB();
-        const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-        if (!userProfile) {
-            return NextResponse.json(
-                { message: HTTP_RESPONSES.NOT_FOUND },
-                { status: 404 }
-            );
-        }
 
         // ensure proper metadata information is passed into API call
         const { _id, imageId, username } = await req.json()
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
         const targetUserId = ObjectId.createFromHexString(_id);
 
         // Prevent following yourself
-        if (targetUserId.equals(userProfile._id)) {
+        if (targetUserId.equals(userData._id)) {
             return NextResponse.json(
                 { message: "You cannot follow yourself." },
                 { status: 400 }
@@ -48,7 +47,7 @@ export async function POST(req: Request) {
         }
 
         // prevent following the person if you already do
-        const alreadyFollowing = userProfile.following?.some(
+        const alreadyFollowing = userData.following?.some(
             (f: any) => f._id.toString() === _id
         );
         if (alreadyFollowing) {
@@ -66,13 +65,13 @@ export async function POST(req: Request) {
         };
 
         const currentUserData: FollowMetadata = {
-            _id: userProfile._id,
-            imageId: userProfile.imageId,
-            username: userProfile.username,
+            _id: userData._id,
+            imageId: userData.imageId,
+            username: userData.username,
         }
 
         await db.collection('users').updateOne(
-            { _id: userProfile._id },
+            { _id: userData._id },
             { $addToSet: { following: targetUserData } }
         );
 

@@ -9,10 +9,20 @@ import { ObjectId } from "mongodb";
 import { isValidCollectionName } from "@/lib/utils/typeValidation/general";
 import { isValidObjectId } from "@/lib/utils/validation";
 import { getCreatorFromImageIdLocation } from "@/lib/utils/routeHelpers";
-import { currentUser } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function POST(req: Request) {
   try {
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1,
+      });
+
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
+    }
+
+
     const { bucket, db } = await setupGridFS();
 
     const formData = await req.formData();
@@ -44,15 +54,7 @@ export async function POST(req: Request) {
 
     const creatorId = sourceDoc[creatorTag]
 
-    const clerkUser = await currentUser();
-
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (creatorId.toString() !== userProfile?._id.toString()) {
+    if (creatorId.toString() !== userData._id.toString()) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
@@ -95,7 +97,7 @@ export async function POST(req: Request) {
     const uploadStream = bucket.openUploadStream(file.name, {
       metadata: {
         sourceId: sourceId,
-        creatorId: userProfile?._id,
+        creatorId: userData._id,
         contentType: file.type,
       },
     });

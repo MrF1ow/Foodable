@@ -3,13 +3,18 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 
 export async function DELETE(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId, savedItems: any }>({
+        _id: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { category } = await req.json();
@@ -24,18 +29,18 @@ export async function DELETE(req: Request) {
     const usersCollection = db.collection("users");
 
     const result = await usersCollection.updateOne(
-        { clerkId: clerkUser.id },
-        {
-          $pull: {
-            "savedItems.recipes": {
-              category: category, // directly match the category value
-            } as any,
-            "savedItems.groceryLists": {
-              category: category, // directly match the category value
-            } as any,
-          },
-        }
-      );
+      { _id: userData._id },
+      {
+        $pull: {
+          "savedItems.recipes": {
+            category: category, // directly match the category value
+          } as any,
+          "savedItems.groceryLists": {
+            category: category, // directly match the category value
+          } as any,
+        },
+      }
+    );
 
     if (result.modifiedCount === 0) {
       return NextResponse.json(

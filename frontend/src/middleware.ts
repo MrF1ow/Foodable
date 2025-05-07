@@ -22,7 +22,7 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims, redirectToSignIn } = await auth();
+  const { userId, sessionClaims, redirectToSignIn } = await auth(); 
 
   const userRole = (await auth()).sessionClaims?.metadata?.role;
 

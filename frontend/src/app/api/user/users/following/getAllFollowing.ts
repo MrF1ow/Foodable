@@ -5,30 +5,20 @@ import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { following: any }>({
+        following: 1
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
-    const db = await getDB();
-
-    // Find the user document in the database
-    const user = await db
-      .collection("users")
-      .findOne({ clerkId: clerkUser.id }, { projection: { following: 1 } });
-
-    if (!user) {
-      return NextResponse.json(
-        { message: "User not found in DB" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(user.following ?? [], { status: 200 });
+    return NextResponse.json(userData.following ?? [], { status: 200 });
   } catch (error) {
     console.error("Error getting followings: ", error);
 

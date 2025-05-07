@@ -1,5 +1,6 @@
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { getDB } from "@/lib/mongodb";
+import { getCurrentUser } from "@/lib/utils/user";
 import { isValidObjectId } from "@/lib/utils/validation";
 import { currentUser } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
@@ -7,10 +8,14 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId, currentGroceryList: ObjectId }>({
+        _id: 1,
+        currentGroceryList: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { _id } = await req.json();
@@ -23,22 +28,12 @@ export async function POST(req: Request) {
     }
 
     const db = await getDB();
-    const usersCollection = db.collection("users");
     const newGroceryListId = ObjectId.createFromHexString(_id);
-
-    const userDoc = await usersCollection.findOne({ clerkId: clerkUser.id });
-
-    if (!userDoc) {
-      return NextResponse.json(
-        { message: "User document not found" },
-        { status: 404 }
-      );
-    }
 
     // If already set to the same ID, just return 200
     if (
-      userDoc.currentGroceryList &&
-      userDoc.currentGroceryList.toString() === newGroceryListId.toString()
+      userData.currentGroceryList &&
+      userData.currentGroceryList.toString() === newGroceryListId.toString()
     ) {
       return NextResponse.json(
         { message: "Grocery list already set" },
@@ -49,7 +44,7 @@ export async function POST(req: Request) {
     const result = await db
       .collection("users")
       .updateOne(
-        { clerkId: clerkUser.id },
+        { _id: userData._id },
         { $set: { currentGroceryList: ObjectId.createFromHexString(_id) } }
       );
 

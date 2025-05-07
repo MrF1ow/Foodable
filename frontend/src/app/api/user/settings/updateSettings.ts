@@ -1,17 +1,21 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function PUT(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { settings } = await req.json();
@@ -26,7 +30,7 @@ export async function PUT(req: Request) {
     const db = await getDB();
 
     const result = await db.collection("users").updateOne(
-      { clerkId: clerkUser.id },
+      { _id: userData._id },
       {
         $set: {
           settings: settings,
