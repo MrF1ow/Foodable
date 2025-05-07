@@ -7,11 +7,13 @@ import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
-    const { user, error, status } = await getCurrentUser();
-    if (!user) {
+    const { userData, error, status } = await getCurrentUser<{ _id: ObjectId }>({ _id: 1 });
+
+    if (!userData) {
       return NextResponse.json({ message: error }, { status });
     }
 
@@ -27,7 +29,7 @@ export async function PUT(req: Request) {
     }
 
     const result = await db.collection("users").updateOne(
-      { _id: user._id },
+      { _id: userData._id },
       {
         $set: {
           preferences: preferences,
@@ -42,7 +44,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    const embeddingData = formEmbeddingData("preferences", preferences, user._id)
+    const embeddingData = formEmbeddingData("preferences", preferences, userData._id)
 
     await insertEmbeddings([embeddingData])
 

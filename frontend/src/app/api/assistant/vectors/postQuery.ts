@@ -1,16 +1,27 @@
 import { getDB } from "@/lib/mongodb";
 import { generateEmbeddings, normalize } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
     try {
+        const { userData, error, status } = await getCurrentUser({
+            "createdRecipes._id": 1,
+            "savedItems.recipes._id": 1,
+            "savedItems.groceryLists._id": 1
+        });
+
+        console.log(userData);
+
+        if (!userData) {
+            return NextResponse.json({ message: error }, { status });
+        }
+
         const { query } = await request.json();
         if (!query) {
             return NextResponse.json({ error: "Missing query in request body" }, { status: 400 });
         }
-
-        const db = await getDB();
-        const collection = db.collection("vectors");
 
         const queryEmbedding = await generateEmbeddings(query);
         if (!queryEmbedding) {
@@ -21,6 +32,16 @@ export async function POST(request: Request) {
         }
 
         const normalizedQuery = normalize(queryEmbedding);
+
+        const savedRecipeIds = userData.savedItems.recipes.map((r: any) => ObjectId.createFromHexString(r._id));
+        const savedGroceryIds = userData.savedItems.groceryLists.map((g: any) => ObjectId.createFromHexString(g._id));
+        const createdRecipeIds = userData.createdRecipes.map((r: any) => ObjectId.createFromHexString(r._id.toString()));
+        const vectorIds = [...savedRecipeIds, ...savedGroceryIds, ...createdRecipeIds, userData._id];
+
+        console.log(vectorIds);
+
+        const db = await getDB();
+        const collection = db.collection("vectors");
 
         const pipeline = [
             {
@@ -35,22 +56,29 @@ export async function POST(request: Request) {
             {
                 $project: {
                     _id: 0,
+                    referenceId: 1,
                     data: 1,
                     score: { $meta: "vectorSearchScore" },
-                    type: 1
+                    type: 1,
                 },
             },
             {
                 $match: {
-                    score: { $gte: 0.6 }
-                }
-            }
+                    referenceId: { $in: vectorIds },
+                },
+            },
         ];
+
 
         const results: any[] = [];
         const cursor = collection.aggregate(pipeline);
         for await (const doc of cursor) {
-            results.push(doc);
+            if (
+                doc.score >= 0.7 ||
+                doc.type === "preferences"
+            ) {
+                results.push(doc);
+            }
         }
 
         return NextResponse.json({ query, result: results }, { status: 200 });

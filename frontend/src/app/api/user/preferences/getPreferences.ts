@@ -5,34 +5,22 @@ import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/utils/user";
+import { UserPreferences } from "@/types/user";
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser();
-
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const db = await getDB();
-
-    const user = await db
-      .collection("users")
-      .findOne(
-        { clerkId: clerkUser.id },
-        { projection: { preferences: 1 } }
-      );
-
-    if (!user) {
-      return NextResponse.json(
-        { message: "User not found in DB" },
-        { status: 404 }
-      );
+    const { userData, error, status } = await getCurrentUser<{ preferences: UserPreferences }>({
+      preferences: 1,
+    });
+    
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     return NextResponse.json(
       {
-        preferences: user.preferences ?? {},
+        preferences: userData.preferences ?? {},
       },
       { status: 200 }
     );
