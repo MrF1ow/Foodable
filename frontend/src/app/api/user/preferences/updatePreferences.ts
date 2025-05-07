@@ -5,14 +5,17 @@ import { currentUser } from "@clerk/nextjs/server";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function PUT(req: Request) {
   try {
-    const clerkUser = await currentUser();
-
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    const { user, error, status } = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ message: error }, { status });
     }
+
+    const db = await getDB();
 
     const { preferences } = await req.json();
 
@@ -23,10 +26,8 @@ export async function PUT(req: Request) {
       );
     }
 
-    const db = await getDB();
-
     const result = await db.collection("users").updateOne(
-      { clerkId: clerkUser.id },
+      { _id: user._id },
       {
         $set: {
           preferences: preferences,
@@ -40,6 +41,10 @@ export async function PUT(req: Request) {
         { status: 400 }
       );
     }
+
+    const embeddingData = formEmbeddingData("preferences", preferences, user._id)
+
+    await insertEmbeddings([embeddingData])
 
     return NextResponse.json(
       { message: "User preferences updated successfully" },

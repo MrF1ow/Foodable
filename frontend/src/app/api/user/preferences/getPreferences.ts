@@ -20,7 +20,7 @@ export async function GET() {
       .collection("users")
       .findOne(
         { clerkId: clerkUser.id },
-        { projection: { settings: 1, preferences: 1 } }
+        { projection: { preferences: 1 } }
       );
 
     if (!user) {
