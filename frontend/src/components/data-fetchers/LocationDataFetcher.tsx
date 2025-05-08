@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
 import { useFetchZipFromCoordinates } from "@/server/hooks/googleHooks";
-import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
+import { getBrowserLocation } from "@/lib/location";
 import { useUserStore } from "@/stores/user/store";
 import { useGeneralStore } from "@/stores/general/store";
 

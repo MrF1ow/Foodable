@@ -1,10 +1,9 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateGroceryList } from "@/lib/utils/typeValidation/grocery";
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
-import { currentUser } from "@clerk/nextjs/server";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateGroceryList } from "@/lib/validation/types/grocery";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
 
 // Package Imports
 import { NextResponse } from "next/server";

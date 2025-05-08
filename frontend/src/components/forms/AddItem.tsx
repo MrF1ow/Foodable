@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
   FormField,
   FormItem,
@@ -28,8 +27,12 @@ import {
 import { unitOptions } from "@/config/unit-conversions";
 import { showToast } from "@/app/providers";
 
-import { getAddItemFormValidation } from "@/lib/utils/formValidation";
-import { insertItemIntoGroceryMap } from "@/lib/utils/listItems";
+import { insertItemIntoGroceryMap } from "@/lib/items/grocery-map";
+
+import { useAddItemForm } from "@/lib/hooks/useAddItemForm";
+import { AddItemFormSchema } from "@/lib/validation/forms/schemas/addItemSchema";
+
+
 
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
@@ -84,8 +87,7 @@ export default function AddItem({
     errorKrogerProducts,
   } = useFetchKrogerProducts(debouncedTerm);
 
-  const { AddItemFormSchema, defaultValues, resolver } =
-    getAddItemFormValidation();
+  const { defaultValues, resolver } = useAddItemForm();
 
   const form = useForm({
     defaultValues,

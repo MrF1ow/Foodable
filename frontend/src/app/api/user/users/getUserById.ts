@@ -1,9 +1,9 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateUser } from "@/lib/utils/typeValidation/user";
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateUser } from "@/lib/validation/types/user";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
 
 // Package Imports
 import { NextResponse } from "next/server";

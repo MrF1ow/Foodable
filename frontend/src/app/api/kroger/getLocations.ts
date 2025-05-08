@@ -1,5 +1,5 @@
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
-import { getAccessToken } from "@/lib/utils/getAccessToken";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
+import { getAccessToken } from "@/server/api/krogerApi";
 import { NextResponse } from "next/server";
 
 interface LocationResponse {

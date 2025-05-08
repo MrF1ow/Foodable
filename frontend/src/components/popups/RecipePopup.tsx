@@ -6,7 +6,7 @@ import {
 } from "@/components/page-specific/recipe/RecipePopupParts";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { JSX } from "react";
-import { createToMutate } from "@/lib/utils/listItems";
+import { createToMutate } from "@/lib/items/utils";
 import { useAllSavedItems, useDeleteSavedItem } from "@/server/hooks/savedItemsHooks";
 
 interface RecipePopUpProps {

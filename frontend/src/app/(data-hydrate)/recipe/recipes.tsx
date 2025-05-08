@@ -9,7 +9,7 @@ import RecipeBox from "@/components/page-specific/recipe/RecipeBox";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
-import { filterRecipes } from "@/lib/utils/listItems";
+import { filterRecipes } from "@/lib/items/filters";
 import { RecipeSidePortalInjections } from "@/components/portal-injections/RecipePageInjections";
 import {
   Pagination,

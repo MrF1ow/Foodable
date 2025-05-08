@@ -15,10 +15,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
-import { getChangeImageFormValidation } from "@/lib/utils/formValidation";
+import { useChangeImageForm } from "@/lib/hooks";
+import { ChangeImageFormSchema } from "@/lib/validation/forms/schemas/changeImageSchema";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
@@ -39,8 +39,7 @@ export default function EditImageButton({
   const [isOpen, setIsOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { ChangeImageFormSchema, defaultValues, resolver } =
-    getChangeImageFormValidation();
+  const { defaultValues, resolver } = useChangeImageForm()
 
   const form = useForm<z.infer<typeof ChangeImageFormSchema>>({
     defaultValues,

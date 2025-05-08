@@ -1,6 +1,6 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { NextResponse } from "next/server";

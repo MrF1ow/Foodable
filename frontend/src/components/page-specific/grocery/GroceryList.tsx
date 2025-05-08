@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import GroceryAccordion from "@/components/page-specific/grocery/GroceryListAccordion";
 import { useGeneralStore } from "@/stores/general/store";
-import { getCurrentGrocerySections } from "@/lib/utils/listItems";
+import { getCurrentGrocerySections } from "@/lib/items/utils";
 import { JSX } from "react";
 
 export default function List({

@@ -1,7 +1,7 @@
 
 import SignUp from "./sign-up";
 import { redirect } from "next/navigation";
-import { checkSession } from "@/lib/utils/roles";
+import { checkSession } from "@/lib/utils/clerk-utils";
 
 export default async function SignUpPage() {
 

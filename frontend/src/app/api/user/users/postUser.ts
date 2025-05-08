@@ -1,12 +1,12 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateUserWithoutID } from "@/lib/utils/typeValidation/user";
+import { validateUserWithoutID } from "@/lib/validation/types/user";
 import { NewUser } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 
 export async function POST(req: Request) {
   try {

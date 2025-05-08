@@ -11,7 +11,8 @@ import {
   useAllGroceryLists,
 } from "@/server/hooks/groceryListHooks";
 import { Icons } from "@/components/ui/icons";
-import { getIsItemSaved, insertItemIntoGroceryMap } from "@/lib/utils/listItems";
+import { insertItemIntoGroceryMap } from "@/lib/items/grocery-map";
+import { getIsItemSaved } from "@/lib/items/utils";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import SaveBookmark from "@/components/SaveBookmark";
 import { showToast } from "@/app/providers";

@@ -1,6 +1,5 @@
 import { User, UserRating, NewUser, FollowMetadata } from "@/types/user";
-import { isValidStringArray } from "@/lib/utils/typeValidation/general";
-import { isValidUserId } from "@/lib/utils/typeValidation/general";
+import { isValidStringArray, isValidUserId } from "@/lib/validation/types/general";
 
 // Validate Settings
 const validateSettings = (settings: any): boolean => {

@@ -1,9 +1,8 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { currentUser } from "@clerk/nextjs/server";
 import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
 
@@ -69,7 +68,7 @@ export async function DELETE(req: Request) {
     await deleteVectorEmbedding(ObjectId.createFromHexString(id));
 
     return NextResponse.json(
-      { message: HTTP_RESPONSES.OK},
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

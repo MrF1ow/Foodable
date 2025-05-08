@@ -1,10 +1,10 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateRecipe } from "@/lib/validation/types/recipes";
 
 import { NextResponse } from "next/server";
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
 import { currentUser } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
 

@@ -4,7 +4,7 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
 

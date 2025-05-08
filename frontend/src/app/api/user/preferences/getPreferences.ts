@@ -1,12 +1,10 @@
 // Local Imports
-import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { currentUser } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/utils/user";
+import { UserPreferences } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/utils/user";
-import { UserPreferences } from "@/types/user";
 
 export async function GET() {
   try {

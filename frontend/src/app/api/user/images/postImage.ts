@@ -6,9 +6,9 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
 import { Readable, pipeline } from "stream";
 import { ObjectId } from "mongodb";
-import { isValidCollectionName } from "@/lib/utils/typeValidation/general";
-import { isValidObjectId } from "@/lib/utils/validation";
-import { getCreatorFromImageIdLocation } from "@/lib/utils/routeHelpers";
+import { isValidCollectionName } from "@/lib/validation/types/general";
+import { isValidObjectId } from "@/lib/validation/server-validation";
+import { getCreatorFromImageIdLocation } from "@/lib/utils/api-helpers";
 import { getCurrentUser } from "@/lib/utils/user";
 
 export async function POST(req: Request) {

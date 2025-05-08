@@ -16,7 +16,7 @@ import { useSocialStore } from "@/stores/social/store";
 import EditImageButton from "@/components/buttons/EditImageButton";
 import Spinner from "@/components/Spinner";
 import { useUserStore } from "@/stores/user/store";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { useFetchImageById, useUploadImage, useDeleteImage } from "@/server/hooks/imageHooks";
 import { useRemoveAllImageFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchSelf } from "@/server/hooks/userHooks";

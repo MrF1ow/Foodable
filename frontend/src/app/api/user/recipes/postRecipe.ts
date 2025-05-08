@@ -1,12 +1,11 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipeWithoutId } from "@/lib/utils/typeValidation/recipes";
-import { isValidObjectId } from "@/lib/utils/validation";
-import { createTagsForRecipe } from "@/lib/utils/filterHelpers";
+import { validateRecipeWithoutId } from "@/lib/validation/types/recipes";
+import { isValidObjectId } from "@/lib/validation/server-validation";
+import { createTagsForRecipe } from "@/lib/utils/recipe-tags";
 import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
 import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
 import { ObjectId } from "mongodb";

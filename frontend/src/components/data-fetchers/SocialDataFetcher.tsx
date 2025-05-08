@@ -1,6 +1,6 @@
 'use client'
 
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useAllSavedItems } from "@/server/hooks/savedItemsHooks";
 import { useFetchSelf, useFetchUserBannerId } from "@/server/hooks/userHooks";

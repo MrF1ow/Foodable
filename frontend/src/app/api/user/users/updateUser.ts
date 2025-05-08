@@ -1,8 +1,8 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateUser } from "@/lib/utils/typeValidation/user";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateUser } from "@/lib/validation/types/user";
 import { User } from "@/types/user";
 
 // Package Imports

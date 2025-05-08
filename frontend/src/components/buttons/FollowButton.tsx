@@ -6,7 +6,7 @@ import { useFollowUser, useDeleteFollowing, useFetchAllFollowingOfUser, useFetch
 import { FollowMetadata } from "@/types/user";
 import { useUserStore } from "@/stores/user/store";
 import { useEffect, useState } from "react";
-import { getIsFollowing } from "@/lib/utils/listItems";
+import { getIsFollowing } from "@/lib/items/utils";
 
 export default function FollowButton() {
     const selectedUser = useSocialStore((state) => state.selectedUser);

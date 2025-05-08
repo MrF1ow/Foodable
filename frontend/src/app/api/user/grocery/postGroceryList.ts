@@ -1,13 +1,12 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateGroceryListWithoutId } from "@/lib/utils/typeValidation/grocery";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { validateGroceryListWithoutId } from "@/lib/validation/types/grocery";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
 import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
 import { getCurrentUser } from "@/lib/utils/user";
 import { ObjectId } from "mongodb";

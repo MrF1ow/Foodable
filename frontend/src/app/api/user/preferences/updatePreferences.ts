@@ -1,12 +1,11 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
-import { getCurrentUser } from "@/lib/utils/user";
 import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {

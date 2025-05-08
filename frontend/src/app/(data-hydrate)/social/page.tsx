@@ -1,4 +1,4 @@
-import { checkRole } from "@/lib/utils/roles";
+import { checkRole } from "@/lib/utils/clerk-utils";
 import Social from "./social";
 import { NotUserOptions } from "@/components/authentication/AuthOptions";
 import FetchData from "@/app/_fetchData";

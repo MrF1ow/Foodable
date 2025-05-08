@@ -1,4 +1,4 @@
-import { checkOnboarding } from "@/lib/utils/roles";
+import { checkOnboarding } from "@/lib/utils/clerk-utils";
 import OnboardingForm from "./onboarding";
 import { redirect } from "next/navigation";
 

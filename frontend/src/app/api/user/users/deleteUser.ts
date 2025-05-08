@@ -1,6 +1,6 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 
 // Package Imports
 import { NextResponse } from "next/server";
@@ -19,7 +19,7 @@ export async function DELETE(req: Request) {
 
     const deletedUser = await db
       .collection("users")
-      .findOneAndDelete({ _id: new ObjectId(id) });
+      .findOneAndDelete({ _id: ObjectId.createFromHexString(id) });
 
     if (!deletedUser) {
       return NextResponse.json(

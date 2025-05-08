@@ -1,7 +1,7 @@
 "use client";
 
 import Spinner from "@/components/Spinner";
-import { getRouteParam } from "@/lib/utils/routeHelpers";
+import { getRouteParam } from "@/lib/utils/api-helpers";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import Recipes from "../../recipes";

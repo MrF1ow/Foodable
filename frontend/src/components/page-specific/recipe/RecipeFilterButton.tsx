@@ -2,7 +2,6 @@
 
 import FilterButton from "@/components/FilterButton";
 import { useRecipeStore } from "@/stores/recipe/store";
-import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { JSX } from "react";
 
 export default function RecipeFilterButton(): JSX.Element {

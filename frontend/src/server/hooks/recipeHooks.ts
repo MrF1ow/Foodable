@@ -1,6 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { RecipeApi } from "../api/recipeApi";
-import { useDataFetching } from "@/hooks/useDataFetching";
 import { useQueryProps } from "@/types";
 import { ERROR_FETCHING_RECIPES } from "@/lib/constants/messages";
 import { RECIPES } from "@/lib/constants/process";
@@ -93,7 +92,6 @@ export const useRecipesByCreatorId = (
   creatorId: string,
   { enabled = true }: useQueryProps
 ) => {
-  const errorMessage = ERROR_FETCHING_RECIPES;
 
   const {
     data: recipes,
@@ -108,14 +106,7 @@ export const useRecipesByCreatorId = (
     enabled,
   });
 
-  useDataFetching({
-    isLoading: isLoadingRecipes,
-    isError: isErrorRecipes,
-    error: errorRecipes,
-    errorMessage,
-  });
-
-  return { recipes, isLoadingRecipes, refetchRecipes, errorRecipes };
+  return { recipes, isLoadingRecipes, refetchRecipes, errorRecipes, isErrorRecipes };
 };
 
 // Custom hook for searching recipes by title
@@ -123,8 +114,6 @@ export const useSearchRecipesByTitle = (
   title: string,
   { enabled = true }: useQueryProps
 ) => {
-  const errorMessage = ERROR_FETCHING_RECIPES;
-
   const {
     data: recipes,
     isLoading: isLoadingRecipes,
@@ -138,12 +127,5 @@ export const useSearchRecipesByTitle = (
     enabled,
   });
 
-  useDataFetching({
-    isLoading: isLoadingRecipes,
-    isError: isErrorRecipes,
-    error: errorRecipes,
-    errorMessage,
-  });
-
-  return { recipes, isLoadingRecipes, refetchRecipes, errorRecipes };
+  return { recipes, isLoadingRecipes, refetchRecipes, errorRecipes, isErrorRecipes };
 };

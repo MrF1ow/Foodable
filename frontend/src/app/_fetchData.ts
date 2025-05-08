@@ -14,7 +14,7 @@ import {
   SELF,
 } from "@/lib/constants/process";
 import { GroceryApi, RecipeApi, UserApi, SavedItemsApi } from "@/server/api";
-import { checkRole } from "@/lib/utils/roles";
+import { checkRole } from "@/lib/utils/clerk-utils";
 import { dehydrate } from "@tanstack/react-query";
 
 type FetchDataOptions = {

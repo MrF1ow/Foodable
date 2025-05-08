@@ -1,8 +1,7 @@
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { getDB } from "@/lib/mongodb";
 import { getCurrentUser } from "@/lib/utils/user";
-import { isValidObjectId } from "@/lib/utils/validation";
-import { currentUser } from "@clerk/nextjs/server";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
 

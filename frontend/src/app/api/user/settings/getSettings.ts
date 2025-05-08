@@ -1,11 +1,9 @@
 // Local Imports
-import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
+import { getCurrentUser } from "@/lib/utils/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/utils/user";
-import { ObjectId } from "mongodb";
 
 export async function GET() {
   try {

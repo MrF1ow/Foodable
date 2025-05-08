@@ -22,7 +22,7 @@ import { JSX } from "react";
 import { FormName } from "@/lib/constants/forms";
 import { CurrentFormFunction } from "@/types";
 import { useGroceryStore } from "@/stores/grocery/store";
-import { fetchStorePricesFromGroceryMap } from "@/lib/utils/listItems";
+import { fetchStorePricesFromGroceryMap } from "@/lib/items/grocery-map";
 import { useWatch } from "react-hook-form";
 
 export default function FindPrice({ setCurrentForm } : CurrentFormFunction): JSX.Element {

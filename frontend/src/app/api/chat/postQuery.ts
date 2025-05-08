@@ -39,9 +39,9 @@ export async function POST(request: Request) {
 
         const normalizedQuery = normalize(queryEmbedding);
 
-        const savedRecipeIds = userData.savedItems.recipes.map((r: any) => ObjectId.createFromHexString(r._id));
-        const savedGroceryIds = userData.savedItems.groceryLists.map((g: any) => ObjectId.createFromHexString(g._id));
-        const createdRecipeIds = userData.createdRecipes.map((r: any) => ObjectId.createFromHexString(r._id.toString()));
+        const savedRecipeIds = userData.savedItems.recipes.map((r: any) => r._id);
+        const savedGroceryIds = userData.savedItems.groceryLists.map((g: any) => g._id);
+        const createdRecipeIds = userData.createdRecipes.map((r: any) => r._id);
         const vectorIds = [...savedRecipeIds, ...savedGroceryIds, ...createdRecipeIds, userData._id];
 
         const db = await getDB();

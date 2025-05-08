@@ -1,6 +1,6 @@
 'use client';
 
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";

@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { Icons } from "@/components/ui/icons";
 import {
   FormField,
@@ -24,12 +23,11 @@ import { Button } from "@/components/ui/button";
 import { unitOptions } from "@/config/unit-conversions";
 import { useFieldArray } from "react-hook-form";
 import { grocerySections } from "@/config/grocery-sections";
-import { date, z } from "zod";
+import { z } from "zod";
+import { useAddRecipeForm } from "@/lib/hooks";
+import { AddRecipeFormSchema } from "@/lib/validation/forms/schemas/addRecipeSchema";
 import { useGeneralStore } from "@/stores/general/store";
-import { getAddRecipeFormValidation } from "@/lib/utils/formValidation";
 import { useCreateRecipe } from "@/server/hooks/recipeHooks";
-import { NewRecipe, Recipe } from "@/types/recipe";
-// import { SavedItem } from "@/types/savedItems";
 import { GrocerySectionOptions } from "@/types/grocery";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
@@ -40,15 +38,14 @@ import { NewImageData } from "@/types/images";
 import { useUploadImage } from "@/server/hooks/imageHooks";
 import { CurrentFormFunction } from "@/types";
 
-export const AddRecipe = ({ setCurrentForm } : CurrentFormFunction) => {
+export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
   const isMobile = useGeneralStore((state) => state.isMobile);
   const categories = grocerySections;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
-  const { AddRecipeFormSchema, defaultValues, resolver } =
-    getAddRecipeFormValidation();
+  const { defaultValues, resolver } = useAddRecipeForm()
 
   const { createRecipe } = useCreateRecipe();
   const { createSavedItem } = useCreateSavedItem();
@@ -232,9 +229,8 @@ export const AddRecipe = ({ setCurrentForm } : CurrentFormFunction) => {
                   className="relative border p-3 pr-12 rounded flex flex-col gap-2"
                 >
                   <div
-                    className={`flex ${
-                      isMobile ? "flex-col" : "flex-row"
-                    } gap-4`}
+                    className={`flex ${isMobile ? "flex-col" : "flex-row"
+                      } gap-4`}
                   >
                     <FormField
                       control={form.control}
