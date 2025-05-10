@@ -25,7 +25,9 @@ import { useGroceryStore } from "@/stores/grocery/store";
 import { fetchStorePricesFromGroceryMap } from "@/lib/items/grocery-map";
 import { useWatch } from "react-hook-form";
 
-export default function FindPrice({ setCurrentForm } : CurrentFormFunction): JSX.Element {
+export default function FindPrice({
+  setCurrentForm,
+}: CurrentFormFunction): JSX.Element {
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
   const groceryMap = useGroceryStore((state) => state.map);
@@ -64,6 +66,8 @@ export default function FindPrice({ setCurrentForm } : CurrentFormFunction): JSX
     const timeout = setTimeout(() => {
       if (watchedZip && watchedZip.length === 5) {
         setZipCode(watchedZip);
+        clearStorePrices();
+        clearStoreTotal();
         refetchKrogerLocations();
       }
     }, 500);
