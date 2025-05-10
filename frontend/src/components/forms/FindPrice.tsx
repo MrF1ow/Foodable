@@ -73,13 +73,17 @@ export default function FindPrice({
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [watchedZip, setZipCode, refetchKrogerLocations]);
+  }, [
+    watchedZip,
+    setZipCode,
+    refetchKrogerLocations,
+    clearStorePrices,
+    clearStoreTotal,
+  ]);
 
   async function onSubmit(data: any) {
     setIsFinding(true);
     try {
-      clearStorePrices();
-      clearStoreTotal();
       setZipCode(data.zipCode);
       const result = await refetchKrogerLocations();
       const updatedKrogerLocations = result?.data;
@@ -159,6 +163,20 @@ export default function FindPrice({
         onClick={handleInputClose}
         content={
           <div className="flex flex-col gap-6">
+            {storeTotal !== null && (
+              <>
+                <div className="text-center text-2xl text-green-700">
+                  Estimated Total: ${storeTotal.toFixed(2)}
+                </div>
+                <div className="text-center text-lg text-muted-foreground">
+                  {selectedStoreName
+                    ? `Best Store is ${selectedStoreName}: ${
+                        storePrices.get(selectedStoreId)?.size ?? 0
+                      }/${groceryMap.size} Items Found`
+                    : `No Store Selected is Good for This List`}
+                </div>
+              </>
+            )}
             <FormField
               control={form.control}
               name="zipCode"
@@ -185,37 +203,43 @@ export default function FindPrice({
                   <FormControl>
                     <div className="max-h-72 overflow-y-auto">
                       <div className="flex flex-col gap-2">
-                        {krogerLocations?.data?.map((location: any) => {
-                          const isChecked = field.value?.includes(
-                            location.locationId
-                          );
-                          return (
-                            <FormItem
-                              key={location.locationId}
-                              className="flex items-center space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={isChecked}
-                                  onCheckedChange={(checked) => {
-                                    const value = location.locationId;
-                                    const newValue =
-                                      checked && checked !== "indeterminate"
-                                        ? [...(field.value || []), value]
-                                        : (field.value || []).filter(
-                                            (v: string) => v !== value
-                                          );
+                        {(krogerLocations?.data?.length ?? 0) > 0 ? (
+                          krogerLocations.data.map((location: any) => {
+                            const isChecked = field.value?.includes(
+                              location.locationId
+                            );
+                            return (
+                              <FormItem
+                                key={location.locationId}
+                                className="flex items-center space-x-3 space-y-0"
+                              >
+                                <FormControl>
+                                  <Checkbox
+                                    checked={isChecked}
+                                    onCheckedChange={(checked) => {
+                                      const value = location.locationId;
+                                      const newValue =
+                                        checked && checked !== "indeterminate"
+                                          ? [...(field.value || []), value]
+                                          : (field.value || []).filter(
+                                              (v: string) => v !== value
+                                            );
 
-                                    field.onChange(newValue);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-lg">
-                                {location.name}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        })}
+                                      field.onChange(newValue);
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormLabel className="text-lg">
+                                  {location.name}
+                                </FormLabel>
+                              </FormItem>
+                            );
+                          })
+                        ) : (
+                          <p className="text-center text-gray-500 text-lg">
+                            No Stores Found Near Your Location
+                          </p>
+                        )}
                       </div>
                     </div>
                   </FormControl>
@@ -252,20 +276,6 @@ export default function FindPrice({
                 </FormItem>
               )}
             />
-            {storeTotal !== null && (
-              <>
-                <div className="text-center text-2xl text-green-700">
-                  Estimated Total: ${storeTotal.toFixed(2)}
-                </div>
-                <div className="text-center text-lg text-muted-foreground">
-                  {selectedStoreName
-                    ? `Best Store is ${selectedStoreName}: ${
-                        storePrices.get(selectedStoreId)?.size ?? 0
-                      }/${groceryMap.size} Items Found`
-                    : `No Store Selected is Good for This List`}
-                </div>
-              </>
-            )}
           </div>
         }
         footer={
