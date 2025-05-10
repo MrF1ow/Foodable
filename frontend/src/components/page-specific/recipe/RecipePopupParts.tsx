@@ -21,9 +21,10 @@ import { useUserStore } from "@/stores/user/store";
 import { BiArrowBack } from "react-icons/bi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import pfp from "../../../../public/images/pfp.jpg";
-import logo from "../../../../public/images/logo_current_no_shadow.png"
+import logo from "../../../../public/images/logo_current_no_shadow.png";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { ShareButton } from "@/components/buttons/ShareButton";
 
 interface RecipePopupHeaderProps {
   imageUrl: string | null;
@@ -59,15 +60,15 @@ export const RecipePopupHeader = ({
   const handleRemoveSavedItem = async () => {
     await handleRemoveItem();
     handleBackButton();
-  }
+  };
 
   const handleAvatarClick = (id: string) => {
-    if (pathName.includes('recipe')) {
-      router.push(`/recipe/user/${id}`)
-    } else if (pathName.includes('social')){
-      router.push(`/social/user/${id}`)
+    if (pathName.includes("recipe")) {
+      router.push(`/recipe/user/${id}`);
+    } else if (pathName.includes("social")) {
+      router.push(`/social/user/${id}`);
     }
-  }
+  };
 
   return (
     <div className="w-full h-[40%] relative">
@@ -89,7 +90,9 @@ export const RecipePopupHeader = ({
         <BiArrowBack onClick={handleBackButton} size={40} />
       </div>
       <div className="absolute top-0 right-0 text-foreground p-4 z-40">
-        <Avatar onClick={() => handleAvatarClick(currentData.creatorId.toString())}>
+        <Avatar
+          onClick={() => handleAvatarClick(currentData.creatorId.toString())}
+        >
           <AvatarImage src={pfp.src} alt={"PFP"} width={60} height={60} />
           <AvatarFallback>
             <div>Hello</div>
@@ -100,7 +103,16 @@ export const RecipePopupHeader = ({
         <h3 className="text-4xl tracking-widest font-bold truncate p-2">
           {currentData.title}
         </h3>
-        {isUser && <SaveBookmark isSaved={isSaved} data={currentData} handleRemove={handleRemoveSavedItem} />}
+        {isUser && (
+          <div className="flex gap-2 items-center">
+            <ShareButton type="recipe" id={currentData._id.toString()} />
+            <SaveBookmark
+              isSaved={isSaved}
+              data={currentData}
+              handleRemove={handleRemoveSavedItem}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -111,8 +123,10 @@ export const RecipeContent = () => {
   const groceryMap = useGroceryStore((state) => state.map);
   const setMap = useGroceryStore((state) => state.setMap);
   const currentList = useGroceryStore((state) => state.currentList);
-  const currentRecipe = useRecipeStore((state) => state.currentRecipe) as Recipe;
-  if (!currentList || !currentRecipe ) return null;
+  const currentRecipe = useRecipeStore(
+    (state) => state.currentRecipe
+  ) as Recipe;
+  if (!currentList || !currentRecipe) return null;
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
@@ -134,10 +148,10 @@ export const RecipeContent = () => {
       showToast(
         TOAST_SEVERITY.ERROR,
         "Not Convertable",
-        `Units are not compatible. Must input manually.`,
+        `Units are not compatible. Must input manually.`
       );
       return;
-    };
+    }
     setMap(newMap);
 
     const updatedItems = Array.from(newMap.values());
@@ -157,7 +171,6 @@ export const RecipeContent = () => {
   };
 
   const AddButtonForAdditional = () => {
-
     const handleIngredientTransfer = () => {
       const updatedItems = [];
       for (const ingredient of additionalIngredients) {
@@ -235,7 +248,9 @@ export const RecipeContent = () => {
   };
 
   const Decription = () => {
-    return <div className="text-lg text-foreground">{currentRecipe.description}</div>;
+    return (
+      <div className="text-lg text-foreground">{currentRecipe.description}</div>
+    );
   };
 
   const Ingredients = () => {
