@@ -107,6 +107,10 @@ export default function GroceryListDataFetcher() {
       // if the grocery list is not null, set the current list to the grocery list
       refetchGroceryList().then((result) => {
         if (result?.data) {
+          if (isSharedView) {
+            console.log("Shared view, not creating new list");
+            return;
+          }
           setCurrentList(result.data);
         }
       });

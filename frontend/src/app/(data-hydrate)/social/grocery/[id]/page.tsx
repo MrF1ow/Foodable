@@ -14,22 +14,18 @@ export default function Page() {
   const currentList = useGroceryStore((state) => state.currentList);
   const [loading, setLoading] = useState(true);
   const setIsSharedView = useGroceryStore((state) => state.setIsSharedView);
-  useEffect(() => {
-    setIsSharedView(false);
-  }, []);
+  console.log("currentList", currentList);
+  console.log("groceryId", groceryId);
 
   useEffect(() => {
     if (currentList && currentList._id === groceryId) {
       setLoading(false);
     } else {
-      console.warn("Missing or mismatched list in Zustand");
+      console.warn("Missing or mismatched list in the state");
       setLoading(false);
     }
   }, [groceryId, currentList]);
 
-  if (loading || !currentList || currentList._id !== groceryId) {
-    return <Spinner />;
-  }
   return (
     <>
       <Social />
