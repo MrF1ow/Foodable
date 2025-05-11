@@ -13,8 +13,10 @@ export default function Page() {
 
   const currentList = useGroceryStore((state) => state.currentList);
   const [loading, setLoading] = useState(true);
-  console.log("🔍 Zustand currentList:", currentList);
-  console.log("🧭 URL groceryId:", groceryId);
+  const setIsSharedView = useGroceryStore((state) => state.setIsSharedView);
+  useEffect(() => {
+    setIsSharedView(false);
+  }, []);
 
   useEffect(() => {
     if (currentList && currentList._id === groceryId) {

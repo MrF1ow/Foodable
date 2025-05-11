@@ -105,7 +105,7 @@ export const RecipePopupHeader = ({
         </h3>
         {isUser && (
           <div className="flex gap-2 items-center">
-            <ShareButton type="recipes" id={currentData._id.toString()} />
+            <ShareButton type="recipe" id={currentData._id.toString()} />
             <SaveBookmark
               isSaved={isSaved}
               data={currentData}
