@@ -21,7 +21,6 @@ import { SavedGroceryMetaData, SavedRecipeMetaData } from "@/types/saved";
 import { useEffect, useState } from "react";
 import { FollowMetadata } from "@/types/user";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
-import { useRecipeStore } from "@/stores/recipe/store";
 
 export default function Social() {
   const itemSearchQuery = useSocialStore((state) => state.savedItemsQuery);

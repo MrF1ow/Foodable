@@ -24,11 +24,9 @@ export function ShareButton({ type, id }: { type: string; id: string }) {
   return (
     <Button
       onClick={handleClick}
-      variant="outline"
       className="h-12 px-4 bg-primary rounded-md hover:scale-105 hover:shadow-lg transition-all text-base"
     >
-      {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
-      {copied ? "Copied!" : "Share"}
+      {copied ? <Check /> : <Link2 className="w-10 h-10" />}
     </Button>
   );
 }

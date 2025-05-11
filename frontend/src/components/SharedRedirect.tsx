@@ -20,12 +20,20 @@ export default function SharedRedirect({
   const setCurrentForm = useGeneralStore(
     (state) => state.setCurrentMainPortalForm
   );
+  const setIsSharedView = useGroceryStore((state) => state.setIsSharedView);
 
   useEffect(() => {
     async function fetchAndRedirect() {
       try {
+        const endpoint =
+          type === "recipe"
+            ? "recipes"
+            : type === "grocery"
+            ? "user/grocery"
+            : null;
+
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/${type}s?id=${id}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}?id=${id}`
         );
         if (!res.ok) throw new Error("Not found");
 
@@ -36,9 +44,11 @@ export default function SharedRedirect({
           setCurrentForm(FORM_NAMES.RECIPE);
           setCurrentRecipe(data);
         }
-        if (type === "list") {
+        if (type === "grocery") {
           setCurrentForm(FORM_NAMES.GROCERY_LIST);
-          setCurrentRecipe(data);
+          setCurrentList(data);
+          setIsSharedView(true);
+          console.log("Fetched grocery list data:", data);
         }
 
         router.replace(`/social/${type}/${id}`);
