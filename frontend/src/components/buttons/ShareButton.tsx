@@ -22,11 +22,12 @@ export function ShareButton({ type, id }: { type: string; id: string }) {
   };
 
   return (
-    <Button
-      onClick={handleClick}
-      className="h-12 px-4 bg-primary rounded-md hover:scale-105 hover:shadow-lg transition-all text-base"
-    >
-      {copied ? <Check /> : <Link2 className="w-10 h-10" />}
-    </Button>
+    <div onClick={handleClick} className="hover:scale-105 text-foreground">
+      {copied ? (
+        <Check className="w-10 h-10" />
+      ) : (
+        <Link2 className="w-10 h-10" />
+      )}
+    </div>
   );
 }
