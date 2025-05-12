@@ -7,7 +7,10 @@ import {
 import { useRecipeStore } from "@/stores/recipe/store";
 import { JSX } from "react";
 import { createToMutate } from "@/lib/items/utils";
-import { useAllSavedItems, useDeleteSavedItem } from "@/server/hooks/savedItemsHooks";
+import {
+  useAllSavedItems,
+  useDeleteSavedItem,
+} from "@/server/hooks/savedItemsHooks";
 
 interface RecipePopUpProps {
   className?: string;
@@ -35,7 +38,7 @@ export default function RecipePopUp({
 
     deleteSavedItem(toDelete);
     await refetchSavedItems();
-  }
+  };
 
   return (
     <>

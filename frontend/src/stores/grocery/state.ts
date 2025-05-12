@@ -24,6 +24,7 @@ export type GroceryState = {
   map: Map<string, GroceryItem>;
   storePricesByStore: Map<string, Map<string, number>>;
   storeTotal: number | null;
+  isSharedView: boolean;
 };
 
 export type GroceryActions = {
@@ -37,6 +38,7 @@ export type GroceryActions = {
   setStoreTotal: (total: number | null) => void;
   clearStorePrices: () => void;
   clearStoreTotal: () => void;
+  setIsSharedView: (isSharedView: boolean) => void;
 };
 
 export const createGroceryActions = (set: any): GroceryActions => ({
@@ -139,6 +141,8 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       ...state,
       storeTotal: null,
     })),
+
+  setIsSharedView: (val: boolean) => set({ isSharedView: val }),
 });
 
 export type GroceryStore = GroceryState & GroceryActions;
@@ -152,6 +156,7 @@ export const initState: GroceryState = {
   map: new Map(),
   storePricesByStore: new Map(),
   storeTotal: null,
+  isSharedView: false,
 };
 
 export const defaultInitState: GroceryState = {
@@ -163,6 +168,7 @@ export const defaultInitState: GroceryState = {
   map: new Map(),
   storePricesByStore: new Map(),
   storeTotal: null,
+  isSharedView: false,
 };
 
 export const createGroceryStore = (

@@ -40,20 +40,20 @@ export default function List({
             isMobile ? "justify-center" : ""
           }`}
         >
-          <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
+          <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[545px]">
             {column1.map((item) => (
               <GroceryAccordion key={item.title} {...item} />
             ))}
           </div>
           {column2 && (
-            <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
+            <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[545px]">
               {column2.map((item) => (
                 <GroceryAccordion key={item.title} {...item} />
               ))}
             </div>
           )}
           {column3 && (
-            <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[560px]">
+            <div className="flex flex-col gap-4 w-[100%] md:min-w-[510px] md:max-w-[545px]">
               {column3.map((item) => (
                 <GroceryAccordion key={item.title} {...item} />
               ))}
