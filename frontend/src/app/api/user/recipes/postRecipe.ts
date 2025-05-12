@@ -1,39 +1,33 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateRecipeWithoutId } from "@/lib/utils/typeValidation/recipes";
-import { isValidObjectId } from "@/lib/utils/validation";
-import { createTagsForRecipe } from "@/lib/utils/filterHelpers";
+import { validateRecipeWithoutId } from "@/lib/validation/types/recipes";
+import { isValidObjectId } from "@/lib/validation/server-validation";
+import { createTagsForRecipe } from "@/lib/utils/recipe-tags";
 import { NewRecipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const db = await getDB();
-
-    const userProfile = await db
-      .collection("users")
-      .findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const recipe: NewRecipe = await req.json();
 
     const recipeToInsert: NewRecipe = {
       ...recipe,
-      creatorId: userProfile._id,
+      creatorId: userData._id,
       title: recipe.title || "",
       description: recipe.description || "",
       ingredients: recipe.ingredients || [],
@@ -60,6 +54,23 @@ export async function POST(req: Request) {
     }
 
     const result = await db.collection("recipes").insertOne(recipeToInsert);
+
+    const metaData = {
+      _id: result.insertedId,
+      title: recipeToInsert.title,
+      imageId: recipeToInsert.imageId,
+      category: "My Recipes",
+      type: "recipe"
+    }
+
+    const embeddingData = formEmbeddingData("recipe", recipeToInsert, result.insertedId)
+
+    await db.collection("users").updateOne({
+      _id: userData._id
+    },
+      { $addToSet: { createdRecipes: metaData } })
+
+    await insertEmbeddings([embeddingData])
 
     return NextResponse.json(
       { ...recipeToInsert, _id: result.insertedId },

@@ -1,4 +1,4 @@
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
 import { NextResponse } from "next/server";
 
 export const GoogleApi = {

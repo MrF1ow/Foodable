@@ -1,38 +1,24 @@
 // Local Imports
-import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { currentUser } from "@clerk/nextjs/server";
+import { getCurrentUser } from "@/lib/utils/user";
+import { UserPreferences } from "@/types/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const clerkUser = await currentUser();
-
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const db = await getDB();
-
-    const user = await db
-      .collection("users")
-      .findOne(
-        { clerkId: clerkUser.id },
-        { projection: { settings: 1, preferences: 1 } }
-      );
-
-    if (!user) {
-      return NextResponse.json(
-        { message: "User not found in DB" },
-        { status: 404 }
-      );
+    const { userData, error, status } = await getCurrentUser<{ preferences: UserPreferences }>({
+      preferences: 1,
+    });
+    
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     return NextResponse.json(
       {
-        preferences: user.preferences ?? {},
+        preferences: userData.preferences ?? {},
       },
       { status: 200 }
     );

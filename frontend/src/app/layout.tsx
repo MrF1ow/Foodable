@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import Providers from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
-import { checkRole } from "@/lib/utils/roles";
+import { checkRole } from "@/lib/utils/clerk-utils";
 import "./globals.css";
 
 export const metadata: Metadata = {

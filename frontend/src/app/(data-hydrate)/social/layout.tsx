@@ -1,7 +1,7 @@
 import MainLayout from "@/layouts/main";
 import ContentLayout from "@/layouts/content";
 import SocialLayout from "@/layouts/page-specific/social/SocialLayout";
-import { checkRole, getUserDetails } from "@/lib/utils/roles";
+import { checkRole, getUserDetails } from "@/lib/utils/clerk-utils";
 
 export default async function SettingsPageLayout({
   children,

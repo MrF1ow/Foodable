@@ -15,11 +15,11 @@ export const RecipeSidePortalInjections = () => {
     const isMobile = useGeneralStore((state) => state.isMobile);
     const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
     const setCurrentSidePortalForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
-    
 
-    const sideList = <SideList isUser={isUser}/>;
-    const recipeForm = <AddRecipe setCurrentForm={setCurrentSidePortalForm}/>;
-    const addItemForm = <AddItem className="h-full" setCurrentForm={setCurrentSidePortalForm}/>;
+
+    const sideList = <SideList isUser={isUser} />;
+    const recipeForm = <AddRecipe setCurrentForm={setCurrentSidePortalForm} />;
+    const addItemForm = <AddItem className="h-full" setCurrentForm={setCurrentSidePortalForm} />;
 
     return (
         <>
@@ -57,7 +57,17 @@ export const RecipeMainPortalInjections = () => {
         router.back();
     };
 
-    const userPopup = <UserPopup additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" />
+    const handleRecipeItemClick = (id: string) => {
+        setShowMainPortal(false);
+        router.push(`/recipe/${id}`);
+    }
+
+    const handleFollowItemClick = (id: string) => {
+        setShowMainPortal(true);
+        router.push(`/recipe/user/${id}`);
+    }
+
+    const userPopup = <UserPopup additionalBackButtonClick={additionalBackButtonClick} className="lg:max-w-[45%] lg:max-h-[80%] md:max-w-[60%] md:max-h-[85%]" handleFollowItemClick={handleFollowItemClick} handleRecipeItemClick={handleRecipeItemClick}/>
 
     return (
         <>

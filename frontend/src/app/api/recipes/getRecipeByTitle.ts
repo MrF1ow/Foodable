@@ -1,17 +1,14 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
-import { getValueFromSearchParams } from "@/lib/utils/routeHelpers";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateRecipe } from "@/lib/validation/types/recipes";
+import { getValueFromSearchParams } from "@/lib/utils/api-helpers";
 
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
     const title = getValueFromSearchParams(req, "title");
-    console.log("Title: ", title);
-    // console.log("Request: ", req);
-
     if (!title) {
       return NextResponse.json(
         { message: HTTP_RESPONSES.BAD_REQUEST },

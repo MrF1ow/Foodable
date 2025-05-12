@@ -3,7 +3,6 @@
 // Package Imports
 import { MdEdit } from "react-icons/md";
 import { JSX, useState } from "react";
-import { useUser } from "@clerk/nextjs";
 
 import {
   Dialog,
@@ -36,7 +35,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { capitalizeTitle } from "@/lib/utils/other";
+import { capitalizeTitle } from "@/lib/utils/general";
 import { useAllSavedItems, useCreateSavedItem, useUpdateSavedItem } from "@/server/hooks/savedItemsHooks";
 import { SavedItem } from "@/types/saved";
 import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";

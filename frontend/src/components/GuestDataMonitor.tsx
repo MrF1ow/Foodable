@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useUserStore } from "@/stores/user/store";
-import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
+import { getBrowserLocation } from "@/lib/location";
 import { useFetchUserLocation } from "@/server/hooks/googleHooks";
 import { NewGroceryList } from "@/types/grocery";
 

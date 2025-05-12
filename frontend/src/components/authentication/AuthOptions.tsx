@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function AuthOptions({ className }: { className?: string }) {
   return (
-    <div className={`flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 ${className}`}>
+    <div className={`flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 ${className}`} data-testid='auth-options'>
       <Button
         asChild
         className="w-full md:w-[45%] text-xl md:text-2xl font-bold py-4 md:py-6 text-foreground"

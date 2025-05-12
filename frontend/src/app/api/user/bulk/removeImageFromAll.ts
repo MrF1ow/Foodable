@@ -3,7 +3,7 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 import { NextResponse } from "next/server";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { ObjectId } from "mongodb";
 import { currentUser } from "@clerk/nextjs/server";
 

@@ -133,7 +133,7 @@ export const useDeleteFollowing = () => {
   });
 
   return {
-    deleteFollowing: mutation.mutate,
+    deleteFollowing: mutation.mutateAsync,
     isLoadingDeleteFollowing: mutation.isPending,
     errorDeleteFollowing: mutation.error,
     isErrorDeleteFollowing: mutation.isError,

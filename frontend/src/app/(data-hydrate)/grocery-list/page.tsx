@@ -1,5 +1,5 @@
 import GroceryList from "@/app/(data-hydrate)/grocery-list/groceryList";
-import { checkRole } from "@/lib/utils/roles";
+import { checkRole } from "@/lib/utils/clerk-utils";
 import FetchData from "@/app/_fetchData";
 import { HydrationBoundary } from "@tanstack/react-query";
 

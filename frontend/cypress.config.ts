@@ -16,4 +16,8 @@ export default defineConfig({
       bundler: "webpack",
     },
   },
+  env: {
+    USER_SIGN_IN_EMAIL: 'foodable_user@gmail.com',
+    USER_SIGN_IN_PASSWORD: 'IloveFood#12'
+  }
 });

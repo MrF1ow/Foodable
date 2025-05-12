@@ -4,7 +4,7 @@ import React from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useFetchImageById } from "@/server/hooks/imageHooks";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { IconType } from "react-icons/lib";
 
 // Need to add onClick functionality to the button so that the users can go to different pages

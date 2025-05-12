@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Icons } from "../../ui/icons";
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useGeneralStore } from "@/stores/general/store";
-import { getGroceryAccordingItems } from "@/lib/utils/listItems";
+import { getGroceryAccordingItems } from "@/lib/items/utils";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import { useUserStore } from "@/stores/user/store";

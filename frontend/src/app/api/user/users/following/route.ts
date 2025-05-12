@@ -10,6 +10,6 @@ export async function DELETE(req: Request) {
   return removeFollowing(req);
 }
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   return followUser(req);
 }

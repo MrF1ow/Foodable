@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateUserWithoutID } from "@/lib/utils/typeValidation/user";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { validateUserWithoutID } from "@/lib/validation/types/user";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { NewUser } from "@/types/user";
 
 export async function POST(req: Request) {
@@ -69,7 +69,8 @@ export async function POST(req: Request) {
         imageId: null,
         preferences: {
           dietaryRestrictions: [],
-	  budget: 0,
+          budget: 0,
+          foodTypePreferences: [],
         },
         savedItems: {
           recipes: [],

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 import RecipeBox from "@/components/page-specific/recipe/RecipeBox";
 import GroceryBox from "@/components/page-specific/grocery/GroceryBox";
-import { capitalizeTitle } from "@/lib/utils/other";
+import { capitalizeTitle } from "@/lib/utils/general";
 import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";

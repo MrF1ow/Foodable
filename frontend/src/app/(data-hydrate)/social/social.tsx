@@ -1,7 +1,7 @@
 "use client";
 
 // **Utility Imports**
-import { filterUsers, filterSavedItems } from "@/lib/utils/listItems";
+import { filterUsers, filterSavedItems } from "@/lib/items/filters";
 
 import {
   UserFollowSection,

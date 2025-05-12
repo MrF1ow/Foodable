@@ -1,37 +1,34 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateGroceryListWithoutId } from "@/lib/utils/typeValidation/grocery";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { validateGroceryListWithoutId } from "@/lib/validation/types/grocery";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { NewGroceryList } from "@/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
+import { ObjectId } from "mongodb";
 
 export async function POST(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const groceryList: NewGroceryList = await req.json();
 
     const { _id, ...groceryListToInsert } = {
       ...groceryList,
-      creatorId: userProfile._id,
+      creatorId: userData._id,
       title: groceryList.title,
       items: groceryList.items || [],
       timestamp: groceryList.timestamp || new Date(),
@@ -51,6 +48,10 @@ export async function POST(req: Request) {
     const insertedGroceryList = await db
       .collection("groceryLists")
       .findOne({ _id: result.insertedId });
+
+    const embeddingData = formEmbeddingData("grocery", groceryListToInsert, result.insertedId)
+
+    await insertEmbeddings([embeddingData]);
 
     // return the entire grocery list
     return NextResponse.json(insertedGroceryList, { status: 201 });

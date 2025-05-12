@@ -1,18 +1,23 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 // Package Imports
 import { NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<{ _id: ObjectId }>({ _id: 1 });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
+
+
+    const db = await getDB();
 
     const { preferences } = await req.json();
 
@@ -23,10 +28,8 @@ export async function PUT(req: Request) {
       );
     }
 
-    const db = await getDB();
-
     const result = await db.collection("users").updateOne(
-      { clerkId: clerkUser.id },
+      { _id: userData._id },
       {
         $set: {
           preferences: preferences,
@@ -34,15 +37,19 @@ export async function PUT(req: Request) {
       }
     );
 
-    if (result.modifiedCount === 0) {
+    if (result.matchedCount === 0) {
       return NextResponse.json(
         { message: "User update failed" },
         { status: 400 }
       );
     }
 
+    const embeddingData = formEmbeddingData("preferences", preferences, userData._id)
+
+    await insertEmbeddings([embeddingData])
+
     return NextResponse.json(
-      { message: "User preferences updated successfully" },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

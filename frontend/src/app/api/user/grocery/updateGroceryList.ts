@@ -1,32 +1,28 @@
 // Local Imports
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateGroceryList } from "@/lib/utils/typeValidation/grocery";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateGroceryList } from "@/lib/validation/types/grocery";
 
 // Package Imports
 import { NextResponse } from "next/server";
 import { GroceryList } from "@/types/grocery";
-import { currentUser } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function PUT(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const groceryList: GroceryList = await req.json();
 
@@ -46,7 +42,7 @@ export async function PUT(req: Request) {
     const updatedGroceryList = await db
       .collection("groceryLists")
       .findOneAndUpdate(
-        { _id: ObjectId.createFromHexString(_id.toString()), creatorId: userProfile._id },
+        { _id: ObjectId.createFromHexString(_id.toString()), creatorId: userData._id },
         { $set: groceryListWithoutId },
         { returnDocument: "after" }
       );
@@ -68,6 +64,10 @@ export async function PUT(req: Request) {
     if (validationResponse) {
       return validationResponse;
     }
+
+    const embeddingData = formEmbeddingData("grocery", groceryList, ObjectId.createFromHexString(_id.toString()))
+
+    await insertEmbeddings([embeddingData]);
 
     return NextResponse.json(updatedGroceryList, { status: 200 });
   } catch (error) {

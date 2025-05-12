@@ -36,7 +36,7 @@ export default function LandingPage({ logo }: LandingPageProps) {
         </h2>
         <AuthOptions className="w-full text-foreground pr-4 pl-4 md:p-0" />
         <Button variant="link" asChild>
-          <Link href="/recipe">Continue As Guest</Link>
+          <Link href="/recipe" data-testid="guest-choice">Continue As Guest</Link>
         </Button>
       </div>
       {/* Logo Section (Hidden on smaller screens) */}

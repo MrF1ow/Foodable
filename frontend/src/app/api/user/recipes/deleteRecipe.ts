@@ -1,16 +1,21 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { isValidObjectId } from "@/lib/utils/validation";
+import { isValidObjectId } from "@/lib/validation/server-validation";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { currentUser } from "@clerk/nextjs/server";
+import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function DELETE(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId, savedItems: any }>({
+        _id: 1,
+        savedItems: 1
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { id } = await req.json();
@@ -22,20 +27,12 @@ export async function DELETE(req: Request) {
     }
 
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const deletedRecipe = await db
       .collection("recipes")
       .findOneAndDelete({
         _id: ObjectId.createFromHexString(id),
-        creatorId: clerkUser.id,
+        creatorId: userData._id,
       });
 
     if (!deletedRecipe) {
@@ -47,13 +44,13 @@ export async function DELETE(req: Request) {
 
     // Remove the deleted ID from savedItems.recipes
     const updatedSavedLists =
-      userProfile.savedItems?.recipes?.filter(
+      userData.savedItems?.recipes?.filter(
         (list: { _id: string | ObjectId }) => list._id.toString() !== id.toString()
       ) || [];
 
     // Apply the filtered list back to the user profile
-    if (userProfile.savedItems) {
-      userProfile.savedItems.recipes = updatedSavedLists;
+    if (userData.savedItems) {
+      userData.savedItems.recipes = updatedSavedLists;
     }
 
     const updateFields: Record<string, any> = {
@@ -61,12 +58,17 @@ export async function DELETE(req: Request) {
     };
 
     await db.collection("users").updateOne(
-      { clerkId: clerkUser.id },
-      { $set: updateFields }
+      { _id: userData._id },
+      {
+        $set: updateFields,
+        $pull: { createdRecipes: { _id: ObjectId.createFromHexString(id) } } as any
+      },
     );
 
+    await deleteVectorEmbedding(ObjectId.createFromHexString(id));
+
     return NextResponse.json(
-      { message: "Recipe Deleted", id: id },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

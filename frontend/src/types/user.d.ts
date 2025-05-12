@@ -6,9 +6,11 @@ export type UserSettings = {
   theme: "light" | "dark";
 };
 
+
 export type UserPreferences = {
   dietaryRestrictions: string[];
   budget: number;
+  foodTypePreferences: string[];
 };
 
 export type UserRating = {
@@ -58,7 +60,7 @@ export type NewUser = UserIdentifiers & {
   };
 
   currentGroceryList: ObjectId | null; // The current grocery list the user is working on
-  createdRecipes: ObjectId[]; // The recipes the user created (they are the creator)
+  createdRecipes: SavedRecipeMetaData[]; // The recipes the user created (they are the creator)
   following: FollowMetadata[]; // The users the user is following
   followers: FollowMetadata[]; // The users that are following the user
   lastLogin: Date; // The last time the user logged in (used for analytics and for potential account termination)

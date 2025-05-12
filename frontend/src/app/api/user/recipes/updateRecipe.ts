@@ -1,29 +1,26 @@
 import { getDB } from "@/lib/mongodb";
 import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
-import { validateObject } from "@/lib/utils/validation";
-import { validateRecipe } from "@/lib/utils/typeValidation/recipes";
+import { validateObject } from "@/lib/validation/server-validation";
+import { validateRecipe } from "@/lib/validation/types/recipes";
 import { Recipe } from "@/types/recipe";
 
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
+import { formEmbeddingData, insertEmbeddings } from "@/lib/utils/embeddings";
+import { ObjectId } from "mongodb";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function PUT(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId }>({
+        _id: 1,
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
-
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
 
     const recipe: Recipe = await req.json();
 
@@ -38,12 +35,15 @@ export async function PUT(req: Request) {
       return preValidationResponse;
     }
 
-    const { _id, ...recipeWithoutID } = recipe;
+    const { _id, creatorId, ...recipeWithoutID } = recipe;
+
+    const recipeId = ObjectId.createFromHexString(_id.toString());
+    const userId = userData._id
 
     const updatedRecipe = await db
       .collection("recipes")
       .findOneAndUpdate(
-        { _id: _id, creatorId: userProfile._id },
+        { _id: recipeId, creatorId: userId },
         { $set: recipeWithoutID },
         { returnDocument: "after" }
       );
@@ -65,6 +65,24 @@ export async function PUT(req: Request) {
     if (validationResponse) {
       return validationResponse;
     }
+
+    await db.collection('users').updateOne(
+      {
+        _id: userData._id,
+        "createdRecipes._id": _id
+      },
+      {
+        $set: {
+          "createdRecipes.$.title": recipeWithoutID.title,
+          "createdRecipes.$.imageId": recipeWithoutID.imageId
+        }
+      }
+    );
+
+    const embeddingData = formEmbeddingData("recipe", recipe, ObjectId.createFromHexString(_id.toString()))
+
+
+    await insertEmbeddings([embeddingData])
 
     return NextResponse.json(updatedRecipe, { status: 200 });
   } catch (error) {

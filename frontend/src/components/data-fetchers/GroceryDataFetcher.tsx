@@ -10,13 +10,9 @@ import type { NewGroceryList } from "@/types/grocery";
 import { useAllGroceryLists } from "@/server/hooks/groceryListHooks";
 import { useFetchGroceryListById } from "@/server/hooks/groceryListHooks";
 import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
-import { useFetchUserLocation } from "@/server/hooks/googleHooks";
-import { useFetchZipFromCoordinates } from "@/server/hooks/googleHooks";
-import { getBrowserLocation } from "@/lib/utils/getBrowserLocation";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
-import { getAvailableGroceryLists } from "@/lib/utils/listItems";
+import { isValidObjectId } from "@/lib/validation/types/general";
+import { getAvailableGroceryLists } from "@/lib/items/utils";
 import { useUserStore } from "@/stores/user/store";
-import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryListDataFetcher() {
   const isUser = useUserStore((state) => state.isUser);

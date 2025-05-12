@@ -4,15 +4,21 @@ import { HTTP_RESPONSES } from "@/lib/constants/httpResponses";
 // Package Imports
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
-import { currentUser } from "@clerk/nextjs/server";
+import { isValidObjectId } from "@/lib/validation/types/general";
+import { deleteVectorEmbedding } from "@/lib/utils/embeddings";
+import { getCurrentUser } from "@/lib/utils/user";
 
 export async function DELETE(req: Request) {
   try {
-    const clerkUser = await currentUser();
+    const { userData, error, status } = await getCurrentUser<
+      { _id: ObjectId, currentGroceryList: ObjectId, savedItems: any }>({
+        _id: 1,
+        currentGroceryList: 1,
+        savedItems: 1
+      });
 
-    if (!clerkUser || !clerkUser.id) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    if (!userData) {
+      return NextResponse.json({ message: error }, { status });
     }
 
     const { id } = await req.json();
@@ -23,21 +29,15 @@ export async function DELETE(req: Request) {
       );
     }
     const db = await getDB();
-    const userProfile = await db.collection('users').findOne({ clerkId: clerkUser.id });
 
-    if (!userProfile) {
-      return NextResponse.json(
-        { message: HTTP_RESPONSES.NOT_FOUND },
-        { status: 404 }
-      );
-    }
+    const groceryListId = ObjectId.createFromHexString(id.toString());
 
     // delete the grocery list
     const deletedGroceryList = await db
       .collection("groceryLists")
       .findOneAndDelete({
-        _id: ObjectId.createFromHexString(id),
-        creatorId: userProfile._id.toString(),
+        _id: groceryListId,
+        creatorId: userData._id,
       });
 
     if (!deletedGroceryList) {
@@ -49,13 +49,13 @@ export async function DELETE(req: Request) {
 
     // Remove the deleted ID from savedItems.groceryLists
     const updatedSavedLists =
-      userProfile.savedItems?.groceryLists?.filter(
+      userData.savedItems?.groceryLists?.filter(
         (list: { _id: string | ObjectId }) => list._id.toString() !== id.toString()
       ) || [];
 
     // Apply the filtered list back to the user profile
-    if (userProfile.savedItems) {
-      userProfile.savedItems.groceryLists = updatedSavedLists;
+    if (userData.savedItems) {
+      userData.savedItems.groceryLists = updatedSavedLists;
     }
 
     const updateFields: Record<string, any> = {
@@ -63,18 +63,20 @@ export async function DELETE(req: Request) {
     };
 
     // Reset currentGroceryList if it matches the deleted ID
-    if (userProfile.currentGroceryList?.toString() === id.toString()) {
+    if (userData.currentGroceryList?.toString() === id.toString()) {
       // If there's another saved list, set it as current; otherwise, null
       updateFields.currentGroceryList = updatedSavedLists[0]?._id || null;
     }
 
     await db.collection("users").updateOne(
-      { clerkId: clerkUser.id },
+      { clerkId: userData._id },
       { $set: updateFields }
     );
 
+    await deleteVectorEmbedding(groceryListId);
+
     return NextResponse.json(
-      { message: "Grocery List Deleted" },
+      { message: HTTP_RESPONSES.OK },
       { status: 200 }
     );
   } catch (error) {

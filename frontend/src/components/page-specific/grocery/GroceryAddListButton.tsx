@@ -35,7 +35,7 @@ import { GroceryList } from "@/types/grocery";
 import { SavedItem } from "@/types/saved";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { capitalizeTitle } from "@/lib/utils/other";
+import { capitalizeTitle } from "@/lib/utils/general";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
 import { useGeneralStore } from "@/stores/general/store";
 

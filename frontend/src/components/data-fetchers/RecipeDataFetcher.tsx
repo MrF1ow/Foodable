@@ -4,11 +4,11 @@ import { useEffect } from "react"
 import { useParams } from "next/navigation"
 
 import { useRecipeById } from "@/server/hooks/recipeHooks"
-import { getRouteParam } from "@/lib/utils/routeHelpers"
+import { getRouteParam } from "@/lib/utils/api-helpers"
 import { useRecipeStore } from "@/stores/recipe/store"
 import { useGroceryStore } from "@/stores/grocery/store"
-import { getAdditionalIngredients } from "@/lib/utils/listItems"
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { getAdditionalIngredients } from "@/lib/items/ingredients"
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { useFetchImageById } from "@/server/hooks/imageHooks"
 
 export default function RecipeDataFetcher() {

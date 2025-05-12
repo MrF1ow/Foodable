@@ -24,7 +24,7 @@ import {
   useGetCategories,
 } from "@/server/hooks/savedItemsHooks";
 import { useSavedItemsStore } from "@/stores/saved/store";
-import { getIndexOfItemInArray } from "@/lib/utils/other";
+import { getIndexOfItemInArray } from "@/lib/utils/general";
 
 interface EditButtonProps {
   category: string;

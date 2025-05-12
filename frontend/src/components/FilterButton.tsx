@@ -25,26 +25,12 @@ import { JSX } from "react";
 
 interface FilterButtonProps {
     setFilters: (filters: FilterOptions) => void;
+    handleFilterChange: (filterType: "price" | "timeApprox" | "ingredientAmount", value: -1 | 0 | 1) => void;
     filter: FilterOptions;
 }
 
-export default function FilterButton({ setFilters, filter }: FilterButtonProps): JSX.Element {
+export default function FilterButton({ setFilters, handleFilterChange, filter }: FilterButtonProps): JSX.Element {
     const isMobile = useGeneralStore((state) => state.isMobile);
-
-    const handleFilterChange = (
-        filterType: "price" | "timeApprox" | "ingredientAmount",
-        value: -1 | 0 | 1
-    ) => {
-        // Update filter state in zustand store
-        const updatedFilter = {
-            searchQuery: filter.searchQuery,
-            price: filterType === "price" ? value : 0,
-            timeApprox: filterType === "timeApprox" ? value : 0,
-            ingredientAmount: filterType === "ingredientAmount" ? value : 0,
-        };
-
-        setFilters(updatedFilter);
-    };
 
     const resetFilters = () => {
         setFilters({

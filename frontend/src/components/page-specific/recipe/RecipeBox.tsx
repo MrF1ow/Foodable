@@ -9,7 +9,7 @@ import { useFetchImageById } from "@/server/hooks/imageHooks";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { RecipeMetaData, SavedRecipeMetaData } from "@/types/saved";
 import Box from "@/components/Box";
-import { isValidObjectId } from "@/lib/utils/typeValidation/general";
+import { isValidObjectId } from "@/lib/validation/types/general";
 import { useRecipeById } from "@/server/hooks/recipeHooks";
 import logo from "../../../../public/images/logo_current_no_shadow.png"
 import Spinner from "@/components/Spinner";
