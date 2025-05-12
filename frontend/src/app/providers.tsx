@@ -30,16 +30,23 @@ export const showToast = (
   life: number = 5000
 ) => {
   if (globalToast?.current) {
-    globalToast.current.clear(); // Clear any existing toast
+    globalToast.current.clear();
     globalToast.current.show({
       severity,
       summary,
       detail,
       life,
+      closable: false, // Disable the default X button
       content: (
         <div
-          className={`p-4 rounded-md shadow-md w-full max-w-sm border ${severityStyles[severity]}`}
+          className={`relative p-4 rounded-md shadow-md w-full max-w-sm border ${severityStyles[severity]}`}
         >
+          <button
+            onClick={() => globalToast.current?.clear()}
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+          >
+            &times;
+          </button>
           <strong className="block font-semibold">{summary}</strong>
           <p className="text-sm mt-1">{detail}</p>
         </div>
