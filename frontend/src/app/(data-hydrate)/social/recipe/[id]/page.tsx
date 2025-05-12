@@ -34,13 +34,22 @@ export default function Page() {
     { enabled: !!recipeId && isValidObjectId(recipeId) }
   );
 
-  const { refetchImage } = useFetchImageById(currentData?.imageId ? currentData?.imageId.toString() :  "", {
-    enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
-  });
+  const { refetchImage } = useFetchImageById(
+    currentData?.imageId ? currentData?.imageId.toString() : "",
+    {
+      enabled: !!currentData?.imageId && isValidObjectId(currentData?.imageId),
+    }
+  );
 
   useEffect(() => {
     if (!recipeId || recipeId === "undefined") {
       console.error("Invalid recipeId");
+      return;
+    }
+
+    if (currentData && currentData._id.toString() === recipeId) {
+      console.log("Loaded from Zustand, skipping refetch");
+      setLoading(false);
       return;
     }
 

@@ -13,6 +13,7 @@ import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
 import { isValidObjectId } from "@/lib/validation/types/general";
 import { getAvailableGroceryLists } from "@/lib/items/utils";
 import { useUserStore } from "@/stores/user/store";
+import { is } from "node_modules/cypress/types/bluebird";
 
 export default function GroceryListDataFetcher() {
   const isUser = useUserStore((state) => state.isUser);
@@ -23,6 +24,7 @@ export default function GroceryListDataFetcher() {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setAvailableLists = useGroceryStore((state) => state.setAvailableLists);
   const currentList = useGroceryStore((state) => state.currentList);
+  const isSharedView = useGroceryStore((state) => state.isSharedView);
 
   // fetch the currentList that the user is currently on
   // this will be used to fetch the grocery list by id
@@ -105,6 +107,10 @@ export default function GroceryListDataFetcher() {
       // if the grocery list is not null, set the current list to the grocery list
       refetchGroceryList().then((result) => {
         if (result?.data) {
+          if (isSharedView) {
+            console.log("Shared view, not creating new list");
+            return;
+          }
           setCurrentList(result.data);
         }
       });
@@ -118,6 +124,10 @@ export default function GroceryListDataFetcher() {
       };
       setCurrentList(newList);
     } else {
+      if (isSharedView) {
+        console.log("Shared view, not creating new list");
+        return;
+      }
       const newList: NewGroceryList = {
         _id: null,
         creatorId: null,
