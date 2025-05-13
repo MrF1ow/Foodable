@@ -13,7 +13,6 @@ import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
 import { isValidObjectId } from "@/lib/validation/types/general";
 import { getAvailableGroceryLists } from "@/lib/items/utils";
 import { useUserStore } from "@/stores/user/store";
-import { is } from "node_modules/cypress/types/bluebird";
 
 export default function GroceryListDataFetcher() {
   const isUser = useUserStore((state) => state.isUser);

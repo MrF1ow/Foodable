@@ -13,6 +13,7 @@ import AssistantButton from "@/components/buttons/AssistantButton";
 import GroceryPageInjections from "@/components/portal-injections/GroceryPageInjections";
 import GuestDataMonitor from "@/components/GuestDataMonitor";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
+import { useInitIsUser } from "@/lib/hooks/useInitIsUser";
 
 interface GroceryListProps {
   isUser: boolean;
@@ -25,6 +26,8 @@ export default function GroceryList({
   renderContent,
   className,
 }: GroceryListProps) {
+
+  useInitIsUser(isUser);
 
   const splitLayout = useGeneralStore((state) => state.splitLayout);
   const isMobile = useGeneralStore((state) => state.isMobile);
