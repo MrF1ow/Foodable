@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { GroceryList, NewGroceryList } from "@/types/grocery";
 import { GroceryApi } from "../api/groceryListApi";
 import { useQueryProps } from "@/types";
@@ -60,9 +60,19 @@ export const useFetchGroceryListById = ({
 };
 
 export const useCreateGroceryList = () => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation<GroceryList, Error, NewGroceryList>({
     mutationFn: (newList: NewGroceryList) =>
       GroceryApi.createGroceryList(newList),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [GROCERY_LISTS] });
+    },
+
+    onError: (error) => {
+      console.error("Error creating list:", error);
+    },
   });
 
   if (mutation.error) {
@@ -78,8 +88,22 @@ export const useCreateGroceryList = () => {
 };
 
 export const useUpdateGroceryList = () => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation<GroceryList, Error, GroceryList>({
     mutationFn: GroceryApi.updateGroceryList,
+
+    onSuccess: (updatedList) => {
+      queryClient.setQueryData<GroceryList[]>([GROCERY_LISTS], (oldLists) =>
+        oldLists?.map((list) =>
+          list._id === updatedList._id ? updatedList : list
+        )
+      );
+    },
+
+    onError: (error) => {
+      console.error("Error updating list:", error);
+    },
   });
 
   return {
@@ -91,8 +115,20 @@ export const useUpdateGroceryList = () => {
 };
 
 export const useDeleteGroceryList = () => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation<void, Error, string>({
     mutationFn: GroceryApi.deleteGroceryList,
+
+    onSuccess: (__, id) => {
+      queryClient.setQueryData<GroceryList[]>([GROCERY_LISTS], (oldLists) =>
+        oldLists?.filter((list) => list._id !== id)
+      );
+    },
+
+    onError: (error) => {
+      console.error("Error deleting list:", error);
+    },
   });
 
   return {
