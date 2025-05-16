@@ -1,5 +1,6 @@
 import Recipes from "@/app/(data-hydrate)/recipe/recipes";
 import FetchData from "@/app/_fetchData";
+import { checkRole } from "@/lib/utils/clerk-utils";
 import { HydrationBoundary } from "@tanstack/react-query";
 
 export default async function RecipePage() {
@@ -10,10 +11,12 @@ export default async function RecipePage() {
     userData: true,
   });
 
+  const isUser = await checkRole("user");
+
 
   return (
     <HydrationBoundary state={dehydratedClient}>
-      <Recipes/>
+      <Recipes isUser={isUser}/>
     </HydrationBoundary>
   );
 }

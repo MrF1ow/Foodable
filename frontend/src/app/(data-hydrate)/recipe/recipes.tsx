@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 // Local Imports
 import RecipeBox from "@/components/page-specific/recipe/RecipeBox";
+import { useInitIsUser } from "@/lib/hooks/useInitIsUser";
 import { useRecipeStore } from "@/stores/recipe/store";
 import { useAllRecipes } from "@/server/hooks/recipeHooks";
 import { RecipeMetaData } from "@/types/saved";
@@ -21,7 +22,14 @@ import {
 } from "@/components/ui/pagination";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 
-export default function Recipes() {
+interface RecipesProps {
+  isUser: boolean;
+}
+
+export default function Recipes({ isUser }: RecipesProps) {
+
+  useInitIsUser(isUser);
+
   const { recipes } = useAllRecipes(true);
   const router = useRouter();
   const filter = useRecipeStore((state) => state.filter);
