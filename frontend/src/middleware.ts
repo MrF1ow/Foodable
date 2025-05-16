@@ -64,28 +64,6 @@ export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
     await auth.protect();
   }
-
-  // === Add CORS headers ===
-  const res = NextResponse.next();
-
-  // Apply CORS headers to API routes
-  if (req.nextUrl.pathname.startsWith("/api")) {
-    res.headers.set("Access-Control-Allow-Origin", "https://foodable.xyz");
-    res.headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  }
-
-  // Handle OPTIONS preflight requests for API routes
-  if (req.method === "OPTIONS" && req.nextUrl.pathname.startsWith("/api")) {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "https://foodable.xyz",
-        "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  }
 });
 
 export const config = {
