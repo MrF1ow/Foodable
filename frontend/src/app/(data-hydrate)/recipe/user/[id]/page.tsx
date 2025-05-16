@@ -9,12 +9,15 @@ import { RecipeMainPortalInjections} from "@/components/portal-injections/Recipe
 import { useFetchUserById } from "@/server/hooks/userHooks";
 import { useSocialStore } from "@/stores/social/store";
 import { useGeneralStore } from "@/stores/general/store";
+import { useUserStore } from "@/stores/user/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
     const id = params.id;
     const userId = getRouteParam(id);
+
+    const isUser = useUserStore((state) => state.isUser);
 
     const setSelectedUser = useSocialStore((state) => state.setSelectedUser);
     const setCurrentForm = useGeneralStore((state) => state.setCurrentMainPortalForm);
@@ -43,7 +46,7 @@ export default function Page() {
 
     return (
         <>
-            <Recipes />
+            <Recipes isUser={isUser}/>
             <RecipeMainPortalInjections />
         </>
     );
