@@ -16,8 +16,8 @@ export async function getAuthHeader() {
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-if (!baseUrl) {
-  throw new Error("Missing NEXT_PUBLIC_API_BASE_URL environment variable)
+if (!baseUrl){
+  throw new Error("Missing NEXT_PUBLIC_API_BASE_URL environment variable")
 }
 
 
