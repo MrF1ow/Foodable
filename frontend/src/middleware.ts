@@ -1,8 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import rateLimit from "./lib/rate-limiter";
 
 const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
-const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)", "/api/chat(.*)"]);
+const isUserRoute = createRouteMatcher([
+  "/social(.*)",
+  "/api/user(.*)",
+  "/api/chat(.*)",
+]);
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -21,6 +26,9 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  const rateLimitResponse = await rateLimit(req);
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   const userRole = (await auth()).sessionClaims?.metadata?.role;
