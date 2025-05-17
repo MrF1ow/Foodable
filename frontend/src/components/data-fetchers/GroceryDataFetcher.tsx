@@ -74,7 +74,6 @@ export default function GroceryListDataFetcher() {
     }
 
     const availableLists = getAvailableGroceryLists(groceryLists);
-    console.log("Available Lists", availableLists);
     setAvailableLists(availableLists);
   }, [currentList]);
 
