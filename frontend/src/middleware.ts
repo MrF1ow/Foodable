@@ -26,12 +26,14 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const rateLimitResponse = await rateLimit(req);
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   const userRole = (await auth()).sessionClaims?.metadata?.role;
+
+  if (req.nextUrl.pathname.startsWith("/api")) {
+    const rateLimitResponse = await rateLimit(req);
+    if (rateLimitResponse) return rateLimitResponse;
+  }
 
   if (userId && isOnboardingRoute(req)) {
     return NextResponse.next();
