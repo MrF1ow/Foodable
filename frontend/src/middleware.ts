@@ -2,7 +2,6 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
-const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
 const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)", "/api/chat(.*)"]);
 
 const isPublicRoute = createRouteMatcher([
@@ -41,6 +40,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+    console.log("Redirecting Back to Onboarding");
     const onboardingUrl = new URL("/onboarding", req.url);
     return NextResponse.redirect(onboardingUrl);
   }
@@ -49,14 +49,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Protect all routes starting with `/admin`
-  if (isAdminRoute(req) && !(userRole === "admin")) {
-    const url = new URL("/", req.url);
-    return NextResponse.redirect(url);
-  }
-
   // Allow registered users to access the user route
-  if (isUserRoute(req) && !(userRole === "admin" || userRole === "user")) {
+  if (isUserRoute(req) && !(userRole === "user")) {
     const url = new URL("/sign-in", req.url);
     return NextResponse.redirect(url);
   }
