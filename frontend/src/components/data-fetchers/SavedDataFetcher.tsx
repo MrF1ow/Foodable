@@ -10,9 +10,7 @@ import { useUserStore } from "@/stores/user/store";
 
 export default function SavedDataFetcher() {
     const isUser = useUserStore((state) => state.isUser);
-    if (!isUser) {
-        return null;
-    }
+
     const currentCategories = useSavedItemsStore(
         (state) => state.currentCategories
     );
