@@ -232,6 +232,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
               <Button
                 variant="ghost"
                 className="p-2 mx-2 flex items-center justify-center rounded-md hover:scale-105 transition-all"
+                data-testid="grocery-header-dropdown"
               >
                 <MoreVertical className="scale-150" />
               </Button>
@@ -285,7 +286,7 @@ export const GroceryHeaderMin = ({
           {currentList.title || "New List"}
         </div>
       </div>
-      {(currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick) &&(
+      {currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick && (
         <MdClose onClick={handleCloseSideList} size={40} />
       )}
     </div>

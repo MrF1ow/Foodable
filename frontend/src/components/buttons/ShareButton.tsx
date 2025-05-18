@@ -35,7 +35,7 @@ export function ShareButton({
     <button
       onClick={handleClick}
       className="flex items-center gap-2 w-full px-2 py-1.5 hover:bg-accent rounded-sm"
-      data-testid="share-grocery-list-button"
+      data-testid="share-grocery-list"
     >
       {copied ? <Check /> : <Link2 />}
       {children}

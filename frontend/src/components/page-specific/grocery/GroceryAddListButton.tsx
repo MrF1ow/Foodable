@@ -162,7 +162,7 @@ export default function GroceryAddButton({
             />
           </div>
           <Select onValueChange={setSelectedList} value={selectedList}>
-            <SelectTrigger>
+            <SelectTrigger data-testid="select-category">
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
             <SelectContent>

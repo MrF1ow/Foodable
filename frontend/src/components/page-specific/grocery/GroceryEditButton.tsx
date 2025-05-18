@@ -218,6 +218,7 @@ export default function GroceryEditButton({
             e.stopPropagation();
             setIsOpen(true);
           }}
+          data-testid="edit-grocery-list"
         >
           <MdEdit className="text-foreground" />
           {children}
@@ -247,7 +248,7 @@ export default function GroceryEditButton({
               />
             </div>
             <Select onValueChange={setSelectedList} value={selectedList}>
-              <SelectTrigger>
+              <SelectTrigger data-testid="select-category">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>

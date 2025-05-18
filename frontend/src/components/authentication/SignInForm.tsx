@@ -99,9 +99,10 @@ const SignInForm = ({ signInWithEmail, clerkError }: SignInFormProps) => {
                 </FormItem>
               )}
             />
-            <h2 className="text-foreground mb-8"
-            >
-              {clerkError && <p data-testid="signin-error-message">{clerkError}</p>}
+            <h2 className="text-foreground mb-8">
+              {clerkError && (
+                <p data-testid="signin-error-message">{clerkError}</p>
+              )}
             </h2>
             <Button type="submit" className="w-full">
               Sign In

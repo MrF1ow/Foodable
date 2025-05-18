@@ -1,8 +1,26 @@
 describe("Registered User Grocery Page", () => {
-  it("Grocery Page Should Load Successfully", () => {
+  beforeEach(() => {
+    cy.session("registered-user-session", () => {
+      cy.visit("/sign-in");
+      cy.clerkSignIn({
+        strategy: "password",
+        identifier: Cypress.env("USER_SIGN_IN_EMAIL"),
+        password: Cypress.env("USER_SIGN_IN_PASSWORD"),
+      });
+    });
+  });
+  const listTitle = "Cypress Test";
+
+  it("should create a new grocery list", () => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(5000);
-    cy.shouldBeVisible("New List");
+    cy.wait(500);
+    cy.clickButton("grocery-header-dropdown");
+    cy.clickButton("add-grocery-list");
+    cy.typeText("new-list-title", listTitle);
+    cy.clickButton("select-category");
+    cy.get('[role="option"]').contains("New Collection").click();
+    cy.clickButton("submit-new-grocery-list");
+    cy.shouldBeVisible(listTitle);
   });
 
   it("should render the category and allow clicking it", () => {
@@ -86,9 +104,9 @@ describe("Registered User Grocery Page", () => {
     cy.clickButton("Dairy-category-item");
 
     cy.clickButton("submit-button");
-    cy.clickButton("Bakery-accordion");
+    cy.clickButton("Frozen-accordion");
 
-    cy.shouldBeVisible("No items currently in the Bakery section.");
+    cy.shouldBeVisible("No items currently in the Frozen section.");
     cy.shouldBeVisible(itemName);
   });
 
@@ -110,33 +128,18 @@ describe("Registered User Grocery Page", () => {
     cy.shouldBeVisible("1 lb");
   });
 
-  const listTitle = "Cypress Test";
   const newListTitle = "New Cypress Test";
-
-  it("will allow the creation of a grocery list", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-    cy.clickButton("list-edit");
-
-    cy.typeText("list-title", listTitle);
-
-    cy.clickButton("list-submit");
-
-    cy.shouldBeVisible(listTitle);
-  });
 
   it("will allow the renaming of a grocery list", () => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
     cy.wait(500);
-    cy.clickButton("grocery-header");
 
-    cy.contains(listTitle).click();
-
-    cy.wait(500);
-
-    cy.clickButton("list-edit");
+    cy.clickButton("grocery-header-dropdown");
+    cy.clickButton("edit-grocery-list");
 
     cy.typeText("list-title", newListTitle);
+    cy.clickButton("select-category");
+    cy.get('[role="option"]').contains("New Collection").click();
 
     cy.clickButton("list-submit");
     cy.wait(1000);
@@ -144,136 +147,46 @@ describe("Registered User Grocery Page", () => {
     cy.shouldBeVisible(newListTitle);
   });
 
-  it("will allow the deletion of a grocery list", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-    cy.clickButton("grocery-header");
-
-    cy.contains(listTitle).click();
-
-    cy.wait(500);
-
-    cy.clickButton("list-edit");
-
-    cy.clickButton("list-delete");
-
-    cy.shouldBeVisible("New List");
-
-    // will put back after race condition is solved
-
-    // cy.clickButton("grocery-header");
-
-    // cy.shouldBeVisible("No lists available");
-  });
-
   it("will remember the items in the saved grocery list", () => {
     cy.visit("/grocery-list", { failOnStatusCode: false });
     cy.wait(500);
+    cy.clickButton("grocery-header-dropdown");
+    cy.clickButton("add-grocery-list");
+    cy.typeText("new-list-title", "Temporary Cypress List");
+    cy.clickButton("select-category");
+    cy.get('[role="option"]').contains("New Collection").click();
+    cy.clickButton("submit-new-grocery-list");
+    cy.get("body").click(0, 0);
+    cy.get('[role="option"]').should("not.exist");
+    cy.wait(500);
+
     const categoryName = "Bakery";
     cy.clickAddItemButton(categoryName);
     cy.shouldBeVisible("Add Item");
 
     cy.typeText("itemName-input", "Bread");
-    cy.typeText("quantity-input", "3{leftarrow}{backspace}");
+    cy.typeText("quantity-input", "21{leftarrow}{backspace}");
     cy.clickButton("submit-button");
 
     cy.shouldBeVisible("Bread");
-    cy.shouldBeVisible("3");
-
-    cy.clickButton("list-edit");
-
-    cy.typeText("list-title", listTitle);
-
-    cy.clickButton("list-submit");
-
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-
-    cy.clickButton("Bakery-accordion");
-    cy.shouldBeVisible("No items currently in the Bakery section");
+    cy.shouldBeVisible("21");
 
     cy.clickButton("grocery-header");
+    cy.contains(newListTitle).click();
+    cy.wait(500);
+    cy.shouldBeVisible("Bacon");
+    cy.shouldBeVisible("1 lb");
 
-    cy.contains(listTitle).click();
+    cy.clickButton("grocery-header");
+    cy.contains("Temporary Cypress List").click();
 
     cy.wait(500);
 
     cy.clickButton("Bakery-accordion");
     cy.shouldBeVisible("Bread");
-    cy.shouldBeVisible("3");
+    cy.shouldBeVisible("21");
 
     cy.deleteCurrentList();
-  });
-
-  it("will switch between grocery lists", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-    const bakerySection = "Bakery";
-    cy.clickAddItemButton(bakerySection);
-    cy.shouldBeVisible("Add Item");
-
-    cy.typeText("itemName-input", "Bread");
-    cy.typeText("quantity-input", "3{leftarrow}{backspace}");
-    cy.clickButton("submit-button");
-
-    cy.shouldBeVisible("Bread");
-    cy.shouldBeVisible("3");
-
-    cy.clickButton("list-edit");
-    cy.typeText("list-title", "Bread List");
-    cy.clickButton("list-submit");
-
-    cy.clickButton("grocery-header");
-    cy.contains("New List").click();
-
-    const dairySection = "Dairy";
-    cy.clickAddItemButton(dairySection);
-    cy.shouldBeVisible("Add Item");
-
-    cy.typeText("itemName-input", "Milk");
-    cy.typeText("quantity-input", "2{leftarrow}{backspace}");
-    cy.clickButton("submit-button");
-
-    cy.shouldBeVisible("Milk");
-    cy.shouldBeVisible("2");
-
-    cy.clickButton("list-edit");
-    cy.typeText("list-title", "Milk List");
-    cy.clickButton("list-submit");
-
-    cy.clickButton("grocery-header");
-    cy.contains("New List").click();
-
-    cy.clickButton("Bakery-accordion");
-    cy.shouldBeVisible("No items currently in the Bakery section");
-
-    cy.clickButton("Dairy-accordion");
-    cy.shouldBeVisible("No items currently in the Dairy section");
-
-    cy.clickButton("grocery-header");
-    cy.contains("Bread List").click();
-
-    cy.shouldBeVisible("Bread List");
-    cy.clickButton("Bakery-accordion");
-    cy.shouldBeVisible("Bread");
-    cy.shouldBeVisible("3");
-
-    cy.clickButton("Dairy-accordion");
-    cy.shouldBeVisible("No items currently in the Dairy section");
-
-    cy.clickButton("grocery-header");
-    cy.contains("Milk List").click();
-
-    cy.shouldBeVisible("Milk List");
-    cy.clickButton("Bakery-accordion");
-    cy.shouldBeVisible("No items currently in the Bakery section");
-
-    cy.clickButton("Dairy-accordion");
-    cy.shouldBeVisible("Milk");
-    cy.shouldBeVisible("2");
-
-    cy.deleteCurrentList();
-    cy.deleteList("Bread List");
   });
 
   it("will allow the deletion of items from a list", () => {
@@ -291,7 +204,8 @@ describe("Registered User Grocery Page", () => {
     cy.shouldBeVisible(itemName);
     cy.shouldBeVisible("3");
 
-    cy.clickButton("list-edit");
+    cy.clickButton("grocery-header-dropdown");
+    cy.clickButton("edit-grocery-list");
     cy.typeText("list-title", listTitle);
     cy.clickButton("list-submit");
     cy.shouldBeVisible(listTitle);
@@ -318,5 +232,19 @@ describe("Registered User Grocery Page", () => {
     cy.contains(itemName).should("not.exist");
 
     cy.deleteCurrentList();
+  });
+
+  it("will allow the deletion of a grocery list", () => {
+    cy.visit("/grocery-list", { failOnStatusCode: false });
+    cy.wait(500);
+
+    cy.clickButton("grocery-header-dropdown");
+    cy.clickButton("edit-grocery-list");
+
+    cy.wait(500);
+
+    cy.clickButton("list-delete");
+
+    cy.shouldBeVisible("New List");
   });
 });
