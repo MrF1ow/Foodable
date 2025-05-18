@@ -27,14 +27,14 @@ export default function InputCard({
       } w-full flex flex-col bg-card-background`}
     >
       <InputHeader title={title} onClick={onClick} />
-      <CardContent className="flex-grow overflow-y-auto">{content}</CardContent>
+      <CardContent className="flex-grow w-full overflow-y-auto">{content}</CardContent>
       <InputFooter>{footer}</InputFooter>
     </Card>
   );
 }
 
 const InputFooter = ({ children }: { children: React.ReactNode }) => {
-  return <div className="w-full p-6 ">{children}</div>;
+  return <div className="w-full p-6">{children}</div>;
 };
 
 const InputHeader = ({

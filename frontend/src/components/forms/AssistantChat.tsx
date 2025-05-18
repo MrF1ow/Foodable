@@ -7,7 +7,7 @@ import { Icons } from "@/components/ui/icons";
 import { useGeneralStore } from "@/stores/general/store";
 import { JSX } from "react";
 import { CurrentFormFunction } from "@/types";
-import { useChat } from '@ai-sdk/react';
+import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
 
 type ChatBubbleProps = {
@@ -17,15 +17,15 @@ type ChatBubbleProps = {
 
 const ChatBubble = ({ role, text }: ChatBubbleProps) => {
   const isUser = role === "user";
+
   return (
-    <div
-      className={`flex ${isUser ? "justify-end" : "justify-start"} my-1`}
-    >
+    <div className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[80%] px-4 py-2 rounded-lg text-black text-sm ${isUser
-          ? "bg-primary rounded-br-none"
-          : "bg-gray-300 rounded-bl-none"
-          }`}
+        className={`px-4 py-2 rounded-lg text-black text-sm w-fit max-w-[75%] break-words ${
+          isUser
+            ? "bg-primary rounded-br-none"
+            : "bg-gray-300 rounded-bl-none"
+        }`}
       >
         <ReactMarkdown>{text}</ReactMarkdown>
       </div>
@@ -33,7 +33,9 @@ const ChatBubble = ({ role, text }: ChatBubbleProps) => {
   );
 };
 
-export default function AssistantChat({ setCurrentForm }: CurrentFormFunction): JSX.Element {
+export default function AssistantChat({
+  setCurrentForm,
+}: CurrentFormFunction): JSX.Element {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
 
   const setSplitPage = useGeneralStore((state) => state.setSplitLayout);
@@ -50,7 +52,7 @@ export default function AssistantChat({ setCurrentForm }: CurrentFormFunction): 
       title="Grocery List Helper"
       onClick={handleInputClose}
       content={
-        <div className="flex flex-col w-full stretch px-2 overflow-y-auto max-h-[60vh]">
+        <div className="flex flex-col w-full overflow-y-auto h-full gap-y-2">
           {messages.map((message) =>
             message.parts.map((part, i) => {
               if (part.type === "text") {
@@ -68,7 +70,10 @@ export default function AssistantChat({ setCurrentForm }: CurrentFormFunction): 
         </div>
       }
       footer={
-        <form className="flex flex-row gap-4 items-center justify-center" onSubmit={handleSubmit}>
+        <form
+          className="flex flex-row gap-4 items-center justify-center"
+          onSubmit={handleSubmit}
+        >
           <Input
             className="!text-lg h-12 bg-gray-100 text-background"
             placeholder="Lets Talk Food..."
