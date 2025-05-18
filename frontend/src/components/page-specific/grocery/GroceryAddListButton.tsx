@@ -39,7 +39,13 @@ import { capitalizeTitle } from "@/lib/utils/general";
 import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
 import { useGeneralStore } from "@/stores/general/store";
 
-export default function GroceryAddButton(): JSX.Element {
+export default function GroceryAddButton({
+  children,
+  className = "",
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
@@ -89,7 +95,7 @@ export default function GroceryAddButton(): JSX.Element {
         title: createData.title,
         type: "groceryList",
         category: selectedList,
-      }
+      };
 
       const savedItem = await createSavedItem(newSaveItem as SavedItem);
       if (!savedItem) {
@@ -104,7 +110,6 @@ export default function GroceryAddButton(): JSX.Element {
 
       await updateUserCurrentList(createData._id);
       setCurrentList(createData);
-
 
       await refetchGroceryLists();
       setIsOpen(false);
@@ -122,12 +127,25 @@ export default function GroceryAddButton(): JSX.Element {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <FaPlus className="text-foreground hover:scale-105" data-testid="add-grocery-list" aria-label="Add new grocery list" />
+        <button
+          className="flex items-center gap-2 w-full px-2 py-1.5 hover:bg-accent rounded-sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(true);
+          }}
+          data-testid="add-grocery-list"
+          aria-label="Add new grocery list"
+        >
+          <FaPlus className="text-foreground" />
+          {children}
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Grocery List</DialogTitle>
-          <DialogDescription>Give your new grocery list a title and category.</DialogDescription>
+          <DialogDescription>
+            Give your new grocery list a title and category.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-center space-x-2">

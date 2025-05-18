@@ -36,12 +36,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { capitalizeTitle } from "@/lib/utils/general";
-import { useAllSavedItems, useCreateSavedItem, useUpdateSavedItem } from "@/server/hooks/savedItemsHooks";
+import {
+  useAllSavedItems,
+  useCreateSavedItem,
+  useUpdateSavedItem,
+} from "@/server/hooks/savedItemsHooks";
 import { SavedItem } from "@/types/saved";
 import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
 
-export default function GroceryEditButton(): JSX.Element {
+export default function GroceryEditButton({
+  children,
+  className = "",
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}): JSX.Element {
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
 
@@ -60,13 +70,14 @@ export default function GroceryEditButton(): JSX.Element {
   const { refetchCurrentListId } = useFetchUserCurrentList({
     enabled: true,
   });
-  const { refetchSavedItems } = useAllSavedItems({ enabled: true })
+  const { refetchSavedItems } = useAllSavedItems({ enabled: true });
   const { updateGroceryList } = useUpdateGroceryList();
   const { createGroceryList } = useCreateGroceryList();
   const { deleteGroceryList } = useDeleteGroceryList();
   const { updateSavedItem } = useUpdateSavedItem();
   const { createSavedItem } = useCreateSavedItem();
-  const { removeAllGroceryListFromAllUsers } = useRemoveAllGroceryListFromAllUsers();
+  const { removeAllGroceryListFromAllUsers } =
+    useRemoveAllGroceryListFromAllUsers();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -110,16 +121,13 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
       } else {
-
         const newSavedList = {
           ...newList,
           type: "groceryList",
           category: selectedList,
         };
 
-        const createData = await createGroceryList(
-          newList as GroceryList
-        );
+        const createData = await createGroceryList(newList as GroceryList);
         setCurrentList(createData);
 
         await createSavedItem(newSavedList as SavedItem);
@@ -161,12 +169,11 @@ export default function GroceryEditButton(): JSX.Element {
 
         console.log("List id before bulk deletion", currentList._id.toString());
 
-        await removeAllGroceryListFromAllUsers(currentList._id.toString())
+        await removeAllGroceryListFromAllUsers(currentList._id.toString());
         // After deletion, force refetch of the grocery lists
         await refetchCurrentListId();
         await refetchGroceryLists();
         await refetchSavedItems();
-
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
@@ -192,22 +199,22 @@ export default function GroceryEditButton(): JSX.Element {
           3000
         );
       },
-
     });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="ml-4" asChild>
-        <MdEdit
-          className="text-foreground hover:scale-105"
-          aria-label="Add Current List"
-          data-testid="list-edit"
-          onClick={(event) => {
-            event.stopPropagation();
+      <DialogTrigger asChild>
+        <button
+          className="flex items-center gap-2 w-full px-2 py-1.5 hover:bg-accent rounded-sm"
+          onClick={(e) => {
+            e.stopPropagation();
             setIsOpen(true);
           }}
-        />
+        >
+          <MdEdit className="text-foreground" />
+          {children}
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

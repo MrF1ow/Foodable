@@ -231,17 +231,31 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
         )}
 
         {isUser && (
-          <div className="flex flex-row lg:ml-4 gap-2 items-center justify-center">
-            <GroceryEditButton />
-            <GroceryAddButton />
-            {currentList.title !== "New List" && (
-              <ShareButton
-                type="grocery"
-                id={currentList._id.toString()}
-                data-testid="share-grocery-list-button"
-              />
-            )}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="p-2 mx-2 flex items-center justify-center rounded-md hover:scale-105 transition-all"
+              >
+                <MoreVertical className="scale-150" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem asChild>
+                <GroceryEditButton>Edit List</GroceryEditButton>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <GroceryAddButton>Create List</GroceryAddButton>
+              </DropdownMenuItem>
+              {currentList.title !== "New List" && (
+                <DropdownMenuItem asChild>
+                  <ShareButton type="grocery" id={currentList._id.toString()}>
+                    Share List
+                  </ShareButton>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
       {currentForm === FORM_NAMES.GROCERY_LIST && (

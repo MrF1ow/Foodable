@@ -6,7 +6,17 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Link2 } from "lucide-react";
 
-export function ShareButton({ type, id }: { type: string; id: string }) {
+export function ShareButton({
+  type,
+  id,
+  children,
+  className = "",
+}: {
+  type: string;
+  id: string;
+  children?: React.ReactNode;
+  className?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleClick = async () => {
@@ -22,12 +32,13 @@ export function ShareButton({ type, id }: { type: string; id: string }) {
   };
 
   return (
-    <div onClick={handleClick} className="hover:scale-105 text-foreground">
-      {copied ? (
-        <Check className="w-10 h-10" />
-      ) : (
-        <Link2 className="w-10 h-10" />
-      )}
-    </div>
+    <button
+      onClick={handleClick}
+      className="flex items-center gap-2 w-full px-2 py-1.5 hover:bg-accent rounded-sm"
+      data-testid="share-grocery-list-button"
+    >
+      {copied ? <Check /> : <Link2 />}
+      {children}
+    </button>
   );
 }
