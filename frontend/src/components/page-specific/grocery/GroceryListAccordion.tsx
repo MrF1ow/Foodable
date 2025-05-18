@@ -98,11 +98,12 @@ export default function GroceryAccordion({
 
     const newList = { ...currentList, items: updatedItems };
 
+    setCurrentList(newList as GroceryList);
+
     if (currentList._id && isUser) {
       await updateGroceryList(newList as GroceryList);
     }
 
-    setCurrentList(newList as GroceryList);
   };
 
   let quantityUpdateTimeout: any;

@@ -2,7 +2,7 @@
 
 // Package Imports
 import { MdEdit } from "react-icons/md";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -60,8 +60,15 @@ export default function GroceryEditButton({
   );
 
   const [selectedList, setSelectedList] = useState("");
-  const [newTitle, setNewTitle] = useState(currentList?.title || "");
+  const [newTitle, setNewTitle] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (currentList) {
+      console.log();
+      setNewTitle(currentList?.title);
+    }
+  }, [isOpen]);
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,

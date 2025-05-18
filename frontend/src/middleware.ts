@@ -1,9 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import rateLimit from "./lib/rate-limiter";
 
 const isOnboardingRoute = createRouteMatcher(["/onboarding"]);
-const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
-const isUserRoute = createRouteMatcher(["/social(.*)", "/api/user(.*)", "/api/chat(.*)"]);
+const isUserRoute = createRouteMatcher([
+  "/social(.*)",
+  "/api/user(.*)",
+  "/api/chat(.*)",
+]);
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -22,9 +26,14 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims, redirectToSignIn } = await auth(); 
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   const userRole = (await auth()).sessionClaims?.metadata?.role;
+
+  if (req.nextUrl.pathname.startsWith("/api")) {
+    const rateLimitResponse = await rateLimit(req);
+    if (rateLimitResponse) return rateLimitResponse;
+  }
 
   if (userId && isOnboardingRoute(req)) {
     return NextResponse.next();
@@ -41,6 +50,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+    console.log("Redirecting Back to Onboarding");
     const onboardingUrl = new URL("/onboarding", req.url);
     return NextResponse.redirect(onboardingUrl);
   }
@@ -49,14 +59,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Protect all routes starting with `/admin`
-  if (isAdminRoute(req) && !(userRole === "admin")) {
-    const url = new URL("/", req.url);
-    return NextResponse.redirect(url);
-  }
-
   // Allow registered users to access the user route
-  if (isUserRoute(req) && !(userRole === "admin" || userRole === "user")) {
+  if (isUserRoute(req) && !(userRole === "user")) {
     const url = new URL("/sign-in", req.url);
     return NextResponse.redirect(url);
   }

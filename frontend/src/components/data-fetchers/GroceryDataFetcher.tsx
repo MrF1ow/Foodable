@@ -16,9 +16,6 @@ import { useUserStore } from "@/stores/user/store";
 
 export default function GroceryListDataFetcher() {
   const isUser = useUserStore((state) => state.isUser);
-  if (!isUser) {
-    return null;
-  }
 
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setAvailableLists = useGroceryStore((state) => state.setAvailableLists);
@@ -33,7 +30,7 @@ export default function GroceryListDataFetcher() {
     refetchCurrentListId,
     isErrorCurrentListId,
   } = useFetchUserCurrentList({
-    enabled: true,
+    enabled: isUser,
   });
 
   // use tanstack to fetch all grocery lists in metadata mode
@@ -45,7 +42,7 @@ export default function GroceryListDataFetcher() {
     errorGroceryLists,
   } = useAllGroceryLists({
     metadata: true,
-    enabled: true,
+    enabled: isUser,
   });
 
   // fetch the grocery list by id that is stored in the currentList state of the user data
@@ -77,7 +74,6 @@ export default function GroceryListDataFetcher() {
     }
 
     const availableLists = getAvailableGroceryLists(groceryLists);
-    console.log("Available Lists", availableLists);
     setAvailableLists(availableLists);
   }, [currentList]);
 

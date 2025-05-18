@@ -161,7 +161,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
   const isUser = useUserStore((state) => state.isUser);
   const currentList = useGroceryStore((state) => state.currentList);
   const availableLists = useGroceryStore((state) => state.availableLists);
-  const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
+  const currentForm = useGeneralStore((state) => state.currentMainPortalForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
 
@@ -181,10 +181,6 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
     };
     setCurrentList(newList);
     setOpenAccordion([]);
-  };
-
-  const handleCloseSideList = () => {
-    additionalBackClick?.();
   };
 
   const filteredLists = currentList._id
@@ -258,8 +254,8 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
           </DropdownMenu>
         )}
       </div>
-      {currentForm === FORM_NAMES.GROCERY_LIST && (
-        <MdClose onClick={handleCloseSideList} size={40} />
+      {currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick && (
+        <MdClose onClick={additionalBackClick} size={40} />
       )}
     </div>
   );
@@ -270,10 +266,6 @@ export const GroceryHeaderMin = ({
 }: GroceryHeaderProps) => {
   const currentList = useGroceryStore((state) => state.currentList);
   const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
-  const setCurrentForm = useGeneralStore(
-    (state) => state.setCurrentSidePortalForm
-  );
-  const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
   const handleCloseSideList = () => {
     additionalBackClick?.();
@@ -293,7 +285,7 @@ export const GroceryHeaderMin = ({
           {currentList.title || "New List"}
         </div>
       </div>
-      {currentForm === FORM_NAMES.GROCERY_LIST && (
+      {(currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick) &&(
         <MdClose onClick={handleCloseSideList} size={40} />
       )}
     </div>
