@@ -28,6 +28,7 @@ import GroceryAddButton from "./GroceryAddListButton";
 
 import GroceryDeleteButton from "./GroceryDeleteButton";
 import { ShareButton } from "@/components/buttons/ShareButton";
+import { useState } from "react";
 
 export const MainGroceryHeader = (): JSX.Element => {
   const isUser = useUserStore((state) => state.isUser);
@@ -164,6 +165,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
   const currentForm = useGeneralStore((state) => state.currentMainPortalForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -227,7 +229,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
         )}
 
         {isUser && (
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
@@ -239,16 +241,30 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem asChild>
-                <GroceryEditButton>Edit List</GroceryEditButton>
+                <div
+                  onClick={() => {
+                    setTimeout(() => setDropdownOpen(false), 50);
+                  }}
+                >
+                  <GroceryEditButton>Edit List</GroceryEditButton>
+                </div>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <GroceryAddButton>Create List</GroceryAddButton>
+                <div
+                  onClick={() => {
+                    setTimeout(() => setDropdownOpen(false), 50);
+                  }}
+                >
+                  <GroceryAddButton>Create List</GroceryAddButton>
+                </div>
               </DropdownMenuItem>
               {currentList.title !== "New List" && (
                 <DropdownMenuItem asChild>
-                  <ShareButton type="grocery" id={currentList._id.toString()}>
-                    Share List
-                  </ShareButton>
+                  <div>
+                    <ShareButton type="grocery" id={currentList._id.toString()}>
+                      Share List
+                    </ShareButton>
+                  </div>
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
