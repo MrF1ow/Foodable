@@ -11,62 +11,62 @@ export default function TermsAndConditions() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-semibold mb-4">Terms and Conditions</h1>
+      <h1 className="text-3xl font-bold mb-4">Terms & Conditions</h1>
 
       <div className="space-y-4">
-        <p>
-          <strong>Last updated:</strong> March 11, 2025 at 4:00 PM
+        <p className="text-yellow-700 font-medium bg-yellow-100 p-3 rounded-md border border-yellow-300">
+          Please note: These Terms & Conditions are currently under development and may be updated without prior notice.
         </p>
-        <p>
-          Welcome to Foodable! These Terms and Conditions govern your use of the
-          Foodable platform (the `&quot;`Service`&quot;`), which helps users discover healthy
-          and affordable food options tailored to their dietary and financial
-          needs. By accessing or using the Service, you agree to comply with and
-          be bound by these Terms and Conditions.
+
+        <p className="text-sm text-gray-500">
+          <strong>Effective Date:</strong> March 11, 2025 &nbsp;|&nbsp; <strong>Version:</strong> Draft 0.9
         </p>
 
         <p>
-          If you do not agree with these terms, please do not use the Service.
+          Welcome to <strong>Foodable</strong>. These Terms & Conditions (“Terms”) outline the rules and regulations for the use of our platform, which connects users to nutritious, budget-conscious food recommendations. By accessing or using our services, you agree to abide by these Terms in full.
         </p>
 
-        <div className="overflow-y-auto max-h-80 p-4 border border-gray-300 rounded-md">
-          <h3 className="text-xl font-semibold">1. Introduction</h3>
+        <p>
+          If you do not accept these Terms, you may not use the Foodable platform.
+        </p>
+
+        <div className="overflow-y-auto max-h-80 p-4 border border-gray-300 rounded-md bg-gray-50">
+          <h2 className="text-xl font-semibold mb-2">1. Overview</h2>
           <p>
-            Welcome to Foodable! These Terms and Conditions govern your use of
-            the Foodable platform (the `&quot;`Service`&quot;`), which helps users discover
-            healthy and affordable food options tailored to their dietary and
-            financial needs. By accessing or using the Service, you agree to
-            comply with and be bound by these Terms and Conditions.
+            Foodable is designed to provide personalized food options based on your preferences and needs. These Terms govern your use of all features, content, and services made available through the platform.
           </p>
 
-          <h3 className="text-xl font-semibold mt-4">2. User Accounts</h3>
+          <h2 className="text-xl font-semibold mt-4 mb-2">2. Account Responsibilities</h2>
           <p>
-            To access certain features of Foodable, you may be required to
-            create a user account. You agree to provide accurate, current, and
-            complete information during the registration process and to update
-            such information to keep it accurate and complete. You are
-            responsible for maintaining the confidentiality of your account
-            credentials and for all activities that occur under your account.
+            To access certain features, you may need to register for an account. You are responsible for maintaining the security of your login information and for any activity under your account. You agree to keep your information accurate and up to date.
+          </p>
+
+          <h2 className="text-xl font-semibold mt-4 mb-2">3. Updates and Modifications</h2>
+          <p>
+            These Terms are subject to change as we continue to develop the platform. Any updates will be communicated on this page, and your continued use of the service constitutes acceptance of the revised Terms.
           </p>
         </div>
 
         <p className="mt-4">
-          If you have any questions about these Terms and Conditions, please
-          contact us at:
+          For questions or concerns regarding these Terms, feel free to contact our team:
         </p>
-        <p>Email: flowe@oregonstate.edu</p>
+        <p>
+          <strong>Email:</strong> <a href="mailto:flowe@oregonstate.edu" className="text-blue-600 hover:underline">flowe@oregonstate.edu</a>
+        </p>
 
-        <div className="flex justify-between mt-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-6 gap-4">
           <button
-            className="px-6 py-2 bg-primary text-white rounded-md"
+            className={`px-6 py-2 rounded-md text-white ${
+              accepted ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            }`}
             onClick={handleAccept}
             disabled={accepted}
           >
-            {accepted ? "Accepted" : "Accept Terms"}
+            {accepted ? "Terms Accepted" : "Accept Terms"}
           </button>
           {accepted && (
-            <p className="text-primary font-semibold">
-              You have accepted the Terms.
+            <p className="text-green-600 font-semibold">
+              Thank you. You have accepted the Terms.
             </p>
           )}
         </div>

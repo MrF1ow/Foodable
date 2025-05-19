@@ -68,6 +68,9 @@ export default function GroceryEditButton(): JSX.Element {
   const { createSavedItem } = useCreateSavedItem();
   const { removeAllGroceryListFromAllUsers } = useRemoveAllGroceryListFromAllUsers();
 
+  const isFormValid = newTitle.trim() !== "" && selectedList.trim() !== "";
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -217,63 +220,39 @@ export default function GroceryEditButton(): JSX.Element {
             you`&apos;`re done.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="name" className="sr-only">
-                Name
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="Enter list title..."
-                data-testid="list-title"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-              />
-            </div>
-            <Select onValueChange={setSelectedList} value={selectedList}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {currentCategories.map((list) => (
-                  <SelectItem key={list} value={list}>
-                    {capitalizeTitle(list)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Input
+          placeholder="Enter new item title"
+          value={newTitle}
+          onChange={(e) => setNewTitle(e.target.value)}
+          required
+          data-testid="title-input"
+        />
+      </div>
 
-          <DialogFooter className="w-full flex items-center justify-between mt-4">
-            {/* Left side: Delete button */}
-            {currentList?._id ? (
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  data-testid="list-delete"
-                  onClick={handleDeleteList}
-                >
-                  Delete
-                </Button>
-              </DialogClose>
-            ) : null}
+      <div>
+        <Select onValueChange={setSelectedList} value={selectedList}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {currentCategories.map((list) => (
+              <SelectItem key={list} value={list}>
+                {capitalizeTitle(list)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {!selectedList && (
+          <p className="text-red-500 text-sm mt-1">Please select a category.</p>
+        )}
+      </div>
 
-            {/* Right side: Cancel and Submit buttons */}
-            <div className="flex space-x-2">
-              <DialogClose asChild>
-                <Button data-testid="list-cancel" variant="outline">
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button data-testid="list-submit" type="submit">
-                Submit
-              </Button>
-            </div>
-          </DialogFooter>
-        </form>
+      <Button type="submit" data-testid="list-submit" disabled={!isFormValid}>
+        Submit
+      </Button>
+    </form>
       </DialogContent>
     </Dialog>
   );
