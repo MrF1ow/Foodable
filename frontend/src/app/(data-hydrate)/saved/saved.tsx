@@ -37,17 +37,20 @@ export default function Saved() {
     enabled: true,
   });
 
-  const sortedSavedItems = currentCategories.map((category) => {
-    const recipeItems = savedItems.recipes.filter(
-      (item: SavedItem) => item.category === category
-    );
+  const sortedSavedItems = currentCategories
+    .map((category) => {
+      const recipeItems = savedItems.recipes.filter(
+        (item: SavedItem) => item.category === category
+      );
 
-    const groceryItems = savedItems.groceryLists.filter(
-      (item: SavedItem) => item.category === category
-    );
+      const groceryItems = savedItems.groceryLists.filter(
+        (item: SavedItem) => item.category === category
+      );
 
-    return { title: category, items: [...recipeItems, ...groceryItems] };
-  });
+      const allItems = [...recipeItems, ...groceryItems];
+      return { title: category, items: allItems };
+    })
+    .filter(({ items }) => items.length > 0);
 
   const router = useRouter();
 

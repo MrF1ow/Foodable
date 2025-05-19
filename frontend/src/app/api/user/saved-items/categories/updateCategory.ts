@@ -6,11 +6,13 @@ import { ObjectId } from "mongodb";
 
 export async function PUT(req: Request) {
   try {
-    const { userData, error, status } = await getCurrentUser<
-      { _id: ObjectId, savedItems: any }>({
-        _id: 1,
-        savedItems: 1
-      });
+    const { userData, error, status } = await getCurrentUser<{
+      _id: ObjectId;
+      savedItems: any;
+    }>({
+      _id: 1,
+      savedItems: 1,
+    });
 
     if (!userData) {
       return NextResponse.json({ message: error }, { status });
@@ -31,11 +33,14 @@ export async function PUT(req: Request) {
     const result = await usersCollection.updateOne(
       {
         _id: userData._id,
-        "savedItems.groceryLists.category": oldCategory,
-        "savedItems.recipes.category": oldCategory
+        // "savedItems.groceryLists.category": oldCategory,
+        // "savedItems.recipes.category": oldCategory
       },
       {
-        $set: { "savedItems.groceryLists.$[elem].category": newCategory, "savedItems.recipes.$[elem].category": newCategory },
+        $set: {
+          "savedItems.groceryLists.$[elem].category": newCategory,
+          "savedItems.recipes.$[elem].category": newCategory,
+        },
       },
       { arrayFilters: [{ "elem.category": oldCategory }] }
     );

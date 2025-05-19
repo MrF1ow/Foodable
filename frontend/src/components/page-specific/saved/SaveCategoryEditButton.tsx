@@ -61,19 +61,15 @@ export default function SaveCategoryEditButton({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (indexOfCategoryInState === -1) return; // Ensure category exists before updating
+    if (indexOfCategoryInState === -1 || indexOfCategoryInDB === -1) return; // Ensure category exists before updating
 
-    if (indexOfCategoryInDB !== -1) {
-      const newCategories = [...currentCategories];
-      newCategories[indexOfCategoryInState] = newTitle;
-      setCurrentCategories(newCategories);
-    }
+    await updateCategory({ oldCategory: category, newCategory: newTitle });
 
-    if (indexOfCategoryInDB !== -1) {
-      await updateCategory({ oldCategory: category, newCategory: newTitle });
-
-      await refetchSavedItems();
-    }
+    await refetchSavedItems();
+    const newCategories = [...currentCategories];
+    newCategories[indexOfCategoryInState] = newTitle;
+    setCurrentCategories(newCategories);
+    console.log("Updated Categories: ", newCategories);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
