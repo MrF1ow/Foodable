@@ -10,6 +10,12 @@ describe("Registered User Saved Page", () => {
     });
   });
 
+  it("should vist the saved page", () => {
+    cy.visit("/saved", { failOnStatusCode: false });
+    cy.wait(500);
+    cy.shouldBeVisible("Saved");
+  });
+
   it("should be able to create a new category", () => {
     cy.visit("/saved", { failOnStatusCode: false });
     cy.wait(500);
@@ -21,19 +27,15 @@ describe("Registered User Saved Page", () => {
     cy.shouldBeVisible("Cypress Test Category");
   });
 
-  it("should vist the saved page", () => {
-    cy.visit("/saved", { failOnStatusCode: false });
-    cy.wait(500);
-    cy.shouldBeVisible("Saved");
-  });
-
   it("should show the Cypress Test Category", () => {
+    cy.createSavedList();
     cy.shouldBeVisible("Cypress Test Category");
     cy.clickButton("saved-category-Cypress Test Category");
     cy.shouldBeVisible("No items saved in this category.");
   });
 
   it("should allow renaming the category", () => {
+    cy.createSavedList();
     cy.clickButton("saved-category-edit-Cypress Test Category");
     cy.typeText("edit-saved-title", "Cypress Test Category Edited");
     cy.clickButton("edit-saved-submit");

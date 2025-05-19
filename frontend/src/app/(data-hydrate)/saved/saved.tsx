@@ -16,6 +16,7 @@ import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetche
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
+import { useEffect } from "react";
 
 export default function Saved() {
   const isMobile = useGeneralStore((state) => state.isMobile);
@@ -29,6 +30,9 @@ export default function Saved() {
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
   );
+  const setCurrentCategories = useSavedItemsStore(
+    (state) => state.setCurrentCategories
+  );
   const setCurrentItemType = useSavedItemsStore(
     (state) => state.setCurrentItemType
   );
@@ -37,20 +41,31 @@ export default function Saved() {
     enabled: true,
   });
 
-  const sortedSavedItems = currentCategories
-    .map((category) => {
-      const recipeItems = savedItems.recipes.filter(
-        (item: SavedItem) => item.category === category
-      );
+  useEffect(() => {
+    if (!savedItems?.recipes || !savedItems?.groceryLists) return;
 
-      const groceryItems = savedItems.groceryLists.filter(
-        (item: SavedItem) => item.category === category
-      );
+    const allCategories = [
+      ...savedItems.recipes.map((item: SavedItem) => item.category),
+      ...savedItems.groceryLists.map((item: SavedItem) => item.category),
+    ];
 
-      const allItems = [...recipeItems, ...groceryItems];
-      return { title: category, items: allItems };
-    })
-    .filter(({ items }) => items.length > 0);
+    const categories = Array.from(new Set(allCategories)).sort((a, b) =>
+      a.localeCompare(b)
+    );
+    setCurrentCategories(categories);
+  }, [savedItems]);
+
+  const sortedSavedItems = currentCategories.map((category) => {
+    const recipeItems = savedItems.recipes.filter(
+      (item: SavedItem) => item.category === category
+    );
+
+    const groceryItems = savedItems.groceryLists.filter(
+      (item: SavedItem) => item.category === category
+    );
+
+    return { title: category, items: [...recipeItems, ...groceryItems] };
+  });
 
   const router = useRouter();
 

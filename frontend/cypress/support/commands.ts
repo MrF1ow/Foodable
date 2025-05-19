@@ -37,6 +37,7 @@ declare global {
       clickCheckbox(itemName: string): Chainable<void>;
       deleteList(listName: string): Chainable<void>;
       deleteCurrentList(): Chainable<void>;
+      createSavedList(): Chainable<void>;
     }
   }
 }
@@ -77,4 +78,13 @@ Cypress.Commands.add("deleteList", (listName: string) => {
   cy.clickButton("list-edit");
   cy.clickButton("list-delete");
   cy.wait(500);
+});
+
+Cypress.Commands.add("createSavedList", () => {
+  cy.clickButton("add-category-button");
+  cy.shouldBeVisible("Create Custom Category");
+  cy.typeText("new-category-title", "Cypress Test Category");
+  cy.clickButton("new-category-submit");
+  cy.contains("span", "Close").closest("button").click();
+  cy.wait(50);
 });
