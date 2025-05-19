@@ -78,7 +78,7 @@ export default function SaveBookmark({
 
   if (isSaved) {
     return (
-      <div>
+      <div data-testid="saved-bookmark">
         <IoBookmark
           size={50}
           className="text-primary"
@@ -92,7 +92,9 @@ export default function SaveBookmark({
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <IoBookmarkOutline size={50} className="text-primary" />
+          <div data-testid="unsaved-bookmark">
+            <IoBookmarkOutline size={50} className="text-primary" />
+          </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -105,13 +107,15 @@ export default function SaveBookmark({
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <Select onValueChange={setSelectedList} value={selectedList}>
-                <SelectTrigger>
+                <SelectTrigger data-testid="select-category">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((list) => (
                     <SelectItem key={list} value={list}>
-                      {capitalizeTitle(list)}
+                      <div data-testid={`${list}-category`}>
+                        {capitalizeTitle(list)}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -122,22 +126,33 @@ export default function SaveBookmark({
                   New Category Name
                 </Label>
                 <Input
+                  data-testid="new-category-name"
                   id="name"
                   name="name"
                   placeholder="Create new category..."
                   value={newListTitle}
                   onChange={(e) => setNewListTitle(e.target.value)}
                 />
-                <Button type="button" onClick={handleAddCategory}>
+                <Button
+                  data-testid="add-category"
+                  type="button"
+                  onClick={handleAddCategory}
+                >
                   Add
                 </Button>
               </div>
             </div>
             <DialogFooter className="mt-4">
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button data-testid="cancel-bookmark" variant="outline">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit" disabled={!selectedList}>
+              <Button
+                data-testid="save-bookmark"
+                type="submit"
+                disabled={!selectedList}
+              >
                 Save
               </Button>
             </DialogFooter>
