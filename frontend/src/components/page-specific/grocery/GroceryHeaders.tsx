@@ -161,7 +161,6 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
   const isUser = useUserStore((state) => state.isUser);
   const currentList = useGroceryStore((state) => state.currentList);
   const availableLists = useGroceryStore((state) => state.availableLists);
-  const currentForm = useGeneralStore((state) => state.currentMainPortalForm);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const setOpenAccordion = useGroceryStore((state) => state.setOpenSections);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -259,7 +258,7 @@ export const GroceryHeader = ({ additionalBackClick }: GroceryHeaderProps) => {
           </DropdownMenu>
         )}
       </div>
-      {currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick && (
+      {additionalBackClick && (
         <MdClose onClick={additionalBackClick} size={40} />
       )}
     </div>
@@ -270,7 +269,6 @@ export const GroceryHeaderMin = ({
   additionalBackClick,
 }: GroceryHeaderProps) => {
   const currentList = useGroceryStore((state) => state.currentList);
-  const currentForm = useGeneralStore((state) => state.currentSidePortalForm);
 
   const handleCloseSideList = () => {
     additionalBackClick?.();
@@ -290,7 +288,7 @@ export const GroceryHeaderMin = ({
           {currentList.title || "New List"}
         </div>
       </div>
-      {currentForm === FORM_NAMES.GROCERY_LIST && additionalBackClick && (
+      {additionalBackClick && (
         <MdClose onClick={handleCloseSideList} size={40} />
       )}
     </div>

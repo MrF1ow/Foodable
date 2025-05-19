@@ -57,23 +57,24 @@ export default function MainLayout({
           hidden: !showMainPortal,
         })}
       />
-      {isMobile && (
-        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full h-[10%] bg-background z-50">
-          <Navbar />
-        </div>
-      )}
+      {isMobile && <Navbar />}
       {!isMobile && (
-        <div className="w-[12%] lg:w-[8%] min-w-[100px] h-full bg-background p-6 flex-shrink-0">
+        <div className="w-[12%] lg:w-[8%] min-w-[100px] h-full p-6 flex-shrink-0">
           <Navbar />
         </div>
       )}
       {headerComponent ? (
-        <div className="grid grid-rows-[10%_90%] w-full h-full bg-background p-2 md:p-4 lg:p-6 gap-y-2">
+        <div className="grid grid-rows-[10%_90%] w-full h-full p-2 md:p-4 lg:p-6 gap-y-2">
           <div className="h-full w-full">{headerComponent}</div>
           <div className="flex-1 h-full w-full">{children}</div>
         </div>
       ) : (
-        <div className="overflow-y-auto w-full h-full bg-background p-6">
+        <div
+          className={clsx(
+            "overflow-y-auto w-full h-full p-6",
+            isMobile && "pb-24" // Add bottom padding to avoid overlap
+          )}
+        >
           {children}
         </div>
       )}
