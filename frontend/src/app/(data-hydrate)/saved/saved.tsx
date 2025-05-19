@@ -52,6 +52,7 @@ export default function Saved() {
     const categories = Array.from(new Set(allCategories)).sort((a, b) =>
       a.localeCompare(b)
     );
+
     setCurrentCategories(categories);
   }, [savedItems]);
 
