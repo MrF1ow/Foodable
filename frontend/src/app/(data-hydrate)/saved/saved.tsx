@@ -22,7 +22,9 @@ export default function Saved() {
 
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
-  const setCurrentForm = useGeneralStore((state) => state.setCurrentSidePortalForm);
+  const setCurrentForm = useGeneralStore(
+    (state) => state.setCurrentSidePortalForm
+  );
 
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
@@ -119,7 +121,12 @@ export default function Saved() {
             }
             iconSize={isMobile ? 20 : 40}
             textSize={isMobile ? "1.5rem" : "2rem"}
-            additional={<SaveCategoryEditButton category={title} textSize={isMobile ? "1.5rem" : "2rem"} />}
+            additional={
+              <SaveCategoryEditButton
+                category={title}
+                textSize={isMobile ? "1.5rem" : "2rem"}
+              />
+            }
           />
         ))}
       </div>

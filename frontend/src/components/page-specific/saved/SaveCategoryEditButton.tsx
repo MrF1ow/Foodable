@@ -31,7 +31,10 @@ interface EditButtonProps {
   textSize: string;
 }
 
-export default function SaveCategoryEditButton({ category, textSize }: EditButtonProps): JSX.Element {
+export default function SaveCategoryEditButton({
+  category,
+  textSize,
+}: EditButtonProps): JSX.Element {
   const [newTitle, setNewTitle] = useState(category);
 
   const currentCategories = useSavedItemsStore(
@@ -90,7 +93,11 @@ export default function SaveCategoryEditButton({ category, textSize }: EditButto
 
   return (
     <Dialog>
-      <DialogTrigger className="ml-4" asChild>
+      <DialogTrigger
+        data-testid={`saved-category-edit-${newTitle}`}
+        className="ml-4"
+        asChild
+      >
         <MdEdit
           size={textSize}
           className="text-foreground"
@@ -114,6 +121,7 @@ export default function SaveCategoryEditButton({ category, textSize }: EditButto
               name="name"
               placeholder="Desserts .."
               value={newTitle}
+              data-testid="edit-saved-title"
               onChange={(e) => setNewTitle(e.target.value)}
             />
           </div>
@@ -125,6 +133,7 @@ export default function SaveCategoryEditButton({ category, textSize }: EditButto
                 type="button"
                 variant="destructive"
                 className="w-[30%] md:w-1/4 lg:w-1/5"
+                data-testid="edit-saved-delete"
                 onClick={handleDeleteList}
               >
                 Delete
@@ -133,12 +142,24 @@ export default function SaveCategoryEditButton({ category, textSize }: EditButto
 
             {/* Right side: Cancel and Submit buttons */}
             <DialogClose asChild>
-              <Button className="w-[30%] md:w-1/4 lg:w-1/5" variant="outline">Cancel</Button>
+              <Button
+                data-testid="edit-saved-cancel"
+                className="w-[30%] md:w-1/4 lg:w-1/5"
+                variant="outline"
+              >
+                Cancel
+              </Button>
             </DialogClose>
-            <Button className="w-[30%] md:w-1/4 lg:w-1/5" type="submit">Submit</Button>
+            <Button
+              data-testid="edit-saved-submit"
+              className="w-[30%] md:w-1/4 lg:w-1/5"
+              type="submit"
+            >
+              Submit
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
-};
+}

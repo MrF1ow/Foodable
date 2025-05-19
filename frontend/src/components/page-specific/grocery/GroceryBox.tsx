@@ -16,7 +16,11 @@ interface GroceryBoxProps {
   width: string;
 }
 
-export default function GroceryBox({ handleBoxClick, data, width }: GroceryBoxProps): JSX.Element {
+export default function GroceryBox({
+  handleBoxClick,
+  data,
+  width,
+}: GroceryBoxProps): JSX.Element {
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const { updateUserCurrentList } = useUpdateUserCurrentList();
 
@@ -37,10 +41,15 @@ export default function GroceryBox({ handleBoxClick, data, width }: GroceryBoxPr
     <>
       <Box key={data._id.toString()} onClick={handleGroceryClick} width={width}>
         {/* Make this a Hover Box */}
-        <div className="h-full w-full flex justify-center items-center">
-          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold truncate">{data.title}</h3>
+        <div
+          className="h-full w-full flex justify-center items-center"
+          data-testid={`grocery-box-${data.title}`}
+        >
+          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold truncate">
+            {data.title}
+          </h3>
         </div>
       </Box>
     </>
   );
-};
+}
