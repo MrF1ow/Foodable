@@ -1,6 +1,8 @@
 "use client";
 
 import { JSX, useState } from "react";
+import { FaPlus } from "react-icons/fa";
+
 import { Icons } from "@/components/ui/icons";
 import {
   Dialog,
@@ -22,7 +24,6 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { FaPlus } from "react-icons/fa";
 
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useSavedItemsStore } from "@/stores/saved/store";
@@ -31,12 +32,14 @@ import {
   useCreateGroceryList,
 } from "@/server/hooks/groceryListHooks";
 import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
+import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
+
 import { GroceryList } from "@/types/grocery";
 import { SavedItem } from "@/types/saved";
+
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { capitalizeTitle } from "@/lib/utils/general";
-import { useUpdateUserCurrentList } from "@/server/hooks/userHooks";
 import { useGeneralStore } from "@/stores/general/store";
 
 export default function GroceryAddButton({
@@ -47,12 +50,8 @@ export default function GroceryAddButton({
   className?: string;
 }): JSX.Element {
   const isMobile = useGeneralStore((state) => state.isMobile);
-
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-
-  const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories
-  );
+  const currentCategories = useSavedItemsStore((state) => state.currentCategories);
 
   const [selectedList, setSelectedList] = useState("");
   const [newTitle, setNewTitle] = useState("");
@@ -120,7 +119,62 @@ export default function GroceryAddButton({
         "You must select a category to save the list",
         3000
       );
+      return;
     }
+
+    if (!newTitle.trim()) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "Title cannot be empty",
+        3000
+      );
+      return;
+    }
+
+    const newList = {
+      _id: null,
+      creatorId: null,
+      title: newTitle.trim(),
+      items: [],
+      category: selectedList,
+    };
+
+    const createData = await createGroceryList(newList as GroceryList);
+
+    if (!createData) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "Failed to create grocery list",
+        3000
+      );
+      return;
+    }
+
+    const newSaveItem = {
+      _id: createData._id,
+      title: createData.title,
+      type: "groceryList",
+      category: selectedList,
+    };
+
+    const savedItem = await createSavedItem(newSaveItem as SavedItem);
+
+    if (!savedItem) {
+      showToast(
+        TOAST_SEVERITY.ERROR,
+        "Error",
+        "Failed to save grocery list",
+        3000
+      );
+      return;
+    }
+
+    await updateUserCurrentList(createData._id);
+    setCurrentList(createData);
+
+    await refetchGroceryLists();
     setIsOpen(false);
   };
 
@@ -158,6 +212,7 @@ export default function GroceryAddButton({
               placeholder="Enter list title..."
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
+              required
               data-testid="new-list-title"
             />
           </div>
@@ -178,7 +233,11 @@ export default function GroceryAddButton({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" data-testid="submit-new-grocery-list">
+            <Button
+              type="submit"
+              data-testid="submit-new-grocery-list"
+              disabled={!selectedList || !newTitle.trim()}
+            >
               Create
             </Button>
           </DialogFooter>

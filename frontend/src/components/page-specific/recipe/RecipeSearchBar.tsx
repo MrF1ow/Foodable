@@ -82,7 +82,7 @@ export default function RecipeSearchBar() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (!isMobile && isUser) ? (
-        <Button onClick={handleCreateRecipe}>Create Recipe</Button>
+        <Button data-testid="create-recipe" onClick={handleCreateRecipe}>Create Recipe</Button>
       ) : null}
     </div>
   );

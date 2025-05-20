@@ -14,6 +14,10 @@ describe('User Sign In', () => {
         });
         cy.visit('/grocery-list')
         cy.get('[data-testid="list-edit"]').should('be.visible');
+
+        cy.visit('/recipe')
+        cy.get('[data-testid="create-recipe"]').should('be.visible');
+
     });
 
 });
