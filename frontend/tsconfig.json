@@ -36,7 +36,7 @@
     ".next/types/**/*.ts",
     "src/types/**/*.d.ts",
     "jest.config.ts"
-  ],
+, "src/lib/utils/create-embeddings.js"  ],
   "exclude": [
     "node_modules",
     "./cypress.config.ts"
