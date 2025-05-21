@@ -26,6 +26,7 @@ import {
 
 const onboardingSchema = z.object({
   budget: z
+    .coerce
     .number({ invalid_type_error: "Budget must be a number" })
     .min(0, "Budget must be a positive number"),
   dietaryRestrictions: z

@@ -1,12 +1,12 @@
 "use client";
 
-// Package Imports
-import { MdEdit } from "react-icons/md";
 import { JSX, useEffect, useState } from "react";
+import { MdEdit } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -16,7 +16,23 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+} from "@/components/ui/form";
+
+// Custom hooks and state
 import { useGroceryStore } from "@/stores/grocery/store";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import {
@@ -25,25 +41,24 @@ import {
   useDeleteGroceryList,
   useUpdateGroceryList,
 } from "@/server/hooks/groceryListHooks";
-import { GroceryList } from "@/types/grocery";
-import { showToast } from "@/app/providers";
-import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
-import { capitalizeTitle } from "@/lib/utils/general";
 import {
   useAllSavedItems,
   useCreateSavedItem,
   useUpdateSavedItem,
 } from "@/server/hooks/savedItemsHooks";
-import { SavedItem } from "@/types/saved";
 import { useRemoveAllGroceryListFromAllUsers } from "@/server/hooks/bulkOperationHooks";
 import { useFetchUserCurrentList } from "@/server/hooks/userHooks";
+
+import { GroceryList } from "@/types/grocery";
+import { SavedItem } from "@/types/saved";
+import { showToast } from "@/app/providers";
+import { TOAST_SEVERITY } from "@/lib/constants/ui";
+import { capitalizeTitle } from "@/lib/utils/general";
+import { useAddListForm } from "@/lib/hooks";
+import { z } from "zod";
+import { AddListFormSchema } from "@/lib/validation/forms/schemas";
+
+type AddListFormValues = z.infer<typeof AddListFormSchema>;
 
 export default function GroceryEditButton({
   children,
@@ -54,29 +69,31 @@ export default function GroceryEditButton({
 }): JSX.Element {
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
-
   const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories
+    (state) => state.currentCategories,
   );
 
-  const [selectedList, setSelectedList] = useState("");
-  const [newTitle, setNewTitle] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const { resolver, defaultValues } = useAddListForm({title: currentList ? currentList?.title : ""});
+
+  const form = useForm<AddListFormValues>({
+    resolver,
+    defaultValues,
+  });
+
+
   useEffect(() => {
-    if (currentList) {
-      console.log();
-      setNewTitle(currentList?.title);
+    if (currentList && isOpen) {
+      form.setValue("title", currentList.title);
     }
-  }, [isOpen]);
+  }, [currentList, isOpen]);
 
   const { refetchGroceryLists } = useAllGroceryLists({
     metadata: true,
     enabled: true,
   });
-  const { refetchCurrentListId } = useFetchUserCurrentList({
-    enabled: true,
-  });
+  const { refetchCurrentListId } = useFetchUserCurrentList({ enabled: true });
   const { refetchSavedItems } = useAllSavedItems({ enabled: true });
   const { updateGroceryList } = useUpdateGroceryList();
   const { createGroceryList } = useCreateGroceryList();
@@ -86,87 +103,72 @@ export default function GroceryEditButton({
   const { removeAllGroceryListFromAllUsers } =
     useRemoveAllGroceryListFromAllUsers();
 
-  const isFormValid = newTitle.trim() !== "" && selectedList.trim() !== "";
-
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = async (values: AddListFormSchema) => {
+    const { title, category } = values;
     const currentGroceryList = currentList;
-
     if (!currentGroceryList) return;
 
-    const newList = {
+    const updatedList: GroceryList = {
       ...currentGroceryList,
-      title: newTitle,
+      title,
     };
 
-    if (selectedList !== "") {
+    try {
       if (currentList._id) {
-        if (currentList.title !== newTitle) {
-          await updateGroceryList(newList as GroceryList);
-
+        if (currentList.title !== title) {
+          await updateGroceryList(updatedList);
           showToast(
             TOAST_SEVERITY.SUCCESS,
             "List Updated",
             "Grocery list updated successfully",
-            3000
+            3000,
           );
-
-          setCurrentList(newList);
+          setCurrentList(updatedList);
         }
 
-        const savedItem = {
-          ...newList,
+        const savedItem: SavedItem = {
+          ...updatedList,
           type: "groceryList",
-          category: selectedList,
-        } as SavedItem;
+          category,
+        };
 
         await updateSavedItem(savedItem);
-
         showToast(
           TOAST_SEVERITY.SUCCESS,
           "Saved",
           "Grocery list saved successfully",
-          3000
+          3000,
         );
       } else {
         const newSavedList = {
-          ...newList,
+          ...updatedList,
           type: "groceryList",
-          category: selectedList,
+          category,
         };
 
-        const createData = await createGroceryList(newList as GroceryList);
+        const createData = await createGroceryList(updatedList);
         setCurrentList(createData);
-
         await createSavedItem(newSavedList as SavedItem);
 
         showToast(
           TOAST_SEVERITY.SUCCESS,
           "List Created",
           "Grocery list created successfully",
-          3000
+          3000,
         );
       }
+
       await refetchGroceryLists();
       await refetchSavedItems();
-    } else {
-      showToast(
-        TOAST_SEVERITY.ERROR,
-        "Error",
-        "You must select a category to save the list",
-        3000
-      );
+      setIsOpen(false);
+    } catch (err) {
+      showToast(TOAST_SEVERITY.ERROR, "Error", "Something went wrong", 3000);
     }
-    setIsOpen(false);
   };
 
   const handleDeleteList = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (!currentList) return;
-
-    console.log("Delete List Id:", currentList._id);
 
     deleteGroceryList(currentList._id.toString(), {
       onSuccess: async () => {
@@ -174,13 +176,9 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.INFO,
           "Deleting List",
           "Deleting grocery list...",
-          3000
+          3000,
         );
-
-        console.log("List id before bulk deletion", currentList._id.toString());
-
         await removeAllGroceryListFromAllUsers(currentList._id.toString());
-        // After deletion, force refetch of the grocery lists
         await refetchCurrentListId();
         await refetchGroceryLists();
         await refetchSavedItems();
@@ -189,24 +187,22 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.SUCCESS,
           "List Deleted",
           "Grocery list deleted successfully",
-          3000
+          3000,
         );
-
-        const newList = {
+        setCurrentList({
           _id: null,
           creatorId: null,
           title: "New List",
           items: [],
-        };
-        setCurrentList(newList); // Clear the current list
-        setIsOpen(false); // Close the dialog
+        });
+        setIsOpen(false);
       },
       onError: (error) => {
         showToast(
           TOAST_SEVERITY.ERROR,
           "Error",
           error.message || "Error deleting list",
-          3000
+          3000,
         );
       },
     });
@@ -221,7 +217,6 @@ export default function GroceryEditButton({
             e.stopPropagation();
             setIsOpen(true);
           }}
-          data-testid="edit-grocery-list"
         >
           <MdEdit className="text-foreground" />
           {children}
@@ -229,45 +224,71 @@ export default function GroceryEditButton({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Grocery List Title</DialogTitle>
+          <DialogTitle>Edit Grocery List</DialogTitle>
           <DialogDescription>
-            Make changes to your grocery list title. Click submit when
-            you`&apos;`re done.
+            Update the title and category for this list.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Input
-          placeholder="Enter new item title"
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          required
-          data-testid="title-input"
-        />
-      </div>
 
-      <div>
-        <Select onValueChange={setSelectedList} value={selectedList}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select a category" />
-          </SelectTrigger>
-          <SelectContent>
-            {currentCategories.map((list) => (
-              <SelectItem key={list} value={list}>
-                {capitalizeTitle(list)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {!selectedList && (
-          <p className="text-red-500 text-sm mt-1">Please select a category.</p>
-        )}
-      </div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <Button type="submit" data-testid="list-submit" disabled={!isFormValid}>
-        Submit
-      </Button>
-    </form>
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {currentCategories.map((cat) => (
+                        <SelectItem key={cat} value={cat}>
+                          {capitalizeTitle(cat)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="flex w-full justify-between gap-4">
+              <Button type="submit" data-testid="list-submit">
+                Submit
+              </Button>
+              <Button
+                variant="destructive"
+                type="button"
+                onClick={handleDeleteList}
+                data-testid="list-delete"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
