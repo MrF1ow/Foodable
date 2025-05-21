@@ -104,6 +104,7 @@ export const createGroceryActions = (set: any): GroceryActions => ({
       // convert map values to an array to update currentList.items
       const updatedItems = Array.from(map.values());
 
+      console.log(updatedItems); 
       const newSections = Array.from(
         new Set(updatedItems.map((item) => item.category))
       );

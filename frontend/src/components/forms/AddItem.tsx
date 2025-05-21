@@ -32,8 +32,6 @@ import { insertItemIntoGroceryMap } from "@/lib/items/grocery-map";
 import { useAddItemForm } from "@/lib/hooks/useAddItemForm";
 import { AddItemFormSchema } from "@/lib/validation/forms/schemas/addItemSchema";
 
-
-
 import { z } from "zod";
 import { useGeneralStore } from "@/stores/general/store";
 import { useUpdateGroceryList } from "@/server/hooks/groceryListHooks";
@@ -75,7 +73,7 @@ export default function AddItem({
   const setMap = useGroceryStore((state) => state.setMap);
 
   const handleCategoryChange = useGroceryStore(
-    (state) => state.setSelectedCategory
+    (state) => state.setSelectedCategory,
   );
 
   const { updateGroceryList } = useUpdateGroceryList();
@@ -127,10 +125,12 @@ export default function AddItem({
         TOAST_SEVERITY.ERROR,
         "Item Already Exists",
         `${newItem.name} already exists in the list`,
-        3000
+        3000,
       );
       return;
     }
+
+    console.log(newMap);
 
     const updatedItems = Array.from(newMap.values());
 
@@ -139,23 +139,21 @@ export default function AddItem({
       items: updatedItems,
     };
 
-
     if (currentList._id && isUser) {
       await updateGroceryList(newList as GroceryList);
     }
 
     setMap(newMap);
 
-    if (!isUser) {
-      setCurrentList(newList);
-    }
+    console.log(currentList);
 
+    setCurrentList(newList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,
       "Item Added",
       `${newItem.quantity} ${newItem.unit} of ${newItem.name} added`,
-      3000
+      3000,
     );
   }
 
@@ -264,7 +262,7 @@ export default function AddItem({
                           onChange={(e) => {
                             const value = e.target.value.replace(
                               /^0+(?!$)/,
-                              ""
+                              "",
                             ); // Remove leading zeros
                             if (value === "" || /^\d+$/.test(value)) {
                               // Allow empty or numeric input

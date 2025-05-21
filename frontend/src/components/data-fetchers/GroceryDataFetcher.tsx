@@ -65,7 +65,7 @@ export default function GroceryListDataFetcher() {
         TOAST_SEVERITY.ERROR,
         "Error",
         errorGroceryLists?.message || "Error Fetching Grocery Lists",
-        3000
+        3000,
       );
     }
 
@@ -84,7 +84,7 @@ export default function GroceryListDataFetcher() {
         TOAST_SEVERITY.INFO,
         "Loading",
         "Fetching Current Grocery List",
-        3000
+        3000,
       );
     }
 
@@ -93,7 +93,7 @@ export default function GroceryListDataFetcher() {
         TOAST_SEVERITY.ERROR,
         "Error",
         "Error Fetching Current Grocery List",
-        3000
+        3000,
       );
     }
     // if the current grocery list is not null, refetch the grocery list
@@ -109,7 +109,10 @@ export default function GroceryListDataFetcher() {
           setCurrentList(result.data);
         }
       });
-    } else if (currentGroceryListId && !isValidObjectId(currentGroceryListId)) {
+    } else if (
+      currentGroceryListId &&
+      !isValidObjectId(currentGroceryListId)
+    ) {
       showToast(TOAST_SEVERITY.ERROR, "Error", "Invalid Grocery List ID", 3000);
       const newList: NewGroceryList = {
         _id: null,
@@ -127,9 +130,10 @@ export default function GroceryListDataFetcher() {
         _id: null,
         creatorId: null,
         title: "New List",
-        items: [],
+        items: currentList ? currentList?.items : [],
       };
       setCurrentList(newList);
+      console.log("Data Fetcher Set New List");
     }
   }, [currentGroceryListId]);
 
