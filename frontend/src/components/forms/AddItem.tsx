@@ -139,7 +139,6 @@ export default function AddItem({
       items: updatedItems,
     };
 
-    console.log("New List:", newList);
 
     if (currentList._id && isUser) {
       await updateGroceryList(newList as GroceryList);
@@ -148,11 +147,9 @@ export default function AddItem({
     setMap(newMap);
 
     if (!isUser) {
-      console.log("Setting new list for guest user");
       setCurrentList(newList);
     }
 
-    console.log("Current List:", currentList);
 
     showToast(
       TOAST_SEVERITY.SUCCESS,
