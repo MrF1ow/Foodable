@@ -75,7 +75,7 @@ export default function AssistantChat({
           onSubmit={handleSubmit}
         >
           <Input
-            className="!text-lg h-12 bg-gray-100 text-background"
+            className="!text-lg h-12 bg-gray-100 text-black"
             placeholder="Lets Talk Food..."
             value={input}
             onChange={handleInputChange}
