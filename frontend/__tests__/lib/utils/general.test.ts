@@ -1,7 +1,7 @@
 import {
   capitalizeTitle,
   getIndexOfItemInArray,
-} from "../../src/lib/utils/general";
+} from "../../../src/lib/utils/general";
 
 describe("capitalizeTitle", () => {
   it("capitalizes each word in a string", () => {

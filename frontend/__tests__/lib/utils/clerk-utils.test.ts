@@ -7,7 +7,7 @@ import {
   checkSession,
   getUserDetails,
   getClerkUserId,
-} from "../../src/lib/utils/clerk-utils";
+} from "../../../src/lib/utils/clerk-utils";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";

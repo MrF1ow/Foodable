@@ -2,7 +2,7 @@ import {
   getValueFromSearchParams,
   getRouteParam,
   getCreatorFromImageIdLocation,
-} from "../../src/lib/utils/api-helpers";
+} from "../../../src/lib/utils/api-helpers";
 import { CollectionNames } from "@/types";
 
 describe("getValueFromSearchParams", () => {
