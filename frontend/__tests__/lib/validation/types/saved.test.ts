@@ -3,7 +3,7 @@ import { SavedRecipeMetaData } from "@/types/saved";
 
 const validateIdFn = (id: any) => id === "validId";
 
-const validSavedRecipe: SavedRecipeMetaData = {
+const validSavedRecipe = {
   _id: "validId",
   type: "recipe",
   title: "My Favorite Pasta",

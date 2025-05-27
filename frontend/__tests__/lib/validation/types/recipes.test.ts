@@ -19,7 +19,7 @@ const validIngredient: RecipeIngredient = {
 };
 
 // Create a valid NewRecipe
-const validNewRecipe: NewRecipe = {
+const validNewRecipe = {
   creatorId: "validId",
   title: "Test Recipe",
   description: "This is a test recipe.",
@@ -31,7 +31,7 @@ const validNewRecipe: NewRecipe = {
 };
 
 // Create a valid Recipe (with id)
-const validRecipe: Recipe = {
+const validRecipe = {
   ...validNewRecipe,
   id: "validId",
 };

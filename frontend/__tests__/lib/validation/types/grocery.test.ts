@@ -11,7 +11,7 @@ const mockValidateId = (id: any) =>
 
 describe("validateGroceryItem", () => {
   it("should validate a correct GroceryItem", () => {
-    const item: GroceryItem = {
+    const item = {
       name: "Apple",
       quantity: 3,
       unit: mockValidUnit,

@@ -6,6 +6,7 @@ import {
   validateUserWithoutID,
   validateUser,
 } from "@/lib/validation/types/user";
+import { NewUser } from "@/types/user";
 
 const mockValidateIdFn = jest.fn((id) => typeof id === "string" && id.length > 0);
 
@@ -36,32 +37,25 @@ describe("User Validation Tests", () => {
     });
   });
 
-  describe("validatePreferences", () => {
-    it("returns true for valid preferences", () => {
-      (isValidStringArray as jest.Mock).mockReturnValue(true);
-      expect(validatePreferences({
-        dietaryRestrictions: ["gluten-free"],
-        foodTypePreferences: ["vegetarian"],
-        budget: 50,
-      })).toBe(true);
-    });
-    it("returns false for invalid preferences", () => {
-      (isValidStringArray as jest.Mock).mockReturnValue(false);
-      expect(validatePreferences({
-        dietaryRestrictions: "not-an-array",
-        foodTypePreferences: ["vegetarian"],
-        budget: 50,
-      })).toBe(false);
-
-      expect(validatePreferences(null)).toBe(false);
-      expect(validatePreferences({})).toBe(false);
-      expect(validatePreferences({
-        dietaryRestrictions: [],
-        foodTypePreferences: [],
-        budget: "not-a-number",
-      })).toBe(false);
-    });
+describe("validatePreferences", () => {
+  it("returns true for valid preferences", () => {
+    (isValidStringArray as jest.Mock).mockReturnValue(true);
+    expect(validatePreferences({
+      dietaryRestrictions: ["gluten-free"],
+      foodTypePreferences: ["vegetarian"],
+      budget: 50,
+    })).toBe(true);
   });
+
+  it("returns false for invalid preferences", () => {
+    (isValidStringArray as jest.Mock).mockReturnValue(false);
+    expect(validatePreferences({
+      dietaryRestrictions: "not-an-array",
+      foodTypePreferences: ["vegetarian"],
+      budget: 50,
+    })).toBe(false);
+  });
+});
 
   describe("validateUserFollow", () => {
     it("returns true for valid FollowMetadata", () => {

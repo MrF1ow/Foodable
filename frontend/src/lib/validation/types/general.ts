@@ -1,7 +1,8 @@
 import type { CollectionNames } from "@/types";
 
+
 export const isValidObjectId = (id: any): boolean => {
-  if (typeof id !== "string") return false;
+  if (typeof id !== 'string') return false;
   const objectIdPattern = /^[a-fA-F0-9]{24}$/;
   return objectIdPattern.test(id);
 };
