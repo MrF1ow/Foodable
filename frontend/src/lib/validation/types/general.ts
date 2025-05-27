@@ -1,8 +1,9 @@
 import type { CollectionNames } from "@/types";
 
 export const isValidObjectId = (id: any): boolean => {
-  const objectIdPattern = /^[a-fA-F0-9]{24}$/; // MongoDB ObjectId pattern
-  return typeof id.toString() === "string" && objectIdPattern.test(id);
+  if (typeof id !== "string") return false;
+  const objectIdPattern = /^[a-fA-F0-9]{24}$/;
+  return objectIdPattern.test(id);
 };
 
 export function isValidUserId(id: string): boolean {

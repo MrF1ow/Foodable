@@ -4,12 +4,12 @@ export function validateSavedRecipeMetadata(
   item: any,
   validateIdFn: (id: any) => boolean
 ): item is SavedRecipeMetaData {
-  return (
+  return !!(
     item &&
-    item._id &&
+    validateIdFn(item._id) &&
     item.type === "recipe" &&
-    item.title &&
-    item.imageId &&
-    item.category
+    typeof item.title === "string" &&
+    validateIdFn(item.imageId) &&
+    typeof item.category === "string"
   );
 }

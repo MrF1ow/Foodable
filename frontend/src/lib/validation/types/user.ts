@@ -2,12 +2,12 @@ import { User, UserRating, NewUser, FollowMetadata } from "@/types/user";
 import { isValidStringArray, isValidUserId } from "@/lib/validation/types/general";
 
 // Validate Settings
-const validateSettings = (settings: any): boolean => {
+export const validateSettings = (settings: any): boolean => {
   return settings && (settings.theme === "light" || settings.theme === "dark");
 };
 
 // Validate Preferences
-const validatePreferences = (preferences: any): boolean => {
+export const validatePreferences = (preferences: any): boolean => {
   return (
     preferences &&
     isValidStringArray(preferences.dietaryRestrictions) &&

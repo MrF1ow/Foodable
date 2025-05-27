@@ -18,7 +18,7 @@ export function validateGroceryItem(item: any): item is GroceryItem {
 
 export const validateGroceryListWithoutId = (
   groceryList: any,
-  validateIdFn: (id: any) => boolean
+  validateIdFn: (id: any) => boolean,
 ): groceryList is GroceryList => {
   return (
     groceryList &&
@@ -34,7 +34,7 @@ export const validateGroceryListWithoutId = (
 // Function to check if a grocery list is valid
 export const validateGroceryList = (
   groceryList: any,
-  validateIdFn: (id: any) => boolean
+  validateIdFn: (id: any) => boolean,
 ): groceryList is GroceryList => {
   if (!groceryList) return false;
 
