@@ -4,6 +4,14 @@
 import { MdEdit } from "react-icons/md";
 import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
 
 import {
   Dialog,
@@ -27,7 +35,10 @@ import {
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { getIndexOfItemInArray } from "@/lib/utils/general";
 import { useEditCategoryForm } from "@/lib/hooks";
-import { EditCategoryFormSchema } from "/lib/validation/forms/schemas";
+import {
+  EditCategoryFormSchema,
+  EditCategoryFormValues,
+} from "@/lib/validation/forms/schemas";
 import { z } from "zod";
 
 interface EditButtonProps {
@@ -54,12 +65,10 @@ export default function SaveCategoryEditButton({
   const { updateCategory } = useUpdateCategory();
 
   const { defaultValues, resolver } = useEditCategoryForm();
-  const form = useForm({
+  const form = useForm<EditCategoryFormValues>({
     defaultValues,
     resolver,
   });
-
-  const { register, handleSubmit } = form;
 
   if (!currentCategories) return <></>; // Ensure currentCategories is defined
 
@@ -70,14 +79,14 @@ export default function SaveCategoryEditButton({
 
   const indexOfCategoryInDB = getIndexOfItemInArray(category, categories);
 
-  const onSubmit = async (data: z.infer<typeof EditCategoryFormSchema>) => {
+  const onSubmit = async (values: EditCategoryFormSchema) => {
     if (indexOfCategoryInState === -1 || indexOfCategoryInDB === -1) return; // Ensure category exists before updating
 
-    await updateCategory({ oldCategory: category, newCategory: data.name });
+    await updateCategory({ oldCategory: category, newCategory: values.name });
 
     await refetchSavedItems();
     const newCategories = [...currentCategories];
-    newCategories[indexOfCategoryInState] = data.name;
+    newCategories[indexOfCategoryInState] = values.name;
     setCurrentCategories(newCategories);
     console.log("Updated Categories: ", newCategories);
   };
@@ -117,52 +126,60 @@ export default function SaveCategoryEditButton({
             Edit your custom category to store your recipes or grocery lists.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
-          <div className="flex items-center space-x-2 w-full">
-            <Label htmlFor="name" className="sr-only">
-              Name
-            </Label>
-            <Input
-              id="name"
-              {...register("name")}
-              placeholder="Desserts .."
-              data-testid="edit-saved-title"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Desserts .."
+                      data-testid="edit-saved-title"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          {/* For some reason the DialogFooter is not taking up the full width */}
-          <DialogFooter className="w-full flex flex-row items-center justify-between mt-4">
-            {/* Left side: Delete button */}
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="destructive"
-                className="w-[30%] md:w-1/4 lg:w-1/5"
-                data-testid="edit-saved-delete"
-                onClick={handleDeleteList}
-              >
-                Delete
-              </Button>
-            </DialogClose>
+            {/* For some reason the DialogFooter is not taking up the full width */}
+            <DialogFooter className="w-full flex flex-row items-center justify-between mt-4">
+              {/* Left side: Delete button */}
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="w-[30%] md:w-1/4 lg:w-1/5"
+                  data-testid="edit-saved-delete"
+                  onClick={handleDeleteList}
+                >
+                  Delete
+                </Button>
+              </DialogClose>
 
-            {/* Right side: Cancel and Submit buttons */}
-            <DialogClose asChild>
+              {/* Right side: Cancel and Submit buttons */}
+              <DialogClose asChild>
+                <Button
+                  data-testid="edit-saved-cancel"
+                  className="w-[30%] md:w-1/4 lg:w-1/5"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
               <Button
-                data-testid="edit-saved-cancel"
+                data-testid="edit-saved-submit"
                 className="w-[30%] md:w-1/4 lg:w-1/5"
-                variant="outline"
+                type="submit"
               >
-                Cancel
+                Submit
               </Button>
-            </DialogClose>
-            <Button
-              data-testid="edit-saved-submit"
-              className="w-[30%] md:w-1/4 lg:w-1/5"
-              type="submit"
-            >
-              Submit
-            </Button>
-          </DialogFooter>
-        </form>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

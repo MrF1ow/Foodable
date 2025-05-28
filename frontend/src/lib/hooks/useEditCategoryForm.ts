@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EditCategorySchema } from "@/lib/validation/forms/schemas";
+import { EditCategoryFormSchema } from "@/lib/validation/forms/schemas";
 
 export const useEditCategoryForm = (initialName = "") => {
   const defaultValues = {
@@ -7,7 +7,7 @@ export const useEditCategoryForm = (initialName = "") => {
   };
 
   return {
-    resolver: zodResolver(EditCategorySchema),
+    resolver: zodResolver(EditCategoryFormSchema),
     defaultValues,
   };
 };
