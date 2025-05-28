@@ -3,6 +3,7 @@
 // Package Imports
 import { MdEdit } from "react-icons/md";
 import { JSX, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import {
   Dialog,
@@ -25,6 +26,9 @@ import {
 } from "@/server/hooks/savedItemsHooks";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { getIndexOfItemInArray } from "@/lib/utils/general";
+import { useEditCategoryForm } from "@/lib/hooks";
+import { EditCategoryFormSchema } from "/lib/validation/forms/schemas";
+import { z } from "zod";
 
 interface EditButtonProps {
   category: string;
@@ -38,10 +42,10 @@ export default function SaveCategoryEditButton({
   const [newTitle, setNewTitle] = useState(category);
 
   const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories
+    (state) => state.currentCategories,
   );
   const setCurrentCategories = useSavedItemsStore(
-    (state) => state.setCurrentCategories
+    (state) => state.setCurrentCategories,
   );
 
   const { categories } = useGetCategories({ enabled: true });
@@ -49,25 +53,31 @@ export default function SaveCategoryEditButton({
   const { deleteCategory } = useDeleteCategory();
   const { updateCategory } = useUpdateCategory();
 
+  const { defaultValues, resolver } = useEditCategoryForm();
+  const form = useForm({
+    defaultValues,
+    resolver,
+  });
+
+  const { register, handleSubmit } = form;
+
   if (!currentCategories) return <></>; // Ensure currentCategories is defined
 
   const indexOfCategoryInState = getIndexOfItemInArray(
     category,
-    currentCategories
+    currentCategories,
   );
 
   const indexOfCategoryInDB = getIndexOfItemInArray(category, categories);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: z.infer<typeof EditCategoryFormSchema>) => {
     if (indexOfCategoryInState === -1 || indexOfCategoryInDB === -1) return; // Ensure category exists before updating
 
-    await updateCategory({ oldCategory: category, newCategory: newTitle });
+    await updateCategory({ oldCategory: category, newCategory: data.name });
 
     await refetchSavedItems();
     const newCategories = [...currentCategories];
-    newCategories[indexOfCategoryInState] = newTitle;
+    newCategories[indexOfCategoryInState] = data.name;
     setCurrentCategories(newCategories);
     console.log("Updated Categories: ", newCategories);
   };
@@ -77,7 +87,7 @@ export default function SaveCategoryEditButton({
 
     if (indexOfCategoryInState !== -1) {
       const newCategories = currentCategories.filter(
-        (item) => item !== category
+        (item) => item !== category,
       );
       setCurrentCategories(newCategories);
     }
@@ -107,18 +117,16 @@ export default function SaveCategoryEditButton({
             Edit your custom category to store your recipes or grocery lists.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
           <div className="flex items-center space-x-2 w-full">
             <Label htmlFor="name" className="sr-only">
               Name
             </Label>
             <Input
               id="name"
-              name="name"
+              {...register("name")}
               placeholder="Desserts .."
-              value={newTitle}
               data-testid="edit-saved-title"
-              onChange={(e) => setNewTitle(e.target.value)}
             />
           </div>
           {/* For some reason the DialogFooter is not taking up the full width */}

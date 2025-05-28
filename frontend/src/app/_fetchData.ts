@@ -53,7 +53,6 @@ export default async function FetchData(options: FetchDataOptions = {}) {
     }
 
     if (options?.userData) {
-
       await queryClient.prefetchQuery({
         queryKey: [USERS, IMAGES],
         queryFn: () => UserApi.fetchSignInUserBannerId(),
@@ -61,7 +60,7 @@ export default async function FetchData(options: FetchDataOptions = {}) {
 
       await queryClient.prefetchQuery({
         queryKey: [USERS, SELF],
-        queryFn: () => UserApi.fetchSelf()
+        queryFn: () => UserApi.fetchSelf(),
       });
 
       await queryClient.prefetchQuery({
@@ -82,6 +81,11 @@ export default async function FetchData(options: FetchDataOptions = {}) {
       await queryClient.prefetchQuery({
         queryKey: [USERS, PREFERENCES],
         queryFn: () => UserApi.fetchUserPreferences(),
+      });
+
+      await queryClient.prefetchQuery({
+        queryKey: [USERS, RECIPES],
+        queryFn: () => UserApi.fetchCreatedRecipes(),
       });
     }
   }

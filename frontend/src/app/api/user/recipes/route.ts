@@ -1,6 +1,11 @@
 import { POST as postRecipe } from "./postRecipe";
 import { PUT as updateRecipe } from "./updateRecipe";
 import { DELETE as deleteRecipe } from "./deleteRecipe";
+import { GET as getCreatedRecipes } from "./getCreatedRecipes";
+
+export async function GET() {
+  return getCreatedRecipes();
+}
 
 export async function POST(request: Request) {
   return postRecipe(request);
