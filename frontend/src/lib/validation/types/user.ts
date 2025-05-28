@@ -18,7 +18,6 @@ export function validateSettings(settings: any): boolean {
 // Validate Preferences
 export function validatePreferences(pref: any): boolean {
   if (!pref) return false;
-  console.log(isValidStringArray(pref.dietaryRestrictions));
   return (
     pref &&
     pref.dietaryRestrictions &&

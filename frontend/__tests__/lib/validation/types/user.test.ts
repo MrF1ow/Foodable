@@ -6,24 +6,10 @@ import {
   validateUserWithoutID,
   validateUser,
 } from "@/lib/validation/types/user";
-import { NewUser } from "@/types/user";
 
 const mockValidateIdFn = jest.fn((id) => typeof id === "string" && id.length > 0);
 
-import { isValidUserId, isValidStringArray } from "@/lib/validation/types/general";
-
-jest.mock("@/lib/validation/types/general", () => ({
-  isValidUserId: jest.fn((id) => typeof id === "string" && id.startsWith("user_")),
-  isValidStringArray: jest.fn((arr) => Array.isArray(arr) && arr.every((s) => typeof s === "string")),
-}));
-
-describe("User Validation Tests", () => {
-  beforeEach(() => {
-    mockValidateIdFn.mockClear();
-    (isValidUserId as jest.Mock).mockClear();
-    (isValidStringArray as jest.Mock).mockClear();
-  });
-
+describe("User Validation Tests", () => { 
   describe("validateSettings", () => {
     it("returns true for valid themes", () => {
       expect(validateSettings({ theme: "light" })).toBe(true);
@@ -39,7 +25,6 @@ describe("User Validation Tests", () => {
 
 describe("validatePreferences", () => {
   it("returns true for valid preferences", () => {
-    (isValidStringArray as jest.Mock).mockReturnValue(true);
     expect(validatePreferences({
       dietaryRestrictions: ["gluten-free"],
       foodTypePreferences: ["vegetarian"],
@@ -48,7 +33,6 @@ describe("validatePreferences", () => {
   });
 
   it("returns false for invalid preferences", () => {
-    (isValidStringArray as jest.Mock).mockReturnValue(false);
     expect(validatePreferences({
       dietaryRestrictions: "not-an-array",
       foodTypePreferences: ["vegetarian"],
@@ -146,8 +130,8 @@ describe("validatePreferences", () => {
 
   describe("validateUser", () => {
     const baseUser = {
-      _id: "user123",
-      clerkId: "user_clerk123",
+      _id: "67f042144820fec78085932e",
+      clerkId: "use_2xFDkCQ2xvGcUElpXiL1Dpj4oub",
       username: "testuser",
       email: "test@example.com",
       settings: { theme: "dark" },
@@ -178,13 +162,12 @@ describe("validatePreferences", () => {
 
     it("returns false if clerkId invalid", () => {
       mockValidateIdFn.mockReturnValue(true);
-      (isValidUserId as jest.Mock).mockReturnValue(false);
       expect(validateUser(baseUser, mockValidateIdFn)).toBe(false);
     });
 
     it("returns true for valid user", () => {
       mockValidateIdFn.mockReturnValue(true);
-      (isValidUserId as jest.Mock).mockReturnValue(true);
+      baseUser.clerkId = "user_2xFDkCQ2xvGcUElpXiL1Dpj4oub";
       expect(validateUser(baseUser, mockValidateIdFn)).toBe(true);
     });
   });
