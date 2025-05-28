@@ -2,7 +2,7 @@
 
 // Package Imports
 import { MdEdit } from "react-icons/md";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FormField,
@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   useAllSavedItems,
   useDeleteCategory,
@@ -35,11 +34,7 @@ import {
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { getIndexOfItemInArray } from "@/lib/utils/general";
 import { useEditCategoryForm } from "@/lib/hooks";
-import {
-  EditCategoryFormSchema,
-  EditCategoryFormValues,
-} from "@/lib/validation/forms/schemas";
-import { z } from "zod";
+import type { EditCategoryFormValues } from "@/lib/validation/forms/schemas";
 
 interface EditButtonProps {
   category: string;
@@ -50,13 +45,11 @@ export default function SaveCategoryEditButton({
   category,
   textSize,
 }: EditButtonProps): JSX.Element {
-  const [newTitle, setNewTitle] = useState(category);
-
   const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories,
+    (state) => state.currentCategories
   );
   const setCurrentCategories = useSavedItemsStore(
-    (state) => state.setCurrentCategories,
+    (state) => state.setCurrentCategories
   );
 
   const { categories } = useGetCategories({ enabled: true });
@@ -64,24 +57,34 @@ export default function SaveCategoryEditButton({
   const { deleteCategory } = useDeleteCategory();
   const { updateCategory } = useUpdateCategory();
 
-  const { defaultValues, resolver } = useEditCategoryForm();
+  const { defaultValues, resolver } = useEditCategoryForm({
+    initialName: category,
+  });
   const form = useForm<EditCategoryFormValues>({
     defaultValues,
     resolver,
   });
 
+  useEffect(() => {
+    if (category) {
+      form.setValue("name", category);
+    }
+  }, [category]);
+
   if (!currentCategories) return <></>; // Ensure currentCategories is defined
 
   const indexOfCategoryInState = getIndexOfItemInArray(
     category,
-    currentCategories,
+    currentCategories
   );
 
   const indexOfCategoryInDB = getIndexOfItemInArray(category, categories);
 
-  const onSubmit = async (values: EditCategoryFormSchema) => {
+  const onSubmit = async (values: EditCategoryFormValues) => {
     if (indexOfCategoryInState === -1 || indexOfCategoryInDB === -1) return; // Ensure category exists before updating
 
+    console.log(category);
+    console.log(values.name);
     await updateCategory({ oldCategory: category, newCategory: values.name });
 
     await refetchSavedItems();
@@ -96,7 +99,7 @@ export default function SaveCategoryEditButton({
 
     if (indexOfCategoryInState !== -1) {
       const newCategories = currentCategories.filter(
-        (item) => item !== category,
+        (item) => item !== category
       );
       setCurrentCategories(newCategories);
     }
@@ -109,7 +112,7 @@ export default function SaveCategoryEditButton({
   return (
     <Dialog>
       <DialogTrigger
-        data-testid={`saved-category-edit-${newTitle}`}
+        data-testid={`saved-category-edit-${category}`}
         className="ml-4"
         asChild
       >

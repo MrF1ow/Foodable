@@ -12,6 +12,7 @@ import {
   CURRENT_LIST,
   IMAGES,
   SELF,
+  ITEMS
 } from "@/lib/constants/process";
 import { GroceryApi, RecipeApi, UserApi, SavedItemsApi } from "@/server/api";
 import { checkRole } from "@/lib/utils/clerk-utils";
@@ -84,8 +85,8 @@ export default async function FetchData(options: FetchDataOptions = {}) {
       });
 
       await queryClient.prefetchQuery({
-        queryKey: [USERS, RECIPES],
-        queryFn: () => UserApi.fetchCreatedRecipes(),
+        queryKey: [USERS, ITEMS],
+        queryFn: () => UserApi.fetchCreatedItems(),
       });
     }
   }

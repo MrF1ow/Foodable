@@ -32,7 +32,7 @@ import { GrocerySectionOptions } from "@/types/grocery";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { useState } from "react";
-import { useFetchSelf, useFetchCreatedRecipes } from "@/server/hooks/userHooks";
+import { useFetchSelf, useFetchCreatedItems } from "@/server/hooks/userHooks";
 import { NewImageData } from "@/types/images";
 import { useUploadImage } from "@/server/hooks/imageHooks";
 import { CurrentFormFunction } from "@/types";
@@ -49,7 +49,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
   const { createRecipe } = useCreateRecipe();
   const { userProfile } = useFetchSelf({ enabled: true });
   const { uploadImage } = useUploadImage();
-  const { refetchCreatedRecipes } = useFetchCreatedRecipes({ enabled: true });
+  const { refetchCreatedItems } = useFetchCreatedItems({ enabled: true });
 
   const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
     defaultValues,
@@ -117,7 +117,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
       return;
     }
 
-    await refetchCreatedRecipes();
+    await refetchCreatedItems();
   };
 
   const handleInputClose = () => {

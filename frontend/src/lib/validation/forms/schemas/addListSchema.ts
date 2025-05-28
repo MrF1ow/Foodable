@@ -11,5 +11,5 @@ export const AddListFormSchema = z.object({
 });
 
 
-export type AddListFormSchema = z.infer<typeof AddListFormSchema>
+export type AddListFormValues = z.infer<typeof AddListFormSchema>
 

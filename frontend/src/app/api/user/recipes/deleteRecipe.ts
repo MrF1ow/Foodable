@@ -61,7 +61,7 @@ export async function DELETE(req: Request) {
       { _id: userData._id },
       {
         $set: updateFields,
-        $pull: { createdRecipes: { _id: ObjectId.createFromHexString(id) } } as any
+        $pull: { createdItems: { _id: ObjectId.createFromHexString(id) } } as any
       },
     );
 

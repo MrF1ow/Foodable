@@ -69,12 +69,12 @@ export async function PUT(req: Request) {
     await db.collection('users').updateOne(
       {
         _id: userData._id,
-        "createdRecipes._id": _id
+        "createdItems._id": _id
       },
       {
         $set: {
-          "createdRecipes.$.title": recipeWithoutID.title,
-          "createdRecipes.$.imageId": recipeWithoutID.imageId
+          "createdItems.$.title": recipeWithoutID.title,
+          "createdItems.$.imageId": recipeWithoutID.imageId
         }
       }
     );

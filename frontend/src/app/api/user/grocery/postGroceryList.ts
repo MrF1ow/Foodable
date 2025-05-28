@@ -49,7 +49,19 @@ export async function POST(req: Request) {
       .collection("groceryLists")
       .findOne({ _id: result.insertedId });
 
+      const metaData = {
+        _id: result.insertedId,
+        title: groceryListToInsert.title,
+        category: "My Items",
+        type: "groceryList"
+      }
+
     const embeddingData = formEmbeddingData("grocery", groceryListToInsert, result.insertedId)
+
+    await db.collection("users").updateOne({
+      _id: userData._id
+    },
+      { $addToSet: { createdItems: metaData } })
 
     await insertEmbeddings([embeddingData]);
 

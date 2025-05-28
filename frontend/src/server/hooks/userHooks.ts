@@ -10,7 +10,7 @@ import {
   PREFERENCES,
   IMAGES,
   SELF,
-  RECIPES
+  ITEMS
 } from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
@@ -317,25 +317,25 @@ export const useFetchSelf = ({ enabled = true }: useQueryProps) => {
   };
 };
 
-export const useFetchCreatedRecipes = ({ enabled = true }: useQueryProps) => {
+export const useFetchCreatedItems = ({ enabled = true }: useQueryProps) => {
   const {
-    data: createdRecipes,
-    isLoading: isLoadingCreatedRecipes,
-    refetch: refetchCreatedRecipes,
-    error: errorCreatedRecipes,
-    isError: isErrorCreatedRecipes
+    data: createdItems,
+    isLoading: isLoadingCreatedItems,
+    refetch: refetchCreatedItems,
+    error: errorCreatedItems,
+    isError: isErrorCreatedItems
   } = useQuery({
-    queryKey: [USERS, RECIPES],
-    queryFn: UserApi.fetchCreatedRecipes,
+    queryKey: [USERS, ITEMS],
+    queryFn: UserApi.fetchCreatedItems,
     retry: 2,
     enabled,
   });
 
   return {
-    createdRecipes,
-    isLoadingCreatedRecipes,
-    refetchCreatedRecipes,
-    errorCreatedRecipes,
-    isErrorCreatedRecipes
+    createdItems,
+    isLoadingCreatedItems,
+    refetchCreatedItems,
+    errorCreatedItems,
+    isErrorCreatedItems
   }
 };

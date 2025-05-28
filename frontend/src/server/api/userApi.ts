@@ -207,14 +207,14 @@ export const UserApi = {
     }
   },
 
-  fetchCreatedRecipes: async () => {
+  fetchCreatedItems: async () => {
     try {
-      const response = await fetchWithAuth("/user/recipes", {
+      const response = await fetchWithAuth("/user/saved-items", {
         method: "GET",
       });
       return response;
     } catch (error) {
-      console.error("Error fetching created recipes", error);
+      console.error("Error fetching created items", error);
       throw error;
     }
   },

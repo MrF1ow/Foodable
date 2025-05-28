@@ -12,7 +12,7 @@ export const maxDuration = 30;
 export async function POST(request: Request) {
     try {
         const { userData, error, status } = await getCurrentUser({
-            "createdRecipes._id": 1,
+            "createdItems._id": 1,
             "savedItems.recipes._id": 1,
             "savedItems.groceryLists._id": 1
         });
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
         const savedRecipeIds = userData.savedItems.recipes.map((r: any) => r._id);
         const savedGroceryIds = userData.savedItems.groceryLists.map((g: any) => g._id);
-        const createdRecipeIds = userData.createdRecipes.map((r: any) => r._id);
+        const createdRecipeIds = userData.createdItems.map((r: any) => r._id);
         const vectorIds = [...savedRecipeIds, ...savedGroceryIds, ...createdRecipeIds, userData._id];
 
         const db = await getDB();

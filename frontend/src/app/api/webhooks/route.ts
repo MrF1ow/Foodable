@@ -77,7 +77,7 @@ export async function POST(req: Request) {
           groceryLists: [],
         },
         currentGroceryList: null,
-        createdRecipes: [],
+        createdItems: [],
         following: [],
         followers: [],
         lastLogin: new Date(),

@@ -74,7 +74,7 @@ export const validateUserWithoutID = (
       validateIdFn(user.imageId)) &&
     Array.isArray(user.savedItems.recipes) &&
     Array.isArray(user.savedItems.groceryLists) &&
-    Array.isArray(user.createdRecipes) &&
+    Array.isArray(user.createdItems) &&
     Array.isArray(user.following) &&
     Array.isArray(user.followers) &&
     (user.savedItems.recipes.length === 0 ||
@@ -92,7 +92,7 @@ export const validateUserWithoutID = (
     (user.currentGroceryList === null ||
       (user.currentGroceryList !== null &&
         validateIdFn(user.currentGroceryList))) &&
-    user.createdRecipes.every((item) => validateIdFn(item)) &&
+    user.createdItems.every((item) => validateIdFn(item)) &&
     user.following.every((item) => validateUserFollow(item, validateIdFn)) &&
     user.followers.every((item) => validateUserFollow(item, validateIdFn)) &&
     // Optional lastLogin validation
