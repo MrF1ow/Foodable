@@ -5,17 +5,21 @@ const createJestConfig = nextJest({
   dir: "./",
 });
 
-// Add any custom config to be passed to Jest
 const config: Config = {
   coverageProvider: "v8",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   testEnvironment: "jsdom",
+  preset: "ts-jest",
+  globals: {
+    "ts-jest": {
+      useESM: true,
+      tsconfig: "tsconfig.jest.json",
+    },
+  },
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  // Add more setup options before each test is run
-  // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config);
