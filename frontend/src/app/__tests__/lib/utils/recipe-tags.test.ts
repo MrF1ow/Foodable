@@ -1,7 +1,7 @@
 import {
   createTagsForRecipe,
   compareTag,
-} from "../../../src/lib/utils/recipe-tags";
+} from "../../../../lib/utils/recipe-tags";
 import { RecipeIngredient } from "@/types/recipe";
 import { FilterTag } from "@/types";
 

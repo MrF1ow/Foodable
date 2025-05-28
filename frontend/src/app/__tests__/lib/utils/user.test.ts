@@ -6,14 +6,14 @@ jest.mock("@clerk/nextjs/server", () => ({
   currentUser: jest.fn(),
 }));
 
-jest.mock("../../../src/lib/mongodb", () => ({
+jest.mock("../../../../lib/mongodb", () => ({
   getDB: jest.fn(),
 }));
 
-import { getCurrentUser } from "../../../src/lib/utils/user";
+import { getCurrentUser } from "../../../../lib/utils/user";
 import { currentUser } from "@clerk/nextjs/server";
-import { getDB } from "../../../src/lib/mongodb";
-import { HTTP_RESPONSES } from "../../../src/lib/constants/httpResponses";
+import { getDB } from "../../../../lib/mongodb";
+import { HTTP_RESPONSES } from "../../../../lib/constants/httpResponses";
 
 describe("getCurrentUser", () => {
   const mockUserId = "user_123";

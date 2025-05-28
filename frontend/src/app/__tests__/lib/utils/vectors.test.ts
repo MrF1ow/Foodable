@@ -2,15 +2,15 @@
  * @jest-environment node
  */
 
-jest.mock("../../../src/lib/mongodb", () => ({
+jest.mock("../../../../lib/mongodb", () => ({
   getDB: jest.fn(),
 }));
 
 import {
   createAtlasVectorIndex,
   formatVectorContext,
-} from "../../../src/lib/utils/vectors";
-import { getDB } from "../../../src/lib/mongodb";
+} from "../../../../lib/utils/vectors";
+import { getDB } from "../../../../lib/mongodb";
 
 describe("createAtlasVectorIndex", () => {
   beforeEach(() => {

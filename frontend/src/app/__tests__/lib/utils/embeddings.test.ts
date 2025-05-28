@@ -7,7 +7,7 @@ globalThis.TextEncoder = require("util").TextEncoder;
 globalThis.TextDecoder = require("util").TextDecoder;
 
 // Mock early to prevent real MongoDB and transformer internals from loading
-jest.mock("../../src/lib/mongodb", () => ({
+jest.mock("../../../../lib/mongodb", () => ({
   getDB: jest.fn(),
 }));
 
@@ -22,9 +22,9 @@ describe("embeddings module", () => {
     insertEmbeddings,
     deleteVectorEmbedding,
     generateEmbeddings,
-  } = require("../../src/lib/utils/embeddings");
+  } = require("../../../../lib/utils/embeddings");
 
-  const { getDB } = require("../../src/lib/mongodb");
+  const { getDB } = require("../../../../lib/mongodb");
   const { pipeline } = require("@xenova/transformers");
   const { ObjectId } = require("mongodb");
 
