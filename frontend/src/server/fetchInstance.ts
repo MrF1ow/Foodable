@@ -1,17 +1,19 @@
 "use server";
 
+import { auth } from "@clerk/nextjs/server";
 
 // Function to get the Clerk.js auth token
 export async function getAuthHeader() {
-  const { auth } = await import("@clerk/nextjs/server");
   const { getToken } = await auth();
-  const token = await getToken({ template: "testing-template" });
+  const template = "testing-template"; // Adjust the template if needed
+  const token = await getToken({ template });
   return {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 }
+
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!baseUrl) {

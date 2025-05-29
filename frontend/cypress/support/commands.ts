@@ -88,3 +88,5 @@ Cypress.Commands.add("createSavedList", () => {
   cy.contains("span", "Close").closest("button").click();
   cy.wait(50);
 });
+
+
