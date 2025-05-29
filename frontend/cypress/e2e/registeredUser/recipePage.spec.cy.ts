@@ -12,7 +12,7 @@ describe("Registered User Recipe Page Integration Tests", () => {
   it("Recipe Page Should Load Successfully", () => {
     cy.visit("/recipe", { failOnStatusCode: false });
     cy.wait(500);
-    cy.contains("New List");
+    cy.get('[data-testid="grocery-header-dropdown"]').should("be.visible");
   });
 
   it("Creating a Recipe", () => {
@@ -24,7 +24,7 @@ describe("Registered User Recipe Page Integration Tests", () => {
       .should("have.value", "Test Recipe Title");
     cy.get('[data-testid="recipe-image-input"]').selectFile(
       "cypress/fixtures/sample.jpg",
-      { force: true }
+      { force: true },
     );
 
     cy.get('img[alt="Recipe Preview"]').should("be.visible");
@@ -46,9 +46,18 @@ describe("Registered User Recipe Page Integration Tests", () => {
     cy.get('[data-testid="Produce-category-recipe-form"]').click();
     cy.get('[data-testid="category-dropdown"]').should("contain", "Produce");
 
-    cy.get('[data-testid="instruction-0-step"]').type("Mix all ingredients");
+    cy.get('[data-testid="instruction-0-step"]')
+      .clear()
+      .type("Mix all ingredients");
 
-    // cy.get('[data-testid="submit-recipe-button"]').click();
+    cy.get('[data-testid="submit-recipe-button"]').click();
+
+    cy.visit("/saved", { failOnStatusCode: false });
+    cy.wait(500);
+
+    cy.get('[data-testid="saved-category-My Items"]').click();
+
+    cy.shouldBeVisible("Test Recipe Title");
   });
 
   it("Recipe Filter button info", () => {
@@ -147,7 +156,7 @@ describe("Registered User Recipe Page E2E Tests", () => {
     cy.get('select[name="ingredient-0-unit"]').select("cups");
 
     cy.get('textarea[name="instructions"]').type(
-      "Mix ingredients. Cook on medium heat."
+      "Mix ingredients. Cook on medium heat.",
     );
 
     cy.clickButton("submit-recipe");

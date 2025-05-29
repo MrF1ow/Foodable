@@ -25,17 +25,17 @@ export default function Saved() {
   const setSplitLayout = useGeneralStore((state) => state.setSplitLayout);
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
   const setCurrentForm = useGeneralStore(
-    (state) => state.setCurrentSidePortalForm
+    (state) => state.setCurrentSidePortalForm,
   );
 
   const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories
+    (state) => state.currentCategories,
   );
   const setCurrentCategories = useSavedItemsStore(
-    (state) => state.setCurrentCategories
+    (state) => state.setCurrentCategories,
   );
   const setCurrentItemType = useSavedItemsStore(
-    (state) => state.setCurrentItemType
+    (state) => state.setCurrentItemType,
   );
 
   const { createdItems } = useFetchCreatedItems({ enabled: true });
@@ -56,7 +56,7 @@ export default function Saved() {
     ];
 
     const categories = Array.from(new Set(allCategories)).sort((a, b) =>
-      a.localeCompare(b)
+      a.localeCompare(b),
     );
 
     setCurrentCategories(categories);
@@ -67,11 +67,11 @@ export default function Saved() {
       ? createdItems.filter((item: SavedItem) => item.category === category)
       : [];
     const recipeItems = savedItems.recipes.filter(
-      (item: SavedItem) => item.category === category
+      (item: SavedItem) => item.category === category,
     );
 
     const groceryItems = savedItems.groceryLists.filter(
-      (item: SavedItem) => item.category === category
+      (item: SavedItem) => item.category === category,
     );
 
     return {
@@ -124,6 +124,7 @@ export default function Saved() {
                             handleBoxClick={() => handleBoxClick(item)}
                             data={item}
                             width="w-full"
+                            data-testid={`saved-item-box-${item.title}`}
                           />
                         </div>
                       );
@@ -138,6 +139,7 @@ export default function Saved() {
                             handleBoxClick={() => handleBoxClick(item)}
                             data={item}
                             width="w-full"
+                            data-testid={`saved-item-box-${item.title}`}
                           />
                         </div>
                       );
