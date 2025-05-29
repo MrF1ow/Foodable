@@ -74,17 +74,13 @@ export async function DELETE(req: Request) {
           list._id.toString() !== id.toString(),
       ) || [];
 
-    const updatedCreatedItems = 
+
+    const updatedCreatedItems =
       userData.createdItems?.filter(
-        (items: { _id: string | ObjectId }) => 
+        (items: { _id: string | ObjectId }) =>
           items._id.toString() !== id.toString(),
-        ) || [];
+      ) || [];
 
-
-    // Apply the filtered list back to the user profile
-    if (userData.savedItems) {
-      userData.savedItems.groceryLists = updatedSavedLists;
-    }
 
     const updateFields: Record<string, any> = {
       "savedItems.groceryLists": updatedSavedLists,
@@ -98,10 +94,10 @@ export async function DELETE(req: Request) {
     }
 
     await db.collection("users").updateOne(
-      { clerkId: userData._id },
+      { _id: userData._id },
       {
-        $set: updateFields,
-      },
+        $set: updateFields
+      }
     );
 
     if (wasDeleted) {
