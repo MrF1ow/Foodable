@@ -27,12 +27,12 @@ export default function SaveItemAccordion({
       type="single"
       className="bg-card-background rounded-lg shadow-md overflow-hidden max-w-full min-w-full"
       collapsible
-      data-testid={`saved-category-${title}`}
     >
       <AccordionItem value="1" className="p-4">
         <AccordionTrigger
           className="text-foreground font-bold"
           iconSize={iconSize}
+          data-testid={`saved-category-${title}`}
           style={
             {
               fontSize: textSize,

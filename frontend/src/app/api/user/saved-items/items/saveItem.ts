@@ -27,11 +27,18 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!isValidObjectId(_id)) {
+    if (category.toLowerCase() === "my items") {
       return NextResponse.json(
-        { message: "Invalid _id" },
-        { status: 400 }
+        {
+          message:
+            "Cannot Save Item in Saved Structure with Category of 'My Items'",
+        },
+        { status: 200 }
       );
+    }
+
+    if (!isValidObjectId(_id)) {
+      return NextResponse.json({ message: "Invalid _id" }, { status: 400 });
     }
 
     const db = await getDB();

@@ -72,6 +72,7 @@ export async function DELETE(req: Request) {
           list._id.toString() !== id.toString(),
       ) || [];
 
+
     // Apply the filtered list back to the user profile
     if (userData.savedItems) {
       userData.savedItems.groceryLists = updatedSavedLists;
@@ -87,9 +88,15 @@ export async function DELETE(req: Request) {
       updateFields.currentGroceryList = updatedSavedLists[0]?._id || null;
     }
 
-    await db
-      .collection("users")
-      .updateOne({ clerkId: userData._id }, { $set: updateFields });
+    await db.collection("users").updateOne(
+      { clerkId: userData._id },
+      {
+        $set: updateFields,
+        $pull: {
+          createdItems: { _id: ObjectId.createFromHexString(id) },
+        } as any,
+      },
+    );
 
     if (wasDeleted) {
       await deleteVectorEmbedding(groceryListId);

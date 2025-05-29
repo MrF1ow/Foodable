@@ -332,7 +332,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                           <div className="border rounded shadow-sm py-2">
                             <FormControl>
                               <DropdownMenu>
-                                <DropdownMenuTrigger className="text-lg w-full hover:scale-105">
+                                <DropdownMenuTrigger className="text-lg w-full hover:scale-105" data-testid="recipe-unit-dropdown">
                                   {field.value || "Select"}
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="max-h-60 overflow-y-auto">
@@ -340,6 +340,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                                     <DropdownMenuItem
                                       key={unit}
                                       onClick={() => field.onChange(unit)}
+                                      data-testid={`ingredient-${unit}`}
                                     >
                                       {unit}
                                     </DropdownMenuItem>
@@ -387,7 +388,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                             {...form.register(`instructions.${index}.step`)}
                             placeholder={`Explain step ${index + 1}...`}
                             className="!text-lg h-10"
-                            data-testid={`instruction-${index}`}
+                            data-testid={`instruction-${index}-step`}
                           />
                         </FormControl>
                         <FormMessage />
@@ -411,6 +412,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                   type="button"
                   onClick={() => appendInstruction({ step: "" })}
                   className="btn-primary p-2 mt-2 text-lg"
+                  data-testid="add-instruction"
                 >
                   <Icons.plus />
                 </button>
@@ -424,7 +426,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
               className="btn-primary p-8 text-3xl transition-all hover:scale-105 hover:shadow-lg"
-              data-testid="submit-button"
+              data-testid="submit-recipe-button"
             >
               Submit
             </Button>

@@ -82,6 +82,7 @@ export default function GroceryEditButton({
   useEffect(() => {
     if (currentList && isOpen) {
       form.setValue("title", currentList.title);
+      form.setValue("category", "Choose...");
     }
   }, [currentList, isOpen]);
 
@@ -260,11 +261,13 @@ export default function GroceryEditButton({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {currentCategories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {capitalizeTitle(cat)}
-                        </SelectItem>
-                      ))}
+                      {currentCategories
+                        .filter((cat) => cat !== "My Items")
+                        .map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {capitalizeTitle(cat)}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
