@@ -6,6 +6,10 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return clerkSetup({ config });
     },
+    specPattern: [
+      "cypress/e2e/**/*.cy.{js,ts,jsx,tsx}",
+      "cypress/integration/**/*.cy.{js,ts,jsx,tsx}",
+    ],
     baseUrl: "http://localhost:8000",
     viewportHeight: 1080,
     viewportWidth: 1920,
