@@ -130,8 +130,6 @@ export default function AddItem({
       return;
     }
 
-    console.log(newMap);
-
     const updatedItems = Array.from(newMap.values());
 
     const newList = {
@@ -144,8 +142,6 @@ export default function AddItem({
     }
 
     setMap(newMap);
-
-    console.log(currentList);
 
     setCurrentList(newList);
 

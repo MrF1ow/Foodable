@@ -5,7 +5,7 @@ import { validateUserRating } from "./user";
 import { isValidDate } from "./general";
 
 export function validateRecipeIngredient(
-  ingredient: any
+  ingredient: any,
 ): ingredient is RecipeIngredient {
   return (
     ingredient &&
@@ -47,7 +47,7 @@ export function validateRecipeIngredient(
 //// ChatGPT version with verbose error messages
 export const validateRecipeWithoutId = (
   recipe: any,
-  validateIdFn: (id: any) => boolean
+  validateIdFn: (id: any) => boolean,
 ): recipe is NewRecipe => {
   if (!recipe) {
     console.error("Recipe is null or undefined");
@@ -80,26 +80,26 @@ export const validateRecipeWithoutId = (
   if (!recipe.ingredients.every(validateRecipeIngredient)) {
     console.error(
       "Invalid ingredient detected in ingredients array:",
-      recipe.ingredients
+      recipe.ingredients,
     );
     return false;
   }
   if (!recipe.instructions.every((instr: any) => typeof instr === "string")) {
     console.error(
       "Invalid instruction detected in instructions array:",
-      recipe.instructions
+      recipe.instructions,
     );
     return false;
   }
   if (
     recipe.userRatings.length > 0 &&
     !recipe.userRatings.every((rating: any) =>
-      validateUserRating(rating, validateIdFn)
+      validateUserRating(rating, validateIdFn),
     )
   ) {
     console.error(
       "Invalid user rating detected in userRatings array:",
-      recipe.userRatings
+      recipe.userRatings,
     );
     return false;
   }
@@ -129,7 +129,7 @@ export const validateRecipeWithoutId = (
 // Function to check if a recipe is valid
 export const validateRecipe = (
   recipe: any,
-  validateIdFn: (id: any) => boolean
+  validateIdFn: (id: any) => boolean,
 ): recipe is Recipe => {
   if (!recipe) return false;
 

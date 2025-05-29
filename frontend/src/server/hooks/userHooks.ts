@@ -9,7 +9,8 @@ import {
   SETTINGS,
   PREFERENCES,
   IMAGES,
-  SELF
+  SELF,
+  ITEMS
 } from "@/lib/constants/process";
 import { useQueryProps } from "@/types";
 
@@ -314,4 +315,27 @@ export const useFetchSelf = ({ enabled = true }: useQueryProps) => {
     errorSelf,
     isErrorSelf,
   };
+};
+
+export const useFetchCreatedItems = ({ enabled = true }: useQueryProps) => {
+  const {
+    data: createdItems,
+    isLoading: isLoadingCreatedItems,
+    refetch: refetchCreatedItems,
+    error: errorCreatedItems,
+    isError: isErrorCreatedItems
+  } = useQuery({
+    queryKey: [USERS, ITEMS],
+    queryFn: UserApi.fetchCreatedItems,
+    retry: 2,
+    enabled,
+  });
+
+  return {
+    createdItems,
+    isLoadingCreatedItems,
+    refetchCreatedItems,
+    errorCreatedItems,
+    isErrorCreatedItems
+  }
 };

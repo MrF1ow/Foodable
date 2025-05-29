@@ -31,9 +31,8 @@ import { useCreateRecipe } from "@/server/hooks/recipeHooks";
 import { GrocerySectionOptions } from "@/types/grocery";
 import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
-import { useCreateSavedItem } from "@/server/hooks/savedItemsHooks";
 import { useState } from "react";
-import { useFetchSelf } from "@/server/hooks/userHooks";
+import { useFetchSelf, useFetchCreatedItems } from "@/server/hooks/userHooks";
 import { NewImageData } from "@/types/images";
 import { useUploadImage } from "@/server/hooks/imageHooks";
 import { CurrentFormFunction } from "@/types";
@@ -45,12 +44,12 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
 
   const setShowPortal = useGeneralStore((state) => state.setShowPortal);
 
-  const { defaultValues, resolver } = useAddRecipeForm()
+  const { defaultValues, resolver } = useAddRecipeForm();
 
   const { createRecipe } = useCreateRecipe();
-  const { createSavedItem } = useCreateSavedItem();
   const { userProfile } = useFetchSelf({ enabled: true });
   const { uploadImage } = useUploadImage();
+  const { refetchCreatedItems } = useFetchCreatedItems({ enabled: true });
 
   const form = useForm<z.infer<typeof AddRecipeFormSchema>>({
     defaultValues,
@@ -82,11 +81,10 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
       ingredients: data.ingredients.map((ingredient) => ({
         ...ingredient,
         category: categories.find(
-          (section) => section.title === ingredient.category
+          (section) => section.title === ingredient.category,
         )?.title as GrocerySectionOptions,
       })),
       instructions: data.instructions.map((instruction) => instruction.step),
-      image: data.image,
       creatorId: userProfile._id,
       imageId: null,
       userRatings: [],
@@ -107,26 +105,19 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
       collectionName: "recipes",
     };
 
-    const image = await uploadImage(newImage);
+    await uploadImage(newImage);
 
     if (!createData) {
       showToast(
         TOAST_SEVERITY.ERROR,
         "Error",
         "Failed to create grocery list",
-        3000
+        3000,
       );
       return;
     }
 
-    const newSaveItem = {
-      _id: createData._id,
-      imageId: image._id,
-      tags: [],
-      title: createData.title,
-      type: "recipe",
-      category: "Recipes",
-    };
+    await refetchCreatedItems();
   };
 
   const handleInputClose = () => {
@@ -229,8 +220,9 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                   className="relative border p-3 pr-12 rounded flex flex-col gap-2"
                 >
                   <div
-                    className={`flex ${isMobile ? "flex-col" : "flex-row"
-                      } gap-4`}
+                    className={`flex ${
+                      isMobile ? "flex-col" : "flex-row"
+                    } gap-4`}
                   >
                     <FormField
                       control={form.control}
@@ -316,12 +308,12 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                               onChange={(e) => {
                                 const value = e.target.value.replace(
                                   /^0+(?!$)/,
-                                  ""
+                                  "",
                                 ); // Remove leading zeros
                                 if (value === "" || /^\d+$/.test(value)) {
                                   // Allow empty or numeric input
                                   field.onChange(
-                                    value === "" ? "" : Number(value)
+                                    value === "" ? "" : Number(value),
                                   );
                                 }
                               }}
@@ -340,7 +332,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                           <div className="border rounded shadow-sm py-2">
                             <FormControl>
                               <DropdownMenu>
-                                <DropdownMenuTrigger className="text-lg w-full hover:scale-105">
+                                <DropdownMenuTrigger className="text-lg w-full hover:scale-105" data-testid="recipe-unit-dropdown">
                                   {field.value || "Select"}
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="max-h-60 overflow-y-auto">
@@ -348,6 +340,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                                     <DropdownMenuItem
                                       key={unit}
                                       onClick={() => field.onChange(unit)}
+                                      data-testid={`ingredient-${unit}`}
                                     >
                                       {unit}
                                     </DropdownMenuItem>
@@ -395,7 +388,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                             {...form.register(`instructions.${index}.step`)}
                             placeholder={`Explain step ${index + 1}...`}
                             className="!text-lg h-10"
-                            data-testid={`instruction-${index}`}
+                            data-testid={`instruction-${index}-step`}
                           />
                         </FormControl>
                         <FormMessage />
@@ -419,6 +412,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
                   type="button"
                   onClick={() => appendInstruction({ step: "" })}
                   className="btn-primary p-2 mt-2 text-lg"
+                  data-testid="add-instruction"
                 >
                   <Icons.plus />
                 </button>
@@ -432,7 +426,7 @@ export const AddRecipe = ({ setCurrentForm }: CurrentFormFunction) => {
               type="submit"
               onClick={form.handleSubmit(onSubmit)}
               className="btn-primary p-8 text-3xl transition-all hover:scale-105 hover:shadow-lg"
-              data-testid="submit-button"
+              data-testid="submit-recipe-button"
             >
               Submit
             </Button>

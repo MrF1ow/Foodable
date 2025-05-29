@@ -2,7 +2,16 @@
 
 // Package Imports
 import { MdEdit } from "react-icons/md";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  FormField,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
 
 import {
   Dialog,
@@ -16,7 +25,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   useAllSavedItems,
   useDeleteCategory,
@@ -25,6 +33,8 @@ import {
 } from "@/server/hooks/savedItemsHooks";
 import { useSavedItemsStore } from "@/stores/saved/store";
 import { getIndexOfItemInArray } from "@/lib/utils/general";
+import { useEditCategoryForm } from "@/lib/hooks";
+import type { EditCategoryFormValues } from "@/lib/validation/forms/schemas";
 
 interface EditButtonProps {
   category: string;
@@ -35,8 +45,6 @@ export default function SaveCategoryEditButton({
   category,
   textSize,
 }: EditButtonProps): JSX.Element {
-  const [newTitle, setNewTitle] = useState(category);
-
   const currentCategories = useSavedItemsStore(
     (state) => state.currentCategories
   );
@@ -49,6 +57,20 @@ export default function SaveCategoryEditButton({
   const { deleteCategory } = useDeleteCategory();
   const { updateCategory } = useUpdateCategory();
 
+  const { defaultValues, resolver } = useEditCategoryForm({
+    initialName: category,
+  });
+  const form = useForm<EditCategoryFormValues>({
+    defaultValues,
+    resolver,
+  });
+
+  useEffect(() => {
+    if (category) {
+      form.setValue("name", category);
+    }
+  }, [category]);
+
   if (!currentCategories) return <></>; // Ensure currentCategories is defined
 
   const indexOfCategoryInState = getIndexOfItemInArray(
@@ -58,16 +80,16 @@ export default function SaveCategoryEditButton({
 
   const indexOfCategoryInDB = getIndexOfItemInArray(category, categories);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = async (values: EditCategoryFormValues) => {
     if (indexOfCategoryInState === -1 || indexOfCategoryInDB === -1) return; // Ensure category exists before updating
 
-    await updateCategory({ oldCategory: category, newCategory: newTitle });
+    console.log(category);
+    console.log(values.name);
+    await updateCategory({ oldCategory: category, newCategory: values.name });
 
     await refetchSavedItems();
     const newCategories = [...currentCategories];
-    newCategories[indexOfCategoryInState] = newTitle;
+    newCategories[indexOfCategoryInState] = values.name;
     setCurrentCategories(newCategories);
     console.log("Updated Categories: ", newCategories);
   };
@@ -90,7 +112,7 @@ export default function SaveCategoryEditButton({
   return (
     <Dialog>
       <DialogTrigger
-        data-testid={`saved-category-edit-${newTitle}`}
+        data-testid={`saved-category-edit-${category}`}
         className="ml-4"
         asChild
       >
@@ -107,54 +129,60 @@ export default function SaveCategoryEditButton({
             Edit your custom category to store your recipes or grocery lists.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex items-center space-x-2 w-full">
-            <Label htmlFor="name" className="sr-only">
-              Name
-            </Label>
-            <Input
-              id="name"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
               name="name"
-              placeholder="Desserts .."
-              value={newTitle}
-              data-testid="edit-saved-title"
-              onChange={(e) => setNewTitle(e.target.value)}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Desserts .."
+                      data-testid="edit-saved-title"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          {/* For some reason the DialogFooter is not taking up the full width */}
-          <DialogFooter className="w-full flex flex-row items-center justify-between mt-4">
-            {/* Left side: Delete button */}
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="destructive"
-                className="w-[30%] md:w-1/4 lg:w-1/5"
-                data-testid="edit-saved-delete"
-                onClick={handleDeleteList}
-              >
-                Delete
-              </Button>
-            </DialogClose>
+            {/* For some reason the DialogFooter is not taking up the full width */}
+            <DialogFooter className="w-full flex flex-row items-center justify-between mt-4">
+              {/* Left side: Delete button */}
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="w-[30%] md:w-1/4 lg:w-1/5"
+                  data-testid="edit-saved-delete"
+                  onClick={handleDeleteList}
+                >
+                  Delete
+                </Button>
+              </DialogClose>
 
-            {/* Right side: Cancel and Submit buttons */}
-            <DialogClose asChild>
+              {/* Right side: Cancel and Submit buttons */}
+              <DialogClose asChild>
+                <Button
+                  data-testid="edit-saved-cancel"
+                  className="w-[30%] md:w-1/4 lg:w-1/5"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
               <Button
-                data-testid="edit-saved-cancel"
+                data-testid="edit-saved-submit"
                 className="w-[30%] md:w-1/4 lg:w-1/5"
-                variant="outline"
+                type="submit"
               >
-                Cancel
+                Submit
               </Button>
-            </DialogClose>
-            <Button
-              data-testid="edit-saved-submit"
-              className="w-[30%] md:w-1/4 lg:w-1/5"
-              type="submit"
-            >
-              Submit
-            </Button>
-          </DialogFooter>
-        </form>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

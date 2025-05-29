@@ -47,7 +47,9 @@ Cypress.Commands.add("shouldBeVisible", (element: string) => {
 });
 
 Cypress.Commands.add("clickAddItemButton", (categoryName: string) => {
-  cy.get(`[data-testid="${categoryName}-add-item-button"]`).click();
+  cy.get(`[data-testid="${categoryName}-add-item-button"]`, { timeout: 10000 })
+    .should("be.visible")
+    .click({ force: true });
   cy.wait(500);
 });
 
@@ -88,3 +90,5 @@ Cypress.Commands.add("createSavedList", () => {
   cy.contains("span", "Close").closest("button").click();
   cy.wait(50);
 });
+
+

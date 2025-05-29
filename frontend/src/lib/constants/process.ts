@@ -10,3 +10,4 @@ export const PREFERENCES = "preferences";
 export const SAVED_ITEMS = "savedItems";
 export const SAVED_CATEGORIES = "savedCategories";
 export const IMAGES = "images";
+export const ITEMS = "items";

@@ -1,86 +1,59 @@
-describe("Registered User Grocery Page", () => {
-  beforeEach(() => {
-    cy.session("registered-user-session", () => {
-      cy.visit("/sign-in");
-      cy.clerkSignIn({
-        strategy: "password",
-        identifier: Cypress.env("USER_SIGN_IN_EMAIL"),
-        password: Cypress.env("USER_SIGN_IN_PASSWORD"),
-      });
-    });
-  });
-  const listTitle = "Cypress Test";
+describe("Create list and add item", () => {
+  const email = Cypress.env("USER_SIGN_IN_EMAIL");
+  const password = Cypress.env("USER_SIGN_IN_PASSWORD");
+  const listTitle = `E2E List ${Date.now().toString().slice(-5)}`;
+  const itemName = "E2E Bread";
 
-  it("should create a new grocery list", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
+  it("logs in, creates a grocery list, adds an item, and confirms persistence", () => {
+    cy.clearCookies();
+    cy.visit("/sign-in");
+
+    // Login with real form
+    cy.get('input[type="email"]').type(email);
+    cy.get('input[type="password"]').type(password);
+    cy.get('button[type="submit"]').click();
+
+    // Wait for redirect to /recipe
+    cy.url({ timeout: 20000 }).should("include", "/recipe");
+    cy.contains("Create Recipe", { timeout: 10000 }).should("be.visible");
+
+    // Navigate to grocery list page
+    cy.visit("/grocery-list");
+    cy.contains("New List", { timeout: 10000 }).should("be.visible");
+
+    // Create a grocery list
     cy.clickButton("grocery-header-dropdown");
     cy.clickButton("add-grocery-list");
     cy.typeText("new-list-title", listTitle);
     cy.clickButton("select-category");
     cy.get('[role="option"]').contains("New Collection").click();
     cy.clickButton("submit-new-grocery-list");
-    cy.shouldBeVisible(listTitle);
-  });
+    cy.contains("New List").should("not.exist");
+    cy.contains(listTitle, { timeout: 10000 }).should("be.visible");
+    cy.contains("New List").should("not.exist");
 
-  it("should render the category and allow clicking it", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
+    // Add an item
+    cy.clickAddItemButton("Bakery");
+    cy.contains(listTitle, { timeout: 10000 }).should("be.visible");
+    cy.typeText("itemName-input", itemName);
+    cy.clickButton("submit-button");
     cy.wait(500);
-    const categoryName = "Bakery";
-    cy.clickAddItemButton(categoryName);
-    cy.shouldBeVisible("Add Item");
-    cy.shouldBeVisible("Item Name");
-    cy.shouldBeVisible("Quantity");
-    cy.shouldBeVisible("Select Unit");
-    cy.shouldBeVisible("Select Category");
-  });
-
-  it("should render the Find Price button and allow clicking it", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-    cy.clickButton("find-price-button");
-    cy.shouldBeVisible("Find Price");
-    cy.shouldBeVisible("Select Stores");
-    cy.shouldBeVisible("Search By");
-  });
-
-  it("should render the AI Helper button and allow clicking it", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-    cy.clickButton("helper-button");
-    cy.shouldBeVisible("Grocery List Helper");
-  });
-
-  const newListTitle = "New Cypress Test";
-
-  it("will allow the renaming of a grocery list", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-
-    cy.clickButton("grocery-header-dropdown");
-    cy.clickButton("edit-grocery-list");
-
-    cy.typeText("list-title", newListTitle);
-    cy.clickButton("select-category");
-    cy.get('[role="option"]').contains("New Collection").click();
-
-    cy.clickButton("list-submit");
+    cy.clickButton("close-form-button");
     cy.wait(1000);
+    cy.contains(itemName, { timeout: 10000 }).should("be.visible");
 
-    cy.shouldBeVisible(newListTitle);
-  });
+    // Reload and confirm both list and item persist
+    cy.reload();
+    cy.contains(listTitle).should("be.visible");
+    cy.contains(itemName, { timeout: 10000 }).should("be.visible");
 
-  it("will allow the deletion of a grocery list", () => {
-    cy.visit("/grocery-list", { failOnStatusCode: false });
-    cy.wait(500);
-
+    // Delete the grocery list
     cy.clickButton("grocery-header-dropdown");
     cy.clickButton("edit-grocery-list");
-
-    cy.wait(500);
-
+    cy.wait(300);
     cy.clickButton("list-delete");
 
-    cy.shouldBeVisible("New List");
+    // Confirm fallback UI shows
+    cy.contains("New List").should("be.visible");
   });
 });

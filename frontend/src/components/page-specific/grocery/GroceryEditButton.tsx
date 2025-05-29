@@ -3,8 +3,6 @@
 import { JSX, useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import {
   Dialog,
   DialogContent,
@@ -55,10 +53,7 @@ import { showToast } from "@/app/providers";
 import { TOAST_SEVERITY } from "@/lib/constants/ui";
 import { capitalizeTitle } from "@/lib/utils/general";
 import { useAddListForm } from "@/lib/hooks";
-import { z } from "zod";
-import { AddListFormSchema } from "@/lib/validation/forms/schemas";
-
-type AddListFormValues = z.infer<typeof AddListFormSchema>;
+import type { AddListFormValues } from "@/lib/validation/forms/schemas";
 
 export default function GroceryEditButton({
   children,
@@ -70,22 +65,24 @@ export default function GroceryEditButton({
   const currentList = useGroceryStore((state) => state.currentList);
   const setCurrentList = useGroceryStore((state) => state.setCurrentList);
   const currentCategories = useSavedItemsStore(
-    (state) => state.currentCategories,
+    (state) => state.currentCategories
   );
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { resolver, defaultValues } = useAddListForm({title: currentList ? currentList?.title : ""});
+  const { resolver, defaultValues } = useAddListForm({
+    title: currentList ? currentList?.title : "",
+  });
 
   const form = useForm<AddListFormValues>({
     resolver,
     defaultValues,
   });
 
-
   useEffect(() => {
     if (currentList && isOpen) {
       form.setValue("title", currentList.title);
+      form.setValue("category", "Choose...");
     }
   }, [currentList, isOpen]);
 
@@ -103,7 +100,7 @@ export default function GroceryEditButton({
   const { removeAllGroceryListFromAllUsers } =
     useRemoveAllGroceryListFromAllUsers();
 
-  const onSubmit = async (values: AddListFormSchema) => {
+  const onSubmit = async (values: AddListFormValues) => {
     const { title, category } = values;
     const currentGroceryList = currentList;
     if (!currentGroceryList) return;
@@ -121,7 +118,7 @@ export default function GroceryEditButton({
             TOAST_SEVERITY.SUCCESS,
             "List Updated",
             "Grocery list updated successfully",
-            3000,
+            3000
           );
           setCurrentList(updatedList);
         }
@@ -137,7 +134,7 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.SUCCESS,
           "Saved",
           "Grocery list saved successfully",
-          3000,
+          3000
         );
       } else {
         const newSavedList = {
@@ -154,7 +151,7 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.SUCCESS,
           "List Created",
           "Grocery list created successfully",
-          3000,
+          3000
         );
       }
 
@@ -176,7 +173,7 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.INFO,
           "Deleting List",
           "Deleting grocery list...",
-          3000,
+          3000
         );
         await removeAllGroceryListFromAllUsers(currentList._id.toString());
         await refetchCurrentListId();
@@ -187,7 +184,7 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.SUCCESS,
           "List Deleted",
           "Grocery list deleted successfully",
-          3000,
+          3000
         );
         setCurrentList({
           _id: null,
@@ -202,7 +199,7 @@ export default function GroceryEditButton({
           TOAST_SEVERITY.ERROR,
           "Error",
           error.message || "Error deleting list",
-          3000,
+          3000
         );
       },
     });
@@ -217,6 +214,7 @@ export default function GroceryEditButton({
             e.stopPropagation();
             setIsOpen(true);
           }}
+          data-testid="edit-grocery-list"
         >
           <MdEdit className="text-foreground" />
           {children}
@@ -231,10 +229,7 @@ export default function GroceryEditButton({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -242,7 +237,11 @@ export default function GroceryEditButton({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter title" {...field} />
+                    <Input
+                      data-testid="list-title"
+                      placeholder="Enter title"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -257,16 +256,18 @@ export default function GroceryEditButton({
                   <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger data-testid="select-category">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {currentCategories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {capitalizeTitle(cat)}
-                        </SelectItem>
-                      ))}
+                      {currentCategories
+                        .filter((cat) => cat !== "My Items")
+                        .map((cat) => (
+                          <SelectItem key={cat} value={cat}>
+                            {capitalizeTitle(cat)}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -275,16 +276,18 @@ export default function GroceryEditButton({
             />
 
             <DialogFooter className="flex w-full justify-between gap-4">
+              {currentList?._id && (
+                <Button
+                  variant="destructive"
+                  type="button"
+                  onClick={handleDeleteList}
+                  data-testid="list-delete"
+                >
+                  Delete
+                </Button>
+              )}
               <Button type="submit" data-testid="list-submit">
                 Submit
-              </Button>
-              <Button
-                variant="destructive"
-                type="button"
-                onClick={handleDeleteList}
-                data-testid="list-delete"
-              >
-                Delete
               </Button>
             </DialogFooter>
           </form>

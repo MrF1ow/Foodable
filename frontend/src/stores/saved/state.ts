@@ -1,5 +1,9 @@
-import { set } from "node_modules/cypress/types/lodash";
 import { create } from "zustand";
+
+type Category = {
+  name: string;
+  edit?: boolean;
+};
 
 export type SavedItemsState = {
   searchQuery: string;

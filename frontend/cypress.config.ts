@@ -6,6 +6,10 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return clerkSetup({ config });
     },
+    specPattern: [
+      "cypress/e2e/**/*.cy.{js,ts,jsx,tsx}",
+      "cypress/integration/**/*.cy.{js,ts,jsx,tsx}",
+    ],
     baseUrl: "http://localhost:8000",
     viewportHeight: 1080,
     viewportWidth: 1920,
@@ -17,7 +21,7 @@ export default defineConfig({
     },
   },
   env: {
-    USER_SIGN_IN_EMAIL: 'foodable_user@gmail.com',
-    USER_SIGN_IN_PASSWORD: 'IloveFood#12'
-  }
+    USER_SIGN_IN_EMAIL: "cypress_guy@gmail.com",
+    USER_SIGN_IN_PASSWORD: "IloveCypress#12",
+  },
 });
