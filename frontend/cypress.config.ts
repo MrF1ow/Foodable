@@ -17,7 +17,7 @@ export default defineConfig({
     },
   },
   env: {
-    USER_SIGN_IN_EMAIL: 'foodable_user@gmail.com',
-    USER_SIGN_IN_PASSWORD: 'IloveFood#12'
-  }
+    USER_SIGN_IN_EMAIL: "cypress_guy@gmail.com",
+    USER_SIGN_IN_PASSWORD: "IloveCypress#12",
+  },
 });

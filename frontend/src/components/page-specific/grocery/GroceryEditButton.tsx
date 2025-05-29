@@ -213,6 +213,7 @@ export default function GroceryEditButton({
             e.stopPropagation();
             setIsOpen(true);
           }}
+          data-testid="edit-grocery-list"
         >
           <MdEdit className="text-foreground" />
           {children}
@@ -235,7 +236,11 @@ export default function GroceryEditButton({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter title" {...field} />
+                    <Input
+                      data-testid="list-title"
+                      placeholder="Enter title"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -250,7 +255,7 @@ export default function GroceryEditButton({
                   <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger data-testid="select-category">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                     </FormControl>
