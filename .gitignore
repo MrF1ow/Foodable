@@ -39,3 +39,4 @@ build/
 *.db
 
 node_modules/
+.vercel

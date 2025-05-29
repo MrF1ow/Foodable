@@ -8,30 +8,1852 @@
 	},
 	"item": [
 		{
-			"name": "User",
+			"name": "Registered User",
 			"item": [
 				{
-					"name": "Create User",
-					"event": [
+					"name": "Preferences",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 201\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(201);\r",
-									"});\r",
-									"\r",
-									"const userId = pm.response.json()._id;\r",
-									"if (userId !== null) {\r",
-									"    pm.environment.set(\"userID\", userId);\r",
-									"}\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
+							"name": "Update User Preferences",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response message is correct\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"\r",
+											"    pm.expect(jsonData).to.have.property(\"message\", \"Request has been processed successfully.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"gluten-free\",\r\n            \"vegetarian\"\r\n        ],\r\n        \"budget\": 75,\r\n        \"foodTypePreferences\": [\r\n            \"Thai\",\r\n            \"Mediterranean\",\r\n            \"Vegan\"\r\n        ]\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/preferences",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"preferences"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fetch User Preferences",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response has required preference fields\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"\r",
+											"    pm.expect(jsonData).to.have.property(\"preferences\");\r",
+											"    pm.expect(jsonData.preferences).to.have.property(\"dietaryRestrictions\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonData.preferences).to.have.property(\"budget\").that.is.a(\"number\");\r",
+											"    pm.expect(jsonData.preferences).to.have.property(\"foodTypePreferences\").that.is.an(\"array\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/preferences",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"preferences"
+									]
+								}
+							},
+							"response": []
 						}
-					],
+					]
+				},
+				{
+					"name": "Banner",
+					"item": [
+						{
+							"name": "Get User Current Banner",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response is a valid ObjectId\", function () {\r",
+											"    const raw = pm.response.text();\r",
+											"    const id = raw.replace(/^\"|\"$/g, \"\");\r",
+											"\r",
+											"    pm.expect(id).to.match(/^[a-f\\d]{24}$/i);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/banner",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"banner"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload Banner Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response contains _id and success message\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"\r",
+											"    // Validate _id exists and is a valid ObjectId\r",
+											"    pm.expect(jsonData).to.have.property(\"_id\");\r",
+											"    pm.expect(jsonData._id).to.match(/^[a-f\\d]{24}$/i);\r",
+											"\r",
+											"    // Validate message\r",
+											"    pm.expect(jsonData).to.have.property(\"message\", \"Request has been processed successfully.\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "./assets/background.jpg"
+										},
+										{key
+											"key": "sourceId",
+											"value": "{{userID}}",
+											"type": "text"
+										},
+										{
+											"key": "collectionName",
+											"value": "users",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/images",
+									"host": [
+										"{{app_url}}{{user_url}}"response
+									],
+									"path": [
+										"images"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Grocery",
+					"item": [
+						{
+							"name": "Current",
+							"item": [
+								{
+									"name": "Get Current List ID",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Response is a valid ObjectId\", function () {\r",
+													"    const raw = pm.response.text();\r",
+													"    const id = raw.replace(/^\"|\"$/g, \"\");\r",
+													"\r",
+													"    pm.expect(id).to.match(/^[a-f\\d]{24}$/i);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/grocery/current",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"grocery",
+												"current"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create Grocery List",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Response status code is 201\", function () {\r",
+													"    pm.expect(pm.response.code).to.equal(201);\r",
+													"});\r",
+													"\r",
+													"const groceryListId = pm.response.json()._id;\r",
+													"if (groceryListId !== null) {\r",
+													"    pm.environment.set(\"groceryListID\", groceryListId)\r",
+													"}"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/grocery",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"grocery"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Set Current List ID",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Request has been processed successfully\", function () {\r",
+													"    pm.response.to.have.status(200); // Ensure status code is 200 (or whatever status is expected)\r",
+													"    const message = pm.response.json().message;\r",
+													"\r",
+													"    pm.expect(message).to.be.oneOf([\r",
+													"        'Request has been processed successfully.',\r",
+													"        'No changes made. Resource is already up to date.'\r",
+													"    ]);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"_id\": \"{{groceryListID}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/grocery/current",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"grocery",
+												"current"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Get Grocery List By ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Grocery List ID in query matches the ID in response\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    const groceryListIdFromQuery = pm.request.url.query.get(\"id\");\r",
+											"\r",
+											"    pm.expect(jsonResponse._id).to.equal(groceryListIdFromQuery);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response contains grocery list fields\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"title\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"items\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"timestamp\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/grocery?id={{groceryListID}}",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"grocery"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{groceryListID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Grocery List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Grocery List title is updated to High Protein - Hybrid\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.title).to.equal(\"High Protein - Hybrid\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Items are updated correctly\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"\r",
+											"    // Check the names of the items\r",
+											"    pm.expect(jsonResponse.items[0]).to.have.property(\"name\", \"Chicken Breast\");\r",
+											"    pm.expect(jsonResponse.items[1]).to.have.property(\"name\", \"Eggs\");\r",
+											"    pm.expect(jsonResponse.items[2]).to.have.property(\"name\", \"Tofu\");\r",
+											"\r",
+											"    // Check the quantities of the items\r",
+											"    pm.expect(jsonResponse.items[0]).to.have.property(\"quantity\", 2);\r",
+											"    pm.expect(jsonResponse.items[1]).to.have.property(\"quantity\", 12);\r",
+											"    pm.expect(jsonResponse.items[2]).to.have.property(\"quantity\", 1);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"_id\": \"{{groceryListID}}\",\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"High Protein - Hybrid\",\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Chicken Breast\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 12,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"name\": \"Tofu\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/grocery",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"grocery"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Lists Metadata",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response should be an array with valid objects\", function () {\r",
+											"    // Ensure the response body is an array\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response).to.be.an('array');\r",
+											"\r",
+											"    // If the array is not empty, validate its contents\r",
+											"    if (response.length > 0) {\r",
+											"        response.forEach(item => {\r",
+											"            pm.expect(item).to.have.property('_id').that.is.a('string');\r",
+											"            pm.expect(item).to.have.property('title').that.is.a('string');\r",
+											"            pm.expect(item).to.have.property('type').that.is.a('string');\r",
+											"        });\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/grocery?metadata=true",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"grocery"
+									],
+									"query": [
+										{
+											"key": "metadata",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Complete Lists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response should be an array with valid objects\", function () {\r",
+											"    const response = pm.response.json();\r",
+											"    pm.expect(response).to.be.an('array');\r",
+											"\r",
+											"    // Check if array is not empty and validate each item structure\r",
+											"    if (response.length > 0) {\r",
+											"        response.forEach(item => {\r",
+											"            // Ensure basic properties are present and valid\r",
+											"            pm.expect(item).to.have.property('_id').that.is.a('string');\r",
+											"            pm.expect(item).to.have.property('creatorId').that.is.a('string');\r",
+											"            pm.expect(item).to.have.property('title').that.is.a('string');\r",
+											"            pm.expect(item).to.have.property('timestamp').that.is.a('string');\r",
+											"            \r",
+											"            // Validate items array (if exists)\r",
+											"            pm.expect(item).to.have.property('items').that.is.an('array');\r",
+											"            \r",
+											"            // If there are items, validate their structure\r",
+											"            if (item.items.length > 0) {\r",
+											"                item.items.forEach(subItem => {\r",
+											"                    pm.expect(subItem).to.have.property('name').that.is.a('string');\r",
+											"                    pm.expect(subItem).to.have.property('quantity').that.is.a('number');\r",
+											"                    pm.expect(subItem).to.have.property('unit').that.is.a('string');\r",
+											"                    pm.expect(subItem).to.have.property('category').that.is.a('string');\r",
+											"                    pm.expect(subItem).to.have.property('checked').that.is.a('boolean');\r",
+											"                });\r",
+											"            }\r",
+											"\r",
+											"            // If category exists, validate it\r",
+											"            if (item.hasOwnProperty('category')) {\r",
+											"                pm.expect(item.category).to.be.a('string');\r",
+											"            }\r",
+											"        });\r",
+											"    }\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/grocery",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"grocery"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Grocery List",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Message is correct\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.message).to.equal(\"Request has been processed successfully.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{groceryListID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/grocery",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"grocery"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Recipes",
+					"item": [
+						{
+							"name": "Create Cake Recipe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 201\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(201);\r",
+											"});\r",
+											"\r",
+											"console.log(pm.response.json());\r",
+											"\r",
+											"pm.test(\"Response contains recipe fields\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"title\", \"Chocolate Cake\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"description\", \"A rich and moist chocolate cake perfect for any occasion.\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"ingredients\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"instructions\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"priceApproximation\", 15.99);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"const recipeId = pm.response.json()._id;\r",
+											"if (recipeId !== null) {\r",
+											"    pm.environment.set(\"recipeID_1\", recipeId);\r",
+											"}\r",
+											"const creatorId = pm.response.json().creatorId;\r",
+											"if (creatorId !== null) {\r",
+											"    pm.environment.set(\"creatorID\", creatorId);\r",
+											"}\r",
+											"const recipeTitle = pm.response.json().title;\r",
+											"if (recipeTitle !== null) {\r",
+											"    pm.environment.set(\"recipeTitle_cake\", recipeTitle);\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Chocolate Cake\",\r\n    \"description\": \"A rich and moist chocolate cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Cocoa Powder\",\r\n            \"quantity\": 0.5,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Dairy\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 30-35 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [],\r\n    \"averageRating\": 0,\r\n    \"priceApproximation\": 15.99,\r\n    \"timeApproximation\": 45\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/recipes/",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"recipes",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload Recipe Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response contains _id and success message\", function () {\r",
+											"    const jsonData = pm.response.json();\r",
+											"\r",
+											"    // Validate _id exists and is a valid ObjectId\r",
+											"    pm.expect(jsonData).to.have.property(\"_id\");\r",
+											"    pm.expect(jsonData._id).to.match(/^[a-f\\d]{24}$/i);\r",
+											"\r",
+											"    pm.environment.set(\"recipeImageId\", jsonData._id);\r",
+											"\r",
+											"    // Validate message\r",
+											"    pm.expect(jsonData).to.have.property(\"message\", \"Request has been processed successfully.\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "./assets/chocolate_cake.jpg"
+										},
+										{
+											"key": "sourceId",
+											"value": "{{recipeID_1}}",
+											"type": "text"
+										},
+										{
+											"key": "collectionName",
+											"value": "recipes",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/images",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"images"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Recipe By ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Recipe ID in query matches the ID in response\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    const recipeIdFromQuery = pm.request.url.query.get(\"id\");\r",
+											"    \r",
+											"    pm.expect(jsonResponse._id).to.equal(recipeIdFromQuery);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Image ID in response matches the recipeImageId environment variable\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"\r",
+											"    const imageIdFromResponse = jsonResponse.imageId;\r",
+											"    const recipeImageId = pm.environment.get(\"recipeImageId\");\r",
+											"\r",
+											"    pm.expect(imageIdFromResponse).to.equal(recipeImageId);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response contains recipe fields\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"title\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"description\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"ingredients\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"instructions\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"userRatings\").that.is.an(\"array\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"averageRating\");\r",
+											"    pm.expect(jsonResponse).to.have.property(\"priceApproximation\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}/api/recipes?id={{recipeID_1}}",
+									"host": [
+										"{{app_url}}"
+									],
+									"path": [
+										"api",
+										"recipes"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{recipeID_1}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Recipe By Name",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}/api/recipes?title={{recipeTitle_cake}}",
+									"host": [
+										"{{app_url}}"
+									],
+									"path": [
+										"api",
+										"recipes"
+									],
+									"query": [
+										{
+											"key": "title",
+											"value": "{{recipeTitle_cake}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Recipe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Recipe title is updated to Vanilla Cake\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.title).to.equal(\"Vanilla Cake\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Recipe description is updated\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.description).to.equal(\"A rich and moist vanilla cake perfect for any occasion.\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Ingredients are updated correctly\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"\r",
+											"    pm.expect(jsonResponse.ingredients).to.have.lengthOf(3);\r",
+											"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"name\", \"Flour\");\r",
+											"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"name\", \"Sugar\");\r",
+											"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"name\", \"Eggs\");\r",
+											"\r",
+											"    // Check quantities\r",
+											"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"quantity\", 2);\r",
+											"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"quantity\", 1);\r",
+											"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"quantity\", 2);\r",
+											"\r",
+											"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"unit\", \"cup\");\r",
+											"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"unit\", \"cup\");\r",
+											"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"unit\", \"pcs\");\r",
+											"\r",
+											"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"category\", \"Bakery\");\r",
+											"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"category\", \"Bakery\");\r",
+											"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"category\", \"Dairy\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"User rating is updated correctly\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.userRatings).to.have.lengthOf(1); // 1 user rating in the request\r",
+											"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"userId\", \"6483c9f2e2e405a62ef0d935\");\r",
+											"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"rating\", 5);\r",
+											"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"comment\", \"This is the best vanilla cake I've ever had!\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"_id\": \"{{recipeID_1}}\",\r\n    \"creatorId\": \"{{creatorID}}\",\r\n    \"title\": \"Vanilla Cake\",\r\n    \"description\": \"A rich and moist vanilla cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Dairy\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C)\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 25-30 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [\r\n        {\r\n            \"userId\": \"6483c9f2e2e405a62ef0d935\",\r\n            \"rating\": 5,\r\n            \"comment\": \"This is the best vanilla cake I've ever had!\"\r\n        }\r\n    ],\r\n    \"averageRating\": 0,\r\n    \"priceApproximation\": 15.99,\r\n    \"timeApproximation\": 45\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/recipes",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"recipes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Recipe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Message is correct\", function () {\r",
+											"    const jsonResponse = pm.response.json();\r",
+											"    pm.expect(jsonResponse.message).to.equal(\"Request has been processed successfully.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{recipeID_1}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/recipes",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"recipes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Saved Items",
+					"item": [
+						{
+							"name": "Categories",
+							"item": [
+								{
+									"name": "Get All Categories",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/categories",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"categories"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Category",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/categories",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"categories"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Category",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/categories",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"categories"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Items",
+							"item": [
+								{
+									"name": "Get All Saved Items",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/items",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"items"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Save Recipe",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/items",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"items"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Save Grocery List",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/items",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"items"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Saved Item",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/items",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"items"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Saved Item",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/saved-items/items",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"saved-items",
+												"items"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Settings",
+					"item": [
+						{
+							"name": "Fetch Settings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/settings",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"settings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Settings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/settings",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"settings"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Followers",
+							"item": [
+								{
+									"name": "Fetch All Followers",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/users/followers",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"users",
+												"followers"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Following",
+							"item": [
+								{
+									"name": "Fetch All Following",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/users/following",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"users",
+												"following"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Follow User",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/users/following",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"users",
+												"following"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "New Request",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{user_clerk_token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{app_url}}{{user_url}}/users/following",
+											"host": [
+												"{{app_url}}{{user_url}}"
+											],
+											"path": [
+												"users",
+												"following"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 201\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(201);\r",
+											"});\r",
+											"\r",
+											"const userId = pm.response.json()._id;\r",
+											"if (userId !== null) {\r",
+											"    pm.environment.set(\"userID\", userId);\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"clerkId\": \"user_2u807fvhXIwJeXtPRefV7EtIxef\",\r\n    \"username\": \"jane_smithy\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"dark\"\r\n    },\r\n    \"imageId\": null,\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"vegan\",\r\n            \"gluten-free\"\r\n        ],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/users/",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User By ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/users?id={{userID}}",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "{{userID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{userID}}\",\r\n    \"username\": \"Jane the Virgin\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"light\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n     \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"currentGroceryList\": {},\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}/api/users",
+									"host": [
+										"{{app_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{userID}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}/api/users",
+									"host": [
+										"{{app_url}}"
+									],
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Images",
+					"item": [
+						{
+							"name": "Upload Image",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const imageId = pm.response.json()._id;\r",
+											"if (imageId !== null) {\r",
+											"    pm.environment.set(\"imageID\", imageId);\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "./assets/blueberry_muffin.jpg"
+										},
+										{
+											"key": "sourceId",
+											"value": "{{recipeID_1}}",
+											"type": "text"
+										},
+										{
+											"key": "collectionName",
+											"value": "recipes",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/images",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"images"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_clerk_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"imageId\": \"{{imageID}}\",\r\n    \"collectionName\": \"recipes\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{app_url}}{{user_url}}/images",
+									"host": [
+										"{{app_url}}{{user_url}}"
+									],
+									"path": [
+										"images"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "AI Chat",
+			"item": [
+				{
+					"name": "Search Query Results",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -47,7 +1869,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"clerkId\": \"user_2u807fvhXIwJeXtPRefV7EtIxef\",\r\n    \"username\": \"jane_smithy\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"dark\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [\r\n            \"vegan\",\r\n            \"gluten-free\"\r\n        ],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n    \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
+							"raw": "{\r\n    \"query\": \"what are some good ingredients for a cake\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -55,29 +1877,65 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_url}}{{user_url}}/users/",
+							"raw": "{{app_url}}/api/chat",
 							"host": [
-								"{{app_url}}{{user_url}}"
+								"{{app_url}}"
 							],
 							"path": [
-								"users",
-								""
+								"api",
+								"chat"
 							]
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "Images",
+			"item": [
 				{
-					"name": "Get User By ID",
+					"name": "Retrieve Image by Source",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{app_url}}{{guest_url}}/images?id={{imageID}}",
+							"host": [
+								"{{app_url}}{{guest_url}}"
+							],
+							"path": [
+								"images"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{imageID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Kroger",
+			"item": [
+				{
+					"name": "Access Token Test",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									""
+									"const accessToken = pm.response.json().access_token;\r",
+									"if (accessToken !== null) {\r",
+									"    pm.environment.set(\"kroger-access-token\", accessToken)\r",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -86,29 +1944,86 @@
 					],
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic Zm9vZGFibGUtMjQzMjYxMjQzMDM0MjQ1MDJlNjU2YTYyNGM2Njc2NmM0MjcyNmQ0NjQzNjI0ODRkNWE2Mzc4NDY0Zjc4NzU2MTdhMzk2NDZkNTE1YTRhMzczMTYzNTM2MjY0Mzg3NzMwNmU3MzU1Njk0ZDU4NzM2ZjYzNzYzNTY5MTk4NDI0NjIxOTI0MjM2MDc2MTpHRG1BWDRHZmhad0locUx5TlFiTkxmZXRUQmJ0MlZ4MGhTQmRPcHc4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
 								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "product.compact",
+									"type": "text"
 								}
 							]
 						},
-						"method": "GET",
-						"header": [],
 						"url": {
-							"raw": "{{app_url}}{{user_url}}/users?id={{userID}}",
+							"raw": "https://api-ce.kroger.com/v1/connect/oauth2/token",
+							"protocol": "https",
 							"host": [
-								"{{app_url}}{{user_url}}"
+								"api-ce",
+								"kroger",
+								"com"
 							],
 							"path": [
-								"users"
+								"v1",
+								"connect",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Location Test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-ce.kroger.com/v1/locations?filter.zipCode.near=97330\n",
+							"protocol": "https",
+							"host": [
+								"api-ce",
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"locations"
 							],
 							"query": [
 								{
-									"key": "id",
-									"value": "{{userID}}"
+									"key": "filter.zipCode.near",
+									"value": "97330\n"
 								}
 							]
 						}
@@ -116,56 +2031,100 @@
 					"response": []
 				},
 				{
-					"name": "Update User",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
+					"name": "Get Products Test",
 					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{userID}}\",\r\n    \"username\": \"Jane the Virgin\",\r\n    \"email\": \"jane.smith@example.com\",\r\n    \"settings\": {\r\n        \"theme\": \"light\"\r\n    },\r\n    \"preferences\": {\r\n        \"dietaryRestrictions\": [],\r\n        \"allergies\": [\r\n            \"soy\",\r\n            \"dairy\"\r\n        ]\r\n    },\r\n     \"savedItems\": {\r\n        \"recipes\": [],\r\n        \"groceryLists\": []\r\n    },\r\n    \"currentGroceryList\": {},\r\n    \"createdRecipes\": [],\r\n    \"groceryLists\": [],\r\n    \"following\": [],\r\n    \"followers\": []\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
 							}
-						},
+						],
 						"url": {
-							"raw": "{{app_url}}/api/users",
+							"raw": "https://api-ce.kroger.com/v1/products?filter.term=milk&filter.locationId=70100007",
+							"protocol": "https",
 							"host": [
-								"{{app_url}}"
+								"api-ce",
+								"kroger",
+								"com"
 							],
 							"path": [
-								"api",
-								"users"
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "filter.term",
+									"value": "milk"
+								},
+								{
+									"key": "filter.locationId",
+									"value": "70100007"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete User",
+					"name": "Get Products at Store",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-ce.kroger.com/v1/products?filter.term=milk&filter.locationId=70500849",
+							"protocol": "https",
+							"host": [
+								"api-ce",
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "filter.term",
+									"value": "milk"
+								},
+								{
+									"key": "filter.locationId",
+									"value": "70500849"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Production Access Token Test",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});"
+									"const productionAccessToken = pm.response.json().access_token;\r",
+									"if (productionAccessToken !== null) {\r",
+									"    pm.environment.set(\"kroger-production-access-token\", productionAccessToken)\r",
+									"}"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -173,25 +2132,131 @@
 						}
 					],
 					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{userID}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic Zm9vZGFibGUtcHJvZHVjdGlvbi0yNDMyNjEyNDMwMzQyNDczNjI2NzcyNTM0ZjMxNzA0ZDRhNDkzNzVhNTA1YTUwMzI2ZTUyNDE3NDRmNjM1NDZkNTQzMTVhNmUzNjZhNTYzNDZiNWE0Zjc0NGM1NDY1NjczMDY2NDg0MzUwNmM0YzZjNjM1OTQ5NzE4MDE5MTM0NTQxMDgzMDc3NTgyOlFvUXBKa1VmT09JVE84SF93TUF4SE5KWWg5NU83UEtlNW9BdnhuUzY=",
+								"type": "text"
 							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "product.compact",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
-							"raw": "{{app_url}}/api/users",
+							"raw": "https://api.kroger.com/v1/connect/oauth2/token",
+							"protocol": "https",
 							"host": [
-								"{{app_url}}"
+								"api",
+								"kroger",
+								"com"
 							],
 							"path": [
+								"v1",
+								"connect",
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Production Get Products Test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-production-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.kroger.com/v1/products?filter.term=Milk&filter.locationId=70100070",
+							"protocol": "https",
+							"host": [
 								"api",
-								"users"
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "filter.term",
+									"value": "Milk"
+								},
+								{
+									"key": "filter.locationId",
+									"value": "70100070"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Production Get Product By ID Test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{kroger-production-access-token}}",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.kroger.com/v1/products?filter.productId=0001111050725&filter.locationId=70100070",
+							"protocol": "https",
+							"host": [
+								"api",
+								"kroger",
+								"com"
+							],
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "filter.productId",
+									"value": "0001111050725"
+								},
+								{
+									"key": "filter.locationId",
+									"value": "70100070"
+								}
 							]
 						}
 					},
@@ -202,196 +2267,6 @@
 		{
 			"name": "Recipes",
 			"item": [
-				{
-					"name": "Create Cake Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 201\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(201);\r",
-									"});\r",
-									"\r",
-									"console.log(pm.response.json());\r",
-									"\r",
-									"pm.test(\"Response contains recipe fields\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"title\", \"Chocolate Cake\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"description\", \"A rich and moist chocolate cake perfect for any occasion.\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"ingredients\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"instructions\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"priceApproximation\", 15.99);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"const recipeId = pm.response.json()._id;\r",
-									"if (recipeId !== null) {\r",
-									"    pm.environment.set(\"recipeID_1\", recipeId);\r",
-									"}\r",
-									"const creatorId = pm.response.json().creatorId;\r",
-									"if (creatorId !== null) {\r",
-									"    pm.environment.set(\"creatorID\", creatorId);\r",
-									"}\r",
-									"const recipeTitle = pm.response.json().title;\r",
-									"if (recipeTitle !== null) {\r",
-									"    pm.environment.set(\"recipeTitle_cake\", recipeTitle);\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"creatorId\": \"{{userID}}\",\r\n    \"title\": \"Chocolate Cake\",\r\n    \"description\": \"A rich and moist chocolate cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Cocoa Powder\",\r\n            \"quantity\": 0.5,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Dairy\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C).\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 30-35 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [],\r\n    \"averageRating\": 0,\r\n    \"priceApproximation\": 15.99,\r\n    \"timeApproximation\": 45\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/recipes/",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"recipes",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Recipe By ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Recipe ID in query matches the ID in response\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    const recipeIdFromQuery = pm.request.url.query.get(\"id\");\r",
-									"    \r",
-									"    pm.expect(jsonResponse._id).to.equal(recipeIdFromQuery);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Response contains recipe fields\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"title\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"description\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"ingredients\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"instructions\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"userRatings\").that.is.an(\"array\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"averageRating\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"priceApproximation\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/recipes?id={{recipeID_1}}",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"recipes"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{recipeID_1}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Recipe By Name",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}/api/recipes?title={{recipeTitle_cake}}",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"recipes"
-							],
-							"query": [
-								{
-									"key": "title",
-									"value": "{{recipeTitle_cake}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Create Blueberry Muffins Recipe",
 					"event": [
@@ -499,6 +2374,41 @@
 					"response": []
 				},
 				{
+					"name": "Get Recipe By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{app_url}}/api/recipes",
+							"host": [
+								"{{app_url}}"
+							],
+							"path": [
+								"api",
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get All Recipe Metadata",
 					"request": {
 						"auth": {
@@ -524,836 +2434,12 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Update Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Recipe title is updated to Vanilla Cake\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.title).to.equal(\"Vanilla Cake\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Recipe description is updated\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.description).to.equal(\"A rich and moist vanilla cake perfect for any occasion.\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Ingredients are updated correctly\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"\r",
-									"    pm.expect(jsonResponse.ingredients).to.have.lengthOf(3);\r",
-									"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"name\", \"Flour\");\r",
-									"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"name\", \"Sugar\");\r",
-									"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"name\", \"Eggs\");\r",
-									"\r",
-									"    // Check quantities\r",
-									"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"quantity\", 2);\r",
-									"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"quantity\", 1);\r",
-									"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"quantity\", 2);\r",
-									"\r",
-									"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"unit\", \"cup\");\r",
-									"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"unit\", \"cup\");\r",
-									"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"unit\", \"pcs\");\r",
-									"\r",
-									"    pm.expect(jsonResponse.ingredients[0]).to.have.property(\"category\", \"Bakery\");\r",
-									"    pm.expect(jsonResponse.ingredients[1]).to.have.property(\"category\", \"Bakery\");\r",
-									"    pm.expect(jsonResponse.ingredients[2]).to.have.property(\"category\", \"Dairy\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"User rating is updated correctly\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.userRatings).to.have.lengthOf(1); // 1 user rating in the request\r",
-									"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"userId\", \"6483c9f2e2e405a62ef0d935\");\r",
-									"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"rating\", 5);\r",
-									"    pm.expect(jsonResponse.userRatings[0]).to.have.property(\"comment\", \"This is the best vanilla cake I've ever had!\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{recipeID_1}}\",\r\n    \"creatorId\": \"{{creatorID}}\",\r\n    \"title\": \"Vanilla Cake\",\r\n    \"description\": \"A rich and moist vanilla cake perfect for any occasion.\",\r\n    \"ingredients\": [\r\n        {\r\n            \"name\": \"Flour\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Sugar\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"cup\",\r\n            \"category\": \"Bakery\"\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Dairy\"\r\n        }\r\n    ],\r\n    \"instructions\": [\r\n        \"Preheat the oven to 350°F (175°C)\",\r\n        \"Mix the dry ingredients in a large bowl.\",\r\n        \"Add wet ingredients and mix until smooth.\",\r\n        \"Pour the batter into a greased baking pan.\",\r\n        \"Bake for 25-30 minutes or until a toothpick comes out clean.\"\r\n    ],\r\n    \"userRatings\": [\r\n        {\r\n            \"userId\": \"6483c9f2e2e405a62ef0d935\",\r\n            \"rating\": 5,\r\n            \"comment\": \"This is the best vanilla cake I've ever had!\"\r\n        }\r\n    ],\r\n    \"averageRating\": 0,\r\n    \"priceApproximation\": 15.99,\r\n    \"timeApproximation\": 45\r\n}\r\n\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/recipes",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"recipes"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Recipes by Creator",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Response body is an array\", function () {\r",
-									"    pm.expect(pm.response.json()).to.be.an('array');\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Each recipe has the required fields\", function () {\r",
-									"    const response = pm.response.json();\r",
-									"    response.forEach(recipe => {\r",
-									"        pm.expect(recipe).to.have.property('_id');\r",
-									"        pm.expect(recipe).to.have.property('creatorId');\r",
-									"        pm.expect(recipe).to.have.property('title');\r",
-									"        pm.expect(recipe).to.have.property('description');\r",
-									"        pm.expect(recipe).to.have.property('ingredients');\r",
-									"        pm.expect(recipe).to.have.property('instructions');\r",
-									"        pm.expect(recipe).to.have.property('userRatings');\r",
-									"        pm.expect(recipe).to.have.property('averageRating');\r",
-									"        pm.expect(recipe).to.have.property('priceApproximation');\r",
-									"        pm.expect(recipe).to.have.property('timestamp');\r",
-									"    });\r",
-									"});\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}/api/recipes?creatorId={{creatorID}}",
-							"host": [
-								"{{app_url}}"
-							],
-							"path": [
-								"api",
-								"recipes"
-							],
-							"query": [
-								{
-									"key": "creatorId",
-									"value": "{{creatorID}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Message is correct\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.message).to.equal(\"Recipe Deleted\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Correct recipe ID is returned after deletion\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    const parsedBody = JSON.parse(pm.request.body.raw);  \r",
-									"    const deletedRecipeId = parsedBody.id;  \r",
-									"\r",
-									"    pm.expect(jsonResponse.id).to.equal(deletedRecipeId);  \r",
-									"});\r",
-									"\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{recipeID_1}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/recipes",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"recipes"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Images",
-			"item": [
-				{
-					"name": "Upload Image For Chocolate Cake Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const imageId = pm.response.json()._id;\r",
-									"if (imageId !== null) {\r",
-									"    pm.environment.set(\"imageID\", imageId);\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "image",
-									"type": "file",
-									"src": "./assets/chocolate_cake.jpg"
-								},
-								{
-									"key": "sourceId",
-									"value": "{{recipeID_1}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/images",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"images"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Upload Image For Blueberry Recipe",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const imageId = pm.response.json()._id;\r",
-									"if (imageId !== null) {\r",
-									"    pm.environment.set(\"imageID\", imageId);\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "image",
-									"type": "file",
-									"src": "./assets/blueberry_muffin.jpg"
-								},
-								{
-									"key": "sourceId",
-									"value": "{{recipeID_2}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/images",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"images"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Retrieve Image by Source",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}{{guest_url}}/images?id={{imageID}}",
-							"host": [
-								"{{app_url}}{{guest_url}}"
-							],
-							"path": [
-								"images"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{imageID}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Image by Source",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/images?id={{imageID}}",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"images"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{imageID}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Grocery",
-			"item": [
-				{
-					"name": "Create Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 201\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(201);\r",
-									"});\r",
-									"\r",
-									"const groceryListId = pm.response.json()._id;\r",
-									"if (groceryListId !== null) {\r",
-									"    pm.environment.set(\"groceryListID\", groceryListId)\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"creatorId\": \"{{user_clerk_id}}\",\r\n    \"title\": \"High Protein\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Grocery List By ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Grocery List ID in query matches the ID in response\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    const groceryListIdFromQuery = pm.request.url.query.get(\"id\");\r",
-									"\r",
-									"    pm.expect(jsonResponse._id).to.equal(groceryListIdFromQuery);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Response contains grocery list fields\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse).to.have.property(\"creatorId\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"title\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"items\");\r",
-									"    pm.expect(jsonResponse).to.have.property(\"timestamp\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery?id={{groceryListID}}",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{groceryListID}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Grocery List title is updated to High Protein - Hybrid\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.title).to.equal(\"High Protein - Hybrid\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Items are updated correctly\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"\r",
-									"    // Check the names of the items\r",
-									"    pm.expect(jsonResponse.items[0]).to.have.property(\"name\", \"Chicken Breast\");\r",
-									"    pm.expect(jsonResponse.items[1]).to.have.property(\"name\", \"Eggs\");\r",
-									"    pm.expect(jsonResponse.items[2]).to.have.property(\"name\", \"Tofu\");\r",
-									"\r",
-									"    // Check the quantities of the items\r",
-									"    pm.expect(jsonResponse.items[0]).to.have.property(\"quantity\", 2);\r",
-									"    pm.expect(jsonResponse.items[1]).to.have.property(\"quantity\", 12);\r",
-									"    pm.expect(jsonResponse.items[2]).to.have.property(\"quantity\", 1);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"_id\": \"{{groceryListID}}\",\r\n    \"creatorId\": \"{{user_clerk_id}}\",\r\n    \"title\": \"High Protein - Hybrid\",\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Chicken Breast\",\r\n            \"quantity\": 2,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": true\r\n        },\r\n        {\r\n            \"name\": \"Eggs\",\r\n            \"quantity\": 12,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        },\r\n        {\r\n            \"name\": \"Tofu\",\r\n            \"quantity\": 1,\r\n            \"unit\": \"pcs\",\r\n            \"category\": \"Meat\",\r\n            \"checked\": false\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Lists Metadata",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery?metadata=true",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							],
-							"query": [
-								{
-									"key": "metadata",
-									"value": "true"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Complete Lists",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Grocery List",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Response status code is 200\", function () {\r",
-									"    pm.expect(pm.response.code).to.equal(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Message is correct\", function () {\r",
-									"    const jsonResponse = pm.response.json();\r",
-									"    pm.expect(jsonResponse.message).to.equal(\"Grocery List Deleted\");\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{user_clerk_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{groceryListID}}\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_url}}{{user_url}}/grocery",
-							"host": [
-								"{{app_url}}{{user_url}}"
-							],
-							"path": [
-								"grocery"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
 		{
 			"name": "Location",
 			"item": []
-		},
-		{
-			"name": "Kroger",
-			"item": [
-				{
-					"name": "Access Token Test",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const accessToken = pm.response.json().access_token;\r",
-									"if (accessToken !== null) {\r",
-									"    pm.environment.set(\"kroger-access-token\", accessToken)\r",
-									"}"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Basic Zm9vZGFibGUtMjQzMjYxMjQzMDM0MjQ1MDJlNjU2YTYyNGM2Njc2NmM0MjcyNmQ0NjQzNjI0ODRkNWE2Mzc4NDY0Zjc4NzU2MTdhMzk2NDZkNTE1YTRhMzczMTYzNTM2MjY0Mzg3NzMwNmU3MzU1Njk0ZDU4NzM2ZjYzNzYzNTY5MTk4NDI0NjIxOTI0MjM2MDc2MTpHRG1BWDRHZmhad0locUx5TlFiTkxmZXRUQmJ0MlZ4MGhTQmRPcHc4",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "client_credentials",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "https://api-ce.kroger.com/v1/connect/oauth2/token",
-							"protocol": "https",
-							"host": [
-								"api-ce",
-								"kroger",
-								"com"
-							],
-							"path": [
-								"v1",
-								"connect",
-								"oauth2",
-								"token"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Location Test",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{kroger-access-token}}",
-								"type": "text"
-							},
-							{
-								"key": "Cache-Control",
-								"value": "no-cache",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://api-ce.kroger.com/v1/locations?filter.zipCode.near=97339\n",
-							"protocol": "https",
-							"host": [
-								"api-ce",
-								"kroger",
-								"com"
-							],
-							"path": [
-								"v1",
-								"locations"
-							],
-							"query": [
-								{
-									"key": "filter.zipCode.near",
-									"value": "97339\n"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Products Test",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
-				}
-			]
 		}
 	]
 }
