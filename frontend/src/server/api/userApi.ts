@@ -1,4 +1,10 @@
-import { FollowMetadata, NewUser, User, UserPreferences, UserSettings } from "@/types/user";
+import {
+  FollowMetadata,
+  NewUser,
+  User,
+  UserPreferences,
+  UserSettings,
+} from "@/types/user";
 import fetchWithAuth from "../fetchInstance";
 
 export const UserApi = {
@@ -167,8 +173,8 @@ export const UserApi = {
   fetchSignInUserBannerId: async () => {
     try {
       const response = await fetchWithAuth("/user/banner", {
-        method: "GET"
-      })
+        method: "GET",
+      });
       return response;
     } catch (error) {
       console.error("Error Fetching User Banner Id", error);
@@ -180,8 +186,8 @@ export const UserApi = {
     try {
       const response = await fetchWithAuth("/user/banner", {
         method: "PUT",
-        body: JSON.stringify({ bannerId: id })
-      })
+        body: JSON.stringify({ bannerId: id }),
+      });
       return response;
     } catch (error) {
       console.error("Error Fetching User Banner Id", error);
@@ -192,12 +198,24 @@ export const UserApi = {
   fetchSelf: async () => {
     try {
       const response = await fetchWithAuth("/user", {
-        method: "GET"
-      })
+        method: "GET",
+      });
       return response;
     } catch (error) {
       console.error("Error fetching self:", error);
       throw error;
     }
-  }
+  },
+
+  fetchCreatedItems: async () => {
+    try {
+      const response = await fetchWithAuth("/user/saved-items", {
+        method: "GET",
+      });
+      return response;
+    } catch (error) {
+      console.error("Error fetching created items", error);
+      throw error;
+    }
+  },
 };

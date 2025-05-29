@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         groceryLists: user.savedItems.groceryLists || [], // Ensure groceryLists is an array
       },
       currentGroceryList: user.currentGroceryList || null,
-      createdRecipes: user.createdRecipes || [],
+      createdItems: user.createdItems || [],
       following: user.following || [],
       followers: user.followers || [],
       lastLogin: user.lastLogin || new Date(),

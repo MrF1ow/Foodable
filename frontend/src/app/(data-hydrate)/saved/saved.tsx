@@ -14,6 +14,7 @@ import { SavedItem } from "@/types/saved";
 import SavedDataFetcher from "@/components/data-fetchers/SavedDataFetcher";
 import GroceryListDataFetcher from "@/components/data-fetchers/GroceryDataFetcher";
 import { useSavedItemsStore } from "@/stores/saved/store";
+import { useFetchCreatedItems } from "@/server/hooks/userHooks";
 import { FORM_NAMES } from "@/lib/constants/forms";
 import LocationDataFetcher from "@/components/data-fetchers/LocationDataFetcher";
 import { useEffect } from "react";
@@ -37,6 +38,8 @@ export default function Saved() {
     (state) => state.setCurrentItemType
   );
 
+  const { createdItems } = useFetchCreatedItems({ enabled: true });
+
   const { savedItems } = useAllSavedItems({
     enabled: true,
   });
@@ -45,6 +48,9 @@ export default function Saved() {
     if (!savedItems?.recipes || !savedItems?.groceryLists) return;
 
     const allCategories = [
+      ...(createdItems
+        ? createdItems.map((item: SavedItem) => item.category)
+        : []),
       ...savedItems.recipes.map((item: SavedItem) => item.category),
       ...savedItems.groceryLists.map((item: SavedItem) => item.category),
     ];
@@ -54,9 +60,12 @@ export default function Saved() {
     );
 
     setCurrentCategories(categories);
-  }, [savedItems]);
+  }, [savedItems, createdItems]);
 
   const sortedSavedItems = currentCategories.map((category) => {
+    const createdData = createdItems
+      ? createdItems.filter((item: SavedItem) => item.category === category)
+      : [];
     const recipeItems = savedItems.recipes.filter(
       (item: SavedItem) => item.category === category
     );
@@ -65,7 +74,10 @@ export default function Saved() {
       (item: SavedItem) => item.category === category
     );
 
-    return { title: category, items: [...recipeItems, ...groceryItems] };
+    return {
+      title: category,
+      items: [...recipeItems, ...groceryItems, ...createdData],
+    };
   });
 
   const router = useRouter();
@@ -141,10 +153,12 @@ export default function Saved() {
             iconSize={isMobile ? 20 : 40}
             textSize={isMobile ? "1.5rem" : "2rem"}
             additional={
-              <SaveCategoryEditButton
-                category={title}
-                textSize={isMobile ? "1.5rem" : "2rem"}
-              />
+              title.toLowerCase() !== "my items" && (
+                <SaveCategoryEditButton
+                  category={title}
+                  textSize={isMobile ? "1.5rem" : "2rem"}
+                />
+              )
             }
           />
         ))}

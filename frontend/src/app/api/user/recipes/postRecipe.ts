@@ -59,7 +59,7 @@ export async function POST(req: Request) {
       _id: result.insertedId,
       title: recipeToInsert.title,
       imageId: recipeToInsert.imageId,
-      category: "My Recipes",
+      category: "My Items",
       type: "recipe"
     }
 
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     await db.collection("users").updateOne({
       _id: userData._id
     },
-      { $addToSet: { createdRecipes: metaData } })
+      { $addToSet: { createdItems: metaData } })
 
     await insertEmbeddings([embeddingData])
 
