@@ -49,7 +49,7 @@ Foodable will be an AI-powered web application designed to help users discover h
 ### IMPORTANT: 
 
 Before starting local development or deployment, make sure you've properly created and configured the `.env.local` file in the root of the `frontend` directory.  
-You can use the provided [`env.txt`](./env.txt) file at the top level of the project as a reference.
+You can use the provided [`env.txt`](./frontend/env.txt) file at the top level of the project as a reference.
 
 1. Prerequisites:
    - Node.js
@@ -81,7 +81,7 @@ You can use the provided [`env.txt`](./env.txt) file at the top level of the pro
 ### Please Note Before Accessing:
 
 1. Some features are still under development.
-2. Known issues may still exist. If you encounter any bugs or unexpected behavior, please report them via the `Issues` tab.
+2. Known issues may still exist. If you encounter any bugs or unexpected behavior, please report them via the [`Issues`](https://github.com/MrF1ow/Foodable/issues) tab.
 3. The site is using development API keys, which may result in slower response times or limited functionality.
 
 ### Access the Site
