@@ -14,10 +14,12 @@ export async function DELETE(req: Request) {
       _id: ObjectId;
       currentGroceryList: ObjectId;
       savedItems: any;
+      createdItems: any;
     }>({
       _id: 1,
       currentGroceryList: 1,
       savedItems: 1,
+      createdItems: 1,
     });
 
     if (!userData) {
@@ -72,6 +74,12 @@ export async function DELETE(req: Request) {
           list._id.toString() !== id.toString(),
       ) || [];
 
+    const updatedCreatedItems = 
+      userData.createdItems?.filter(
+        (items: { _id: string | ObjectId }) => 
+          items._id.toString() !== id.toString(),
+        ) || [];
+
 
     // Apply the filtered list back to the user profile
     if (userData.savedItems) {
@@ -80,6 +88,7 @@ export async function DELETE(req: Request) {
 
     const updateFields: Record<string, any> = {
       "savedItems.groceryLists": updatedSavedLists,
+      "createdItems": updatedCreatedItems,
     };
 
     // Reset currentGroceryList if it matches the deleted ID
@@ -92,9 +101,6 @@ export async function DELETE(req: Request) {
       { clerkId: userData._id },
       {
         $set: updateFields,
-        $pull: {
-          createdItems: { _id: ObjectId.createFromHexString(id) },
-        } as any,
       },
     );
 
