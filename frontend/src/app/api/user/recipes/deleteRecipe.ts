@@ -11,9 +11,11 @@ export async function DELETE(req: Request) {
     const { userData, error, status } = await getCurrentUser<{
       _id: ObjectId;
       savedItems: any;
+      createdItems: any;
     }>({
       _id: 1,
       savedItems: 1,
+      createdItems: 1,
     });
 
     if (!userData) {
@@ -49,6 +51,12 @@ export async function DELETE(req: Request) {
           list._id.toString() !== id.toString(),
       ) || [];
 
+    const updatedCreatedItems =
+      userData.createdItems?.filter(
+        (items: { _id: string | ObjectId }) =>
+          items._id.toString() !== id.toString(),
+      ) || [];
+
     // Apply the filtered list back to the user profile
     if (userData.savedItems) {
       userData.savedItems.recipes = updatedSavedLists;
@@ -56,15 +64,13 @@ export async function DELETE(req: Request) {
 
     const updateFields: Record<string, any> = {
       "savedItems.recipes": updatedSavedLists,
+      "createdItems": updatedCreatedItems,
     };
 
     await db.collection("users").updateOne(
       { _id: userData._id },
       {
         $set: updateFields,
-        $pull: {
-          createdItems: { _id: ObjectId.createFromHexString(id) },
-        } as any,
       },
     );
 
